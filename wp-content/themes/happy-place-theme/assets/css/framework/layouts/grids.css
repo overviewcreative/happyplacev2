@@ -1,0 +1,534 @@
+/* ================================================
+   GRID LAYOUT COMPONENTS
+   Advanced CSS Grid layouts and utilities
+   ================================================ */
+
+/* ================================================
+   BASE GRID SYSTEM
+   ================================================ */
+.grid {
+  display: grid;
+}
+
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.grid-cols-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.grid-cols-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+.grid-cols-9 { grid-template-columns: repeat(9, minmax(0, 1fr)); }
+.grid-cols-10 { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+.grid-cols-11 { grid-template-columns: repeat(11, minmax(0, 1fr)); }
+.grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+
+/* ================================================
+   AUTO-FIT AND AUTO-FILL GRIDS
+   ================================================ */
+.grid-auto-fit {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.grid-auto-fill {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Sizing variants */
+.grid-auto-fit-sm {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.grid-auto-fit-lg {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.grid-auto-fit-xl {
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+}
+
+.grid-auto-fill-sm {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.grid-auto-fill-lg {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.grid-auto-fill-xl {
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+}
+
+/* ================================================
+   GRID ROWS
+   ================================================ */
+.grid-rows-1 { grid-template-rows: repeat(1, minmax(0, 1fr)); }
+.grid-rows-2 { grid-template-rows: repeat(2, minmax(0, 1fr)); }
+.grid-rows-3 { grid-template-rows: repeat(3, minmax(0, 1fr)); }
+.grid-rows-4 { grid-template-rows: repeat(4, minmax(0, 1fr)); }
+.grid-rows-5 { grid-template-rows: repeat(5, minmax(0, 1fr)); }
+.grid-rows-6 { grid-template-rows: repeat(6, minmax(0, 1fr)); }
+
+/* ================================================
+   COLUMN SPANNING
+   ================================================ */
+.col-span-1 { grid-column: span 1 / span 1; }
+.col-span-2 { grid-column: span 2 / span 2; }
+.col-span-3 { grid-column: span 3 / span 3; }
+.col-span-4 { grid-column: span 4 / span 4; }
+.col-span-5 { grid-column: span 5 / span 5; }
+.col-span-6 { grid-column: span 6 / span 6; }
+.col-span-7 { grid-column: span 7 / span 7; }
+.col-span-8 { grid-column: span 8 / span 8; }
+.col-span-9 { grid-column: span 9 / span 9; }
+.col-span-10 { grid-column: span 10 / span 10; }
+.col-span-11 { grid-column: span 11 / span 11; }
+.col-span-12 { grid-column: span 12 / span 12; }
+.col-span-full { grid-column: 1 / -1; }
+
+/* ================================================
+   ROW SPANNING
+   ================================================ */
+.row-span-1 { grid-row: span 1 / span 1; }
+.row-span-2 { grid-row: span 2 / span 2; }
+.row-span-3 { grid-row: span 3 / span 3; }
+.row-span-4 { grid-row: span 4 / span 4; }
+.row-span-5 { grid-row: span 5 / span 5; }
+.row-span-6 { grid-row: span 6 / span 6; }
+.row-span-full { grid-row: 1 / -1; }
+
+/* ================================================
+   COLUMN START/END
+   ================================================ */
+.col-start-1 { grid-column-start: 1; }
+.col-start-2 { grid-column-start: 2; }
+.col-start-3 { grid-column-start: 3; }
+.col-start-4 { grid-column-start: 4; }
+.col-start-5 { grid-column-start: 5; }
+.col-start-6 { grid-column-start: 6; }
+.col-start-7 { grid-column-start: 7; }
+.col-start-8 { grid-column-start: 8; }
+.col-start-9 { grid-column-start: 9; }
+.col-start-10 { grid-column-start: 10; }
+.col-start-11 { grid-column-start: 11; }
+.col-start-12 { grid-column-start: 12; }
+.col-start-13 { grid-column-start: 13; }
+.col-start-auto { grid-column-start: auto; }
+
+.col-end-1 { grid-column-end: 1; }
+.col-end-2 { grid-column-end: 2; }
+.col-end-3 { grid-column-end: 3; }
+.col-end-4 { grid-column-end: 4; }
+.col-end-5 { grid-column-end: 5; }
+.col-end-6 { grid-column-end: 6; }
+.col-end-7 { grid-column-end: 7; }
+.col-end-8 { grid-column-end: 8; }
+.col-end-9 { grid-column-end: 9; }
+.col-end-10 { grid-column-end: 10; }
+.col-end-11 { grid-column-end: 11; }
+.col-end-12 { grid-column-end: 12; }
+.col-end-13 { grid-column-end: 13; }
+.col-end-auto { grid-column-end: auto; }
+
+/* ================================================
+   ROW START/END
+   ================================================ */
+.row-start-1 { grid-row-start: 1; }
+.row-start-2 { grid-row-start: 2; }
+.row-start-3 { grid-row-start: 3; }
+.row-start-4 { grid-row-start: 4; }
+.row-start-5 { grid-row-start: 5; }
+.row-start-6 { grid-row-start: 6; }
+.row-start-7 { grid-row-start: 7; }
+.row-start-auto { grid-row-start: auto; }
+
+.row-end-1 { grid-row-end: 1; }
+.row-end-2 { grid-row-end: 2; }
+.row-end-3 { grid-row-end: 3; }
+.row-end-4 { grid-row-end: 4; }
+.row-end-5 { grid-row-end: 5; }
+.row-end-6 { grid-row-end: 6; }
+.row-end-7 { grid-row-end: 7; }
+.row-end-auto { grid-row-end: auto; }
+
+/* ================================================
+   GAP UTILITIES
+   ================================================ */
+.gap-0 { gap: 0; }
+.gap-1 { gap: 0.25rem; }
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 0.75rem; }
+.gap-4 { gap: 1rem; }
+.gap-5 { gap: 1.25rem; }
+.gap-6 { gap: 1.5rem; }
+.gap-8 { gap: 2rem; }
+.gap-10 { gap: 2.5rem; }
+.gap-12 { gap: 3rem; }
+.gap-16 { gap: 4rem; }
+.gap-20 { gap: 5rem; }
+.gap-24 { gap: 6rem; }
+
+/* Row and column specific gaps */
+.gap-x-0 { column-gap: 0; }
+.gap-x-1 { column-gap: 0.25rem; }
+.gap-x-2 { column-gap: 0.5rem; }
+.gap-x-3 { column-gap: 0.75rem; }
+.gap-x-4 { column-gap: 1rem; }
+.gap-x-5 { column-gap: 1.25rem; }
+.gap-x-6 { column-gap: 1.5rem; }
+.gap-x-8 { column-gap: 2rem; }
+.gap-x-10 { column-gap: 2.5rem; }
+.gap-x-12 { column-gap: 3rem; }
+
+.gap-y-0 { row-gap: 0; }
+.gap-y-1 { row-gap: 0.25rem; }
+.gap-y-2 { row-gap: 0.5rem; }
+.gap-y-3 { row-gap: 0.75rem; }
+.gap-y-4 { row-gap: 1rem; }
+.gap-y-5 { row-gap: 1.25rem; }
+.gap-y-6 { row-gap: 1.5rem; }
+.gap-y-8 { row-gap: 2rem; }
+.gap-y-10 { row-gap: 2.5rem; }
+.gap-y-12 { row-gap: 3rem; }
+
+/* ================================================
+   GRID ALIGNMENT
+   ================================================ */
+.justify-items-start { justify-items: start; }
+.justify-items-end { justify-items: end; }
+.justify-items-center { justify-items: center; }
+.justify-items-stretch { justify-items: stretch; }
+
+.align-items-start { align-items: start; }
+.align-items-end { align-items: end; }
+.align-items-center { align-items: center; }
+.align-items-stretch { align-items: stretch; }
+
+.place-items-start { place-items: start; }
+.place-items-end { place-items: end; }
+.place-items-center { place-items: center; }
+.place-items-stretch { place-items: stretch; }
+
+.justify-content-start { justify-content: start; }
+.justify-content-end { justify-content: end; }
+.justify-content-center { justify-content: center; }
+.justify-content-stretch { justify-content: stretch; }
+.justify-content-space-around { justify-content: space-around; }
+.justify-content-space-between { justify-content: space-between; }
+.justify-content-space-evenly { justify-content: space-evenly; }
+
+.align-content-start { align-content: start; }
+.align-content-end { align-content: end; }
+.align-content-center { align-content: center; }
+.align-content-stretch { align-content: stretch; }
+.align-content-space-around { align-content: space-around; }
+.align-content-space-between { align-content: space-between; }
+.align-content-space-evenly { align-content: space-evenly; }
+
+.place-content-start { place-content: start; }
+.place-content-end { place-content: end; }
+.place-content-center { place-content: center; }
+.place-content-stretch { place-content: stretch; }
+.place-content-space-around { place-content: space-around; }
+.place-content-space-between { place-content: space-between; }
+.place-content-space-evenly { place-content: space-evenly; }
+
+/* ================================================
+   GRID ITEM ALIGNMENT
+   ================================================ */
+.justify-self-auto { justify-self: auto; }
+.justify-self-start { justify-self: start; }
+.justify-self-end { justify-self: end; }
+.justify-self-center { justify-self: center; }
+.justify-self-stretch { justify-self: stretch; }
+
+.align-self-auto { align-self: auto; }
+.align-self-start { align-self: start; }
+.align-self-end { align-self: end; }
+.align-self-center { align-self: center; }
+.align-self-stretch { align-self: stretch; }
+
+.place-self-auto { place-self: auto; }
+.place-self-start { place-self: start; }
+.place-self-end { place-self: end; }
+.place-self-center { place-self: center; }
+.place-self-stretch { place-self: stretch; }
+
+/* ================================================
+   COMPLEX GRID LAYOUTS
+   ================================================ */
+
+/* Holy Grail Layout */
+.grid-holy-grail {
+  display: grid;
+  grid-template-areas: 
+    "header header header"
+    "sidebar main aside"
+    "footer footer footer";
+  grid-template-columns: 250px 1fr 250px;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+  gap: 1rem;
+}
+
+.grid-holy-grail .header { grid-area: header; }
+.grid-holy-grail .sidebar { grid-area: sidebar; }
+.grid-holy-grail .main { grid-area: main; }
+.grid-holy-grail .aside { grid-area: aside; }
+.grid-holy-grail .footer { grid-area: footer; }
+
+/* Dashboard Layout */
+.grid-dashboard {
+  display: grid;
+  grid-template-areas:
+    "nav header header"
+    "nav main aside"
+    "nav main aside";
+  grid-template-columns: 250px 1fr 300px;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+  gap: 1rem;
+}
+
+.grid-dashboard .nav { grid-area: nav; }
+.grid-dashboard .header { grid-area: header; }
+.grid-dashboard .main { grid-area: main; }
+.grid-dashboard .aside { grid-area: aside; }
+
+/* Article Layout */
+.grid-article {
+  display: grid;
+  grid-template-areas:
+    "title title"
+    "content sidebar"
+    "footer footer";
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+.grid-article .title { grid-area: title; }
+.grid-article .content { grid-area: content; }
+.grid-article .sidebar { grid-area: sidebar; }
+.grid-article .footer { grid-area: footer; }
+
+/* ================================================
+   REAL ESTATE SPECIFIC GRIDS
+   ================================================ */
+
+/* Property Grid */
+.grid-properties {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.grid-properties-featured {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1rem;
+  height: 400px;
+}
+
+.grid-properties-featured .featured {
+  grid-row: 1 / -1;
+}
+
+/* Agent Grid */
+.grid-agents {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+/* Search Results Grid */
+.grid-search-results {
+  display: grid;
+  grid-template-areas:
+    "filters results results"
+    "filters results results";
+  grid-template-columns: 300px 1fr;
+  gap: 2rem;
+}
+
+.grid-search-results .filters { grid-area: filters; }
+.grid-search-results .results { grid-area: results; }
+
+/* Property Detail Grid */
+.grid-property-detail {
+  display: grid;
+  grid-template-areas:
+    "gallery gallery info"
+    "details details info"
+    "description description info";
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+.grid-property-detail .gallery { grid-area: gallery; }
+.grid-property-detail .details { grid-area: details; }
+.grid-property-detail .description { grid-area: description; }
+.grid-property-detail .info { grid-area: info; }
+
+/* ================================================
+   RESPONSIVE GRID BEHAVIORS
+   ================================================ */
+
+/* Small screens */
+@media (max-width: 640px) {
+  .grid-cols-2,
+  .grid-cols-3,
+  .grid-cols-4,
+  .grid-cols-5,
+  .grid-cols-6 {
+    grid-template-columns: 1fr;
+  }
+  
+  .grid-auto-fit,
+  .grid-auto-fill {
+    grid-template-columns: 1fr;
+  }
+  
+  .grid-holy-grail {
+    grid-template-areas:
+      "header"
+      "main"
+      "sidebar"
+      "aside"
+      "footer";
+    grid-template-columns: 1fr;
+  }
+  
+  .grid-dashboard {
+    grid-template-areas:
+      "header"
+      "nav"
+      "main"
+      "aside";
+    grid-template-columns: 1fr;
+  }
+  
+  .grid-article {
+    grid-template-areas:
+      "title"
+      "content"
+      "sidebar"
+      "footer";
+    grid-template-columns: 1fr;
+  }
+  
+  .grid-search-results {
+    grid-template-areas:
+      "filters"
+      "results";
+    grid-template-columns: 1fr;
+  }
+  
+  .grid-property-detail {
+    grid-template-areas:
+      "gallery"
+      "details"
+      "description"
+      "info";
+    grid-template-columns: 1fr;
+  }
+  
+  .grid-properties-featured {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    height: auto;
+  }
+  
+  .grid-properties-featured .featured {
+    grid-row: auto;
+  }
+}
+
+/* Medium screens */
+@media (max-width: 768px) {
+  .grid-cols-3,
+  .grid-cols-4,
+  .grid-cols-5,
+  .grid-cols-6 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .grid-auto-fit-lg,
+  .grid-auto-fit-xl {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+  
+  .grid-auto-fill-lg,
+  .grid-auto-fill-xl {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+/* Large screens */
+@media (max-width: 1024px) {
+  .grid-holy-grail {
+    grid-template-areas:
+      "header header"
+      "sidebar main"
+      "aside main"
+      "footer footer";
+    grid-template-columns: 200px 1fr;
+  }
+  
+  .grid-dashboard {
+    grid-template-areas:
+      "nav header"
+      "nav main"
+      "nav aside";
+    grid-template-columns: 200px 1fr;
+  }
+  
+  .grid-search-results {
+    grid-template-columns: 250px 1fr;
+  }
+  
+  .grid-property-detail {
+    grid-template-areas:
+      "gallery info"
+      "details info"
+      "description info";
+    grid-template-columns: 1.5fr 1fr;
+  }
+}
+
+/* ================================================
+   PRINT LAYOUTS
+   ================================================ */
+@media print {
+  .grid-holy-grail,
+  .grid-dashboard,
+  .grid-search-results {
+    grid-template-areas:
+      "header"
+      "main"
+      "footer";
+    grid-template-columns: 1fr;
+  }
+  
+  .grid-article {
+    grid-template-areas:
+      "title"
+      "content"
+      "footer";
+    grid-template-columns: 1fr;
+  }
+  
+  .grid-property-detail {
+    grid-template-areas:
+      "gallery"
+      "details"
+      "description";
+    grid-template-columns: 1fr;
+  }
+}
+
+/* File Location: /wp-content/themes/happy-place/assets/css/framework/layouts/grids.css */

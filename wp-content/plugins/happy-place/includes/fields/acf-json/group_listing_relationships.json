@@ -1,0 +1,474 @@
+{
+    "key": "group_listing_relationships",
+    "title": "Listing - Agent & Relationships",
+    "fields": [
+        {
+            "key": "field_listing_agent",
+            "label": "Listing Agent",
+            "name": "listing_agent",
+            "aria-label": "",
+            "type": "relationship",
+            "instructions": "Primary listing agent for this property",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "agent"
+            ],
+            "taxonomy": [],
+            "filters": [
+                "search",
+                "post_type"
+            ],
+            "elements": [
+                "featured_image"
+            ],
+            "min": 1,
+            "max": 1,
+            "return_format": "object",
+            "bidirectional_target": []
+        },
+        {
+            "key": "field_co_listing_agent",
+            "label": "Co-Listing Agent",
+            "name": "co_listing_agent",
+            "aria-label": "",
+            "type": "relationship",
+            "instructions": "Co-listing agent (optional)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "agent"
+            ],
+            "taxonomy": [],
+            "filters": [
+                "search",
+                "post_type"
+            ],
+            "elements": [
+                "featured_image"
+            ],
+            "min": "",
+            "max": 1,
+            "return_format": "object",
+            "bidirectional_target": []
+        },
+        {
+            "key": "field_listing_office",
+            "label": "Listing Office",
+            "name": "listing_office",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Name of the listing brokerage\/office",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "ABC Realty Group",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_listing_office_phone",
+            "label": "Listing Office Phone",
+            "name": "listing_office_phone",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Phone number for the listing office",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "(512) 555-0123",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_showing_instructions",
+            "label": "Showing Instructions",
+            "name": "showing_instructions",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Special instructions for showing the property",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "Please call listing agent 2 hours in advance. Remove shoes when entering.",
+            "maxlength": "",
+            "rows": 3,
+            "new_lines": ""
+        },
+        {
+            "key": "field_location_relationships_tab",
+            "label": "Location Relationships",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_community",
+            "label": "Community\/Subdivision",
+            "name": "community",
+            "aria-label": "",
+            "type": "relationship",
+            "instructions": "Link to community\/subdivision post",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "community"
+            ],
+            "taxonomy": [],
+            "filters": [
+                "search",
+                "post_type"
+            ],
+            "elements": [
+                "featured_image"
+            ],
+            "min": "",
+            "max": 1,
+            "return_format": "object",
+            "bidirectional_target": []
+        },
+        {
+            "key": "field_city_page",
+            "label": "City Page",
+            "name": "city_page",
+            "aria-label": "",
+            "type": "relationship",
+            "instructions": "Link to city information page",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "city"
+            ],
+            "taxonomy": [],
+            "filters": [
+                "search",
+                "post_type"
+            ],
+            "elements": [
+                "featured_image"
+            ],
+            "min": "",
+            "max": 1,
+            "return_format": "object",
+            "bidirectional_target": []
+        },
+        {
+            "key": "field_school_district",
+            "label": "School District",
+            "name": "school_district",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "School district name",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "Austin ISD",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_elementary_school",
+            "label": "Elementary School",
+            "name": "elementary_school",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Assigned elementary school",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "Oak Hill Elementary",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_middle_school",
+            "label": "Middle School",
+            "name": "middle_school",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Assigned middle school",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "34",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "Hill Country Middle School",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_high_school",
+            "label": "High School",
+            "name": "high_school",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Assigned high school",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "Westlake High School",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_nearby_places",
+            "label": "Nearby Places",
+            "name": "nearby_places",
+            "aria-label": "",
+            "type": "relationship",
+            "instructions": "Link to nearby places of interest",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "67",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "local_place"
+            ],
+            "taxonomy": [],
+            "filters": [
+                "search",
+                "post_type"
+            ],
+            "elements": [],
+            "min": "",
+            "max": 10,
+            "return_format": "object",
+            "bidirectional_target": []
+        },
+        {
+            "key": "field_mls_tab",
+            "label": "MLS Information",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_mls_source",
+            "label": "MLS Source",
+            "name": "mls_source",
+            "aria-label": "",
+            "type": "select",
+            "instructions": "Which MLS system this listing comes from",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "actris": "ACTRIS (Austin)",
+                "har": "HAR (Houston)",
+                "ntreis": "NTREIS (Dallas)",
+                "sabor": "SABOR (San Antonio)",
+                "other": "Other MLS"
+            },
+            "default_value": false,
+            "allow_null": 1,
+            "multiple": 0,
+            "ui": 1,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": "",
+            "create_options": 0,
+            "save_options": 0
+        },
+        {
+            "key": "field_mls_status",
+            "label": "MLS Status",
+            "name": "mls_status",
+            "aria-label": "",
+            "type": "select",
+            "instructions": "Current status in MLS system",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "active": "Active",
+                "pending": "Pending",
+                "option_pending": "Option Pending",
+                "sold": "Sold",
+                "expired": "Expired",
+                "withdrawn": "Withdrawn",
+                "temp_off_market": "Temp Off Market"
+            },
+            "default_value": "active",
+            "allow_null": 1,
+            "multiple": 0,
+            "ui": 1,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": "",
+            "create_options": 0,
+            "save_options": 0
+        },
+        {
+            "key": "field_days_on_market",
+            "label": "Days on Market",
+            "name": "days_on_market",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Number of days listed (calculated automatically if left blank)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "34",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": 15,
+            "prepend": "",
+            "append": "days",
+            "min": 0,
+            "max": "",
+            "step": 1
+        },
+        {
+            "key": "field_last_mls_update",
+            "label": "Last MLS Update",
+            "name": "last_mls_update",
+            "aria-label": "",
+            "type": "date_time_picker",
+            "instructions": "When this listing was last updated in MLS",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "display_format": "m\/d\/Y g:i A",
+            "return_format": "Y-m-d H:i:s",
+            "first_day": 1,
+            "default_to_current_date": 0
+        },
+        {
+            "key": "field_mls_remarks",
+            "label": "MLS Remarks",
+            "name": "mls_remarks",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Private remarks visible only in MLS system",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "Internal MLS notes and remarks...",
+            "maxlength": "",
+            "rows": 4,
+            "new_lines": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "listing"
+            }
+        ]
+    ],
+    "menu_order": 5,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Agent assignments, office information, and location relationships",
+    "show_in_rest": 1,
+    "modified": 1755274805
+}

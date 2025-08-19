@@ -1,0 +1,497 @@
+{
+    "key": "group_listing_financial",
+    "title": "Listing - Financial Information",
+    "fields": [
+        {
+            "key": "field_price_details_tab",
+            "label": "Price Details",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_original_price",
+            "label": "Original List Price",
+            "name": "original_price",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Original listing price for price change tracking",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": 800000,
+            "prepend": "$",
+            "append": "",
+            "min": 0,
+            "max": "",
+            "step": ""
+        },
+        {
+            "key": "field_price_per_sqft",
+            "label": "Price per Sq Ft",
+            "name": "price_per_sqft",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Calculated automatically if left blank",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": 300,
+            "prepend": "$",
+            "append": "\/sqft",
+            "min": 0,
+            "max": "",
+            "step": "any"
+        },
+        {
+            "key": "field_lease_price",
+            "label": "Lease\/Rent Price",
+            "name": "lease_price",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Monthly rent if property is for lease",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "34",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": 3500,
+            "prepend": "$",
+            "append": "\/month",
+            "min": 0,
+            "max": "",
+            "step": ""
+        },
+        {
+            "key": "field_taxes_fees_tab",
+            "label": "Taxes & Fees",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_property_taxes",
+            "label": "Annual Property Taxes",
+            "name": "property_taxes",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Annual property tax amount",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": 12000,
+            "prepend": "$",
+            "append": "\/year",
+            "min": 0,
+            "max": "",
+            "step": ""
+        },
+        {
+            "key": "field_tax_year",
+            "label": "Tax Year",
+            "name": "tax_year",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Year for the tax amount listed",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": 2024,
+            "prepend": "",
+            "append": "",
+            "min": 2000,
+            "max": 2030,
+            "step": 1
+        },
+        {
+            "key": "field_homestead_exempt",
+            "label": "Homestead Exemption",
+            "name": "homestead_exempt",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "Property has homestead exemption",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "34",
+                "class": "",
+                "id": ""
+            },
+            "message": "Has Homestead Exemption",
+            "default_value": 0,
+            "ui": 1,
+            "ui_on_text": "Yes",
+            "ui_off_text": "No"
+        },
+        {
+            "key": "field_hoa_fees",
+            "label": "HOA Fees",
+            "name": "hoa_fees",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Monthly HOA fees",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": 150,
+            "prepend": "$",
+            "append": "\/month",
+            "min": 0,
+            "max": "",
+            "step": ""
+        },
+        {
+            "key": "field_hoa_frequency",
+            "label": "HOA Fee Frequency",
+            "name": "hoa_frequency",
+            "aria-label": "",
+            "type": "select",
+            "instructions": "How often HOA fees are paid",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_hoa_fees",
+                        "operator": ">",
+                        "value": "0"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "monthly": "Monthly",
+                "quarterly": "Quarterly",
+                "annually": "Annually"
+            },
+            "default_value": "monthly",
+            "allow_null": 0,
+            "multiple": 0,
+            "ui": 1,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": "",
+            "create_options": 0,
+            "save_options": 0
+        },
+        {
+            "key": "field_cdd_fees",
+            "label": "CDD Fees",
+            "name": "cdd_fees",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Community Development District fees",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": 200,
+            "prepend": "$",
+            "append": "\/month",
+            "min": 0,
+            "max": "",
+            "step": ""
+        },
+        {
+            "key": "field_special_assessments",
+            "label": "Special Assessments",
+            "name": "special_assessments",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Any special assessment fees",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": 500,
+            "prepend": "$",
+            "append": "",
+            "min": 0,
+            "max": "",
+            "step": ""
+        },
+        {
+            "key": "field_utilities_tab",
+            "label": "Utilities",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_electric_avg",
+            "label": "Average Electric Bill",
+            "name": "electric_avg",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Average monthly electric bill",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": 150,
+            "prepend": "$",
+            "append": "\/month",
+            "min": 0,
+            "max": "",
+            "step": ""
+        },
+        {
+            "key": "field_gas_avg",
+            "label": "Average Gas Bill",
+            "name": "gas_avg",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Average monthly gas bill",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": 80,
+            "prepend": "$",
+            "append": "\/month",
+            "min": 0,
+            "max": "",
+            "step": ""
+        },
+        {
+            "key": "field_water_avg",
+            "label": "Average Water Bill",
+            "name": "water_avg",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Average monthly water\/sewer bill",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": 60,
+            "prepend": "$",
+            "append": "\/month",
+            "min": 0,
+            "max": "",
+            "step": ""
+        },
+        {
+            "key": "field_internet_avg",
+            "label": "Average Internet Bill",
+            "name": "internet_avg",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Average monthly internet bill",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": 75,
+            "prepend": "$",
+            "append": "\/month",
+            "min": 0,
+            "max": "",
+            "step": ""
+        },
+        {
+            "key": "field_commission_tab",
+            "label": "Commission & Terms",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_listing_commission",
+            "label": "Listing Agent Commission",
+            "name": "listing_commission",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Commission percentage for listing agent",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": 3,
+            "placeholder": 3,
+            "prepend": "",
+            "append": "%",
+            "min": 0,
+            "max": 10,
+            "step": 0.25
+        },
+        {
+            "key": "field_buyer_commission",
+            "label": "Buyer Agent Commission",
+            "name": "buyer_commission",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Commission percentage for buyer agent",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": 3,
+            "placeholder": 3,
+            "prepend": "",
+            "append": "%",
+            "min": 0,
+            "max": 10,
+            "step": 0.25
+        },
+        {
+            "key": "field_financing_available",
+            "label": "Financing Available",
+            "name": "financing_available",
+            "aria-label": "",
+            "type": "checkbox",
+            "instructions": "Types of financing accepted",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "34",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "conventional": "Conventional Loan",
+                "fha": "FHA Loan",
+                "va": "VA Loan",
+                "usda": "USDA Loan",
+                "cash": "Cash Only",
+                "owner_finance": "Owner Financing"
+            },
+            "allow_custom": 0,
+            "default_value": [
+                "conventional",
+                "fha",
+                "va",
+                "cash"
+            ],
+            "layout": "vertical",
+            "toggle": 0,
+            "return_format": "value",
+            "save_custom": 0,
+            "custom_choice_button_text": "Add new choice"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "listing"
+            }
+        ]
+    ],
+    "menu_order": 4,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Financial information including taxes, fees, and commission details",
+    "show_in_rest": 1,
+    "modified": 1755274805
+}

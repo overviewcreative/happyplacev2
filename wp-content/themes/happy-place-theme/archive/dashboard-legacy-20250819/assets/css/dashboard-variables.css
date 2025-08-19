@@ -1,0 +1,503 @@
+/* ================================================
+   DASHBOARD VARIABLES - COMPREHENSIVE SYSTEM
+   Extends the main framework with dashboard-specific
+   variables for consistent design across all components
+   ================================================ */
+
+/* ================================================
+   DASHBOARD LAYOUT VARIABLES
+   ================================================ */
+
+/* Container & Spacing */
+:root {
+  /* Dashboard Layout */
+  --hph-dashboard-max-width: var(--hph-container-2xl);
+  --hph-dashboard-gutter: var(--hph-space-2xl);
+  --hph-dashboard-gutter-mobile: var(--hph-space-lg);
+  --hph-dashboard-section-gap: var(--hph-space-2xl);
+  --hph-dashboard-card-gap: var(--hph-space-xl);
+  --hph-dashboard-content-padding: var(--hph-space-xl);
+  
+  /* Navigation */
+  --hph-dashboard-nav-width: 280px;
+  --hph-dashboard-nav-width-mobile: 100%;
+  --hph-dashboard-nav-item-height: 48px;
+  --hph-dashboard-nav-padding: var(--hph-space-lg);
+  
+  /* Header */
+  --hph-dashboard-header-height: 80px;
+  --hph-dashboard-header-mobile-height: 64px;
+  --hph-dashboard-header-padding: var(--hph-space-lg) var(--hph-space-2xl);
+  --hph-dashboard-header-mobile-padding: var(--hph-space-md) var(--hph-space-lg);
+}
+
+/* ================================================
+   DASHBOARD CARD SYSTEM
+   ================================================ */
+
+:root {
+  /* Card Dimensions */
+  --hph-card-radius: var(--hph-radius-xl);
+  --hph-card-radius-lg: var(--hph-radius-2xl);
+  --hph-card-padding: var(--hph-space-xl);
+  --hph-card-padding-lg: var(--hph-space-2xl);
+  --hph-card-padding-sm: var(--hph-space-lg);
+  --hph-card-header-padding: var(--hph-space-xl) var(--hph-space-2xl);
+  --hph-card-footer-padding: var(--hph-space-lg) var(--hph-space-xl);
+  
+  /* Card Shadows */
+  --hph-card-shadow: var(--hph-shadow-lg);
+  --hph-card-shadow-hover: var(--hph-shadow-xl);
+  --hph-card-shadow-focus: var(--hph-shadow-2xl);
+  
+  /* Card Borders */
+  --hph-card-border: 1px solid var(--hph-border-color-light);
+  --hph-card-border-hover: 1px solid var(--hph-primary-300);
+  --hph-card-border-focus: 2px solid var(--hph-primary-500);
+  
+  /* Card Backgrounds */
+  --hph-card-bg: var(--hph-white);
+  --hph-card-bg-hover: var(--hph-gray-25);
+  --hph-card-bg-selected: var(--hph-primary-25);
+  --hph-card-header-bg: linear-gradient(135deg, var(--hph-gray-25) 0%, var(--hph-gray-50) 100%);
+  --hph-card-footer-bg: var(--hph-gray-25);
+}
+
+/* ================================================
+   DASHBOARD FORMS SYSTEM
+   ================================================ */
+
+:root {
+  /* Form Layout */
+  --hph-form-section-gap: var(--hph-space-2xl);
+  --hph-form-row-gap: var(--hph-space-xl);
+  --hph-form-field-gap: var(--hph-space-lg);
+  --hph-form-group-gap: var(--hph-space-md);
+  
+  /* Form Controls */
+  --hph-form-control-height: 48px;
+  --hph-form-control-height-sm: 36px;
+  --hph-form-control-height-lg: 56px;
+  --hph-form-control-padding: var(--hph-space-md) var(--hph-space-lg);
+  --hph-form-control-padding-sm: var(--hph-space-sm) var(--hph-space-md);
+  --hph-form-control-padding-lg: var(--hph-space-lg) var(--hph-space-xl);
+  --hph-form-control-radius: var(--hph-radius-lg);
+  --hph-form-control-border: 2px solid var(--hph-border-color);
+  --hph-form-control-border-focus: 2px solid var(--hph-primary-500);
+  --hph-form-control-border-error: 2px solid var(--hph-danger-500);
+  --hph-form-control-border-success: 2px solid var(--hph-success-500);
+  
+  /* Form Labels */
+  --hph-form-label-font-size: var(--hph-text-sm);
+  --hph-form-label-font-weight: 600;
+  --hph-form-label-color: var(--hph-gray-900);
+  --hph-form-label-margin: 0 0 var(--hph-space-sm) 0;
+  --hph-form-label-spacing: 0.05em;
+  
+  /* Form States */
+  --hph-form-focus-shadow: 0 0 0 4px rgba(81, 186, 224, 0.12);
+  --hph-form-error-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
+  --hph-form-success-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12);
+  --hph-form-disabled-bg: var(--hph-gray-100);
+  --hph-form-disabled-color: var(--hph-gray-500);
+  
+  /* Form Sections */
+  --hph-form-section-header-bg: var(--hph-card-header-bg);
+  --hph-form-section-header-padding: var(--hph-space-xl) var(--hph-space-2xl);
+  --hph-form-section-content-padding: var(--hph-space-2xl);
+  --hph-form-section-border-top: 3px solid var(--hph-primary-500);
+}
+
+/* ================================================
+   DASHBOARD NAVIGATION SYSTEM
+   ================================================ */
+
+:root {
+  /* Navigation Colors */
+  --hph-nav-bg: var(--hph-white);
+  --hph-nav-border: var(--hph-border-color-light);
+  --hph-nav-item-color: var(--hph-gray-700);
+  --hph-nav-item-color-hover: var(--hph-primary-600);
+  --hph-nav-item-color-active: var(--hph-primary-700);
+  --hph-nav-item-bg-hover: var(--hph-primary-50);
+  --hph-nav-item-bg-active: var(--hph-primary-100);
+  
+  /* Navigation Typography */
+  --hph-nav-item-font-size: var(--hph-text-base);
+  --hph-nav-item-font-weight: 500;
+  --hph-nav-item-font-weight-active: 600;
+  --hph-nav-title-font-size: var(--hph-text-xl);
+  --hph-nav-title-font-weight: 700;
+  
+  /* Navigation Icons */
+  --hph-nav-icon-size: 20px;
+  --hph-nav-icon-margin: 0 var(--hph-space-md) 0 0;
+  --hph-nav-icon-color: var(--hph-gray-500);
+  --hph-nav-icon-color-hover: var(--hph-primary-500);
+  --hph-nav-icon-color-active: var(--hph-primary-600);
+  
+  /* Navigation Layout */
+  --hph-nav-item-padding: var(--hph-space-md) var(--hph-space-lg);
+  --hph-nav-item-margin: 0 0 var(--hph-space-xs) 0;
+  --hph-nav-item-radius: var(--hph-radius-lg);
+  --hph-nav-section-gap: var(--hph-space-xl);
+}
+
+/* ================================================
+   DASHBOARD BUTTON SYSTEM
+   ================================================ */
+
+:root {
+  /* Button Sizes */
+  --hph-btn-height: 44px;
+  --hph-btn-height-sm: 32px;
+  --hph-btn-height-lg: 56px;
+  --hph-btn-padding: var(--hph-space-md) var(--hph-space-xl);
+  --hph-btn-padding-sm: var(--hph-space-sm) var(--hph-space-md);
+  --hph-btn-padding-lg: var(--hph-space-lg) var(--hph-space-2xl);
+  --hph-btn-radius: var(--hph-radius-lg);
+  --hph-btn-radius-sm: var(--hph-radius-md);
+  --hph-btn-radius-lg: var(--hph-radius-xl);
+  
+  /* Button Typography */
+  --hph-btn-font-size: var(--hph-text-base);
+  --hph-btn-font-size-sm: var(--hph-text-sm);
+  --hph-btn-font-size-lg: var(--hph-text-lg);
+  --hph-btn-font-weight: 600;
+  --hph-btn-letter-spacing: 0.025em;
+  
+  /* Button States */
+  --hph-btn-transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --hph-btn-transform-hover: translateY(-2px);
+  --hph-btn-transform-active: translateY(0);
+  --hph-btn-shadow: var(--hph-shadow-md);
+  --hph-btn-shadow-hover: var(--hph-shadow-lg);
+  --hph-btn-shadow-focus: 0 0 0 4px rgba(81, 186, 224, 0.12);
+  
+  /* Button Variants */
+  --hph-btn-primary-bg: linear-gradient(135deg, var(--hph-primary-500) 0%, var(--hph-primary-600) 100%);
+  --hph-btn-primary-bg-hover: linear-gradient(135deg, var(--hph-primary-600) 0%, var(--hph-primary-700) 100%);
+  --hph-btn-primary-color: var(--hph-white);
+  --hph-btn-primary-shadow: 0 4px 16px rgba(81, 186, 224, 0.3);
+  --hph-btn-primary-shadow-hover: 0 8px 32px rgba(81, 186, 224, 0.4);
+  
+  --hph-btn-secondary-bg: var(--hph-gray-100);
+  --hph-btn-secondary-bg-hover: var(--hph-gray-200);
+  --hph-btn-secondary-color: var(--hph-gray-700);
+  --hph-btn-secondary-border: 1px solid var(--hph-border-color);
+  
+  --hph-btn-success-bg: linear-gradient(135deg, var(--hph-success-500) 0%, var(--hph-success-600) 100%);
+  --hph-btn-success-bg-hover: linear-gradient(135deg, var(--hph-success-600) 0%, var(--hph-success-700) 100%);
+  --hph-btn-success-color: var(--hph-white);
+  --hph-btn-success-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+  
+  --hph-btn-danger-bg: linear-gradient(135deg, var(--hph-danger-500) 0%, var(--hph-danger-600) 100%);
+  --hph-btn-danger-bg-hover: linear-gradient(135deg, var(--hph-danger-600) 0%, var(--hph-danger-700) 100%);
+  --hph-btn-danger-color: var(--hph-white);
+  --hph-btn-danger-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
+}
+
+/* ================================================
+   DASHBOARD STATUS SYSTEM
+   ================================================ */
+
+:root {
+  /* Status Colors */
+  --hph-status-active-bg: rgba(34, 197, 94, 0.1);
+  --hph-status-active-color: var(--hph-success-700);
+  --hph-status-active-border: var(--hph-success-200);
+  
+  --hph-status-pending-bg: rgba(245, 158, 11, 0.1);
+  --hph-status-pending-color: var(--hph-warning-700);
+  --hph-status-pending-border: var(--hph-warning-200);
+  
+  --hph-status-sold-bg: rgba(59, 130, 246, 0.1);
+  --hph-status-sold-color: var(--hph-info-700);
+  --hph-status-sold-border: var(--hph-info-200);
+  
+  --hph-status-withdrawn-bg: rgba(239, 68, 68, 0.1);
+  --hph-status-withdrawn-color: var(--hph-danger-700);
+  --hph-status-withdrawn-border: var(--hph-danger-200);
+  
+  --hph-status-coming-soon-bg: rgba(168, 85, 247, 0.1);
+  --hph-status-coming-soon-color: var(--hph-primary-700);
+  --hph-status-coming-soon-border: var(--hph-primary-200);
+  
+  /* Status Badge */
+  --hph-status-badge-padding: var(--hph-space-xs) var(--hph-space-md);
+  --hph-status-badge-radius: var(--hph-radius-full);
+  --hph-status-badge-font-size: var(--hph-text-xs);
+  --hph-status-badge-font-weight: 700;
+  --hph-status-badge-letter-spacing: 0.05em;
+  --hph-status-badge-text-transform: uppercase;
+}
+
+/* ================================================
+   DASHBOARD LISTING CARDS
+   ================================================ */
+
+:root {
+  /* Grid Card Dimensions */
+  --hph-listing-grid-min-width: 340px;
+  --hph-listing-grid-aspect-ratio: 16/10;
+  --hph-listing-grid-gap: var(--hph-space-xl);
+  
+  /* List Card Dimensions */
+  --hph-listing-list-image-width: 200px;
+  --hph-listing-list-image-height: 120px;
+  --hph-listing-list-gap: var(--hph-space-lg);
+  
+  /* Map Card Dimensions */
+  --hph-listing-map-image-width: 80px;
+  --hph-listing-map-image-height: 60px;
+  --hph-listing-map-gap: var(--hph-space-md);
+  
+  /* Card Overlay */
+  --hph-listing-overlay-bg: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.6) 100%);
+  --hph-listing-overlay-transition: opacity 0.3s ease;
+  
+  /* Action Buttons */
+  --hph-action-btn-size: 44px;
+  --hph-action-btn-size-sm: 32px;
+  --hph-action-btn-size-xs: 28px;
+  --hph-action-btn-bg: rgba(255, 255, 255, 0.9);
+  --hph-action-btn-bg-hover: var(--hph-white);
+  --hph-action-btn-radius: 50%;
+  --hph-action-btn-shadow: var(--hph-shadow-md);
+  --hph-action-btn-shadow-hover: var(--hph-shadow-lg);
+  
+  /* Price Display */
+  --hph-price-font-size: var(--hph-text-xl);
+  --hph-price-font-size-lg: var(--hph-text-2xl);
+  --hph-price-font-weight: 800;
+  --hph-price-color: var(--hph-primary-600);
+  --hph-price-pending-color: var(--hph-gray-500);
+  --hph-price-pending-style: italic;
+}
+
+/* ================================================
+   DASHBOARD HERO SECTIONS
+   ================================================ */
+
+:root {
+  /* Hero Layout */
+  --hph-hero-padding: var(--hph-space-3xl) var(--hph-space-2xl);
+  --hph-hero-padding-mobile: var(--hph-space-xl) var(--hph-space-lg);
+  --hph-hero-radius: var(--hph-radius-2xl);
+  --hph-hero-shadow: var(--hph-shadow-2xl);
+  
+  /* Hero Typography */
+  --hph-hero-title-font-size: var(--hph-text-3xl);
+  --hph-hero-title-font-size-mobile: var(--hph-text-2xl);
+  --hph-hero-title-font-weight: 800;
+  --hph-hero-title-color: var(--hph-white);
+  --hph-hero-title-letter-spacing: -0.025em;
+  --hph-hero-title-text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+  --hph-hero-subtitle-font-size: var(--hph-text-lg);
+  --hph-hero-subtitle-font-weight: 400;
+  --hph-hero-subtitle-color: rgba(255, 255, 255, 0.9);
+  --hph-hero-subtitle-line-height: 1.5;
+  
+  /* Hero Background */
+  --hph-hero-bg: linear-gradient(135deg, var(--hph-primary-600) 0%, var(--hph-primary-800) 100%);
+  --hph-hero-bg-pattern: 
+    radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+    linear-gradient(135deg, transparent 0%, rgba(0, 0, 0, 0.1) 100%);
+  
+  /* Hero Statistics */
+  --hph-hero-stat-gap: var(--hph-space-xl);
+  --hph-hero-stat-number-font-size: var(--hph-text-2xl);
+  --hph-hero-stat-number-font-weight: 700;
+  --hph-hero-stat-number-color: var(--hph-white);
+  --hph-hero-stat-label-font-size: var(--hph-text-sm);
+  --hph-hero-stat-label-color: rgba(255, 255, 255, 0.8);
+  --hph-hero-stat-label-spacing: 0.05em;
+  --hph-hero-stat-label-transform: uppercase;
+}
+
+/* ================================================
+   DASHBOARD SEARCH & FILTERS
+   ================================================ */
+
+:root {
+  /* Search Input */
+  --hph-search-height: 56px;
+  --hph-search-radius: var(--hph-radius-xl);
+  --hph-search-bg: var(--hph-gray-50);
+  --hph-search-bg-focus: var(--hph-white);
+  --hph-search-border: 2px solid var(--hph-border-color);
+  --hph-search-border-focus: 2px solid var(--hph-primary-500);
+  --hph-search-shadow-focus: 0 0 0 4px rgba(81, 186, 224, 0.12);
+  --hph-search-icon-size: 18px;
+  --hph-search-icon-color: var(--hph-gray-400);
+  --hph-search-icon-padding: 0 var(--hph-space-lg);
+  
+  /* Filter Controls */
+  --hph-filter-grid-min-width: 200px;
+  --hph-filter-grid-gap: var(--hph-space-lg);
+  --hph-filter-label-font-size: var(--hph-text-sm);
+  --hph-filter-label-font-weight: 600;
+  --hph-filter-label-color: var(--hph-gray-900);
+  --hph-filter-label-spacing: 0.05em;
+  --hph-filter-label-transform: uppercase;
+  
+  /* View Toggle */
+  --hph-view-toggle-bg: var(--hph-gray-100);
+  --hph-view-toggle-radius: var(--hph-radius-lg);
+  --hph-view-toggle-padding: var(--hph-space-xs);
+  --hph-view-btn-size: 44px;
+  --hph-view-btn-radius: var(--hph-radius-md);
+  --hph-view-btn-color: var(--hph-gray-600);
+  --hph-view-btn-color-hover: var(--hph-primary-600);
+  --hph-view-btn-color-active: var(--hph-white);
+  --hph-view-btn-bg-hover: var(--hph-primary-50);
+  --hph-view-btn-bg-active: var(--hph-primary-500);
+  --hph-view-btn-shadow-active: var(--hph-shadow-md);
+}
+
+/* ================================================
+   DASHBOARD ANIMATIONS
+   ================================================ */
+
+:root {
+  /* Animation Timing */
+  --hph-anim-duration-fast: 0.15s;
+  --hph-anim-duration-normal: 0.3s;
+  --hph-anim-duration-slow: 0.6s;
+  --hph-anim-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --hph-anim-easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* Transform Values */
+  --hph-transform-hover: translateY(-2px);
+  --hph-transform-hover-lg: translateY(-4px);
+  --hph-transform-hover-xl: translateY(-8px);
+  --hph-transform-scale: scale(1.05);
+  --hph-transform-scale-sm: scale(1.02);
+  --hph-transform-scale-lg: scale(1.1);
+  
+  /* Animation Delays for Staggered Effects */
+  --hph-anim-delay-1: 0.1s;
+  --hph-anim-delay-2: 0.2s;
+  --hph-anim-delay-3: 0.3s;
+  --hph-anim-delay-4: 0.4s;
+  --hph-anim-delay-5: 0.5s;
+  --hph-anim-delay-6: 0.6s;
+}
+
+/* ================================================
+   DASHBOARD FLOATING ELEMENTS
+   ================================================ */
+
+:root {
+  /* Floating Action Button */
+  --hph-fab-size: 64px;
+  --hph-fab-size-sm: 48px;
+  --hph-fab-position-bottom: var(--hph-space-2xl);
+  --hph-fab-position-right: var(--hph-space-2xl);
+  --hph-fab-position-bottom-mobile: var(--hph-space-xl);
+  --hph-fab-position-right-mobile: var(--hph-space-xl);
+  --hph-fab-radius: var(--hph-radius-full);
+  --hph-fab-shadow: 0 8px 32px rgba(34, 197, 94, 0.3);
+  --hph-fab-shadow-hover: 0 12px 48px rgba(34, 197, 94, 0.4);
+  --hph-fab-z-index: 1000;
+  
+  /* Toast Notifications */
+  --hph-toast-width: 320px;
+  --hph-toast-padding: var(--hph-space-lg) var(--hph-space-xl);
+  --hph-toast-radius: var(--hph-radius-xl);
+  --hph-toast-shadow: var(--hph-shadow-2xl);
+  --hph-toast-bg: var(--hph-white);
+  --hph-toast-border: 1px solid var(--hph-border-color);
+  --hph-toast-position-top: var(--hph-space-2xl);
+  --hph-toast-position-right: var(--hph-space-2xl);
+  --hph-toast-z-index: 1100;
+  --hph-toast-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Modal Overlays */
+  --hph-modal-overlay-bg: rgba(0, 0, 0, 0.5);
+  --hph-modal-overlay-backdrop-filter: blur(4px);
+  --hph-modal-bg: var(--hph-white);
+  --hph-modal-radius: var(--hph-radius-2xl);
+  --hph-modal-shadow: var(--hph-shadow-2xl);
+  --hph-modal-max-width: 800px;
+  --hph-modal-padding: var(--hph-space-2xl);
+  --hph-modal-z-index: 1200;
+}
+
+/* ================================================
+   DASHBOARD RESPONSIVE BREAKPOINTS
+   ================================================ */
+
+:root {
+  /* Responsive Values */
+  --hph-dashboard-mobile-breakpoint: 767px;
+  --hph-dashboard-tablet-breakpoint: 991px;
+  --hph-dashboard-desktop-breakpoint: 1199px;
+  
+  /* Mobile Adjustments */
+  --hph-mobile-gutter: var(--hph-space-lg);
+  --hph-mobile-section-gap: var(--hph-space-xl);
+  --hph-mobile-card-padding: var(--hph-space-lg);
+  --hph-mobile-button-height: 48px;
+  --hph-mobile-nav-height: 64px;
+}
+
+/* ================================================
+   DASHBOARD SPECIFIC COMPONENTS
+   ================================================ */
+
+:root {
+  /* Profile Avatar */
+  --hph-avatar-size: 120px;
+  --hph-avatar-size-lg: 160px;
+  --hph-avatar-size-sm: 80px;
+  --hph-avatar-size-xs: 40px;
+  --hph-avatar-border: 4px solid rgba(255, 255, 255, 0.2);
+  --hph-avatar-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  
+  /* Status Indicators */
+  --hph-status-indicator-size: 12px;
+  --hph-status-indicator-active-color: var(--hph-success-400);
+  --hph-status-indicator-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+  --hph-status-indicator-glow: 0 0 12px var(--hph-success-400);
+  
+  /* Progress Bars */
+  --hph-progress-height: 6px;
+  --hph-progress-radius: var(--hph-radius-full);
+  --hph-progress-bg: var(--hph-gray-200);
+  --hph-progress-fill: linear-gradient(90deg, var(--hph-primary-500) 0%, var(--hph-primary-600) 100%);
+  
+  /* Loading States */
+  --hph-skeleton-bg: var(--hph-gray-200);
+  --hph-skeleton-highlight: var(--hph-gray-300);
+  --hph-spinner-size: 40px;
+  --hph-spinner-border-width: 4px;
+  --hph-spinner-color: var(--hph-primary-500);
+  --hph-spinner-bg: var(--hph-gray-200);
+}
+
+/* ================================================
+   DARK MODE VARIABLES (Future Enhancement)
+   ================================================ */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Dark mode overrides can be added here */
+    /* Currently maintaining light mode only */
+  }
+}
+
+/* ================================================
+   PRINT STYLES
+   ================================================ */
+
+@media print {
+  :root {
+    --hph-card-shadow: none;
+    --hph-btn-shadow: none;
+    --hph-hero-shadow: none;
+    --hph-dashboard-bg: white;
+  }
+}

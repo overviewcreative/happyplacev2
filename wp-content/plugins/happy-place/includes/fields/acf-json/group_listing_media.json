@@ -1,0 +1,488 @@
+{
+    "key": "group_listing_media",
+    "title": "Listing - Media & Images",
+    "fields": [
+        {
+            "key": "field_featured_image",
+            "label": "Featured Image",
+            "name": "featured_image",
+            "aria-label": "",
+            "type": "image",
+            "instructions": "Primary listing photo (will override WordPress featured image if set)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array",
+            "preview_size": "medium",
+            "library": "all",
+            "min_width": 800,
+            "min_height": 600,
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": "jpg,jpeg,png,webp"
+        },
+        {
+            "key": "field_gallery_images",
+            "label": "Gallery Images",
+            "name": "gallery_images",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "Property photo gallery - upload multiple images with tags and descriptions",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "collapsed": "",
+            "min": 0,
+            "max": 50,
+            "layout": "table",
+            "button_label": "Add Image",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_gallery_image",
+                    "label": "Image",
+                    "name": "image",
+                    "aria-label": "",
+                    "type": "image",
+                    "instructions": "",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "30",
+                        "class": "",
+                        "id": ""
+                    },
+                    "return_format": "array",
+                    "preview_size": "thumbnail",
+                    "library": "all",
+                    "min_width": 800,
+                    "min_height": 600,
+                    "min_size": "",
+                    "max_width": "",
+                    "max_height": "",
+                    "max_size": "",
+                    "mime_types": "jpg,jpeg,png,webp",
+                    "parent_repeater": "field_gallery_images"
+                },
+                {
+                    "key": "field_gallery_image_tag",
+                    "label": "Room/Area Tag",
+                    "name": "tag",
+                    "aria-label": "",
+                    "type": "select",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "25",
+                        "class": "",
+                        "id": ""
+                    },
+                    "choices": {
+                        "exterior": "Exterior",
+                        "front": "Front View",
+                        "back": "Back View",
+                        "side": "Side View",
+                        "living_room": "Living Room",
+                        "kitchen": "Kitchen",
+                        "dining_room": "Dining Room",
+                        "master_bedroom": "Master Bedroom",
+                        "bedroom": "Bedroom",
+                        "bathroom": "Bathroom",
+                        "master_bathroom": "Master Bathroom",
+                        "half_bath": "Half Bath",
+                        "office": "Office/Study",
+                        "family_room": "Family Room",
+                        "den": "Den",
+                        "garage": "Garage",
+                        "basement": "Basement",
+                        "attic": "Attic",
+                        "laundry": "Laundry Room",
+                        "closet": "Closet",
+                        "pantry": "Pantry",
+                        "patio": "Patio",
+                        "deck": "Deck",
+                        "pool": "Pool",
+                        "yard": "Yard",
+                        "other": "Other"
+                    },
+                    "default_value": "other",
+                    "allow_null": 1,
+                    "multiple": 0,
+                    "ui": 1,
+                    "return_format": "value",
+                    "ajax": 0,
+                    "placeholder": "",
+                    "create_options": 0,
+                    "save_options": 0,
+                    "parent_repeater": "field_gallery_images"
+                },
+                {
+                    "key": "field_gallery_image_description",
+                    "label": "Description",
+                    "name": "description",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "30",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "placeholder": "Optional image description",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": "",
+                    "parent_repeater": "field_gallery_images"
+                },
+                {
+                    "key": "field_gallery_image_order",
+                    "label": "Display Order",
+                    "name": "order",
+                    "aria-label": "",
+                    "type": "number",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "15",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "placeholder": 1,
+                    "prepend": "",
+                    "append": "",
+                    "min": 1,
+                    "max": 50,
+                    "step": "",
+                    "parent_repeater": "field_gallery_images"
+                }
+            ]
+        },
+        {
+            "key": "field_floor_plans",
+            "label": "Floor Plans",
+            "name": "floor_plans",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "Upload floor plan images with descriptions",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "collapsed": "",
+            "min": 0,
+            "max": 10,
+            "layout": "table",
+            "button_label": "Add Floor Plan",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_floor_plan_title",
+                    "label": "Title",
+                    "name": "title",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "30",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "placeholder": "Main Floor",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": "",
+                    "parent_repeater": "field_floor_plans"
+                },
+                {
+                    "key": "field_floor_plan_image",
+                    "label": "Floor Plan Image",
+                    "name": "image",
+                    "aria-label": "",
+                    "type": "image",
+                    "instructions": "",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "70",
+                        "class": "",
+                        "id": ""
+                    },
+                    "return_format": "array",
+                    "preview_size": "thumbnail",
+                    "library": "all",
+                    "min_width": "",
+                    "min_height": "",
+                    "min_size": "",
+                    "max_width": "",
+                    "max_height": "",
+                    "max_size": "",
+                    "mime_types": "jpg,jpeg,png,pdf",
+                    "parent_repeater": "field_floor_plans"
+                }
+            ]
+        },
+        {
+            "key": "field_virtual_tour_tab",
+            "label": "Virtual Tours & Videos",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_virtual_tour_url",
+            "label": "Virtual Tour URL",
+            "name": "virtual_tour_url",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "Link to 3D virtual tour (Matterport, etc.)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "https:\/\/my.matterport.com\/show\/?m=..."
+        },
+        {
+            "key": "field_virtual_tour_embed",
+            "label": "Virtual Tour Embed Code",
+            "name": "virtual_tour_embed",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Embed code for virtual tour iframe",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "<iframe src=\"...\" width=\"853\" height=\"480\"><\/iframe>",
+            "maxlength": "",
+            "rows": 4,
+            "new_lines": ""
+        },
+        {
+            "key": "field_video_tour_url",
+            "label": "Video Tour URL",
+            "name": "video_tour_url",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "YouTube, Vimeo, or other video tour URL",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "https:\/\/www.youtube.com\/watch?v=..."
+        },
+        {
+            "key": "field_video_embed",
+            "label": "Video Embed Code",
+            "name": "video_embed",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Custom video embed code",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "<iframe src=\"...\" width=\"560\" height=\"315\"><\/iframe>",
+            "maxlength": "",
+            "rows": 4,
+            "new_lines": ""
+        },
+        {
+            "key": "field_additional_media",
+            "label": "Additional Media",
+            "name": "additional_media",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "Additional photos, videos, or documents",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "collapsed": "",
+            "min": 0,
+            "max": 20,
+            "layout": "table",
+            "button_label": "Add Media",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_media_type",
+                    "label": "Media Type",
+                    "name": "type",
+                    "aria-label": "",
+                    "type": "select",
+                    "instructions": "",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "20",
+                        "class": "",
+                        "id": ""
+                    },
+                    "choices": {
+                        "image": "Image",
+                        "video": "Video",
+                        "document": "Document",
+                        "link": "External Link"
+                    },
+                    "default_value": "image",
+                    "allow_null": 0,
+                    "multiple": 0,
+                    "ui": 1,
+                    "return_format": "value",
+                    "ajax": 0,
+                    "placeholder": "",
+                    "create_options": 0,
+                    "save_options": 0,
+                    "parent_repeater": "field_additional_media"
+                },
+                {
+                    "key": "field_media_title",
+                    "label": "Title",
+                    "name": "title",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "30",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "placeholder": "Media title",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": "",
+                    "parent_repeater": "field_additional_media"
+                },
+                {
+                    "key": "field_media_file",
+                    "label": "File",
+                    "name": "file",
+                    "aria-label": "",
+                    "type": "file",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_media_type",
+                                "operator": "!=",
+                                "value": "link"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "25",
+                        "class": "",
+                        "id": ""
+                    },
+                    "return_format": "array",
+                    "library": "all",
+                    "min_size": "",
+                    "max_size": 50,
+                    "mime_types": "jpg,jpeg,png,gif,pdf,mp4,mov,wmv,avi,doc,docx,xls,xlsx",
+                    "parent_repeater": "field_additional_media"
+                },
+                {
+                    "key": "field_media_url",
+                    "label": "URL",
+                    "name": "url",
+                    "aria-label": "",
+                    "type": "url",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_media_type",
+                                "operator": "==",
+                                "value": "link"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "25",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "placeholder": "https:\/\/...",
+                    "parent_repeater": "field_additional_media"
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "listing"
+            }
+        ]
+    ],
+    "menu_order": 2,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Property images, virtual tours, and media files",
+    "show_in_rest": 1,
+    "modified": 1755274807
+}

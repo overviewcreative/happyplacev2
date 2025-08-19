@@ -1,0 +1,212 @@
+/* ================================================
+   BOOTSTRAP CSS VARIABLE OVERRIDES
+   Override Bootstrap's default CSS variables with HPH variables
+   This ensures our theme variables take precedence
+   ================================================ */
+
+:root {
+  /* ================================================
+     BOOTSTRAP COLOR OVERRIDES
+     Map Bootstrap variables to HPH variables
+     ================================================ */
+  
+  /* Primary Color Override */
+  --bs-primary: var(--hph-primary);
+  --bs-primary-rgb: 81, 186, 224; /* RGB values for --hph-primary */
+  
+  /* Secondary Color Override */
+  --bs-secondary: var(--hph-gray-600);
+  --bs-secondary-rgb: 87, 83, 78; /* RGB values for --hph-gray-600 */
+  
+  /* Success Color Override */
+  --bs-success: var(--hph-success);
+  --bs-success-rgb: 5, 150, 105; /* RGB values for --hph-success */
+  
+  /* Danger Color Override */
+  --bs-danger: var(--hph-danger);
+  --bs-danger-rgb: 220, 38, 38; /* RGB values for --hph-danger */
+  
+  /* Warning Color Override */
+  --bs-warning: var(--hph-warning);
+  --bs-warning-rgb: 217, 119, 6; /* RGB values for --hph-warning */
+  
+  /* Info Color Override */
+  --bs-info: var(--hph-info);
+  --bs-info-rgb: 56, 189, 248; /* RGB values for --hph-info */
+  
+  /* Light Color Override */
+  --bs-light: var(--hph-gray-100);
+  --bs-light-rgb: 245, 245, 244; /* RGB values for --hph-gray-100 */
+  
+  /* Dark Color Override */
+  --bs-dark: var(--hph-gray-900);
+  --bs-dark-rgb: 28, 25, 23; /* RGB values for --hph-gray-900 */
+  
+  /* ================================================
+     BOOTSTRAP TYPOGRAPHY OVERRIDES
+     Map Bootstrap font variables to HPH variables
+     ================================================ */
+  
+  /* Font Family Overrides */
+  --bs-font-sans-serif: var(--hph-font-primary);
+  --bs-font-family-base: var(--hph-font-primary);
+  --bs-font-family-code: var(--hph-font-mono);
+  
+  /* Font Size Overrides */
+  --bs-body-font-size: var(--hph-text-base);
+  --bs-body-font-weight: 400;
+  --bs-body-line-height: var(--hph-line-height-base);
+  --bs-body-color: var(--hph-gray-900);
+  --bs-body-bg: var(--hph-white);
+  
+  /* Heading Font Overrides */
+  --bs-heading-color: var(--hph-gray-900);
+  
+  /* ================================================
+     BOOTSTRAP SPACING OVERRIDES
+     Use HPH spacing where appropriate
+     ================================================ */
+  
+  /* Container overrides */
+  --bs-gutter-x: var(--hph-space-lg);
+  --bs-gutter-y: var(--hph-space-lg);
+  
+  /* ================================================
+     BOOTSTRAP BORDER OVERRIDES
+     Use HPH border variables
+     ================================================ */
+  
+  --bs-border-width: var(--hph-border-width);
+  --bs-border-color: var(--hph-border-color);
+  --bs-border-radius: var(--hph-radius-md);
+  --bs-border-radius-sm: var(--hph-radius-sm);
+  --bs-border-radius-lg: var(--hph-radius-lg);
+  --bs-border-radius-xl: var(--hph-radius-xl);
+  --bs-border-radius-2xl: var(--hph-radius-2xl);
+  
+  /* ================================================
+     BOOTSTRAP BOX SHADOW OVERRIDES
+     Use HPH shadow system
+     ================================================ */
+  
+  --bs-box-shadow: var(--hph-shadow-md);
+  --bs-box-shadow-sm: var(--hph-shadow-sm);
+  --bs-box-shadow-lg: var(--hph-shadow-lg);
+  --bs-box-shadow-inset: var(--hph-shadow-inner);
+  
+  /* ================================================
+     BOOTSTRAP FOCUS OVERRIDES
+     Use HPH focus colors
+     ================================================ */
+  
+  --bs-focus-ring-color: rgba(81, 186, 224, 0.25); /* HPH primary with transparency */
+  --bs-focus-ring-width: 0.25rem;
+  --bs-focus-ring-blur: 0;
+  
+  /* ================================================
+     BOOTSTRAP TRANSITION OVERRIDES
+     Use HPH transition system
+     ================================================ */
+  
+  --bs-transition: var(--hph-transition);
+}
+
+/* ================================================
+   COMPONENT SPECIFIC OVERRIDES
+   Override specific Bootstrap components to use HPH styling
+   ================================================ */
+
+/* Button Component Overrides */
+.btn {
+  font-family: var(--hph-font-primary);
+  font-weight: var(--hph-btn-font-weight);
+  border-radius: var(--hph-btn-radius);
+  transition: var(--hph-transition);
+}
+
+.btn-primary {
+  background-color: var(--hph-primary);
+  border-color: var(--hph-primary);
+  color: var(--hph-white);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--hph-primary-dark);
+  border-color: var(--hph-primary-dark);
+  color: var(--hph-white);
+}
+
+/* Card Component Overrides */
+.card {
+  border-radius: var(--hph-card-radius);
+  box-shadow: var(--hph-card-shadow);
+  border: var(--hph-card-border);
+}
+
+.card-header {
+  background-color: var(--hph-gray-50);
+  border-bottom: 1px solid var(--hph-border-color-light);
+}
+
+/* Form Component Overrides */
+.form-control {
+  border-radius: var(--hph-input-radius);
+  border: var(--hph-input-border);
+  font-family: var(--hph-font-primary);
+}
+
+.form-control:focus {
+  border-color: var(--hph-primary);
+  box-shadow: var(--hph-input-focus-ring);
+}
+
+/* Badge Component Overrides */
+.badge {
+  font-family: var(--hph-font-primary);
+  font-weight: 500;
+}
+
+/* Alert Component Overrides */
+.alert {
+  border-radius: var(--hph-radius-lg);
+  font-family: var(--hph-font-primary);
+}
+
+/* ================================================
+   UTILITY CLASS OVERRIDES
+   Ensure Bootstrap utilities work with HPH variables
+   ================================================ */
+
+/* Text Color Utilities - ensure they use HPH colors */
+.text-primary { color: var(--hph-primary) !important; }
+.text-secondary { color: var(--hph-gray-600) !important; }
+.text-success { color: var(--hph-success) !important; }
+.text-danger { color: var(--hph-danger) !important; }
+.text-warning { color: var(--hph-warning) !important; }
+.text-info { color: var(--hph-info) !important; }
+.text-light { color: var(--hph-gray-100) !important; }
+.text-dark { color: var(--hph-gray-900) !important; }
+.text-muted { color: var(--hph-gray-600) !important; }
+
+/* Background Color Utilities - ensure they use HPH colors */
+.bg-primary { background-color: var(--hph-primary) !important; }
+.bg-secondary { background-color: var(--hph-gray-600) !important; }
+.bg-success { background-color: var(--hph-success) !important; }
+.bg-danger { background-color: var(--hph-danger) !important; }
+.bg-warning { background-color: var(--hph-warning) !important; }
+.bg-info { background-color: var(--hph-info) !important; }
+.bg-light { background-color: var(--hph-gray-100) !important; }
+.bg-dark { background-color: var(--hph-gray-900) !important; }
+
+/* Border Color Utilities - ensure they use HPH colors */
+.border-primary { border-color: var(--hph-primary) !important; }
+.border-secondary { border-color: var(--hph-gray-600) !important; }
+.border-success { border-color: var(--hph-success) !important; }
+.border-danger { border-color: var(--hph-danger) !important; }
+.border-warning { border-color: var(--hph-warning) !important; }
+.border-info { border-color: var(--hph-info) !important; }
+.border-light { border-color: var(--hph-gray-100) !important; }
+.border-dark { border-color: var(--hph-gray-900) !important; }
+
+/* File Location: /wp-content/themes/happy-place/assets/css/framework/bootstrap/bootstrap-overrides.css */

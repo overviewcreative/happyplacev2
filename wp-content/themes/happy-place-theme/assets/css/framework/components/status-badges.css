@@ -1,0 +1,74 @@
+/* ================================================
+   STATUS BADGES
+   With Contrast-Safe Colors
+   ================================================ */
+
+.hph-status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    line-height: 1;
+}
+
+/* Available Status */
+.hph-status-badge--available {
+    background-color: var(--hph-tertiary);
+    color: var(--hph-white);
+}
+
+/* Pending Status */
+.hph-status-badge--pending {
+    background-color: var(--hph-secondary-dark);
+    color: var(--hph-white);
+}
+
+/* Sold Status */
+.hph-status-badge--sold {
+    background-color: var(--hph-danger-dark);
+    color: var(--hph-white);
+}
+
+/* Coming Soon Status */
+.hph-status-badge--coming-soon {
+    background-color: var(--hph-primary-700);
+    color: var(--hph-white);
+}
+
+/* Off Market Status */
+.hph-status-badge--off-market {
+    background-color: var(--hph-gray-700);
+    color: var(--hph-white);
+}
+
+/* New Status */
+.hph-status-badge--new {
+    background-color: var(--hph-primary-600);
+    color: var(--hph-white);
+}
+
+/* Reduced Status */
+.hph-status-badge--reduced {
+    background-color: var(--hph-tertiary-dark);
+    color: var(--hph-white);
+}
+
+/* High Contrast Mode */
+@media screen and (prefers-contrast: high) {
+    .hph-status-badge {
+        border: 2px solid currentColor;
+    }
+    
+    .hph-status-badge--available,
+    .hph-status-badge--pending,
+    .hph-status-badge--sold,
+    .hph-status-badge--coming-soon,
+    .hph-status-badge--off-market,
+    .hph-status-badge--new,
+    .hph-status-badge--reduced {
+        background-color: #000000;
+        color: #ffffff;
+    }
+}

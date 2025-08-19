@@ -1,0 +1,1162 @@
+/* ================================================
+   OPEN HOUSE COMPONENTS
+   Open House Events, Calendars, and Scheduling
+   ================================================ */
+
+/* ================================================
+   OPEN HOUSE CARD
+   ================================================ */
+.open-house-card {
+  position: relative;
+  background: var(--hph-white);
+  border: 1px solid var(--hph-border-color);
+  border-radius: var(--hph-radius-lg);
+  overflow: hidden;
+  transition: var(--hph-transition);
+  box-shadow: var(--hph-shadow-sm);
+}
+
+.open-house-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--hph-shadow-lg);
+}
+
+/* Card Header with Image */
+.open-house-card-image {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.open-house-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--hph-transition);
+}
+
+.open-house-card:hover .open-house-card-image img {
+  transform: scale(1.05);
+}
+
+/* Date Badge Overlay */
+.open-house-date-badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: var(--hph-white);
+  border-radius: var(--hph-radius-lg);
+  padding: 0.75rem;
+  text-align: center;
+  min-width: 60px;
+  box-shadow: var(--hph-shadow-lg);
+}
+
+.open-house-date-month {
+  font-size: var(--hph-text-xs);
+  font-weight: 600;
+  color: var(--hph-danger);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.open-house-date-day {
+  font-size: var(--hph-text-2xl);
+  font-weight: 700;
+  color: var(--hph-gray-900);
+  line-height: 1;
+  margin: 0.25rem 0;
+}
+
+.open-house-date-weekday {
+  font-size: var(--hph-text-xs);
+  color: var(--hph-gray-600);
+  text-transform: uppercase;
+}
+
+/* Status Badge */
+.open-house-status {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.375rem 0.75rem;
+  background: var(--hph-success);
+  color: var(--hph-white);
+  border-radius: var(--hph-radius-full);
+  font-size: var(--hph-text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.open-house-status-live {
+  background: var(--hph-danger);
+  animation: pulse-live 2s infinite;
+}
+
+.open-house-status-upcoming {
+  background: var(--hph-primary);
+}
+
+.open-house-status-cancelled {
+  background: var(--hph-gray-600);
+  text-decoration: line-through;
+}
+
+/* Card Body */
+.open-house-card-body {
+  padding: 1.5rem;
+}
+
+.open-house-time {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--hph-text-lg);
+  font-weight: 600;
+  color: var(--hph-primary);
+  margin-bottom: 0.75rem;
+}
+
+.open-house-time-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.open-house-address {
+  font-size: var(--hph-text-base);
+  font-weight: 600;
+  color: var(--hph-gray-900);
+  margin-bottom: 0.5rem;
+}
+
+.open-house-details {
+  display: flex;
+  gap: 1rem;
+  font-size: var(--hph-text-sm);
+  color: var(--hph-gray-600);
+  margin-bottom: 1rem;
+}
+
+.open-house-detail {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.open-house-agent {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--hph-border-color-light);
+}
+
+.open-house-agent-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--hph-radius-full);
+  object-fit: cover;
+}
+
+.open-house-agent-info {
+  flex: 1;
+}
+
+.open-house-agent-name {
+  font-size: var(--hph-text-sm);
+  font-weight: 600;
+  color: var(--hph-gray-900);
+}
+
+.open-house-agent-title {
+  font-size: var(--hph-text-xs);
+  color: var(--hph-gray-600);
+}
+
+/* Card Actions */
+.open-house-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* ================================================
+   OPEN HOUSE CALENDAR
+   ================================================ */
+.open-house-calendar {
+  background: var(--hph-white);
+  border: 1px solid var(--hph-border-color);
+  border-radius: var(--hph-radius-lg);
+  overflow: hidden;
+}
+
+.open-house-calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: var(--hph-gray-50);
+  border-bottom: 1px solid var(--hph-border-color);
+}
+
+.open-house-calendar-title {
+  font-size: var(--hph-text-lg);
+  font-weight: 600;
+  color: var(--hph-gray-900);
+}
+
+.open-house-calendar-nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.open-house-calendar-nav-btn {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--hph-white);
+  border: 1px solid var(--hph-border-color);
+  border-radius: var(--hph-radius-md);
+  color: var(--hph-gray-600);
+  cursor: pointer;
+  transition: var(--hph-transition-fast);
+}
+
+.open-house-calendar-nav-btn:hover {
+  background: var(--hph-primary);
+  border-color: var(--hph-primary);
+  color: var(--hph-white);
+}
+
+/* Calendar Grid */
+.open-house-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.open-house-calendar-weekdays {
+  display: contents;
+}
+
+.open-house-calendar-weekday {
+  padding: 0.75rem;
+  background: var(--hph-gray-50);
+  font-size: var(--hph-text-xs);
+  font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--hph-gray-600);
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--hph-border-color);
+}
+
+.open-house-calendar-days {
+  display: contents;
+}
+
+.open-house-calendar-day {
+  min-height: 100px;
+  padding: 0.5rem;
+  border-right: 1px solid var(--hph-border-color-light);
+  border-bottom: 1px solid var(--hph-border-color-light);
+  background: var(--hph-white);
+  transition: var(--hph-transition-fast);
+  cursor: pointer;
+}
+
+.open-house-calendar-day:hover {
+  background: var(--hph-gray-50);
+}
+
+.open-house-calendar-day:nth-child(7n) {
+  border-right: none;
+}
+
+.open-house-calendar-day-number {
+  font-size: var(--hph-text-sm);
+  font-weight: 500;
+  color: var(--hph-gray-700);
+  margin-bottom: 0.25rem;
+}
+
+.open-house-calendar-day-other {
+  background: var(--hph-gray-50);
+  color: var(--hph-gray-400);
+}
+
+.open-house-calendar-day-today {
+  background: var(--hph-primary-50);
+}
+
+.open-house-calendar-day-today .open-house-calendar-day-number {
+  color: var(--hph-primary);
+  font-weight: 700;
+}
+
+.open-house-calendar-day-selected {
+  background: var(--hph-primary);
+  color: var(--hph-white);
+}
+
+.open-house-calendar-day-selected .open-house-calendar-day-number {
+  color: var(--hph-white);
+}
+
+/* Calendar Events */
+.open-house-calendar-events {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.open-house-calendar-event {
+  padding: 0.125rem 0.25rem;
+  background: var(--hph-primary);
+  color: var(--hph-white);
+  border-radius: var(--hph-radius-sm);
+  font-size: 0.625rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.open-house-calendar-event-warning {
+  background: var(--hph-warning);
+}
+
+.open-house-calendar-event-success {
+  background: var(--hph-success);
+}
+
+/* ================================================
+   OPEN HOUSE LIST VIEW
+   ================================================ */
+.open-house-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.open-house-list-item {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: var(--hph-white);
+  border: 1px solid var(--hph-border-color);
+  border-radius: var(--hph-radius-lg);
+  transition: var(--hph-transition-fast);
+}
+
+.open-house-list-item:hover {
+  box-shadow: var(--hph-shadow-md);
+  transform: translateX(2px);
+}
+
+.open-house-list-date {
+  flex-shrink: 0;
+  width: 80px;
+  text-align: center;
+  padding: 1rem;
+  background: var(--hph-gray-50);
+  border-radius: var(--hph-radius-lg);
+}
+
+.open-house-list-date-day {
+  font-size: var(--hph-text-2xl);
+  font-weight: 700;
+  color: var(--hph-primary);
+  line-height: 1;
+}
+
+.open-house-list-date-month {
+  font-size: var(--hph-text-sm);
+  color: var(--hph-gray-600);
+  text-transform: uppercase;
+}
+
+.open-house-list-image {
+  flex-shrink: 0;
+  width: 150px;
+  height: 100px;
+  border-radius: var(--hph-radius-md);
+  overflow: hidden;
+}
+
+.open-house-list-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.open-house-list-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.open-house-list-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  background: var(--hph-primary-100);
+  color: var(--hph-primary-700);
+  border-radius: var(--hph-radius-full);
+  font-size: var(--hph-text-sm);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.open-house-list-address {
+  font-size: var(--hph-text-lg);
+  font-weight: 600;
+  color: var(--hph-gray-900);
+  margin-bottom: 0.25rem;
+}
+
+.open-house-list-details {
+  font-size: var(--hph-text-sm);
+  color: var(--hph-gray-600);
+  margin-bottom: 0.75rem;
+}
+
+.open-house-list-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* ================================================
+   OPEN HOUSE SCHEDULE WIDGET
+   ================================================ */
+.open-house-schedule {
+  background: var(--hph-white);
+  border: 1px solid var(--hph-border-color);
+  border-radius: var(--hph-radius-lg);
+  padding: 1.5rem;
+}
+
+.open-house-schedule-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--hph-border-color-light);
+}
+
+.open-house-schedule-title {
+  font-size: var(--hph-text-lg);
+  font-weight: 600;
+  color: var(--hph-gray-900);
+}
+
+.open-house-schedule-filter {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.open-house-schedule-filter-btn {
+  padding: 0.375rem 0.75rem;
+  background: transparent;
+  border: 1px solid var(--hph-border-color);
+  border-radius: var(--hph-radius-md);
+  color: var(--hph-gray-600);
+  font-size: var(--hph-text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--hph-transition-fast);
+}
+
+.open-house-schedule-filter-btn:hover {
+  background: var(--hph-gray-50);
+  border-color: var(--hph-primary);
+  color: var(--hph-primary);
+}
+
+.open-house-schedule-filter-btn.is-active {
+  background: var(--hph-primary);
+  border-color: var(--hph-primary);
+  color: var(--hph-white);
+}
+
+/* Schedule Timeline */
+.open-house-timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.open-house-timeline::before {
+  content: '';
+  position: absolute;
+  left: 0.5rem;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 2px;
+  background: var(--hph-border-color);
+}
+
+.open-house-timeline-item {
+  position: relative;
+  padding-bottom: 1.5rem;
+}
+
+.open-house-timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.open-house-timeline-dot {
+  position: absolute;
+  left: -1.5rem;
+  top: 0.25rem;
+  width: 1rem;
+  height: 1rem;
+  background: var(--hph-white);
+  border: 2px solid var(--hph-gray-400);
+  border-radius: var(--hph-radius-full);
+}
+
+.open-house-timeline-item.is-live .open-house-timeline-dot {
+  background: var(--hph-danger);
+  border-color: var(--hph-danger);
+  animation: pulse-dot 2s infinite;
+}
+
+.open-house-timeline-item.is-upcoming .open-house-timeline-dot {
+  background: var(--hph-primary);
+  border-color: var(--hph-primary);
+}
+
+.open-house-timeline-time {
+  font-size: var(--hph-text-sm);
+  font-weight: 600;
+  color: var(--hph-primary);
+  margin-bottom: 0.25rem;
+}
+
+.open-house-timeline-address {
+  font-size: var(--hph-text-base);
+  font-weight: 500;
+  color: var(--hph-gray-900);
+  margin-bottom: 0.25rem;
+}
+
+.open-house-timeline-host {
+  font-size: var(--hph-text-sm);
+  color: var(--hph-gray-600);
+}
+
+/* ================================================
+   OPEN HOUSE BANNER
+   ================================================ */
+.open-house-banner {
+  position: relative;
+  padding: 2rem;
+  background: linear-gradient(135deg, var(--hph-primary) 0%, var(--hph-primary-dark) 100%);
+  color: var(--hph-white);
+  border-radius: var(--hph-radius-lg);
+  overflow: hidden;
+}
+
+.open-house-banner::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 50%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: rotate(45deg);
+}
+
+.open-house-banner-content {
+  position: relative;
+  z-index: 1;
+}
+
+.open-house-banner-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.875rem;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: var(--hph-radius-full);
+  font-size: var(--hph-text-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+.open-house-banner-title {
+  font-size: var(--hph-text-2xl);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.open-house-banner-subtitle {
+  font-size: var(--hph-text-lg);
+  opacity: 0.9;
+  margin-bottom: 1.5rem;
+}
+
+.open-house-banner-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  font-size: var(--hph-text-base);
+}
+
+.open-house-banner-detail {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.open-house-banner-detail-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  opacity: 0.8;
+}
+
+/* ================================================
+   RSVP FORM
+   ================================================ */
+.open-house-rsvp {
+  background: var(--hph-white);
+  border: 1px solid var(--hph-border-color);
+  border-radius: var(--hph-radius-lg);
+  padding: 1.5rem;
+}
+
+.open-house-rsvp-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.open-house-rsvp-title {
+  font-size: var(--hph-text-xl);
+  font-weight: 600;
+  color: var(--hph-gray-900);
+  margin-bottom: 0.5rem;
+}
+
+.open-house-rsvp-subtitle {
+  font-size: var(--hph-text-base);
+  color: var(--hph-gray-600);
+}
+
+.open-house-rsvp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.open-house-rsvp-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.open-house-rsvp-label {
+  font-size: var(--hph-text-sm);
+  font-weight: 500;
+  color: var(--hph-gray-700);
+}
+
+.open-house-rsvp-input {
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--hph-border-color);
+  border-radius: var(--hph-radius-md);
+  font-size: var(--hph-text-base);
+  transition: var(--hph-transition-fast);
+}
+
+.open-house-rsvp-input:focus {
+  outline: none;
+  border-color: var(--hph-primary);
+  box-shadow: 0 0 0 3px rgba(81, 186, 224, 0.1);
+}
+
+.open-house-rsvp-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.open-house-rsvp-checkbox input[type="checkbox"] {
+  margin-top: 0.125rem;
+}
+
+.open-house-rsvp-checkbox-label {
+  font-size: var(--hph-text-sm);
+  color: var(--hph-gray-600);
+  line-height: 1.5;
+}
+
+.open-house-rsvp-submit {
+  margin-top: 0.5rem;
+}
+
+/* RSVP Success Message */
+.open-house-rsvp-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.open-house-rsvp-success-icon {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--hph-success-light);
+  color: var(--hph-white);
+  border-radius: var(--hph-radius-full);
+  margin-bottom: 1rem;
+}
+
+.open-house-rsvp-success-title {
+  font-size: var(--hph-text-lg);
+  font-weight: 600;
+  color: var(--hph-gray-900);
+  margin-bottom: 0.5rem;
+}
+
+.open-house-rsvp-success-text {
+  font-size: var(--hph-text-base);
+  color: var(--hph-gray-600);
+}
+
+/* ================================================
+   OPEN HOUSE MAP VIEW
+   ================================================ */
+.open-house-map-container {
+  position: relative;
+  height: 500px;
+  background: var(--hph-gray-100);
+  border-radius: var(--hph-radius-lg);
+  overflow: hidden;
+}
+
+.open-house-map {
+  width: 100%;
+  height: 100%;
+}
+
+/* Map Markers */
+.open-house-marker {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  cursor: pointer;
+  z-index: 1;
+  transition: var(--hph-transition-fast);
+}
+
+.open-house-marker:hover {
+  z-index: 10;
+  transform: translate(-50%, -100%) scale(1.1);
+}
+
+.open-house-marker-pin {
+  width: 3rem;
+  height: 3rem;
+  background: var(--hph-primary);
+  border: 3px solid var(--hph-white);
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: var(--hph-shadow-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.open-house-marker-content {
+  transform: rotate(45deg);
+  color: var(--hph-white);
+  font-size: var(--hph-text-sm);
+  font-weight: 700;
+}
+
+.open-house-marker-live {
+  animation: pulse-marker 2s infinite;
+}
+
+@keyframes pulse-marker {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 15px rgba(239, 68, 68, 0);
+  }
+}
+
+.open-house-marker-live .open-house-marker-pin {
+  background: var(--hph-danger);
+}
+
+/* Map Info Card */
+.open-house-map-info {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: var(--hph-white);
+  border-radius: var(--hph-radius-lg);
+  box-shadow: var(--hph-shadow-2xl);
+  min-width: 250px;
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--hph-transition-fast);
+  z-index: 20;
+}
+
+.open-house-marker:hover .open-house-map-info {
+  opacity: 1;
+  visibility: visible;
+}
+
+.open-house-map-info::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 0.75rem solid transparent;
+  border-right: 0.75rem solid transparent;
+  border-top: 0.75rem solid var(--hph-white);
+}
+
+.open-house-map-info-time {
+  font-size: var(--hph-text-sm);
+  font-weight: 600;
+  color: var(--hph-primary);
+  margin-bottom: 0.25rem;
+}
+
+.open-house-map-info-address {
+  font-size: var(--hph-text-base);
+  font-weight: 500;
+  color: var(--hph-gray-900);
+  margin-bottom: 0.5rem;
+}
+
+.open-house-map-info-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: var(--hph-text-sm);
+  color: var(--hph-primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.open-house-map-info-action:hover {
+  text-decoration: underline;
+}
+
+/* ================================================
+   COUNTDOWN TIMER
+   ================================================ */
+.open-house-countdown {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: var(--hph-gray-50);
+  border-radius: var(--hph-radius-lg);
+}
+
+.open-house-countdown-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  background: var(--hph-white);
+  border: 1px solid var(--hph-border-color);
+  border-radius: var(--hph-radius-md);
+  min-width: 80px;
+}
+
+.open-house-countdown-value {
+  font-size: var(--hph-text-3xl);
+  font-weight: 700;
+  color: var(--hph-primary);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.open-house-countdown-label {
+  font-size: var(--hph-text-xs);
+  color: var(--hph-gray-600);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Live Countdown */
+.open-house-countdown-live {
+  background: linear-gradient(135deg, var(--hph-danger) 0%, var(--hph-danger-dark) 100%);
+  color: var(--hph-white);
+  position: relative;
+  overflow: hidden;
+}
+
+.open-house-countdown-live::before {
+  content: 'LIVE NOW';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: var(--hph-text-4xl);
+  font-weight: 900;
+  opacity: 0.1;
+  white-space: nowrap;
+}
+
+.open-house-countdown-live .open-house-countdown-item {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.open-house-countdown-live .open-house-countdown-value {
+  color: var(--hph-white);
+}
+
+.open-house-countdown-live .open-house-countdown-label {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* ================================================
+   ATTENDEE LIST
+   ================================================ */
+.open-house-attendees {
+  background: var(--hph-white);
+  border: 1px solid var(--hph-border-color);
+  border-radius: var(--hph-radius-lg);
+  padding: 1.5rem;
+}
+
+.open-house-attendees-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.open-house-attendees-title {
+  font-size: var(--hph-text-lg);
+  font-weight: 600;
+  color: var(--hph-gray-900);
+}
+
+.open-house-attendees-count {
+  padding: 0.25rem 0.625rem;
+  background: var(--hph-primary-100);
+  color: var(--hph-primary-700);
+  border-radius: var(--hph-radius-full);
+  font-size: var(--hph-text-sm);
+  font-weight: 600;
+}
+
+.open-house-attendees-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.open-house-attendee {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: var(--hph-gray-50);
+  border-radius: var(--hph-radius-md);
+}
+
+.open-house-attendee-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--hph-radius-full);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.open-house-attendee-info {
+  flex: 1;
+}
+
+.open-house-attendee-name {
+  font-size: var(--hph-text-sm);
+  font-weight: 600;
+  color: var(--hph-gray-900);
+}
+
+.open-house-attendee-detail {
+  font-size: var(--hph-text-xs);
+  color: var(--hph-gray-600);
+}
+
+.open-house-attendee-status {
+  padding: 0.125rem 0.5rem;
+  background: var(--hph-success-light);
+  color: var(--hph-white);
+  border-radius: var(--hph-radius-full);
+  font-size: var(--hph-text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.open-house-attendee-status-maybe {
+  background: var(--hph-warning-light);
+}
+
+.open-house-attendee-status-declined {
+  background: var(--hph-gray-500);
+}
+
+/* ================================================
+   OPEN HOUSE STATS
+   ================================================ */
+.open-house-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.open-house-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  background: var(--hph-white);
+  border: 1px solid var(--hph-border-color);
+  border-radius: var(--hph-radius-lg);
+  text-align: center;
+}
+
+.open-house-stat-icon {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--hph-primary-100);
+  color: var(--hph-primary);
+  border-radius: var(--hph-radius-full);
+  margin-bottom: 0.75rem;
+}
+
+.open-house-stat-value {
+  font-size: var(--hph-text-2xl);
+  font-weight: 700;
+  color: var(--hph-gray-900);
+  margin-bottom: 0.25rem;
+}
+
+.open-house-stat-label {
+  font-size: var(--hph-text-sm);
+  color: var(--hph-gray-600);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ================================================
+   MOBILE OPTIMIZATIONS
+   ================================================ */
+@media (max-width: 768px) {
+  .open-house-card-body {
+    padding: 1rem;
+  }
+  
+  .open-house-calendar-day {
+    min-height: 70px;
+    padding: 0.25rem;
+    font-size: var(--hph-text-xs);
+  }
+  
+  .open-house-list-item {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .open-house-list-image {
+    width: 100%;
+    height: 150px;
+  }
+  
+  .open-house-banner {
+    padding: 1.5rem;
+  }
+  
+  .open-house-banner-title {
+    font-size: var(--hph-text-xl);
+  }
+  
+  .open-house-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .open-house-calendar-weekday {
+    font-size: 0.625rem;
+    padding: 0.5rem 0.25rem;
+  }
+  
+  .open-house-calendar-event {
+    display: none;
+  }
+  
+  .open-house-calendar-day.has-event {
+    position: relative;
+  }
+  
+  .open-house-calendar-day.has-event::after {
+    content: '';
+    position: absolute;
+    bottom: 0.25rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0.375rem;
+    height: 0.375rem;
+    background: var(--hph-primary);
+    border-radius: var(--hph-radius-full);
+  }
+  
+  .open-house-countdown {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .open-house-countdown-item {
+    min-width: 60px;
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .open-house-countdown-value {
+    font-size: var(--hph-text-2xl);
+  }
+  
+  .open-house-map-container {
+    height: 300px;
+  }
+  
+  .open-house-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* File Location: /wp-content/themes/happy-place/assets/css/framework/real-estate/open-house.css */

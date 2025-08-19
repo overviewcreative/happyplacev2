@@ -1,0 +1,325 @@
+/**
+ * Agent Automation CSS
+ * Styles for agent admin interface enhancements
+ */
+
+/* =============================================================================
+   Agent Automation Preview Boxes
+   ========================================================================== */
+
+.agent-automation-previews {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 20px;
+    margin: 20px 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.preview-section {
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    padding: 15px;
+    text-align: center;
+}
+
+.preview-section h4 {
+    margin: 0 0 10px 0;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #666;
+    letter-spacing: 0.5px;
+}
+
+.preview-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: #2271b1;
+    background: #f6f7f7;
+    padding: 8px 12px;
+    border-radius: 3px;
+    border: 1px solid #c3c4c7;
+    min-height: 20px;
+    word-break: break-word;
+}
+
+.preview-value:empty::after {
+    content: '--';
+    color: #999;
+}
+
+/* =============================================================================
+   Enhanced Field Styling
+   ========================================================================== */
+
+.agent-specialties-field .acf-checkbox-list,
+.agent-languages-field .acf-checkbox-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 5px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+    background: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.agent-specialties-field .acf-checkbox-list label,
+.agent-languages-field .acf-checkbox-list label {
+    display: flex;
+    align-items: center;
+    padding: 5px 8px;
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+    font-size: 13px;
+}
+
+.agent-specialties-field .acf-checkbox-list label:hover,
+.agent-languages-field .acf-checkbox-list label:hover {
+    background: #e8f4fd;
+}
+
+.agent-specialties-field .acf-checkbox-list input[type="checkbox"],
+.agent-languages-field .acf-checkbox-list input[type="checkbox"] {
+    margin-right: 8px;
+    margin-top: 0;
+}
+
+/* =============================================================================
+   Performance Metrics Styling
+   ========================================================================== */
+
+.acf-field[data-name*="performance"] .acf-input {
+    position: relative;
+}
+
+.acf-field[data-name*="sales_volume"] input,
+.acf-field[data-name*="sale_price"] input {
+    padding-left: 25px;
+}
+
+.acf-field[data-name*="sales_volume"] .acf-input::before,
+.acf-field[data-name*="sale_price"] .acf-input::before {
+    content: '$';
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    font-weight: 500;
+    z-index: 2;
+}
+
+.acf-field[data-name*="dom"] input,
+.acf-field[data-name*="ratio"] input {
+    text-align: center;
+}
+
+/* =============================================================================
+   Social Media URL Validation
+   ========================================================================== */
+
+.acf-field[data-name*="_url"] input.valid-url {
+    border-color: #00a32a;
+    box-shadow: 0 0 0 1px #00a32a;
+}
+
+.acf-field[data-name*="_url"] input.invalid-url {
+    border-color: #d63638;
+    box-shadow: 0 0 0 1px #d63638;
+}
+
+.acf-field[data-name*="_url"] input.valid-url + .validation-message::after {
+    content: '✓ Valid URL';
+    color: #00a32a;
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+.acf-field[data-name*="_url"] input.invalid-url + .validation-message::after {
+    content: '⚠ Check domain';
+    color: #d63638;
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+/* =============================================================================
+   Tab Enhancements
+   ========================================================================== */
+
+.acf-field[data-type="tab"] .acf-tab-button {
+    position: relative;
+}
+
+.acf-field[data-type="tab"][data-name*="basic"] .acf-tab-button::after {
+    content: '👤';
+    margin-left: 5px;
+}
+
+.acf-field[data-type="tab"][data-name*="professional"] .acf-tab-button::after {
+    content: '🏢';
+    margin-left: 5px;
+}
+
+.acf-field[data-type="tab"][data-name*="contact"] .acf-tab-button::after {
+    content: '📞';
+    margin-left: 5px;
+}
+
+.acf-field[data-type="tab"][data-name*="social"] .acf-tab-button::after {
+    content: '🌐';
+    margin-left: 5px;
+}
+
+.acf-field[data-type="tab"][data-name*="images"] .acf-tab-button::after {
+    content: '📸';
+    margin-left: 5px;
+}
+
+.acf-field[data-type="tab"][data-name*="specialties"] .acf-tab-button::after {
+    content: '⭐';
+    margin-left: 5px;
+}
+
+.acf-field[data-type="tab"][data-name*="performance"] .acf-tab-button::after {
+    content: '📊';
+    margin-left: 5px;
+}
+
+.acf-field[data-type="tab"][data-name*="team"] .acf-tab-button::after {
+    content: '👥';
+    margin-left: 5px;
+}
+
+/* =============================================================================
+   Responsive Design
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .agent-automation-previews {
+        grid-template-columns: 1fr;
+        padding: 15px;
+    }
+    
+    .agent-specialties-field .acf-checkbox-list,
+    .agent-languages-field .acf-checkbox-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .preview-section {
+        padding: 10px;
+    }
+    
+    .preview-section h4 {
+        font-size: 11px;
+    }
+    
+    .preview-value {
+        font-size: 13px;
+        padding: 6px 8px;
+    }
+}
+
+/* =============================================================================
+   Group Field Styling
+   ========================================================================== */
+
+.acf-field[data-type="group"] {
+    border: 1px solid #e1e1e1;
+    border-radius: 6px;
+    background: #fafafa;
+}
+
+.acf-field[data-type="group"] > .acf-label {
+    background: #f0f0f1;
+    margin: 0;
+    padding: 12px 15px;
+    border-bottom: 1px solid #e1e1e1;
+    font-weight: 600;
+    border-radius: 6px 6px 0 0;
+}
+
+.acf-field[data-type="group"] .acf-input {
+    padding: 15px;
+}
+
+/* =============================================================================
+   Repeater Field Enhancements
+   ========================================================================== */
+
+.acf-repeater .acf-row {
+    border-radius: 4px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.acf-repeater .acf-row-handle {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 4px 4px 0 0;
+}
+
+.acf-repeater .acf-row-handle .acf-icon {
+    color: white;
+}
+
+/* =============================================================================
+   Special Field Types
+   ========================================================================== */
+
+.acf-field[data-name*="license_expiration"] {
+    position: relative;
+}
+
+.acf-field[data-name*="license_expiration"] .acf-input::after {
+    content: '📅';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.acf-field[data-name*="client_satisfaction"] input {
+    background: linear-gradient(to right, #4CAF50 0%, #FFC107 50%, #f44336 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    font-weight: bold;
+}
+
+/* =============================================================================
+   Loading States
+   ========================================================================== */
+
+.agent-automation-loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.agent-automation-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #ccc;
+    border-top-color: #2271b1;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

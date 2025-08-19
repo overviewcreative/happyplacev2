@@ -1,0 +1,555 @@
+/* ================================================
+   PROPERTY FLYER PRINT STYLES
+   Optimized print layouts for property marketing materials
+   ================================================ */
+
+/* ================================================
+   PRINT MEDIA QUERIES
+   ================================================ */
+@media print {
+  
+  /* ================================================
+     PAGE SETUP
+     ================================================ */
+  @page {
+    margin: 0.5in;
+    size: letter;
+  }
+  
+  @page :first {
+    margin-top: 0.25in;
+  }
+  
+  /* ================================================
+     GLOBAL PRINT RESETS
+     ================================================ */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  
+  body {
+    font-size: 12pt;
+    line-height: 1.4;
+    color: #000;
+    background: #fff;
+  }
+  
+  /* Hide non-essential elements */
+  .no-print,
+  .btn,
+  .navigation,
+  .sidebar,
+  .footer-widgets,
+  .comments,
+  .comment-form,
+  .search-form,
+  .social-share,
+  .related-posts {
+    display: none !important;
+  }
+  
+  /* ================================================
+     PROPERTY FLYER LAYOUT
+     ================================================ */
+  .property-flyer {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    color: #000;
+  }
+  
+  .property-flyer-header {
+    text-align: center;
+    margin-bottom: 20pt;
+    border-bottom: 2pt solid #000;
+    padding-bottom: 10pt;
+  }
+  
+  .property-flyer-title {
+    font-size: 24pt;
+    font-weight: bold;
+    margin: 0 0 10pt 0;
+    color: #000;
+  }
+  
+  .property-flyer-subtitle {
+    font-size: 14pt;
+    margin: 0;
+    color: #333;
+  }
+  
+  /* ================================================
+     PROPERTY HERO SECTION
+     ================================================ */
+  .property-hero-print {
+    page-break-inside: avoid;
+    margin-bottom: 20pt;
+  }
+  
+  .property-hero-image {
+    width: 100%;
+    max-height: 4in;
+    object-fit: cover;
+    border: 1pt solid #ccc;
+    margin-bottom: 10pt;
+  }
+  
+  .property-hero-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f8f8;
+    padding: 10pt;
+    border: 1pt solid #ddd;
+  }
+  
+  .property-price-print {
+    font-size: 20pt;
+    font-weight: bold;
+    color: #000;
+  }
+  
+  .property-status-print {
+    font-size: 12pt;
+    padding: 4pt 8pt;
+    background: #000;
+    color: #fff;
+    border-radius: 2pt;
+  }
+  
+  /* ================================================
+     PROPERTY DETAILS GRID
+     ================================================ */
+  .property-details-print {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20pt;
+    margin-bottom: 20pt;
+    page-break-inside: avoid;
+  }
+  
+  .property-specs-print {
+    background: #f8f8f8;
+    padding: 15pt;
+    border: 1pt solid #ddd;
+  }
+  
+  .property-specs-title {
+    font-size: 14pt;
+    font-weight: bold;
+    margin-bottom: 10pt;
+    border-bottom: 1pt solid #ccc;
+    padding-bottom: 5pt;
+  }
+  
+  .property-spec-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5pt;
+    padding: 3pt 0;
+    border-bottom: 1pt dotted #ccc;
+  }
+  
+  .property-spec-label {
+    font-weight: 500;
+  }
+  
+  .property-spec-value {
+    font-weight: bold;
+  }
+  
+  /* ================================================
+     PROPERTY DESCRIPTION
+     ================================================ */
+  .property-description-print {
+    margin-bottom: 20pt;
+    page-break-inside: avoid;
+  }
+  
+  .property-description-title {
+    font-size: 14pt;
+    font-weight: bold;
+    margin-bottom: 10pt;
+    border-bottom: 1pt solid #000;
+    padding-bottom: 5pt;
+  }
+  
+  .property-description-text {
+    font-size: 11pt;
+    line-height: 1.5;
+    text-align: justify;
+  }
+  
+  /* ================================================
+     PROPERTY FEATURES
+     ================================================ */
+  .property-features-print {
+    margin-bottom: 20pt;
+    page-break-inside: avoid;
+  }
+  
+  .property-features-title {
+    font-size: 14pt;
+    font-weight: bold;
+    margin-bottom: 10pt;
+  }
+  
+  .property-features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10pt;
+  }
+  
+  .property-feature-category {
+    background: #f8f8f8;
+    padding: 10pt;
+    border: 1pt solid #ddd;
+  }
+  
+  .property-feature-category-title {
+    font-size: 12pt;
+    font-weight: bold;
+    margin-bottom: 5pt;
+    border-bottom: 1pt solid #ccc;
+    padding-bottom: 3pt;
+  }
+  
+  .property-feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .property-feature-item {
+    font-size: 10pt;
+    margin-bottom: 2pt;
+    padding-left: 8pt;
+    position: relative;
+  }
+  
+  .property-feature-item:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+  }
+  
+  /* ================================================
+     PROPERTY GALLERY
+     ================================================ */
+  .property-gallery-print {
+    margin-bottom: 20pt;
+    page-break-inside: avoid;
+  }
+  
+  .property-gallery-title {
+    font-size: 14pt;
+    font-weight: bold;
+    margin-bottom: 10pt;
+  }
+  
+  .property-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5pt;
+  }
+  
+  .property-gallery-image {
+    width: 100%;
+    height: 1.5in;
+    object-fit: cover;
+    border: 1pt solid #ccc;
+  }
+  
+  /* ================================================
+     AGENT INFORMATION
+     ================================================ */
+  .agent-info-print {
+    background: #f0f0f0;
+    padding: 15pt;
+    border: 2pt solid #000;
+    margin-bottom: 20pt;
+    page-break-inside: avoid;
+  }
+  
+  .agent-info-title {
+    font-size: 14pt;
+    font-weight: bold;
+    margin-bottom: 10pt;
+    text-align: center;
+  }
+  
+  .agent-info-content {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 15pt;
+    align-items: center;
+  }
+  
+  .agent-photo-print {
+    width: 1in;
+    height: 1in;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2pt solid #fff;
+  }
+  
+  .agent-details-print {
+    display: grid;
+    gap: 5pt;
+  }
+  
+  .agent-name-print {
+    font-size: 14pt;
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  .agent-title-print {
+    font-size: 11pt;
+    color: #666;
+    margin: 0;
+  }
+  
+  .agent-contact-print {
+    font-size: 10pt;
+    margin: 5pt 0 0 0;
+  }
+  
+  .agent-contact-item {
+    margin-bottom: 2pt;
+  }
+  
+  /* ================================================
+     QR CODE SECTION
+     ================================================ */
+  .qr-code-section-print {
+    text-align: center;
+    margin-bottom: 20pt;
+    page-break-inside: avoid;
+  }
+  
+  .qr-code-print {
+    width: 1in;
+    height: 1in;
+    border: 1pt solid #000;
+    margin: 0 auto 5pt;
+    display: block;
+  }
+  
+  .qr-code-text {
+    font-size: 10pt;
+    color: #666;
+  }
+  
+  /* ================================================
+     COMPANY BRANDING
+     ================================================ */
+  .company-branding-print {
+    text-align: center;
+    padding: 15pt;
+    border-top: 2pt solid #000;
+    margin-top: 20pt;
+    page-break-inside: avoid;
+  }
+  
+  .company-logo-print {
+    max-width: 2in;
+    max-height: 1in;
+    margin-bottom: 10pt;
+  }
+  
+  .company-info-print {
+    font-size: 10pt;
+    color: #666;
+  }
+  
+  /* ================================================
+     DISCLAIMER TEXT
+     ================================================ */
+  .disclaimer-print {
+    font-size: 8pt;
+    color: #666;
+    text-align: center;
+    margin-top: 15pt;
+    padding-top: 10pt;
+    border-top: 1pt solid #ccc;
+    page-break-inside: avoid;
+  }
+  
+  /* ================================================
+     MLS COMPLIANCE
+     ================================================ */
+  .mls-compliance-print {
+    font-size: 8pt;
+    color: #333;
+    background: #f8f8f8;
+    padding: 10pt;
+    border: 1pt solid #ddd;
+    margin-top: 15pt;
+    page-break-inside: avoid;
+  }
+  
+  .mls-logo-print {
+    float: right;
+    max-width: 0.5in;
+    max-height: 0.5in;
+    margin-left: 10pt;
+  }
+  
+  /* ================================================
+     MULTI-PAGE LAYOUTS
+     ================================================ */
+  .property-flyer-page-2 {
+    page-break-before: always;
+    margin-top: 0;
+  }
+  
+  .floor-plans-print {
+    page-break-before: always;
+    text-align: center;
+  }
+  
+  .floor-plan-image {
+    max-width: 100%;
+    max-height: 8in;
+    border: 1pt solid #000;
+  }
+  
+  /* ================================================
+     NEIGHBORHOOD INFO
+     ================================================ */
+  .neighborhood-info-print {
+    margin-bottom: 20pt;
+    page-break-inside: avoid;
+  }
+  
+  .neighborhood-info-title {
+    font-size: 14pt;
+    font-weight: bold;
+    margin-bottom: 10pt;
+  }
+  
+  .neighborhood-amenities {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10pt;
+  }
+  
+  .neighborhood-amenity {
+    font-size: 10pt;
+    padding: 5pt;
+    background: #f8f8f8;
+    border: 1pt solid #ddd;
+  }
+  
+  /* ================================================
+     PRICING INFORMATION
+     ================================================ */
+  .pricing-info-print {
+    background: #fff;
+    border: 2pt solid #000;
+    padding: 15pt;
+    margin-bottom: 20pt;
+    page-break-inside: avoid;
+  }
+  
+  .pricing-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .pricing-table th,
+  .pricing-table td {
+    padding: 5pt;
+    border: 1pt solid #000;
+    text-align: left;
+  }
+  
+  .pricing-table th {
+    background: #f0f0f0;
+    font-weight: bold;
+  }
+  
+  /* ================================================
+     RESPONSIVE PRINT ADJUSTMENTS
+     ================================================ */
+  @media print and (max-width: 8.5in) {
+    .property-details-print,
+    .property-features-grid,
+    .property-gallery-grid,
+    .neighborhood-amenities {
+      grid-template-columns: 1fr;
+    }
+    
+    .agent-info-content {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+    
+    .agent-photo-print {
+      margin: 0 auto;
+    }
+  }
+  
+  /* ================================================
+     COLOR ADJUSTMENTS FOR B&W PRINTING
+     ================================================ */
+  @media print and (monochrome) {
+    .property-status-print {
+      background: #000 !important;
+      color: #fff !important;
+    }
+    
+    .property-specs-print,
+    .property-feature-category,
+    .agent-info-print {
+      background: #f0f0f0 !important;
+    }
+    
+    .company-branding-print {
+      background: #fff !important;
+    }
+  }
+  
+  /* ================================================
+     ECONOMY PRINT MODE
+     ================================================ */
+  .print-economy .property-gallery-print,
+  .print-economy .property-gallery-grid {
+    display: none !important;
+  }
+  
+  .print-economy .agent-photo-print {
+    display: none !important;
+  }
+  
+  .print-economy .company-logo-print {
+    display: none !important;
+  }
+  
+  .print-economy .qr-code-print {
+    display: none !important;
+  }
+  
+  /* ================================================
+     HIGH QUALITY PRINT MODE
+     ================================================ */
+  .print-hq .property-hero-image {
+    max-height: 5in;
+  }
+  
+  .print-hq .property-gallery-image {
+    height: 2in;
+  }
+  
+  .print-hq .floor-plan-image {
+    max-height: 10in;
+  }
+  
+}
+
+/* File Location: /wp-content/themes/happy-place/assets/css/framework/print/property-flyer.css */

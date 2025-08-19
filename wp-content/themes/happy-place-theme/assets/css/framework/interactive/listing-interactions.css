@@ -1,0 +1,412 @@
+/* ================================================
+   LISTING INTERACTIVE COMPONENTS
+   Property listing specific interactive elements
+   ================================================ */
+
+/* ================================================
+   SAVE/FAVORITE BUTTON
+   ================================================ */
+.listing-save-btn {
+  position: relative;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--hph-border-color);
+  border-radius: var(--hph-radius-full);
+  color: var(--hph-gray-600);
+  cursor: pointer;
+  transition: var(--hph-transition);
+  backdrop-filter: blur(4px);
+  box-shadow: var(--hph-shadow-sm);
+}
+
+.listing-save-btn:hover {
+  background: var(--hph-white);
+  color: var(--hph-primary);
+  border-color: var(--hph-primary);
+  transform: scale(1.05);
+}
+
+.listing-save-btn.is-saved {
+  background: var(--hph-primary);
+  border-color: var(--hph-primary);
+  color: var(--hph-white);
+}
+
+.listing-save-btn.is-saved:hover {
+  background: var(--hph-primary-dark);
+  border-color: var(--hph-primary-dark);
+}
+
+.listing-save-btn-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  transition: var(--hph-transition);
+}
+
+.listing-save-btn.is-saved .listing-save-btn-icon {
+  fill: currentColor;
+}
+
+/* Save Animation */
+.listing-save-btn.is-saving {
+  animation: pulse-save 0.6s ease-in-out;
+}
+
+@keyframes pulse-save {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* ================================================
+   SHARE DROPDOWN
+   ================================================ */
+.listing-share-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.listing-share-btn {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--hph-border-color);
+  border-radius: var(--hph-radius-full);
+  color: var(--hph-gray-600);
+  cursor: pointer;
+  transition: var(--hph-transition);
+  backdrop-filter: blur(4px);
+  box-shadow: var(--hph-shadow-sm);
+}
+
+.listing-share-btn:hover {
+  background: var(--hph-white);
+  color: var(--hph-primary);
+  border-color: var(--hph-primary);
+  transform: scale(1.05);
+}
+
+.listing-share-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  min-width: 200px;
+  background: var(--hph-white);
+  border: 1px solid var(--hph-border-color);
+  border-radius: var(--hph-radius-lg);
+  box-shadow: var(--hph-shadow-lg);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: var(--hph-transition);
+  z-index: var(--hph-z-dropdown);
+}
+
+.listing-share-dropdown.is-open .listing-share-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.listing-share-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: var(--hph-gray-700);
+  text-decoration: none;
+  border-bottom: 1px solid var(--hph-border-color-light);
+  transition: var(--hph-transition-fast);
+}
+
+.listing-share-menu-item:last-child {
+  border-bottom: none;
+}
+
+.listing-share-menu-item:hover {
+  background: var(--hph-gray-50);
+  color: var(--hph-primary);
+}
+
+.listing-share-menu-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+}
+
+/* ================================================
+   CONTACT FORMS OVERLAY
+   ================================================ */
+.listing-contact-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--hph-transition);
+  z-index: var(--hph-z-modal);
+}
+
+.listing-contact-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.listing-contact-modal {
+  width: 100%;
+  max-width: 500px;
+  margin: 2rem;
+  background: var(--hph-white);
+  border-radius: var(--hph-radius-lg);
+  box-shadow: var(--hph-shadow-2xl);
+  transform: scale(0.9);
+  transition: var(--hph-transition);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.listing-contact-overlay.is-open .listing-contact-modal {
+  transform: scale(1);
+}
+
+.listing-contact-modal-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--hph-border-color-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.listing-contact-modal-title {
+  font-size: var(--hph-text-lg);
+  font-weight: 600;
+  color: var(--hph-gray-900);
+  margin: 0;
+}
+
+.listing-contact-modal-close {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: var(--hph-radius-md);
+  color: var(--hph-gray-500);
+  cursor: pointer;
+  transition: var(--hph-transition-fast);
+}
+
+.listing-contact-modal-close:hover {
+  background: var(--hph-gray-100);
+  color: var(--hph-gray-700);
+}
+
+.listing-contact-modal-body {
+  padding: 1.5rem;
+}
+
+.listing-contact-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.listing-contact-form .form-label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--hph-gray-700);
+}
+
+.listing-contact-form .form-input,
+.listing-contact-form .form-textarea,
+.listing-contact-form .form-select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--hph-border-color);
+  border-radius: var(--hph-radius-md);
+  font-size: var(--hph-text-base);
+  transition: var(--hph-transition-fast);
+}
+
+.listing-contact-form .form-input:focus,
+.listing-contact-form .form-textarea:focus,
+.listing-contact-form .form-select:focus {
+  outline: none;
+  border-color: var(--hph-primary);
+  box-shadow: var(--hph-input-focus-ring);
+}
+
+.listing-contact-form .form-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* ================================================
+   QUICK ACTION BUTTONS
+   ================================================ */
+.listing-quick-actions {
+  display: flex;
+  gap: 0.5rem;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+}
+
+.listing-quick-action {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: var(--hph-radius-full);
+  color: var(--hph-gray-700);
+  cursor: pointer;
+  transition: var(--hph-transition);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--hph-shadow-sm);
+}
+
+.listing-quick-action:hover {
+  background: var(--hph-white);
+  color: var(--hph-primary);
+  border-color: var(--hph-primary-200);
+  transform: scale(1.1);
+}
+
+.listing-quick-action.is-active {
+  background: var(--hph-primary);
+  border-color: var(--hph-primary);
+  color: var(--hph-white);
+}
+
+/* ================================================
+   PROPERTY COMPARISON
+   ================================================ */
+.listing-compare-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--hph-white);
+  border: 1px solid var(--hph-border-color);
+  border-radius: var(--hph-radius-md);
+  color: var(--hph-gray-700);
+  font-size: var(--hph-text-sm);
+  cursor: pointer;
+  transition: var(--hph-transition-fast);
+}
+
+.listing-compare-toggle:hover {
+  background: var(--hph-gray-50);
+  border-color: var(--hph-primary);
+  color: var(--hph-primary);
+}
+
+.listing-compare-toggle.is-selected {
+  background: var(--hph-primary);
+  border-color: var(--hph-primary);
+  color: var(--hph-white);
+}
+
+.listing-compare-checkbox {
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid var(--hph-border-color);
+  border-radius: var(--hph-radius-sm);
+  background: var(--hph-white);
+  position: relative;
+  transition: var(--hph-transition-fast);
+}
+
+.listing-compare-toggle.is-selected .listing-compare-checkbox {
+  background: var(--hph-white);
+  border-color: var(--hph-white);
+}
+
+.listing-compare-toggle.is-selected .listing-compare-checkbox::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: var(--hph-primary);
+}
+
+/* ================================================
+   LOADING STATES
+   ================================================ */
+.listing-interaction-loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.listing-interaction-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1rem;
+  height: 1rem;
+  margin: -0.5rem 0 0 -0.5rem;
+  border: 2px solid transparent;
+  border-top: 2px solid var(--hph-primary);
+  border-radius: var(--hph-radius-full);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ================================================
+   RESPONSIVE
+   ================================================ */
+@media (max-width: 768px) {
+  .listing-quick-actions {
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+  
+  .listing-quick-action {
+    width: 2rem;
+    height: 2rem;
+  }
+  
+  .listing-contact-modal {
+    margin: 1rem;
+  }
+  
+  .listing-share-menu {
+    right: -50px;
+    min-width: 180px;
+  }
+}
+
+@media (max-width: 640px) {
+  .listing-contact-modal-header {
+    padding: 1rem;
+  }
+  
+  .listing-contact-modal-body {
+    padding: 1rem;
+  }
+}
+
+/* File Location: /wp-content/themes/happy-place/assets/css/framework/interactive/listing-interactions.css */

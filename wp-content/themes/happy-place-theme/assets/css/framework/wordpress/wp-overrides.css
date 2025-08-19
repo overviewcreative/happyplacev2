@@ -1,0 +1,124 @@
+/* ================================================
+   WORDPRESS CORE STYLE OVERRIDES
+   Minimal and targeted WordPress style overrides
+   ================================================ */
+
+/* ================================================
+   CORE WORDPRESS FIXES
+   ================================================ */
+
+/* Fix WordPress admin bar spacing */
+body.admin-bar {
+  padding-top: 32px;
+}
+
+@media screen and (max-width: 782px) {
+  body.admin-bar {
+    padding-top: 46px;
+  }
+}
+
+/* Override WordPress body classes and styles - minimal approach */
+body {
+  margin: 0;
+  padding: 0;
+  line-height: var(--hph-line-height-base, 1.6);
+  font-family: var(--hph-font-primary, system-ui, -apple-system, sans-serif);
+  font-size: var(--hph-text-base, 16px);
+  color: var(--hph-gray-900, #111827);
+  background: var(--hph-white, #ffffff);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Target specific WordPress default margins */
+body.wp-theme-happy-place-theme h1,
+body.wp-theme-happy-place-theme h2,
+body.wp-theme-happy-place-theme h3,
+body.wp-theme-happy-place-theme h4,
+body.wp-theme-happy-place-theme h5,
+body.wp-theme-happy-place-theme h6 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* ================================================
+   WORDPRESS BLOCK EDITOR - TARGETED FIXES
+   ================================================ */
+
+/* Remove default margins from WordPress content blocks */
+.wp-block-paragraph {
+  margin-bottom: 0;
+}
+
+.wp-block-heading {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* ================================================
+   WORDPRESS THEME COMPATIBILITY
+   ================================================ */
+
+/* Ensure our framework takes precedence */
+.hpt-framework-override {
+  /* This class can be added to elements that need framework priority */
+  font-family: var(--hph-font-primary) !important;
+  line-height: var(--hph-line-height-base) !important;
+}
+
+/* Remove WordPress emoji styles */
+img.wp-smiley,
+img.emoji {
+  display: inline !important;
+  border: none !important;
+  box-shadow: none !important;
+  height: 1em !important;
+  width: 1em !important;
+  margin: 0 .07em !important;
+  vertical-align: -0.1em !important;
+  background: none !important;
+  padding: 0 !important;
+}
+
+/* ================================================
+   ACCESSIBILITY IMPROVEMENTS
+   ================================================ */
+
+/* Ensure focus states are visible */
+a:focus,
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid var(--hph-primary, #2563eb);
+  outline-offset: 2px;
+}
+
+/* Skip links for screen readers */
+.screen-reader-text {
+  position: absolute !important;
+  clip: rect(1px, 1px, 1px, 1px);
+  word-wrap: normal !important;
+}
+
+.screen-reader-text:focus {
+  background-color: var(--hph-white, #ffffff);
+  border-radius: 3px;
+  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
+  clip: auto !important;
+  color: var(--hph-gray-900, #111827);
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+  height: auto;
+  left: 5px;
+  line-height: normal;
+  padding: 15px 23px 14px;
+  text-decoration: none;
+  top: 5px;
+  width: auto;
+  z-index: 100000;
+}
+
+/* File Location: /wp-content/themes/happy-place/assets/css/framework/wordpress/wp-overrides.css */

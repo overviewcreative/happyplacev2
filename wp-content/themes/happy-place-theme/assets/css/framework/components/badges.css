@@ -1,0 +1,717 @@
+/* ================================================
+   BADGE COMPONENTS
+   Status Badges, Tags, Labels, and Pills
+   ================================================ */
+
+/* ================================================
+   BASE BADGE
+   ================================================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--hph-white);
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: var(--hph-radius-md);
+  transition: var(--hph-transition-fast);
+}
+
+/* Badge in Headings */
+h1 .badge, h2 .badge, h3 .badge,
+h4 .badge, h5 .badge, h6 .badge {
+  vertical-align: middle;
+  margin-left: 0.5rem;
+}
+
+/* ================================================
+   BADGE VARIANTS
+   ================================================ */
+.badge-primary {
+  background: var(--hph-primary);
+  color: var(--hph-white);
+}
+
+.badge-secondary {
+  background: var(--hph-secondary);
+  color: var(--hph-white);
+}
+
+.badge-success {
+  background: var(--hph-success);
+  color: var(--hph-white);
+}
+
+.badge-danger {
+  background: var(--hph-danger);
+  color: var(--hph-white);
+}
+
+.badge-warning {
+  background: var(--hph-warning);
+  color: var(--hph-white);
+}
+
+.badge-info {
+  background: var(--hph-info);
+  color: var(--hph-white);
+}
+
+.badge-light {
+  background: var(--hph-gray-100);
+  color: var(--hph-gray-700);
+}
+
+.badge-dark {
+  background: var(--hph-gray-900);
+  color: var(--hph-white);
+}
+
+/* Soft Badges (Lighter Background) */
+.badge-soft-primary {
+  background: var(--hph-primary-100);
+  color: var(--hph-primary-700);
+}
+
+/* Blue-focused variants */
+.badge-ocean {
+  background: linear-gradient(135deg, var(--hph-primary-400) 0%, var(--hph-primary-600) 100%);
+  color: var(--hph-white);
+}
+
+.badge-sky {
+  background: var(--hph-primary-200);
+  color: var(--hph-primary-800);
+}
+
+.badge-deep-blue {
+  background: var(--hph-primary-900);
+  color: var(--hph-primary-100);
+}
+
+.badge-soft-secondary {
+  background: var(--hph-primary-100);
+  color: var(--hph-primary-700);
+}
+
+.badge-soft-success {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--hph-success-dark);
+}
+
+.badge-soft-danger {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--hph-danger-dark);
+}
+
+.badge-soft-warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--hph-warning-dark);
+}
+
+.badge-soft-info {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--hph-info-dark);
+}
+
+/* Outline Badges */
+.badge-outline-primary {
+  background: transparent;
+  border: 1px solid var(--hph-primary);
+  color: var(--hph-primary);
+}
+
+.badge-outline-success {
+  background: transparent;
+  border: 1px solid var(--hph-success);
+  color: var(--hph-success);
+}
+
+.badge-outline-danger {
+  background: transparent;
+  border: 1px solid var(--hph-danger);
+  color: var(--hph-danger);
+}
+
+.badge-outline-warning {
+  background: transparent;
+  border: 1px solid var(--hph-warning);
+  color: var(--hph-warning);
+}
+
+.badge-outline-info {
+  background: transparent;
+  border: 1px solid var(--hph-info);
+  color: var(--hph-info);
+}
+
+.badge-outline-dark {
+  background: transparent;
+  border: 1px solid var(--hph-gray-900);
+  color: var(--hph-gray-900);
+}
+
+/* ================================================
+   BADGE SHAPES
+   ================================================ */
+.badge-pill {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  border-radius: var(--hph-radius-full);
+}
+
+.badge-square {
+  border-radius: 0;
+}
+
+.badge-rounded {
+  border-radius: var(--hph-radius-lg);
+}
+
+.badge-circle {
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border-radius: var(--hph-radius-full);
+  font-size: 0.625rem;
+}
+
+/* ================================================
+   BADGE SIZES
+   ================================================ */
+.badge-xs {
+  padding: 0.125rem 0.375rem;
+  font-size: 0.625rem;
+}
+
+.badge-sm {
+  padding: 0.1875rem 0.4375rem;
+  font-size: 0.6875rem;
+}
+
+.badge-lg {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.badge-xl {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+}
+
+/* ================================================
+   BADGE WITH ICON
+   ================================================ */
+.badge-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.badge-icon svg,
+.badge-icon i {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.badge-icon-only {
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border-radius: var(--hph-radius-full);
+}
+
+.badge-icon-only svg,
+.badge-icon-only i {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+/* ================================================
+   BADGE WITH DOT
+   ================================================ */
+.badge-dot {
+  position: relative;
+  padding-left: 1rem;
+}
+
+.badge-dot::before {
+  content: '';
+  position: absolute;
+  left: 0.375rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0.375rem;
+  height: 0.375rem;
+  background: currentColor;
+  border-radius: var(--hph-radius-full);
+}
+
+/* Badge with Animated Dot */
+.badge-dot-animated::before {
+  animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* ================================================
+   NOTIFICATION BADGE
+   ================================================ */
+.badge-notification {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0.125rem 0.25rem;
+  background: var(--hph-danger);
+  color: var(--hph-white);
+  border-radius: var(--hph-radius-full);
+  font-size: 0.625rem;
+  font-weight: 700;
+  border: 2px solid var(--hph-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge-notification-pulse {
+  animation: pulse-notification 2s infinite;
+}
+
+@keyframes pulse-notification {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+/* Notification Dot (No Number) */
+.badge-dot-notification {
+  width: 0.5rem;
+  height: 0.5rem;
+  min-width: 0.5rem;
+  padding: 0;
+  border: none;
+}
+
+/* ================================================
+   STATUS BADGE
+   ================================================ */
+.badge-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+}
+
+.badge-status::before {
+  content: '';
+  width: 0.5rem;
+  height: 0.5rem;
+  background: currentColor;
+  border-radius: var(--hph-radius-full);
+}
+
+.badge-status-success {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--hph-success);
+}
+
+.badge-status-warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--hph-warning);
+}
+
+.badge-status-danger {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--hph-danger);
+}
+
+.badge-status-info {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--hph-info);
+}
+
+/* Animated Status */
+.badge-status-animated::before {
+  animation: pulse-status 2s infinite;
+}
+
+@keyframes pulse-status {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
+}
+
+/* ================================================
+   REAL ESTATE BADGES
+   ================================================ */
+
+/* Property Status Badges */
+.badge-available {
+  background: var(--hph-status-available);
+  color: var(--hph-white);
+}
+
+.badge-pending {
+  background: var(--hph-status-pending);
+  color: var(--hph-white);
+}
+
+.badge-sold {
+  background: var(--hph-status-sold);
+  color: var(--hph-white);
+}
+
+.badge-coming-soon {
+  background: var(--hph-status-coming-soon);
+  color: var(--hph-white);
+}
+
+.badge-off-market {
+  background: var(--hph-status-off-market);
+  color: var(--hph-white);
+}
+
+.badge-new {
+  background: var(--hph-status-new);
+  color: var(--hph-white);
+  position: relative;
+  overflow: visible;
+}
+
+.badge-new::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 0.5rem;
+  height: 0.5rem;
+  background: var(--hph-white);
+  border-radius: var(--hph-radius-full);
+  animation: sparkle 1.5s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.badge-reduced {
+  background: var(--hph-status-reduced);
+  color: var(--hph-white);
+  animation: pulse-reduced 2s infinite;
+}
+
+@keyframes pulse-reduced {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Property Type Badges */
+.badge-residential {
+  background: var(--hph-type-residential);
+  color: var(--hph-white);
+}
+
+.badge-commercial {
+  background: var(--hph-type-commercial);
+  color: var(--hph-white);
+}
+
+.badge-land {
+  background: var(--hph-type-land);
+  color: var(--hph-white);
+}
+
+.badge-rental {
+  background: var(--hph-type-rental);
+  color: var(--hph-white);
+}
+
+.badge-luxury {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  color: var(--hph-white);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Feature Badges */
+.badge-featured {
+  background: linear-gradient(135deg, var(--hph-primary) 0%, var(--hph-primary-dark) 100%);
+  color: var(--hph-white);
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.375rem 0.75rem;
+}
+
+.badge-hot {
+  background: var(--hph-hot);
+  color: var(--hph-white);
+  font-weight: 700;
+  text-transform: uppercase;
+  animation: pulse-hot 1s infinite;
+}
+
+@keyframes pulse-hot {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(239, 68, 68, 0);
+  }
+}
+
+.badge-verified {
+  background: var(--hph-agent-verified);
+  color: var(--hph-white);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.badge-verified::before {
+  content: "✓";
+  font-weight: 700;
+}
+
+/* ================================================
+   TAG COMPONENT
+   ================================================ */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  background: var(--hph-gray-100);
+  color: var(--hph-gray-700);
+  border-radius: var(--hph-radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: var(--hph-transition-fast);
+  cursor: default;
+}
+
+.tag:hover {
+  background: var(--hph-gray-200);
+}
+
+/* Clickable Tags */
+.tag-link {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.tag-link:hover {
+  background: var(--hph-primary-100);
+  color: var(--hph-primary-700);
+}
+
+/* Removable Tags */
+.tag-removable {
+  padding-right: 0.5rem;
+}
+
+.tag-remove {
+  width: 1rem;
+  height: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.25rem;
+  margin-right: -0.25rem;
+  background: var(--hph-gray-300);
+  border-radius: var(--hph-radius-full);
+  color: var(--hph-gray-600);
+  cursor: pointer;
+  transition: var(--hph-transition-fast);
+}
+
+.tag-remove:hover {
+  background: var(--hph-danger);
+  color: var(--hph-white);
+}
+
+/* Tag Groups */
+.tag-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* ================================================
+   LABEL COMPONENT
+   ================================================ */
+.label {
+  display: inline-block;
+  padding: 0.1875rem 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--hph-gray-600);
+  background: var(--hph-gray-100);
+  border-radius: var(--hph-radius-sm);
+}
+
+.label-primary {
+  background: var(--hph-primary-100);
+  color: var(--hph-primary-700);
+}
+
+.label-success {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--hph-success-dark);
+}
+
+.label-danger {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--hph-danger-dark);
+}
+
+.label-warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--hph-warning-dark);
+}
+
+.label-info {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--hph-info-dark);
+}
+
+/* ================================================
+   RIBBON BADGE
+   ================================================ */
+.badge-ribbon {
+  position: absolute;
+  padding: 0.375rem 1rem;
+  background: var(--hph-danger);
+  color: var(--hph-white);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: var(--hph-shadow-md);
+  z-index: 2;
+}
+
+.badge-ribbon-top-left {
+  top: 1rem;
+  left: -0.5rem;
+  padding-left: 1rem;
+}
+
+.badge-ribbon-top-left::before {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-top: 0.5rem solid var(--hph-danger-dark);
+  border-left: 0.5rem solid transparent;
+}
+
+.badge-ribbon-top-right {
+  top: 1rem;
+  right: -0.5rem;
+  padding-right: 1rem;
+}
+
+.badge-ribbon-top-right::before {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-top: 0.5rem solid var(--hph-danger-dark);
+  border-right: 0.5rem solid transparent;
+}
+
+.badge-ribbon-corner {
+  top: 0;
+  right: 0;
+  transform: rotate(45deg);
+  transform-origin: top right;
+  width: 150px;
+  text-align: center;
+  top: 1.5rem;
+  right: -3rem;
+}
+
+/* ================================================
+   BADGE LIST
+   ================================================ */
+.badge-list {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.badge-list-vertical {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* ================================================
+   RESPONSIVE
+   ================================================ */
+@media (max-width: 640px) {
+  .badge {
+    font-size: 0.6875rem;
+    padding: 0.1875rem 0.4375rem;
+  }
+  
+  .badge-lg {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+  
+  .badge-xl {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  .tag {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+/* File Location: /wp-content/themes/happy-place/assets/css/framework/components/badges.css */

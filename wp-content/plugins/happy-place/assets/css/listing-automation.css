@@ -1,0 +1,308 @@
+/**
+ * Listing Automation Styles
+ * CSS for enhanced listing management interface
+ */
+
+/* Bathroom Display Formatting */
+.bathroom-formatted-display {
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2c3e50;
+    text-align: center;
+    min-height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bathroom-formatted-display.has-baths {
+    background: #e8f5e8;
+    border-color: #28a745;
+    color: #155724;
+}
+
+.bathroom-formatted-display.no-baths {
+    background: #f8f9fa;
+    border-color: #ddd;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Address Slug Preview */
+.address-slug-preview {
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 14px;
+    color: #495057;
+    word-break: break-all;
+    line-height: 1.4;
+}
+
+.address-slug-preview.has-slug {
+    background: #e3f2fd;
+    border-color: #2196f3;
+    color: #0d47a1;
+}
+
+.address-slug-preview.no-slug {
+    background: #fff3cd;
+    border-color: #ffc107;
+    color: #856404;
+    font-style: italic;
+}
+
+/* Status Badge Preview */
+.status-badge-preview {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid;
+}
+
+.status-badge-preview.status-new {
+    background: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+.status-badge-preview.status-recent {
+    background: #cce5ff;
+    color: #004085;
+    border-color: #b3d7ff;
+}
+
+.status-badge-preview.status-coming-soon {
+    background: #fff3cd;
+    color: #856404;
+    border-color: #ffeaa7;
+}
+
+.status-badge-preview.status-pending {
+    background: #ffeaa7;
+    color: #856404;
+    border-color: #fdcb6e;
+}
+
+.status-badge-preview.status-sold {
+    background: #f8d7da;
+    color: #721c24;
+    border-color: #f1b0b7;
+}
+
+.status-badge-preview.status-active {
+    background: #e2e3e5;
+    color: #383d41;
+    border-color: #d6d8db;
+}
+
+.status-badge-preview.status-default {
+    background: #f8f9fa;
+    color: #6c757d;
+    border-color: #dee2e6;
+}
+
+/* Gallery Tag Summary */
+.gallery-tag-summary {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+}
+
+.gallery-tag-summary h4 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.gallery-tag-summary ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 8px;
+}
+
+.gallery-tag-summary li {
+    padding: 6px 12px;
+    background: #e9ecef;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #495057;
+    text-align: center;
+}
+
+.gallery-tag-summary p {
+    margin: 0;
+    font-style: italic;
+    color: #6c757d;
+    text-align: center;
+}
+
+/* Enhanced Feature Layout */
+.acf-field[data-name*="features"] .acf-checkbox-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 8px;
+    margin: 0;
+}
+
+.acf-field[data-name*="features"] .acf-checkbox-list li {
+    margin: 0;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.acf-field[data-name*="features"] .acf-checkbox-list li:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.acf-field[data-name*="features"] .acf-checkbox-list li label {
+    display: block;
+    width: 100%;
+    padding: 12px 16px;
+    margin: 0;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.acf-field[data-name*="features"] .acf-checkbox-list input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.acf-field[data-name*="features"] .acf-checkbox-list input[type="checkbox"]:checked + label,
+.acf-field[data-name*="features"] .acf-checkbox-list li:has(input[type="checkbox"]:checked) {
+    background: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .gallery-tag-summary ul {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+    
+    .acf-field[data-name*="features"] .acf-checkbox-list {
+        grid-template-columns: 1fr;
+    }
+    
+    .bathroom-formatted-display,
+    .address-slug-preview {
+        font-size: 14px;
+        padding: 10px 12px;
+    }
+}
+
+/* Admin Column Enhancements */
+.column-bathroom_display {
+    width: 100px;
+}
+
+.column-status_badge {
+    width: 120px;
+}
+
+.listing-bathroom-display {
+    font-family: monospace;
+    font-weight: bold;
+    padding: 4px 8px;
+    background: #f0f0f1;
+    border-radius: 3px;
+}
+
+.listing-status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ACF Field Group Enhancements */
+.acf-field[data-name="short_description"] textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.acf-field[data-name="full_description"] .wp-editor-wrap {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.acf-field[data-name="listing_date"] input[type="text"] {
+    background: #fff;
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    padding: 8px 12px;
+}
+
+/* Loading States */
+.automation-loading {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+}
+
+.automation-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 1;
+}
+
+/* Success/Error States */
+.automation-success {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.25);
+}
+
+.automation-error {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
+}
+
+/* Accessibility Improvements */
+.bathroom-formatted-display:focus,
+.address-slug-preview:focus,
+.status-badge-preview:focus {
+    outline: 2px solid #0073aa;
+    outline-offset: 2px;
+}
+
+/* Print Styles */
+@media print {
+    .bathroom-formatted-display,
+    .address-slug-preview,
+    .status-badge-preview,
+    .gallery-tag-summary {
+        background: white !important;
+        border: 1px solid #ccc !important;
+        color: black !important;
+    }
+}

@@ -1,0 +1,640 @@
+{
+    "key": "group_agent_profile",
+    "title": "Agent - Profile Information",
+    "fields": [
+        {
+            "key": "field_agent_first_name",
+            "label": "First Name",
+            "name": "first_name",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Agent's first name",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "John",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_agent_last_name",
+            "label": "Last Name",
+            "name": "last_name",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Agent's last name",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "Smith",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_agent_title",
+            "label": "Professional Title",
+            "name": "title",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Professional title or designation",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "34",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "Senior Real Estate Specialist",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_agent_license_number",
+            "label": "License Number",
+            "name": "license_number",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Real estate license number",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": 123456789,
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_agent_years_experience",
+            "label": "Years of Experience",
+            "name": "years_experience",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Years in real estate",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": 10,
+            "prepend": "",
+            "append": "years",
+            "min": 0,
+            "max": 50,
+            "step": 1
+        },
+        {
+            "key": "field_agent_featured",
+            "label": "Featured Agent",
+            "name": "featured_agent",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "Feature this agent prominently on the website",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "34",
+                "class": "",
+                "id": ""
+            },
+            "message": "Feature this agent",
+            "default_value": 0,
+            "ui": 1,
+            "ui_on_text": "Yes",
+            "ui_off_text": "No"
+        },
+        {
+            "key": "field_agent_contact_tab",
+            "label": "Contact Information",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_agent_phone",
+            "label": "Primary Phone",
+            "name": "phone",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Primary phone number",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "(512) 555-0123",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_agent_mobile_phone",
+            "label": "Mobile Phone",
+            "name": "mobile_phone",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Mobile\/cell phone number",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "(512) 555-0456",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_agent_email",
+            "label": "Email Address",
+            "name": "email",
+            "aria-label": "",
+            "type": "email",
+            "instructions": "Primary email address",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "34",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "john.smith@realty.com",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_agent_website",
+            "label": "Personal Website",
+            "name": "website",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "Agent's personal website URL",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "https:\/\/johnsmithrealty.com"
+        },
+        {
+            "key": "field_agent_office_address",
+            "label": "Office Address",
+            "name": "office_address",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Agent's office address",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "123 Main Street\nAustin, TX 78701",
+            "maxlength": "",
+            "rows": 3,
+            "new_lines": "br"
+        },
+        {
+            "key": "field_agent_social_tab",
+            "label": "Social Media",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_agent_facebook_url",
+            "label": "Facebook URL",
+            "name": "facebook_url",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "Facebook profile or page URL",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "https:\/\/facebook.com\/johnsmithrealty"
+        },
+        {
+            "key": "field_agent_instagram_url",
+            "label": "Instagram URL",
+            "name": "instagram_url",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "Instagram profile URL",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "https:\/\/instagram.com\/johnsmithrealty"
+        },
+        {
+            "key": "field_agent_linkedin_url",
+            "label": "LinkedIn URL",
+            "name": "linkedin_url",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "LinkedIn profile URL",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "https:\/\/linkedin.com\/in\/johnsmith"
+        },
+        {
+            "key": "field_agent_twitter_url",
+            "label": "Twitter URL",
+            "name": "twitter_url",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "Twitter profile URL",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "https:\/\/twitter.com\/johnsmithrealty"
+        },
+        {
+            "key": "field_agent_youtube_url",
+            "label": "YouTube URL",
+            "name": "youtube_url",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "YouTube channel URL",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "https:\/\/youtube.com\/c\/johnsmithrealty"
+        },
+        {
+            "key": "field_agent_images_tab",
+            "label": "Photos",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_agent_profile_photo",
+            "label": "Profile Photo",
+            "name": "profile_photo",
+            "aria-label": "",
+            "type": "image",
+            "instructions": "Main profile photograph (headshot recommended)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array",
+            "preview_size": "medium",
+            "library": "all",
+            "min_width": 200,
+            "min_height": 200,
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": "jpg,jpeg,png,webp"
+        },
+        {
+            "key": "field_agent_cover_photo",
+            "label": "Cover Photo",
+            "name": "cover_photo",
+            "aria-label": "",
+            "type": "image",
+            "instructions": "Cover\/banner photo for agent profile page",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array",
+            "preview_size": "medium",
+            "library": "all",
+            "min_width": 1200,
+            "min_height": 400,
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": "jpg,jpeg,png,webp"
+        },
+        {
+            "key": "field_agent_team_photo",
+            "label": "Team Photo",
+            "name": "team_photo",
+            "aria-label": "",
+            "type": "image",
+            "instructions": "Photo with team members or office",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array",
+            "preview_size": "medium",
+            "library": "all",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": "jpg,jpeg,png,webp"
+        },
+        {
+            "key": "field_agent_specialties_tab",
+            "label": "Specialties & Skills",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_agent_specialties",
+            "label": "Specialties",
+            "name": "specialties",
+            "aria-label": "",
+            "type": "checkbox",
+            "instructions": "Agent's areas of specialization",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "first_time_buyers": "First-Time Home Buyers",
+                "luxury_homes": "Luxury Properties",
+                "commercial": "Commercial Real Estate",
+                "investment_properties": "Investment Properties",
+                "new_construction": "New Construction",
+                "condos": "Condominiums",
+                "land": "Land Sales",
+                "foreclosures": "Foreclosures\/REO",
+                "short_sales": "Short Sales",
+                "relocation": "Corporate Relocation",
+                "senior_housing": "Senior Housing",
+                "waterfront": "Waterfront Properties",
+                "equestrian": "Equestrian Properties",
+                "historic_homes": "Historic Homes",
+                "green_homes": "Green\/Sustainable Homes"
+            },
+            "allow_custom": 1,
+            "default_value": [],
+            "layout": "vertical",
+            "toggle": 0,
+            "return_format": "value",
+            "save_custom": 1,
+            "custom_choice_button_text": "Add new choice"
+        },
+        {
+            "key": "field_agent_languages",
+            "label": "Languages Spoken",
+            "name": "languages",
+            "aria-label": "",
+            "type": "checkbox",
+            "instructions": "Languages the agent speaks fluently",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "english": "English",
+                "spanish": "Spanish",
+                "french": "French",
+                "german": "German",
+                "italian": "Italian",
+                "portuguese": "Portuguese",
+                "mandarin": "Mandarin Chinese",
+                "japanese": "Japanese",
+                "korean": "Korean",
+                "arabic": "Arabic",
+                "russian": "Russian",
+                "hindi": "Hindi"
+            },
+            "allow_custom": 1,
+            "default_value": [
+                "english"
+            ],
+            "layout": "vertical",
+            "toggle": 0,
+            "return_format": "value",
+            "save_custom": 1,
+            "custom_choice_button_text": "Add new choice"
+        },
+        {
+            "key": "field_agent_certifications",
+            "label": "Certifications",
+            "name": "certifications",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "Professional certifications and designations",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "collapsed": "",
+            "min": 0,
+            "max": 20,
+            "layout": "table",
+            "button_label": "Add Certification",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_cert_name",
+                    "label": "Certification Name",
+                    "name": "name",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "40",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "placeholder": "GRI, CRS, ABR, etc.",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": "",
+                    "parent_repeater": "field_agent_certifications"
+                },
+                {
+                    "key": "field_cert_organization",
+                    "label": "Issuing Organization",
+                    "name": "organization",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "30",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "placeholder": "NAR, TREC, etc.",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": "",
+                    "parent_repeater": "field_agent_certifications"
+                },
+                {
+                    "key": "field_cert_year",
+                    "label": "Year Obtained",
+                    "name": "year",
+                    "aria-label": "",
+                    "type": "number",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "30",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "placeholder": 2020,
+                    "prepend": "",
+                    "append": "",
+                    "min": 1980,
+                    "max": 2030,
+                    "step": 1,
+                    "parent_repeater": "field_agent_certifications"
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "agent"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "acf_after_title",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Complete agent profile information including contact details and professional credentials",
+    "show_in_rest": 1,
+    "modified": 1755274804
+}

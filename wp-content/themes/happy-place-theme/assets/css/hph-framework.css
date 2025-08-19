@@ -1,0 +1,142 @@
+/* ================================================
+   HPH FRAMEWORK - HAPPY PLACE REAL ESTATE
+   Version 2.1.0
+   Main Framework Import File
+   
+   This file serves as the central import for all framework components.
+   Components are loaded in a specific order to ensure proper cascade
+   and dependency resolution.
+   ================================================ */
+
+
+/* ================================================
+   1. BASE / FOUNDATION
+   Core variables, resets, and typography must load first
+   ================================================ */
+@import url('framework/base/variables.css');
+@import url('framework/base/reset-enhanced.css');
+@import url('framework/base/reset.css');
+@import url('framework/base/typography.css');
+
+/* ================================================
+   1.5. BOOTSTRAP OVERRIDES
+   Override Bootstrap CSS variables with HPH variables
+   ================================================ */
+@import url('framework/bootstrap/bootstrap-overrides.css');
+
+/* ================================================
+   1.6. WORDPRESS OVERRIDES
+   Override WordPress core styles for complete control
+   ================================================ */
+@import url('framework/wordpress/wp-overrides.css');
+
+/* ================================================
+   2. LAYOUT SYSTEM
+   Core layout components and grid systems
+   ================================================ */
+@import url('framework/layouts/containers.css');
+@import url('framework/layouts/grids.css');
+@import url('framework/layouts/sections.css');
+@import url('framework/layouts/footers.css');
+/* Future: sidebars.css, headers.css */
+
+/* ================================================
+   3. COMPONENTS
+   Reusable UI components (only existing files)
+   ================================================ */
+@import url('framework/components/buttons.css');
+@import url('framework/components/cards.css');
+@import url('framework/components/forms.css');
+@import url('framework/components/modals.css');
+@import url('framework/components/badges.css');
+@import url('framework/components/alerts.css');
+@import url('framework/components/navigation.css');
+@import url('framework/components/tables.css');
+@import url('framework/components/tooltips.css');
+@import url('framework/components/loading.css');
+@import url('framework/components/carousels.css');
+
+/* ================================================
+   4. REAL ESTATE COMPONENTS
+   Industry-specific components (only existing files)
+   ================================================ */
+@import url('framework/real-estate/agent-card.css');
+@import url('framework/real-estate/property-gallery.css');
+@import url('framework/real-estate/map-components.css');
+@import url('framework/real-estate/price-displays.css');
+@import url('framework/real-estate/property-features.css');
+@import url('framework/real-estate/virtual-tour.css');
+@import url('framework/real-estate/open-house.css');
+@import url('framework/real-estate/mortgage-calculator.css');
+@import url('framework/real-estate/property-comparison.css');
+@import url('framework/real-estate/hero-sections.css');
+
+/* ================================================
+   5. UTILITIES
+   Helper classes and utility functions (enhanced system)
+   ================================================ */
+@import url('framework/utilities/spacing.css');
+@import url('framework/utilities/spacing-enhanced.css');
+@import url('framework/utilities/display-enhanced.css');
+@import url('framework/utilities/colors.css');
+@import url('framework/utilities/colors-borders.css');
+@import url('framework/utilities/layout.css');
+@import url('framework/utilities/effects.css');
+@import url('framework/utilities/effects-enhanced.css');
+@import url('framework/utilities/animations.css');
+@import url('framework/utilities/animations-enhanced.css');
+@import url('framework/utilities/responsive.css');
+@import url('framework/utilities/utilities.css');
+
+/* ================================================
+   6. INTERACTIVE COMPONENTS
+   Enhanced interactive UI components
+   ================================================ */
+@import url('framework/interactive/filters.css');
+@import url('framework/interactive/dropdowns.css');
+@import url('framework/interactive/sliders.css');
+/* Future: calendars.css, search.css */
+
+/* ================================================
+   7. STATE MANAGEMENT (Future)
+   Note: These files need to be created
+   ================================================ */
+/* @import url('framework/states/loading-states.css'); */
+/* @import url('framework/states/empty.css'); */
+/* @import url('framework/states/error.css'); */
+/* @import url('framework/states/success.css'); */
+/* @import url('framework/states/disabled.css'); */
+
+/* ================================================
+   8. WORDPRESS INTEGRATION (Future)
+   Note: These files need to be created
+   ================================================ */
+/* @import url('framework/wordpress/blocks.css'); */
+/* @import url('framework/wordpress/templates.css'); */
+/* @import url('framework/wordpress/admin-bar.css'); */
+/* @import url('framework/wordpress/widgets.css'); */
+
+/* ================================================
+   9. RESPONSIVE OVERRIDES (Future)
+   Note: These files need to be created
+   ================================================ */
+/* @import url('framework/responsive/mobile.css'); */
+/* @import url('framework/responsive/tablet.css'); */
+/* @import url('framework/responsive/desktop.css'); */
+/* @import url('framework/responsive/wide.css'); */
+
+/* ================================================
+   10. PRINT STYLES
+   Print-optimized styles for marketing materials
+   ================================================ */
+@import url('framework/print/property-flyer.css');
+/* Future: print.css, agent-profile.css */
+
+/* ================================================
+   CUSTOM OVERRIDES
+   Any custom CSS that overrides framework defaults
+   ================================================ */
+
+/* Custom theme overrides can be added here */
+
+/* File Location: /wp-content/themes/happy-place/assets/css/hph-framework.css */

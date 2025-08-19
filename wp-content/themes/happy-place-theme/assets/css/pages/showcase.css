@@ -1,0 +1,767 @@
+/* ================================================
+   FRAMEWORK SHOWCASE STYLES
+   Enhanced styling for the diagnostic showcase page
+   ================================================ */
+
+/* ================================================
+   HERO SECTION
+   ================================================ */
+
+.framework-showcase .hero-section {
+    background: linear-gradient(135deg, var(--hph-primary) 0%, var(--hph-primary-dark) 100%);
+    min-height: 90vh;
+    position: relative;
+}
+
+.framework-showcase .hero-background {
+    opacity: 0.1;
+}
+
+.framework-showcase .hero-gradient {
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+.framework-showcase .hero-pattern {
+    background-image: 
+        radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 1px, transparent 1px),
+        radial-gradient(circle at 80% 50%, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 50px 50px, 60px 60px;
+    animation: float 6s ease-in-out infinite;
+}
+
+.framework-showcase .min-vh-75 {
+    min-height: 75vh;
+}
+
+.framework-showcase .text-gradient {
+    background: linear-gradient(45deg, #fff 30%, rgba(255,255,255,0.8) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.framework-showcase .text-white-75 {
+    color: rgba(255,255,255,0.85);
+}
+
+.framework-showcase .btn-white {
+    background: rgba(255,255,255,0.95);
+    color: var(--hph-primary);
+    border: 2px solid rgba(255,255,255,0.3);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.framework-showcase .btn-white:hover {
+    background: #fff;
+    color: var(--hph-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.framework-showcase .btn-outline-white {
+    background: transparent;
+    color: #fff;
+    border: 2px solid rgba(255,255,255,0.5);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.framework-showcase .btn-outline-white:hover {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border-color: rgba(255,255,255,0.8);
+    transform: translateY(-2px);
+}
+
+/* ================================================
+   HERO STATS GRID
+   ================================================ */
+
+.framework-showcase .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.framework-showcase .stat-card {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: var(--hph-radius-lg);
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.framework-showcase .stat-card:hover {
+    background: rgba(255,255,255,0.15);
+    transform: translateY(-5px);
+}
+
+.framework-showcase .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+.framework-showcase .stat-label {
+    font-size: 0.875rem;
+    color: rgba(255,255,255,0.8);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ================================================
+   ENHANCED NAVIGATION
+   ================================================ */
+
+.framework-showcase .showcase-nav {
+    z-index: 1000;
+    border-bottom: 3px solid var(--hph-primary);
+}
+
+.framework-showcase .nav-pills .nav-link {
+    color: var(--hph-gray-600);
+    border-radius: var(--hph-radius-lg);
+    padding: 0.75rem 1.25rem;
+    margin: 0 0.25rem;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+.framework-showcase .nav-pills .nav-link:hover {
+    background: var(--hph-primary-100);
+    color: var(--hph-primary-700);
+    transform: translateY(-2px);
+}
+
+.framework-showcase .nav-pills .nav-link.active {
+    background: var(--hph-primary);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(81, 186, 224, 0.3);
+}
+
+.framework-showcase .search-container input {
+    border-radius: var(--hph-radius-lg);
+    border: 1px solid var(--hph-border-color);
+    padding-right: 2.5rem;
+}
+
+.framework-showcase .search-container input:focus {
+    border-color: var(--hph-primary);
+    box-shadow: 0 0 0 3px rgba(81, 186, 224, 0.1);
+}
+
+/* ================================================
+   THEME CUSTOMIZER PANEL
+   ================================================ */
+
+.framework-showcase .theme-customizer {
+    width: 320px;
+    z-index: 1050;
+    box-shadow: -5px 0 25px rgba(0,0,0,0.15);
+}
+
+.framework-showcase .customizer-header {
+    background: var(--hph-gray-50);
+    border-bottom: 1px solid var(--hph-border-color);
+}
+
+.framework-showcase .color-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+}
+
+.framework-showcase .color-option {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.framework-showcase .color-option:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.framework-showcase .color-option.active {
+    border-color: #fff;
+    box-shadow: 0 0 0 2px var(--hph-gray-400);
+}
+
+/* ================================================
+   SECTION LAYOUTS
+   ================================================ */
+
+.framework-showcase .section-header {
+    position: relative;
+    padding-bottom: 2rem;
+}
+
+.framework-showcase .section-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--hph-primary), var(--hph-secondary));
+    border-radius: 2px;
+}
+
+/* ================================================
+   METRIC CARDS
+   ================================================ */
+
+.framework-showcase .metric-card {
+    background: #fff;
+    border: 1px solid var(--hph-border-color);
+    border-radius: var(--hph-radius-xl);
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    height: 100%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.framework-showcase .metric-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border-color: var(--hph-primary);
+}
+
+.framework-showcase .metric-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--hph-primary-100);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    color: var(--hph-primary);
+    font-size: 1.5rem;
+}
+
+.framework-showcase .file-size-icon {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--hph-primary);
+}
+
+.framework-showcase .metric-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--hph-gray-900);
+    margin-bottom: 0.5rem;
+}
+
+.framework-showcase .metric-label {
+    color: var(--hph-gray-600);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ================================================
+   STATUS CARDS
+   ================================================ */
+
+.framework-showcase .status-card {
+    background: #fff;
+    border: 1px solid var(--hph-border-color);
+    border-radius: var(--hph-radius-xl);
+    padding: 2rem;
+    height: 100%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.framework-showcase .status-header {
+    display: flex;
+    align-items: center;
+    justify-content: between;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--hph-border-color-light);
+}
+
+.framework-showcase .status-grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.framework-showcase .status-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--hph-gray-50);
+    border-radius: var(--hph-radius-lg);
+    transition: all 0.3s ease;
+}
+
+.framework-showcase .status-item:hover {
+    background: var(--hph-primary-50);
+    transform: translateX(5px);
+}
+
+.framework-showcase .status-icon {
+    width: 40px;
+    height: 40px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.framework-showcase .status-content {
+    flex: 1;
+}
+
+.framework-showcase .status-title {
+    font-weight: 600;
+    color: var(--hph-gray-900);
+    margin-bottom: 0.25rem;
+}
+
+.framework-showcase .status-subtitle {
+    font-size: 0.875rem;
+    color: var(--hph-gray-600);
+}
+
+.framework-showcase .status-indicator {
+    font-size: 1.25rem;
+}
+
+/* ================================================
+   QUICK ACTIONS CARD
+   ================================================ */
+
+.framework-showcase .quick-actions-card {
+    background: #fff;
+    border: 1px solid var(--hph-border-color);
+    border-radius: var(--hph-radius-xl);
+    padding: 2rem;
+    height: 100%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.framework-showcase .quick-actions-card h5 {
+    color: var(--hph-gray-900);
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--hph-border-color-light);
+}
+
+.framework-showcase .quick-actions-card .btn {
+    border-radius: var(--hph-radius-lg);
+    padding: 0.75rem 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.framework-showcase .quick-actions-card .btn:hover {
+    transform: translateX(5px);
+}
+
+/* ================================================
+   COMPONENT SHOWCASE
+   ================================================ */
+
+.framework-showcase .component-categories {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3rem;
+}
+
+.framework-showcase .category-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    background: var(--hph-gray-100);
+    padding: 0.5rem;
+    border-radius: var(--hph-radius-xl);
+}
+
+.framework-showcase .category-pill {
+    background: transparent;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--hph-radius-lg);
+    color: var(--hph-gray-600);
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.framework-showcase .category-pill:hover {
+    background: rgba(255,255,255,0.7);
+    color: var(--hph-primary);
+}
+
+.framework-showcase .category-pill.active {
+    background: var(--hph-primary);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(81, 186, 224, 0.3);
+}
+
+.framework-showcase .component-showcase {
+    background: #fff;
+    border: 1px solid var(--hph-border-color);
+    border-radius: var(--hph-radius-xl);
+    margin-bottom: 3rem;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.framework-showcase .showcase-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 2rem;
+    background: var(--hph-gray-50);
+    border-bottom: 1px solid var(--hph-border-color);
+}
+
+.framework-showcase .component-demo {
+    background: var(--hph-gray-50);
+    border: 2px dashed var(--hph-border-color);
+}
+
+.framework-showcase .card-hover {
+    transition: all 0.3s ease;
+}
+
+.framework-showcase .card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* ================================================
+   CODE PREVIEW
+   ================================================ */
+
+.framework-showcase .code-preview {
+    background: var(--hph-gray-900);
+    border-radius: 0;
+    overflow: hidden;
+}
+
+.framework-showcase .code-preview.show {
+    display: block !important;
+}
+
+.framework-showcase .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    background: var(--hph-gray-800);
+    border-bottom: 1px solid var(--hph-gray-700);
+}
+
+.framework-showcase .code-language {
+    color: var(--hph-gray-300);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.framework-showcase .code-content {
+    margin: 0;
+    padding: 1.5rem;
+    background: var(--hph-gray-900);
+    color: var(--hph-gray-100);
+    font-family: var(--hph-font-mono);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    overflow-x: auto;
+}
+
+.framework-showcase .code-content code {
+    color: inherit;
+    background: none;
+}
+
+/* ================================================
+   REAL ESTATE COMPONENTS
+   ================================================ */
+
+.framework-showcase .calculator-card {
+    background: #fff;
+    border: 1px solid var(--hph-border-color);
+    border-radius: var(--hph-radius-xl);
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.framework-showcase .calculator-header {
+    padding: 1.5rem 2rem;
+    background: var(--hph-primary-50);
+    border-bottom: 1px solid var(--hph-primary-100);
+}
+
+.framework-showcase .calculator-body {
+    padding: 2rem;
+}
+
+.framework-showcase .calculator-results {
+    background: var(--hph-gray-50);
+    border-radius: var(--hph-radius-lg);
+    padding: 2rem;
+    margin-top: 1.5rem;
+}
+
+.framework-showcase .result-item {
+    padding: 1rem;
+    background: #fff;
+    border-radius: var(--hph-radius-md);
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+
+.framework-showcase .result-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.framework-showcase .result-label {
+    font-size: 0.875rem;
+    color: var(--hph-gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.framework-showcase .search-widget {
+    background: #fff;
+    border: 1px solid var(--hph-border-color);
+    border-radius: var(--hph-radius-xl);
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    height: fit-content;
+}
+
+.framework-showcase .search-header {
+    padding: 1.5rem 2rem;
+    background: var(--hph-secondary);
+    color: #fff;
+}
+
+.framework-showcase .search-body {
+    padding: 2rem;
+}
+
+/* ================================================
+   DIAGNOSTICS
+   ================================================ */
+
+.framework-showcase .diagnostic-card {
+    background: #fff;
+    border: 1px solid var(--hph-border-color);
+    border-radius: var(--hph-radius-xl);
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.framework-showcase .diagnostic-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 2rem;
+    background: var(--hph-gray-50);
+    border-bottom: 1px solid var(--hph-border-color);
+}
+
+.framework-showcase .diagnostic-content {
+    padding: 2rem;
+}
+
+.framework-showcase .variable-test {
+    padding: 1rem;
+    background: var(--hph-gray-50);
+    border-radius: var(--hph-radius-md);
+    border: 1px solid var(--hph-border-color-light);
+}
+
+.framework-showcase .color-sample {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--hph-gray-300);
+}
+
+.framework-showcase .font-sample {
+    font-weight: 600;
+    color: var(--hph-primary);
+}
+
+.framework-showcase .performance-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.framework-showcase .performance-item {
+    text-align: center;
+    padding: 1rem;
+    background: var(--hph-gray-50);
+    border-radius: var(--hph-radius-md);
+}
+
+.framework-showcase .performance-label {
+    font-size: 0.875rem;
+    color: var(--hph-gray-600);
+    margin-bottom: 0.5rem;
+}
+
+.framework-showcase .performance-value {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--hph-primary);
+}
+
+/* ================================================
+   ANIMATIONS
+   ================================================ */
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.framework-showcase .showcase-section {
+    scroll-margin-top: 120px;
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* ================================================
+   RESPONSIVE DESIGN
+   ================================================ */
+
+@media (max-width: 992px) {
+    .framework-showcase .stats-grid {
+        grid-template-columns: 1fr;
+        max-width: 250px;
+    }
+    
+    .framework-showcase .hero-section {
+        min-height: 70vh;
+    }
+    
+    .framework-showcase .min-vh-75 {
+        min-height: 60vh;
+    }
+    
+    .framework-showcase .theme-customizer {
+        width: 280px;
+    }
+}
+
+@media (max-width: 768px) {
+    .framework-showcase .nav-tools {
+        display: none;
+    }
+    
+    .framework-showcase .category-pills {
+        justify-content: center;
+    }
+    
+    .framework-showcase .showcase-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .framework-showcase .performance-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .framework-showcase .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .framework-showcase .stat-card {
+        padding: 1rem;
+    }
+    
+    .framework-showcase .stat-value {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .framework-showcase .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .framework-showcase .hero-actions .btn {
+        width: 100%;
+    }
+    
+    .framework-showcase .category-pills {
+        flex-direction: column;
+    }
+    
+    .framework-showcase .nav-pills {
+        flex-direction: column;
+    }
+    
+    .framework-showcase .nav-pills .nav-link {
+        margin: 0.25rem 0;
+    }
+}
+
+/* ================================================
+   DARK MODE SUPPORT
+   ================================================ */
+
+.dark-mode .framework-showcase .metric-card,
+.dark-mode .framework-showcase .status-card,
+.dark-mode .framework-showcase .quick-actions-card,
+.dark-mode .framework-showcase .component-showcase,
+.dark-mode .framework-showcase .calculator-card,
+.dark-mode .framework-showcase .search-widget,
+.dark-mode .framework-showcase .diagnostic-card {
+    background: var(--hph-gray-800);
+    border-color: var(--hph-gray-700);
+    color: var(--hph-gray-100);
+}
+
+.dark-mode .framework-showcase .showcase-nav {
+    background: var(--hph-gray-800);
+    border-color: var(--hph-gray-700);
+}
+
+.dark-mode .framework-showcase .theme-customizer {
+    background: var(--hph-gray-800);
+    border-color: var(--hph-gray-700);
+    color: var(--hph-gray-100);
+}
+
+/* File Location: /wp-content/themes/happy-place/assets/css/pages/showcase.css */

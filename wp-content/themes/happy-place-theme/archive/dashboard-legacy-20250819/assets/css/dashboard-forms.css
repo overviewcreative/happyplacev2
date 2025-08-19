@@ -1,0 +1,554 @@
+/* ================================================
+   DASHBOARD FORMS - MODERN UI ENHANCEMENTS
+   Comprehensive form styling for listing management
+   ================================================ */
+
+/* ================================================
+   FORM SECTIONS & LAYOUT
+   ================================================ */
+.listing-form-section {
+  background: var(--hph-white);
+  border-radius: var(--hph-radius-xl);
+  margin-bottom: var(--hph-dashboard-section-gap);
+  box-shadow: var(--hph-shadow-lg);
+  border: 1px solid var(--hph-border-color);
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.listing-form-section:hover {
+  box-shadow: var(--hph-shadow-xl);
+  transform: translateY(-2px);
+}
+
+.form-section-header {
+  background: linear-gradient(135deg, var(--hph-primary-50) 0%, var(--hph-primary-100) 100%);
+  padding: var(--hph-space-xl) var(--hph-space-2xl);
+  border-bottom: 1px solid var(--hph-border-color);
+  position: relative;
+}
+
+.form-section-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--hph-primary-500) 0%, var(--hph-primary-600) 100%);
+}
+
+.form-section-title {
+  font-size: var(--hph-text-xl);
+  font-weight: 700;
+  color: var(--hph-primary-700);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--hph-space-md);
+}
+
+.form-section-title [class*="hph-icon"] {
+  font-size: var(--hph-text-lg);
+  color: var(--hph-primary-600);
+}
+
+.form-section-content {
+  padding: var(--hph-dashboard-card-padding);
+}
+
+/* ================================================
+   ENHANCED FORM CONTROLS
+   ================================================ */
+.dashboard-form-group {
+  margin-bottom: var(--hph-dashboard-form-gap);
+  position: relative;
+}
+
+.dashboard-form-group:last-child {
+  margin-bottom: 0;
+}
+
+.dashboard-form-label {
+  display: block;
+  font-weight: 600;
+  color: var(--hph-gray-900);
+  margin-bottom: var(--hph-space-sm);
+  font-size: var(--hph-text-sm);
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+.dashboard-form-label.required::after {
+  content: '*';
+  color: var(--hph-danger-500);
+  margin-left: var(--hph-space-xs);
+}
+
+.dashboard-form-control {
+  width: 100%;
+  padding: var(--hph-space-md) var(--hph-space-lg);
+  border: 2px solid var(--hph-border-color);
+  border-radius: var(--hph-radius-lg);
+  font-size: var(--hph-text-base);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--hph-white);
+  color: var(--hph-gray-900);
+  font-family: inherit;
+  position: relative;
+  z-index: 1;
+}
+
+.dashboard-form-control:focus {
+  outline: none;
+  border-color: var(--hph-primary-500);
+  box-shadow: 0 0 0 4px rgba(81, 186, 224, 0.12);
+  background: var(--hph-primary-25);
+  transform: translateY(-1px);
+}
+
+.dashboard-form-control:hover:not(:focus) {
+  border-color: var(--hph-primary-300);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.dashboard-form-control::placeholder {
+  color: var(--hph-gray-500);
+  font-style: italic;
+}
+
+/* Select Styling */
+.dashboard-form-control select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 48px;
+}
+
+/* Textarea Styling */
+.dashboard-form-control textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.6;
+}
+
+/* ================================================
+   INPUT STATES & VALIDATION
+   ================================================ */
+.dashboard-form-group.has-error .dashboard-form-control {
+  border-color: var(--hph-danger-500);
+  background: var(--hph-danger-25);
+}
+
+.dashboard-form-group.has-error .dashboard-form-control:focus {
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
+}
+
+.dashboard-form-group.has-success .dashboard-form-control {
+  border-color: var(--hph-success-500);
+  background: var(--hph-success-25);
+}
+
+.dashboard-form-group.has-success .dashboard-form-control:focus {
+  box-shadow: 0 0 0 4px rgba(124, 155, 89, 0.12);
+}
+
+.form-error-message {
+  display: block;
+  color: var(--hph-danger-600);
+  font-size: var(--hph-text-xs);
+  margin-top: var(--hph-space-xs);
+  font-weight: 500;
+}
+
+.form-success-message {
+  display: block;
+  color: var(--hph-success-600);
+  font-size: var(--hph-text-xs);
+  margin-top: var(--hph-space-xs);
+  font-weight: 500;
+}
+
+.form-help-text {
+  display: block;
+  color: var(--hph-gray-500);
+  font-size: var(--hph-text-xs);
+  margin-top: var(--hph-space-xs);
+  line-height: 1.4;
+}
+
+/* ================================================
+   CHECKBOX & RADIO STYLING
+   ================================================ */
+.form-checkbox-group,
+.form-radio-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--hph-space-md);
+  padding: var(--hph-space-lg);
+  background: var(--hph-gray-25);
+  border-radius: var(--hph-radius-lg);
+  border: 1px solid var(--hph-border-color-light);
+}
+
+.form-checkbox-item,
+.form-radio-item {
+  display: flex;
+  align-items: center;
+  padding: var(--hph-space-sm) var(--hph-space-md);
+  background: var(--hph-white);
+  border-radius: var(--hph-radius-md);
+  border: 1px solid var(--hph-border-color-light);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.form-checkbox-item:hover,
+.form-radio-item:hover {
+  background: var(--hph-primary-25);
+  border-color: var(--hph-primary-300);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.form-checkbox-item input,
+.form-radio-item input {
+  margin-right: var(--hph-space-sm);
+  accent-color: var(--hph-primary-500);
+}
+
+/* ================================================
+   FILE UPLOAD STYLING
+   ================================================ */
+.file-upload-area {
+  border: 2px dashed var(--hph-border-color);
+  border-radius: var(--hph-radius-xl);
+  padding: var(--hph-space-3xl) var(--hph-space-xl);
+  text-align: center;
+  background: linear-gradient(135deg, var(--hph-gray-25) 0%, var(--hph-gray-50) 100%);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.file-upload-area:hover {
+  border-color: var(--hph-primary-400);
+  background: linear-gradient(135deg, var(--hph-primary-25) 0%, var(--hph-primary-50) 100%);
+  transform: translateY(-2px);
+}
+
+.file-upload-area.dragover {
+  border-color: var(--hph-primary-500);
+  background: linear-gradient(135deg, var(--hph-primary-50) 0%, var(--hph-primary-100) 100%);
+  box-shadow: 0 8px 32px rgba(81, 186, 224, 0.2);
+}
+
+.file-upload-icon {
+  font-size: 48px;
+  color: var(--hph-gray-400);
+  margin-bottom: var(--hph-space-md);
+  transition: all 0.3s ease;
+}
+
+.file-upload-area:hover .file-upload-icon {
+  color: var(--hph-primary-500);
+  transform: scale(1.1);
+}
+
+.file-upload-text {
+  font-size: var(--hph-text-lg);
+  font-weight: 600;
+  color: var(--hph-gray-600);
+  margin-bottom: var(--hph-space-sm);
+}
+
+.file-upload-subtext {
+  font-size: var(--hph-text-sm);
+  color: var(--hph-gray-500);
+}
+
+.file-upload-input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+/* ================================================
+   IMAGE PREVIEW GRID
+   ================================================ */
+.image-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--hph-space-md);
+  margin-top: var(--hph-space-lg);
+}
+
+.image-preview-item {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: var(--hph-radius-lg);
+  overflow: hidden;
+  border: 2px solid var(--hph-border-color-light);
+  transition: all 0.3s ease;
+}
+
+.image-preview-item:hover {
+  transform: scale(1.05);
+  box-shadow: var(--hph-shadow-lg);
+  border-color: var(--hph-primary-300);
+}
+
+.image-preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-preview-remove {
+  position: absolute;
+  top: var(--hph-space-xs);
+  right: var(--hph-space-xs);
+  background: var(--hph-danger-500);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0;
+}
+
+.image-preview-item:hover .image-preview-remove {
+  opacity: 1;
+}
+
+.image-preview-remove:hover {
+  background: var(--hph-danger-600);
+  transform: scale(1.1);
+}
+
+/* ================================================
+   FORM ACTIONS & BUTTONS
+   ================================================ */
+.form-actions {
+  background: linear-gradient(135deg, var(--hph-white) 0%, var(--hph-gray-50) 100%);
+  border-radius: var(--hph-radius-xl);
+  padding: var(--hph-dashboard-card-padding);
+  margin-top: var(--hph-dashboard-section-gap);
+  box-shadow: var(--hph-shadow-lg);
+  border: 1px solid var(--hph-border-color);
+  position: relative;
+}
+
+.form-actions::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--hph-success-400) 0%, var(--hph-success-600) 100%);
+}
+
+.form-actions .btn {
+  padding: var(--hph-space-lg) var(--hph-space-2xl);
+  font-size: var(--hph-text-base);
+  font-weight: 600;
+  border-radius: var(--hph-radius-lg);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: none;
+  letter-spacing: 0.025em;
+  position: relative;
+  overflow: hidden;
+  min-width: 140px;
+}
+
+.form-actions .btn:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.form-actions .btn:hover:before {
+  left: 100%;
+}
+
+.form-actions .btn-primary {
+  background: linear-gradient(135deg, var(--hph-primary-500) 0%, var(--hph-primary-600) 100%);
+  border: none;
+  color: white;
+  box-shadow: 0 4px 16px rgba(81, 186, 224, 0.3);
+}
+
+.form-actions .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(81, 186, 224, 0.4);
+}
+
+.form-actions .btn-secondary {
+  background: linear-gradient(135deg, var(--hph-gray-100) 0%, var(--hph-gray-200) 100%);
+  border: 1px solid var(--hph-border-color);
+  color: var(--hph-gray-700);
+}
+
+.form-actions .btn-secondary:hover {
+  background: linear-gradient(135deg, var(--hph-gray-200) 0%, var(--hph-gray-300) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* ================================================
+   PROGRESS INDICATORS
+   ================================================ */
+.form-progress {
+  margin-bottom: var(--hph-space-xl);
+}
+
+.form-progress-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--hph-gray-200);
+  border-radius: var(--hph-radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+.form-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--hph-primary-500) 0%, var(--hph-primary-600) 100%);
+  border-radius: var(--hph-radius-full);
+  transition: width 0.5s ease;
+  position: relative;
+}
+
+.form-progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ================================================
+   RESPONSIVE DESIGN
+   ================================================ */
+@media (max-width: 991px) {
+  .form-section-content {
+    padding: var(--hph-space-xl);
+  }
+  
+  .form-checkbox-group,
+  .form-radio-group {
+    grid-template-columns: 1fr;
+  }
+  
+  .image-preview-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .form-section-header {
+    padding: var(--hph-space-lg) var(--hph-space-xl);
+  }
+  
+  .form-section-content {
+    padding: var(--hph-space-lg);
+  }
+  
+  .form-actions {
+    padding: var(--hph-space-lg);
+  }
+  
+  .form-actions .btn {
+    width: 100%;
+    margin-bottom: var(--hph-space-sm);
+  }
+  
+  .dashboard-form-control {
+    padding: var(--hph-space-md);
+  }
+  
+  .image-preview-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+}
+
+/* ================================================
+   ANIMATION & MICRO-INTERACTIONS
+   ================================================ */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.listing-form-section {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.listing-form-section:nth-child(1) { animation-delay: 0.1s; }
+.listing-form-section:nth-child(2) { animation-delay: 0.2s; }
+.listing-form-section:nth-child(3) { animation-delay: 0.3s; }
+.listing-form-section:nth-child(4) { animation-delay: 0.4s; }
+
+/* ================================================
+   LOADING STATES
+   ================================================ */
+.dashboard-form-control.loading {
+  background-image: linear-gradient(90deg, transparent, rgba(81, 186, 224, 0.1), transparent);
+  background-size: 200% 100%;
+  animation: loading-shimmer 1.5s infinite;
+}
+
+@keyframes loading-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.btn.loading {
+  pointer-events: none;
+  position: relative;
+}
+
+.btn.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}

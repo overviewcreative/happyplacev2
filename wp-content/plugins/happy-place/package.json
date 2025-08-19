@@ -1,0 +1,62 @@
+{
+  "name": "happy-place",
+  "version": "3.0.0",
+  "description": "Advanced WordPress real estate platform with comprehensive property management, agent tools, marketing suite, and MLS compliance",
+  "main": "happy-place.php",
+  "scripts": {
+    "dev": "webpack --mode development --watch",
+    "build": "webpack --mode production",
+    "lint:js": "eslint src/js/**/*.js",
+    "lint:js:fix": "eslint src/js/**/*.js --fix",
+    "test": "jest",
+    "clean": "rm -rf dist node_modules package-lock.json"
+  },
+  "keywords": [
+    "wordpress",
+    "plugin",
+    "real-estate",
+    "mls",
+    "property-management",
+    "agent-dashboard",
+    "marketing-suite"
+  ],
+  "author": "The Parker Group",
+  "license": "GPL-2.0-or-later",
+  "dependencies": {
+    "@glidejs/glide": "^3.6.0",
+    "axios": "^1.10.0",
+    "chart.js": "^4.4.0",
+    "fabric": "^5.3.0",
+    "leaflet": "^1.9.4",
+    "sweetalert2": "^11.7.12"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.0",
+    "@babel/preset-env": "^7.25.0",
+    "@wordpress/eslint-plugin": "^17.0.0",
+    "autoprefixer": "^10.4.20",
+    "babel-loader": "^9.2.1",
+    "clean-webpack-plugin": "^4.0.0",
+    "css-loader": "^7.1.2",
+    "css-minimizer-webpack-plugin": "^7.0.2",
+    "eslint": "^8.57.1",
+    "jest": "^29.7.0",
+    "mini-css-extract-plugin": "^2.9.3",
+    "postcss": "^8.4.47",
+    "postcss-loader": "^8.1.1",
+    "sass": "^1.80.5",
+    "sass-loader": "^16.0.5",
+    "terser-webpack-plugin": "^5.3.14",
+    "webpack": "^5.101.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}

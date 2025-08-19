@@ -1,0 +1,582 @@
+/* ================================================
+   AGENT/TEAM CARD COMPONENT
+   Real Estate Agent and Team Card Styles
+   ================================================ */
+
+/* ================================================
+   BASE AGENT CARD
+   ================================================ */
+.agent-card {
+  position: relative;
+  background: var(--hph-white);
+  border-radius: var(--hph-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--hph-shadow-md);
+  transition: var(--hph-transition);
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.agent-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--hph-shadow-lg);
+}
+
+/* ================================================
+   AGENT CARD HEADER
+   ================================================ */
+.agent-card-header {
+  position: relative;
+  padding: 2rem 1.5rem 1rem;
+  background: linear-gradient(135deg, var(--hph-primary-100) 0%, var(--hph-primary-50) 100%);
+}
+
+/* Status Indicator */
+.agent-card-status {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: var(--hph-radius-full);
+  border: 2px solid var(--hph-white);
+  box-shadow: var(--hph-shadow-sm);
+  z-index: 2;
+}
+
+.agent-card-status.status-online {
+  background: var(--hph-agent-online);
+  animation: pulse-status 2s infinite;
+}
+
+.agent-card-status.status-busy {
+  background: var(--hph-agent-busy);
+}
+
+.agent-card-status.status-offline {
+  background: var(--hph-agent-offline);
+}
+
+/* Verified Badge */
+.agent-card-verified {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: var(--hph-agent-verified);
+  color: var(--hph-white);
+  border-radius: var(--hph-radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  box-shadow: var(--hph-shadow-sm);
+  z-index: 2;
+}
+
+.agent-card-verified::after {
+  content: "✓";
+  font-weight: bold;
+}
+
+/* ================================================
+   AGENT AVATAR
+   ================================================ */
+.agent-card-avatar-wrapper {
+  position: relative;
+  display: inline-block;
+  margin: 0 auto;
+}
+
+.agent-card-avatar {
+  width: 7rem;
+  height: 7rem;
+  border-radius: var(--hph-radius-full);
+  object-fit: cover;
+  border: 4px solid var(--hph-white);
+  box-shadow: var(--hph-shadow-lg);
+  background: var(--hph-gray-200);
+}
+
+/* Team Avatar Group */
+.agent-card-team-avatars {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  position: relative;
+  padding: 0 1rem;
+}
+
+.agent-card-team-avatars .agent-card-avatar {
+  width: 5rem;
+  height: 5rem;
+  margin: 0 -0.75rem;
+  border: 3px solid var(--hph-white);
+}
+
+.agent-card-team-avatars .agent-card-avatar:first-child {
+  z-index: 3;
+}
+
+.agent-card-team-avatars .agent-card-avatar:nth-child(2) {
+  z-index: 2;
+}
+
+.agent-card-team-avatars .agent-card-avatar:nth-child(3) {
+  z-index: 1;
+}
+
+.agent-card-team-count {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3rem;
+  height: 3rem;
+  background: var(--hph-primary);
+  color: var(--hph-white);
+  border-radius: var(--hph-radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: var(--hph-text-sm);
+  border: 3px solid var(--hph-white);
+  box-shadow: var(--hph-shadow-md);
+  z-index: 4;
+}
+
+/* ================================================
+   AGENT CARD BODY
+   ================================================ */
+.agent-card-body {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Name and Title */
+.agent-card-name {
+  font-size: var(--hph-text-xl);
+  font-weight: 700;
+  color: var(--hph-gray-900);
+  margin-bottom: 0.25rem;
+}
+
+.agent-card-title {
+  font-size: var(--hph-text-sm);
+  color: var(--hph-gray-600);
+  margin-bottom: 0.5rem;
+}
+
+.agent-card-company {
+  font-size: var(--hph-text-sm);
+  color: var(--hph-primary);
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+/* Specialties/Badges */
+.agent-card-specialties {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.agent-card-specialty {
+  padding: 0.25rem 0.625rem;
+  background: var(--hph-primary-100);
+  color: var(--hph-primary-700);
+  border-radius: var(--hph-radius-full);
+  font-size: var(--hph-text-xs);
+  font-weight: 500;
+}
+
+/* Rating */
+.agent-card-rating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.agent-card-stars {
+  display: flex;
+  gap: 0.125rem;
+}
+
+.agent-card-star {
+  width: 1rem;
+  height: 1rem;
+  color: var(--hph-warning);
+}
+
+.agent-card-star.filled {
+  fill: currentColor;
+}
+
+.agent-card-star.empty {
+  fill: none;
+  stroke: currentColor;
+  opacity: 0.3;
+}
+
+.agent-card-rating-text {
+  font-size: var(--hph-text-sm);
+  color: var(--hph-gray-600);
+}
+
+.agent-card-rating-count {
+  font-size: var(--hph-text-xs);
+  color: var(--hph-gray-500);
+}
+
+/* Stats */
+.agent-card-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--hph-border-color-light);
+  border-bottom: 1px solid var(--hph-border-color-light);
+  margin-bottom: 1rem;
+}
+
+.agent-card-stat {
+  text-align: center;
+}
+
+.agent-card-stat-value {
+  display: block;
+  font-size: var(--hph-text-xl);
+  font-weight: 700;
+  color: var(--hph-gray-900);
+  line-height: 1.2;
+}
+
+.agent-card-stat-label {
+  display: block;
+  font-size: var(--hph-text-xs);
+  color: var(--hph-gray-600);
+  margin-top: 0.25rem;
+}
+
+/* Bio */
+.agent-card-bio {
+  font-size: var(--hph-text-sm);
+  color: var(--hph-gray-700);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-align: left;
+}
+
+/* Languages */
+.agent-card-languages {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: var(--hph-text-sm);
+  color: var(--hph-gray-600);
+}
+
+.agent-card-languages-label {
+  font-weight: 500;
+}
+
+.agent-card-languages-list {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* ================================================
+   AGENT CARD ACTIONS
+   ================================================ */
+.agent-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+.agent-card-action {
+  flex: 1;
+  padding: 0.625rem;
+  background: var(--hph-white);
+  border: 1px solid var(--hph-border-color);
+  border-radius: var(--hph-radius-md);
+  color: var(--hph-gray-700);
+  font-size: var(--hph-text-sm);
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none;
+  transition: var(--hph-transition-fast);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+}
+
+.agent-card-action:hover {
+  background: var(--hph-primary);
+  border-color: var(--hph-primary);
+  color: var(--hph-white);
+  transform: translateY(-1px);
+}
+
+.agent-card-action.action-primary {
+  background: var(--hph-primary);
+  border-color: var(--hph-primary);
+  color: var(--hph-white);
+}
+
+.agent-card-action.action-primary:hover {
+  background: var(--hph-primary-dark);
+  border-color: var(--hph-primary-dark);
+}
+
+.agent-card-action-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* ================================================
+   AGENT CARD FOOTER
+   ================================================ */
+.agent-card-footer {
+  padding: 1rem 1.5rem;
+  background: var(--hph-gray-50);
+  border-top: 1px solid var(--hph-border-color-light);
+}
+
+/* Social Links */
+.agent-card-social {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.agent-card-social-link {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--hph-white);
+  border: 1px solid var(--hph-border-color);
+  border-radius: var(--hph-radius-full);
+  color: var(--hph-gray-600);
+  transition: var(--hph-transition-fast);
+  text-decoration: none;
+}
+
+.agent-card-social-link:hover {
+  background: var(--hph-primary);
+  border-color: var(--hph-primary);
+  color: var(--hph-white);
+  transform: scale(1.1);
+}
+
+/* Contact Info */
+.agent-card-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: var(--hph-text-sm);
+}
+
+.agent-card-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--hph-gray-700);
+}
+
+.agent-card-contact-icon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--hph-primary);
+}
+
+/* ================================================
+   AGENT CARD VARIANTS
+   ================================================ */
+
+/* Horizontal Layout */
+.agent-card.agent-card-horizontal {
+  flex-direction: row;
+  text-align: left;
+}
+
+.agent-card-horizontal .agent-card-header {
+  width: 200px;
+  background: var(--hph-gray-50);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.agent-card-horizontal .agent-card-body {
+  flex: 1;
+}
+
+.agent-card-horizontal .agent-card-specialties,
+.agent-card-horizontal .agent-card-rating {
+  justify-content: flex-start;
+}
+
+/* Compact Variant */
+.agent-card.agent-card-compact {
+  padding: 1rem;
+}
+
+.agent-card-compact .agent-card-avatar {
+  width: 5rem;
+  height: 5rem;
+}
+
+.agent-card-compact .agent-card-name {
+  font-size: var(--hph-text-lg);
+}
+
+.agent-card-compact .agent-card-bio,
+.agent-card-compact .agent-card-stats {
+  display: none;
+}
+
+/* Mini Variant */
+.agent-card.agent-card-mini {
+  flex-direction: row;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.agent-card-mini .agent-card-header {
+  background: transparent;
+  padding: 0;
+  margin-right: 0.75rem;
+}
+
+.agent-card-mini .agent-card-avatar {
+  width: 3rem;
+  height: 3rem;
+}
+
+.agent-card-mini .agent-card-body {
+  padding: 0;
+}
+
+.agent-card-mini .agent-card-name {
+  font-size: var(--hph-text-base);
+  margin-bottom: 0.125rem;
+}
+
+.agent-card-mini .agent-card-title {
+  font-size: var(--hph-text-xs);
+}
+
+.agent-card-mini .agent-card-bio,
+.agent-card-mini .agent-card-stats,
+.agent-card-mini .agent-card-specialties,
+.agent-card-mini .agent-card-rating,
+.agent-card-mini .agent-card-actions,
+.agent-card-mini .agent-card-footer {
+  display: none;
+}
+
+/* ================================================
+   AGENT CARD GRID
+   ================================================ */
+.agent-card-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.agent-card-grid.grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.agent-card-grid.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.agent-card-grid.grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* ================================================
+   LOADING STATE
+   ================================================ */
+.agent-card.is-loading .agent-card-avatar,
+.agent-card.is-loading .agent-card-name,
+.agent-card.is-loading .agent-card-title,
+.agent-card.is-loading .agent-card-bio {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  color: transparent;
+}
+
+/* ================================================
+   RESPONSIVE
+   ================================================ */
+@media (max-width: 768px) {
+  .agent-card-grid.grid-3,
+  .agent-card-grid.grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .agent-card-horizontal {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .agent-card-horizontal .agent-card-header {
+    width: 100%;
+  }
+  
+  .agent-card-horizontal .agent-card-specialties,
+  .agent-card-horizontal .agent-card-rating {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .agent-card-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .agent-card-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ================================================
+   ANIMATIONS
+   ================================================ */
+@keyframes pulse-status {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+/* File Location: /wp-content/themes/happy-place/assets/css/framework/real-estate/agent-card.css */
