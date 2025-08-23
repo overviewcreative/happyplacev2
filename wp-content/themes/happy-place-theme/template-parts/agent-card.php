@@ -84,20 +84,20 @@ $agent_listings = hpt_get_agent_listings(get_the_ID(), 3);
         <?php endif; ?>
         
         <div class="card-actions">
-            <a href="<?php the_permalink(); ?>" class="btn btn-primary btn-block">
+            <a href="<?php the_permalink(); ?>" class="btn btn-primary hph-btn-block">
                 <?php esc_html_e('View Profile', 'happy-place-theme'); ?>
             </a>
             
             <div class="contact-buttons grid grid-cols-2 gap-2 mt-3">
                 <?php if (!empty($agent_data['phone'])) : ?>
-                    <a href="tel:<?php echo esc_attr($agent_data['phone']); ?>" class="btn btn-outline btn-sm">
+                    <a href="tel:<?php echo esc_attr($agent_data['phone']); ?>" class="btn btn-outline hph-btn-sm">
                         <i class="fas fa-phone mr-1"></i>
                         <?php esc_html_e('Call', 'happy-place-theme'); ?>
                     </a>
                 <?php endif; ?>
                 
                 <?php if (!empty($agent_data['email'])) : ?>
-                    <a href="mailto:<?php echo esc_attr($agent_data['email']); ?>" class="btn btn-outline btn-sm">
+                    <a href="mailto:<?php echo esc_attr($agent_data['email']); ?>" class="btn btn-outline hph-btn-sm">
                         <i class="fas fa-envelope mr-1"></i>
                         <?php esc_html_e('Email', 'happy-place-theme'); ?>
                     </a>

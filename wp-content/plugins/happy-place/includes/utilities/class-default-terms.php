@@ -66,7 +66,7 @@ class Default_Terms {
         foreach ($property_statuses as $slug => $data) {
             $term = term_exists($slug, 'property_status');
             if (!$term) {
-                wp_insert_term(
+                $result = wp_insert_term(
                     $data['name'],
                     'property_status',
                     [
@@ -74,7 +74,13 @@ class Default_Terms {
                         'description' => $data['description']
                     ]
                 );
-                hp_log("Created property status term: {$data['name']}", 'info', 'DEFAULT_TERMS');
+                
+                // Check if wp_insert_term was successful
+                if (is_wp_error($result)) {
+                    hp_log("Failed to create property status term '{$data['name']}': " . $result->get_error_message(), 'error', 'DEFAULT_TERMS');
+                } else {
+                    hp_log("Created property status term: {$data['name']}", 'info', 'DEFAULT_TERMS');
+                }
             }
         }
     }
@@ -121,7 +127,7 @@ class Default_Terms {
         foreach ($property_types as $slug => $data) {
             $term = term_exists($slug, 'property_type');
             if (!$term) {
-                wp_insert_term(
+                $result = wp_insert_term(
                     $data['name'],
                     'property_type',
                     [
@@ -129,7 +135,13 @@ class Default_Terms {
                         'description' => $data['description']
                     ]
                 );
-                hp_log("Created property type term: {$data['name']}", 'info', 'DEFAULT_TERMS');
+                
+                // Check if wp_insert_term was successful
+                if (is_wp_error($result)) {
+                    hp_log("Failed to create property type term '{$data['name']}': " . $result->get_error_message(), 'error', 'DEFAULT_TERMS');
+                } else {
+                    hp_log("Created property type term: {$data['name']}", 'info', 'DEFAULT_TERMS');
+                }
             }
         }
     }
@@ -171,34 +183,47 @@ class Default_Terms {
         
         foreach ($feature_categories as $category => $features) {
             // Create parent category
-            $parent_term = term_exists($category, 'listing_features');
+            $parent_term = term_exists($category, 'property_features');
             if (!$parent_term) {
                 $parent_result = wp_insert_term(
                     ucfirst($category) . ' Features',
-                    'listing_features',
+                    'property_features',
                     [
                         'slug' => $category,
                         'description' => ucfirst($category) . ' property features'
                     ]
                 );
-                $parent_id = $parent_result['term_id'] ?? 0;
+                
+                // Check if wp_insert_term was successful
+                if (is_wp_error($parent_result)) {
+                    hp_log("Failed to create parent category '{$category}': " . $parent_result->get_error_message(), 'error', 'DEFAULT_TERMS');
+                    $parent_id = 0;
+                } else {
+                    $parent_id = $parent_result['term_id'] ?? 0;
+                }
             } else {
                 $parent_id = $parent_term['term_id'];
             }
             
             // Create child features
             foreach ($features as $slug => $name) {
-                $term = term_exists($slug, 'listing_features');
+                $term = term_exists($slug, 'property_features');
                 if (!$term) {
-                    wp_insert_term(
+                    $result = wp_insert_term(
                         $name,
-                        'listing_features',
+                        'property_features',
                         [
                             'slug' => $slug,
                             'parent' => $parent_id
                         ]
                     );
-                    hp_log("Created listing feature term: {$name}", 'info', 'DEFAULT_TERMS');
+                    
+                    // Check if wp_insert_term was successful
+                    if (is_wp_error($result)) {
+                        hp_log("Failed to create listing feature term '{$name}': " . $result->get_error_message(), 'error', 'DEFAULT_TERMS');
+                    } else {
+                        hp_log("Created listing feature term: {$name}", 'info', 'DEFAULT_TERMS');
+                    }
                 }
             }
         }

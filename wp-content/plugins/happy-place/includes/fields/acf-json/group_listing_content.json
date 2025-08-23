@@ -1,0 +1,150 @@
+{
+    "key": "group_listing_content",
+    "title": "Listing - Description & Marketing",
+    "fields": [
+        {
+            "key": "field_property_title",
+            "label": "Marketing Title",
+            "name": "property_title",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Optional: Override default title (uses address if blank)",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "100",
+                "class": "",
+                "id": ""
+            },
+            "maxlength": 100,
+            "placeholder": "Stunning Waterfront Estate in Georgetown",
+            "default_value": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_property_description",
+            "label": "Property Description",
+            "name": "property_description",
+            "aria-label": "",
+            "type": "wysiwyg",
+            "instructions": "Main marketing description",
+            "required": 1,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 1,
+            "delay": 1,
+            "default_value": ""
+        },
+        {
+            "key": "field_property_highlights",
+            "label": "Key Highlights",
+            "name": "property_highlights",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "3-5 bullet points for property overview",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "min": 0,
+            "max": 5,
+            "layout": "table",
+            "button_label": "Add Highlight",
+            "rows_per_page": 20,
+            "collapsed": "",
+            "sub_fields": [
+                {
+                    "key": "field_highlight_text",
+                    "label": "Highlight",
+                    "name": "text",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": false,
+                    "conditional_logic": false,
+                    "wrapper": {
+                        "width": "100",
+                        "class": "",
+                        "id": ""
+                    },
+                    "placeholder": "Newly renovated kitchen with quartz countertops",
+                    "parent_repeater": "field_property_highlights",
+                    "default_value": "",
+                    "maxlength": "",
+                    "prepend": "",
+                    "append": ""
+                }
+            ]
+        },
+        {
+            "key": "field_showing_instructions",
+            "label": "Showing Instructions",
+            "name": "showing_instructions",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Special instructions for showing agents",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "rows": 3,
+            "placeholder": "Call listing agent 2 hours before showing. Lockbox on back door.",
+            "default_value": "",
+            "new_lines": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_internal_notes",
+            "label": "Internal Notes",
+            "name": "internal_notes",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Private notes (not displayed publicly)",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "rows": 3,
+            "placeholder": "Agent notes, special circumstances, etc.",
+            "default_value": "",
+            "new_lines": "",
+            "maxlength": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "listing"
+            }
+        ]
+    ],
+    "menu_order": 3,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": [],
+    "active": true,
+    "description": "Marketing content and descriptions",
+    "show_in_rest": 1,
+    "modified": 1755987555,
+    "local_file": "C:UserspatLocal Siteshappy-place30apppublicwp-contentpluginshappy-place\/includes\/fields\/acf-json\/group_listing_content.json"
+}

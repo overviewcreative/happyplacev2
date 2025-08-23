@@ -276,7 +276,7 @@ class Open_House_Field_Mapper {
             $listing = get_post($listing_id);
             if ($listing) {
                 $airtable_data['Listing Address'] = get_field('street_address', $listing_id) ?: $listing->post_title;
-                $airtable_data['Listing Price'] = get_field('price', $listing_id);
+                $airtable_data['Listing Price'] = get_field('listing_price', $listing_id);
             }
         }
 

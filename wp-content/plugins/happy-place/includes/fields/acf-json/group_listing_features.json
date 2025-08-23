@@ -152,13 +152,13 @@
         },
         {
             "key": "field_amenities_tab",
-            "label": "Special Amenities",
+            "label": "🏊 Amenities & Recreation",
             "name": "",
             "aria-label": "",
             "type": "tab",
             "instructions": "",
             "required": 0,
-            "conditional_logic": 0,
+            "conditional_logic": false,
             "wrapper": {
                 "width": "",
                 "class": "",
@@ -394,5 +394,6 @@
     "active": true,
     "description": "Property features, amenities, and special characteristics",
     "show_in_rest": 1,
-    "modified": 1755274808
+    "modified": 1755987556,
+    "local_file": "C:UserspatLocal Siteshappy-place30apppublicwp-contentpluginshappy-place\/includes\/fields\/acf-json\/group_listing_features.json"
 }

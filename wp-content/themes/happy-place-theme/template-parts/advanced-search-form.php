@@ -13,13 +13,13 @@
         
         <!-- Search Type Tabs -->
         <div class="search-tabs flex border-b border-gray-200 mb-6">
-            <button type="button" class="search-tab-btn px-6 py-3 text-sm font-medium border-b-2 border-primary text-primary bg-primary-light" data-type="buy">
+            <button type="button" class="search-tab-hph-btn px-6 py-3 text-sm font-medium border-b-2 border-primary text-primary bg-primary-light" data-type="buy">
                 <?php esc_html_e('Buy', 'happy-place-theme'); ?>
             </button>
-            <button type="button" class="search-tab-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-primary" data-type="rent">
+            <button type="button" class="search-tab-hph-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-primary" data-type="rent">
                 <?php esc_html_e('Rent', 'happy-place-theme'); ?>
             </button>
-            <button type="button" class="search-tab-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-primary" data-type="sold">
+            <button type="button" class="search-tab-hph-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-primary" data-type="sold">
                 <?php esc_html_e('Sold', 'happy-place-theme'); ?>
             </button>
         </div>
@@ -76,7 +76,7 @@
         
         <!-- Advanced Filters (Collapsible) -->
         <div class="advanced-filters-toggle mb-4">
-            <button type="button" class="advanced-toggle-btn text-primary hover:text-primary-dark flex items-center gap-2" onclick="toggleAdvancedFilters()">
+            <button type="button" class="advanced-toggle-hph-btn text-primary hover:text-primary-dark flex items-center gap-2" onclick="toggleAdvancedFilters()">
                 <span><?php esc_html_e('More Filters', 'happy-place-theme'); ?></span>
                 <i class="fas fa-chevron-down transition-transform" id="advanced-toggle-icon"></i>
             </button>
@@ -166,11 +166,11 @@
         
         <!-- Search Button -->
         <div class="search-actions flex gap-4">
-            <button type="submit" class="btn btn-primary flex-1 flex items-center justify-center gap-2">
+            <button type="submit" class="btn hph-btn-primary flex-1 flex items-center justify-center gap-2">
                 <i class="fas fa-search"></i>
                 <?php esc_html_e('Search Properties', 'happy-place-theme'); ?>
             </button>
-            <button type="button" class="btn btn-outline" onclick="resetForm()">
+            <button type="button" class="btn hph-btn-outline" onclick="resetForm()">
                 <?php esc_html_e('Reset', 'happy-place-theme'); ?>
             </button>
         </div>

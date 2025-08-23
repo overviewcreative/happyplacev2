@@ -422,9 +422,9 @@ class Marketing_Generator {
         }
 
         // Get ACF fields
-        $price = get_field('price', $listing_id) ?: 0;
+        $price = get_field('listing_price', $listing_id) ?: 0;
         $bedrooms = get_field('bedrooms', $listing_id) ?: 0;
-        $bathrooms = get_field('bathrooms', $listing_id) ?: 0;
+        $bathrooms = get_field('bathrooms_full', $listing_id) ?: 0;
         $square_feet = get_field('square_feet', $listing_id) ?: 0;
         $address = get_field('street_address', $listing_id) ?: $listing->post_title;
         $city = get_field('city', $listing_id) ?: '';
@@ -459,7 +459,7 @@ class Marketing_Generator {
             'agent_name' => $agent_name,
             'agent_phone' => $agent_phone,
             'agent_email' => $agent_email,
-            'featured_image' => get_field('featured_image', $listing_id)
+            'featured_image' => get_field('primary_photo', $listing_id)
         ];
     }
 

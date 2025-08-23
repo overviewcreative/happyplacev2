@@ -1,0 +1,112 @@
+{
+    "key": "group_listing_agent",
+    "title": "Listing - Agent Information",
+    "fields": [
+        {
+            "key": "field_listing_agent",
+            "label": "Listing Agent",
+            "name": "listing_agent",
+            "aria-label": "",
+            "type": "user",
+            "instructions": "Primary listing agent",
+            "required": 1,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "role": [
+                "agent",
+                "administrator"
+            ],
+            "allow_null": 0,
+            "multiple": 0,
+            "return_format": "id",
+            "bidirectional_target": []
+        },
+        {
+            "key": "field_co_listing_agent",
+            "label": "Co-Listing Agent",
+            "name": "co_listing_agent",
+            "aria-label": "",
+            "type": "user",
+            "instructions": "Optional co-listing agent",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "role": [
+                "agent",
+                "administrator"
+            ],
+            "allow_null": 1,
+            "multiple": 0,
+            "return_format": "id",
+            "bidirectional_target": []
+        },
+        {
+            "key": "field_listing_office",
+            "label": "Listing Office",
+            "name": "listing_office",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Brokerage name",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Happy Place Homes",
+            "placeholder": "Happy Place Homes",
+            "maxlength": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_listing_office_phone",
+            "label": "Office Phone",
+            "name": "listing_office_phone",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "placeholder": "(302) 555-0123",
+            "default_value": "",
+            "maxlength": "",
+            "prepend": "",
+            "append": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "listing"
+            }
+        ]
+    ],
+    "menu_order": 7,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": [],
+    "active": true,
+    "description": "Agent and office information",
+    "show_in_rest": 1,
+    "modified": 1755987555,
+    "local_file": "C:UserspatLocal Siteshappy-place30apppublicwp-contentpluginshappy-place\/includes\/fields\/acf-json\/group_listing_agent.json"
+}

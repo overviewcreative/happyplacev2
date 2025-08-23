@@ -1,0 +1,651 @@
+/* ================================================
+   TABLE COMPONENTS
+   Data Tables, Responsive Tables, and Table Variants
+   ================================================ */
+
+/* ================================================
+   BASE TABLE
+   ================================================ */
+.hph-table {
+  width: 100%;
+  margin-bottom: 1rem;
+  background: var(--hph-white);
+  border-collapse: collapse;
+}
+
+.hph-table th,
+.hph-table td {
+  padding: 0.75rem;
+  vertical-align: top;
+  border-top: 1px solid var(--hph-border-color-light);
+}
+
+.hph-table thead th {
+  vertical-align: bottom;
+  border-bottom: 2px solid var(--hph-border-color);
+  font-weight: 600;
+  color: var(--hph-gray-900);
+  background: var(--hph-gray-50);
+  text-transform: uppercase;
+  font-size: var(--hph-text-xs);
+  letter-spacing: 0.05em;
+}
+
+.hph-table tbody + tbody {
+  border-top: 2px solid var(--hph-border-color);
+}
+
+/* ================================================
+   TABLE VARIANTS
+   ================================================ */
+
+/* Striped Table */
+.hph-table-striped tbody tr:nth-of-type(odd) {
+  background: var(--hph-gray-50);
+}
+
+/* Bordered Table */
+.hph-table-bordered {
+  border: 1px solid var(--hph-border-color);
+}
+
+.hph-table-bordered th,
+.hph-table-bordered td {
+  border: 1px solid var(--hph-border-color);
+}
+
+.hph-table-bordered thead th {
+  border-bottom-width: 2px;
+}
+
+/* Borderless Table */
+.hph-table-borderless th,
+.hph-table-borderless td,
+.hph-table-borderless thead th,
+.hph-table-borderless tbody + tbody {
+  border: 0;
+}
+
+/* Hoverable Table */
+.hph-table-hover tbody tr {
+  transition: var(--hph-transition-fast);
+}
+
+.hph-table-hover tbody tr:hover {
+  background: var(--hph-primary-50);
+  cursor: pointer;
+}
+
+/* Compact Table */
+.hph-table-sm th,
+.hph-table-sm td {
+  padding: 0.375rem;
+}
+
+/* Large Table */
+.hph-table-lg th,
+.hph-table-lg td {
+  padding: 1rem;
+}
+
+/* Dark Table */
+.hph-table-dark {
+  color: var(--hph-white);
+  background: var(--hph-gray-900);
+}
+
+.hph-table-dark th,
+.hph-table-dark td,
+.hph-table-dark thead th {
+  border-color: var(--hph-gray-700);
+}
+
+.hph-table-dark thead th {
+  background: var(--hph-gray-800);
+  color: var(--hph-white);
+}
+
+.hph-table-dark.hph-table-striped tbody tr:nth-of-type(odd) {
+  background: var(--hph-gray-800);
+}
+
+.hph-table-dark.hph-table-hover tbody tr:hover {
+  background: var(--hph-gray-700);
+}
+
+/* ================================================
+   TABLE CONTEXTUAL CLASSES
+   ================================================ */
+.hph-table-active {
+  background: var(--hph-gray-100) !important;
+}
+
+.hph-table-primary {
+  background: var(--hph-primary-100) !important;
+}
+
+.hph-table-success {
+  background: rgba(16, 185, 129, 0.1) !important;
+}
+
+.hph-table-warning {
+  background: rgba(245, 158, 11, 0.1) !important;
+}
+
+.hph-table-danger {
+  background: rgba(239, 68, 68, 0.1) !important;
+}
+
+.hph-table-info {
+  background: rgba(59, 130, 246, 0.1) !important;
+}
+
+/* ================================================
+   TABLE RESPONSIVE WRAPPER
+   ================================================ */
+.hph-table-responsive {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.hph-table-responsive > .hph-table {
+  margin-bottom: 0;
+}
+
+/* Custom Scrollbar */
+.hph-table-responsive::-webkit-scrollbar {
+  height: 8px;
+}
+
+.hph-table-responsive::-webkit-scrollbar-track {
+  background: var(--hph-gray-100);
+  border-radius: var(--hph-radius-full);
+}
+
+.hph-table-responsive::-webkit-scrollbar-thumb {
+  background: var(--hph-gray-400);
+  border-radius: var(--hph-radius-full);
+}
+
+.hph-table-responsive::-webkit-scrollbar-thumb:hover {
+  background: var(--hph-gray-500);
+}
+
+/* ================================================
+   TABLE WITH FIXED HEADER
+   ================================================ */
+.hph-table-fixed-header {
+  position: relative;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.hph-table-fixed-header .hph-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--hph-white);
+}
+
+.hph-table-fixed-header .hph-table thead th {
+  background: var(--hph-gray-50);
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* ================================================
+   TABLE ACTIONS
+   ================================================ */
+.hph-table-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.hph-table-action-btn {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--hph-border-color);
+  border-radius: var(--hph-radius-md);
+  color: var(--hph-gray-600);
+  cursor: pointer;
+  transition: var(--hph-transition-fast);
+}
+
+.hph-table-action-btn:hover {
+  background: var(--hph-gray-50);
+  border-color: var(--hph-primary);
+  color: var(--hph-primary);
+}
+
+.hph-table-action-btn-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* ================================================
+   TABLE WITH CHECKBOXES
+   ================================================ */
+.hph-table-checkbox {
+  width: 40px;
+  text-align: center;
+}
+
+.hph-table-checkbox input[type="checkbox"] {
+  margin: 0;
+  cursor: pointer;
+}
+
+.hph-table-row-selected {
+  background: var(--hph-primary-50) !important;
+}
+
+/* ================================================
+   SORTABLE TABLE
+   ================================================ */
+.hph-table-sortable th {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  padding-right: 2rem;
+}
+
+.hph-table-sortable th:hover {
+  background: var(--hph-gray-100);
+}
+
+.hph-table-sort-icon {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  opacity: 0.3;
+  transition: var(--hph-transition-fast);
+}
+
+.hph-table-sortable th:hover .hph-table-sort-icon {
+  opacity: 0.6;
+}
+
+.hph-table-sortable th.is-sorted-asc .hph-table-sort-icon,
+.hph-table-sortable th.is-sorted-desc .hph-table-sort-icon {
+  opacity: 1;
+  color: var(--hph-primary);
+}
+
+.hph-table-sortable th.is-sorted-desc .hph-table-sort-icon {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+/* ================================================
+   TABLE FILTERS
+   ================================================ */
+.hph-table-filters {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--hph-gray-50);
+  border: 1px solid var(--hph-border-color);
+  border-radius: var(--hph-radius-lg) var(--hph-radius-lg) 0 0;
+  border-bottom: none;
+}
+
+.hph-table-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hph-table-filter-label {
+  font-size: var(--hph-text-sm);
+  font-weight: 500;
+  color: var(--hph-gray-700);
+}
+
+.hph-table-search {
+  margin-left: auto;
+  position: relative;
+}
+
+.hph-table-search-input {
+  padding: 0.375rem 0.75rem;
+  padding-left: 2rem;
+  border: 1px solid var(--hph-border-color);
+  border-radius: var(--hph-radius-md);
+  font-size: var(--hph-text-sm);
+  width: 200px;
+}
+
+.hph-table-search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  color: var(--hph-gray-400);
+}
+
+/* ================================================
+   TABLE PAGINATION
+   ================================================ */
+.hph-table-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: var(--hph-gray-50);
+  border: 1px solid var(--hph-border-color);
+  border-radius: 0 0 var(--hph-radius-lg) var(--hph-radius-lg);
+  border-top: none;
+}
+
+.hph-table-pagination-info {
+  font-size: var(--hph-text-sm);
+  color: var(--hph-gray-600);
+}
+
+.hph-table-pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ================================================
+   DATA TABLE CARD
+   ================================================ */
+.hph-table-card {
+  background: var(--hph-white);
+  border: 1px solid var(--hph-border-color);
+  border-radius: var(--hph-radius-lg);
+  overflow: hidden;
+}
+
+.hph-table-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: var(--hph-gray-50);
+  border-bottom: 1px solid var(--hph-border-color);
+}
+
+.hph-table-card-title {
+  font-size: var(--hph-text-lg);
+  font-weight: 600;
+  color: var(--hph-gray-900);
+}
+
+.hph-table-card-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.hph-table-card-body {
+  overflow-x: auto;
+}
+
+.hph-table-card-body .hph-table {
+  margin-bottom: 0;
+}
+
+.hph-table-card-footer {
+  padding: 1rem 1.5rem;
+  background: var(--hph-gray-50);
+  border-top: 1px solid var(--hph-border-color);
+}
+
+/* ================================================
+   PROPERTY LISTINGS TABLE
+   ================================================ */
+.hph-table-listings th,
+.hph-table-listings td {
+  white-space: nowrap;
+}
+
+.hph-table-listing-image {
+  width: 60px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: var(--hph-radius-md);
+}
+
+.hph-table-listing-address {
+  display: flex;
+  flex-direction: column;
+}
+
+.hph-table-listing-street {
+  font-weight: 600;
+  color: var(--hph-gray-900);
+}
+
+.hph-table-listing-city {
+  font-size: var(--hph-text-sm);
+  color: var(--hph-gray-600);
+}
+
+.hph-table-listing-price {
+  font-weight: 700;
+  color: var(--hph-primary);
+}
+
+.hph-table-listing-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--hph-radius-full);
+  font-size: var(--hph-text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.hph-table-listing-status-active {
+  background: var(--hph-success-light);
+  color: var(--hph-white);
+}
+
+.hph-table-listing-status-pending {
+  background: var(--hph-warning-light);
+  color: var(--hph-white);
+}
+
+.hph-table-listing-status-sold {
+  background: var(--hph-gray-600);
+  color: var(--hph-white);
+}
+
+/* ================================================
+   COMPARISON TABLE
+   ================================================ */
+.hph-table-comparison {
+  table-layout: fixed;
+}
+
+.hph-table-comparison thead th:first-child {
+  width: 200px;
+  background: var(--hph-gray-100);
+}
+
+.hph-table-comparison tbody th {
+  text-align: left;
+  font-weight: 500;
+  background: var(--hph-gray-50);
+  color: var(--hph-gray-700);
+}
+
+.hph-table-comparison td {
+  text-align: center;
+}
+
+.hph-table-comparison-highlight {
+  background: var(--hph-primary-50);
+  position: relative;
+}
+
+.hph-table-comparison-highlight::before {
+  content: 'FEATURED';
+  position: absolute;
+  top: -1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.25rem 0.75rem;
+  background: var(--hph-primary);
+  color: var(--hph-white);
+  border-radius: var(--hph-radius-full);
+  font-size: var(--hph-text-xs);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+/* ================================================
+   MOBILE CARD TABLE
+   ================================================ */
+@media (max-width: 768px) {
+  .hph-table-mobile-card {
+    display: block;
+  }
+  
+  .hph-table-mobile-card thead {
+    display: none;
+  }
+  
+  .hph-table-mobile-card tbody {
+    display: block;
+  }
+  
+  .hph-table-mobile-card tr {
+    display: block;
+    margin-bottom: 1rem;
+    background: var(--hph-white);
+    border: 1px solid var(--hph-border-color);
+    border-radius: var(--hph-radius-lg);
+    padding: 1rem;
+  }
+  
+  .hph-table-mobile-card td {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border: none;
+    text-align: right;
+  }
+  
+  .hph-table-mobile-card td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    text-align: left;
+    color: var(--hph-gray-700);
+  }
+}
+
+/* ================================================
+   TABLE LOADING STATE
+   ================================================ */
+.hph-table-loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.hph-table-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 3rem;
+  height: 3rem;
+  border: 3px solid var(--hph-gray-200);
+  border-top-color: var(--hph-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Table Skeleton */
+.hph-table-skeleton td {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  color: transparent;
+}
+
+/* ================================================
+   TABLE EMPTY STATE
+   ================================================ */
+.hph-table-empty {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: var(--hph-gray-500);
+}
+
+.hph-table-empty-icon {
+  width: 4rem;
+  height: 4rem;
+  margin: 0 auto 1rem;
+  color: var(--hph-gray-300);
+}
+
+.hph-table-empty-title {
+  font-size: var(--hph-text-lg);
+  font-weight: 600;
+  color: var(--hph-gray-700);
+  margin-bottom: 0.5rem;
+}
+
+.hph-table-empty-text {
+  font-size: var(--hph-text-base);
+  color: var(--hph-gray-600);
+  margin-bottom: 1.5rem;
+}
+
+/* ================================================
+   RESPONSIVE BREAKPOINTS
+   ================================================ */
+@media (max-width: 1024px) {
+  .hph-table {
+    font-size: var(--hph-text-sm);
+  }
+  
+  .hph-table th,
+  .hph-table td {
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .hph-table-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .hph-table-search {
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
+  
+  .hph-table-search-input {
+    width: 100%;
+  }
+  
+  .hph-table-pagination {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .hph-table-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
+
+/* File Location: /wp-content/themes/happy-place/assets/css/framework/components/tables.css */

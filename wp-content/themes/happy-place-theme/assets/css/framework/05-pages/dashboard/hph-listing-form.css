@@ -1,0 +1,466 @@
+/* ================================================
+   LISTING FORM MODAL STYLES
+   Mobile-first responsive design
+   ================================================ */
+
+/* ================================================
+   MODAL ENHANCEMENTS
+   ================================================ */
+  .hph-modal-xl {
+  max-width: 1200px;
+}
+
+  .hph-modal-header {
+  background: var(--hph-primary-50);
+  border-bottom: 1px solid var(--hph-primary-200);
+}
+
+  .hph-modal-title {
+  color: var(--hph-primary-700);
+  font-weight: 600;
+}
+
+  .hph-modal-body {
+  padding: 2rem;
+}
+
+/* ================================================
+   FORM PROGRESS INDICATOR
+   ================================================ */
+  .hph-form-progress {
+  margin-bottom: 2rem;
+}
+
+  .hph-progress-steps {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+  .hph-progress-steps::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--hph-gray-200);
+  z-index: 1;
+}
+
+  .hph-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  background: white;
+  padding: 0 0.5rem;
+  min-width: 80px;
+}
+
+  .hph-step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+  background: var(--hph-gray-200);
+  color: var(--hph-gray-600);
+  border: 2px solid var(--hph-gray-200);
+  transition: all 0.3s ease;
+  margin-bottom: 0.5rem;
+}
+
+  .hph-step-title {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--hph-gray-600);
+  transition: color 0.3s ease;
+}
+
+  .hph-step.active .step-number {
+  background: var(--hph-primary-500);
+  color: white;
+  border-color: var(--hph-primary-500);
+}
+
+  .hph-step.active .step-title {
+  color: var(--hph-primary-600);
+}
+
+  .hph-step.completed .step-number {
+  background: var(--hph-success-500);
+  color: white;
+  border-color: var(--hph-success-500);
+}
+
+  .hph-step.completed .step-number::before {
+  content: '\f00c';
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+}
+
+/* Mobile responsive progress */
+@media (max-width: 768px) {
+  .hph-step-title {
+    font-size: 0.625rem;
+  }
+  
+  .hph-step-number {
+    width: 30px;
+    height: 30px;
+    font-size: 0.75rem;
+  }
+  
+  .hph-step {
+    min-width: 60px;
+  }
+}
+
+/* ================================================
+   FORM STEPS
+   ================================================ */
+  .hph-form-step {
+  display: none;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+  .hph-form-step.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+  .hph-step-heading {
+  color: var(--hph-gray-800);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--hph-primary-100);
+}
+
+/* ================================================
+   FORM CONTROLS
+   ================================================ */
+  .hph-form-label.required::after {
+  content: ' *';
+  color: var(--hph-danger-500);
+}
+
+  .hph-form-control:focus,
+  .hph-form-select:focus {
+  border-color: var(--hph-primary-300);
+  box-shadow: 0 0 0 0.2rem rgba(var(--hph-primary-rgb), 0.25);
+}
+
+  .hph-form-check-input:checked {
+  background-color: var(--hph-primary-500);
+  border-color: var(--hph-primary-500);
+}
+
+  .hph-form-check-input:focus {
+  border-color: var(--hph-primary-300);
+  box-shadow: 0 0 0 0.2rem rgba(var(--hph-primary-rgb), 0.25);
+}
+
+/* Character counter */
+  .hph-char-count {
+  font-weight: 600;
+  color: var(--hph-primary-600);
+}
+
+/* ================================================
+   FEATURE CHECKBOXES
+   ================================================ */
+  .hph-feature-checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+  .hph-form-check {
+  margin-bottom: 0.5rem;
+}
+
+  .hph-form-check-label {
+  font-size: 0.875rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+  .hph-form-check-input {
+  cursor: pointer;
+}
+
+/* ================================================
+   FILE UPLOAD & MEDIA
+   ================================================ */
+  .hph-featured-image-upload,
+  .hph-gallery-upload {
+  border: 2px dashed var(--hph-gray-300);
+  border-radius: var(--hph-radius-lg);
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+  .hph-featured-image-upload:hover,
+  .hph-gallery-upload:hover {
+  border-color: var(--hph-primary-400);
+  background: var(--hph-primary-25);
+}
+
+  .hph-featured-image-preview img,
+  .hph-gallery-preview img {
+  border-radius: var(--hph-radius-md);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+  .hph-gallery-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+  .hph-gallery-item {
+  position: relative;
+  border-radius: var(--hph-radius-md);
+  overflow: hidden;
+}
+
+  .hph-gallery-item img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+
+  .hph-gallery-item .remove-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(220, 53, 69, 0.9);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+  .hph-gallery-item .remove-btn:hover {
+  background: rgba(220, 53, 69, 1);
+}
+
+/* ================================================
+   FORM NAVIGATION
+   ================================================ */
+  .hph-form-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--hph-gray-200);
+}
+
+  .hph-form-navigation .btn {
+  min-width: 120px;
+}
+
+/* ================================================
+   LOADING OVERLAY
+   ================================================ */
+  .hph-listing-form-loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+  .hph-loading-content {
+  background: white;
+  padding: 2rem;
+  border-radius: var(--hph-radius-lg);
+  text-align: center;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+  .hph-loading-content p {
+  margin: 0;
+  color: var(--hph-gray-600);
+  font-weight: 500;
+}
+
+/* ================================================
+   FINANCIAL CALCULATOR
+   ================================================ */
+#monthlyPaymentCalculator {
+  font-size: 0.875rem;
+}
+
+#monthlyPaymentCalculator div[id$="Interest"],
+#monthlyPaymentCalculator div[id$="Monthly"] {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--hph-gray-800);
+}
+
+/* ================================================
+   ALERT ENHANCEMENTS
+   ================================================ */
+  .hph-alert {
+  border: none;
+  border-radius: var(--hph-radius-lg);
+}
+
+  .hph-alert-info {
+  background: var(--hph-primary-50);
+  color: var(--hph-primary-700);
+  border-left: 4px solid var(--hph-primary-500);
+}
+
+  .hph-alert-light {
+  background: var(--hph-gray-50);
+  color: var(--hph-gray-700);
+  border-left: 4px solid var(--hph-gray-400);
+}
+
+/* ================================================
+   RESPONSIVE ADJUSTMENTS
+   ================================================ */
+@media (max-width: 768px) {
+  .hph-modal-body {
+    padding: 1rem;
+  }
+  
+  .hph-step-heading {
+    font-size: 1.125rem;
+  }
+  
+  .hph-form-navigation {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .hph-form-navigation .btn {
+    width: 100%;
+  }
+  
+  .hph-featured-image-upload,
+  .hph-gallery-upload {
+    padding: 1rem;
+  }
+}
+
+/* ================================================
+   FORM VALIDATION STATES
+   ================================================ */
+  .hph-form-control.is-invalid,
+  .hph-form-select.is-invalid {
+  border-color: var(--hph-danger-500);
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+  .hph-form-control.is-valid,
+  .hph-form-select.is-valid {
+  border-color: var(--hph-success-500);
+  box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+
+  .hph-invalid-feedback {
+  color: var(--hph-danger-600);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+  .hph-valid-feedback {
+  color: var(--hph-success-600);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* ================================================
+   UTILITY CLASSES
+   ================================================ */
+  .hph-text-required {
+  color: var(--hph-danger-500);
+  font-weight: 500;
+}
+
+  .hph-field-help {
+  font-size: 0.75rem;
+  color: var(--hph-gray-500);
+  margin-top: 0.25rem;
+}
+
+/* ================================================
+   LISTING CARD EDIT BUTTONS
+   ================================================ */
+  .hph-edit-listing-btn {
+  background: var(--hph-secondary-500) !important;
+  border-color: var(--hph-secondary-500) !important;
+  color: white !important;
+  transition: all 0.2s ease;
+}
+
+  .hph-edit-listing-btn:hover {
+  background: var(--hph-secondary-600) !important;
+  border-color: var(--hph-secondary-600) !important;
+  transform: translateY(-1px);
+}
+
+  .hph-edit-listing-btn:focus {
+  box-shadow: 0 0 0 0.2rem rgba(var(--hph-secondary-rgb), 0.25) !important;
+}
+
+/* Dashboard-specific button styling */
+  .hph-dashboard-body .edit-listing-btn {
+  min-width: 36px;
+  height: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+  .hph-dashboard-body .action-btn-sm.edit-listing-btn {
+  background: var(--hph-primary-500);
+  border-color: var(--hph-primary-500);
+  color: white;
+}
+
+  .hph-dashboard-body .action-btn-sm.edit-listing-btn:hover {
+  background: var(--hph-primary-600);
+  border-color: var(--hph-primary-600);
+}

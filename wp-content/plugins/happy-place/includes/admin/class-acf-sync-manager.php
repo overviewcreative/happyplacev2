@@ -32,9 +32,12 @@ class ACF_Sync_Manager {
     }
 
     private function init_hooks() {
-        // Set ACF JSON save and load points
-        add_filter('acf/settings/save_json', [$this, 'acf_json_save_point']);
-        add_filter('acf/settings/load_json', [$this, 'acf_json_load_point']);
+        // NOTE: ACF JSON save/load points are handled by ACF_Manager to prevent duplicates
+        // DO NOT register acf/settings/save_json and acf/settings/load_json here
+        
+        // Set ACF JSON save and load points - DISABLED to prevent duplicates
+        // add_filter('acf/settings/save_json', [$this, 'acf_json_save_point']);
+        // add_filter('acf/settings/load_json', [$this, 'acf_json_load_point']);
         
         // Admin menu for sync management
         add_action('admin_menu', [$this, 'add_admin_menu']);

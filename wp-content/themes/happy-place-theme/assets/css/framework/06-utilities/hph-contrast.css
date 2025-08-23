@@ -1,0 +1,115 @@
+/* ================================================
+   CONTRAST UTILITIES
+   High Contrast & Accessibility Classes
+   ================================================ */
+
+/* High Contrast Text Colors */
+.text-high-contrast {
+  color: var(--hph-gray-900);
+}
+
+.text-high-contrast-light {
+  color: var(--hph-white);
+}
+
+/* High Contrast Background Colors */
+.bg-high-contrast {
+  background-color: var(--hph-gray-900);
+  color: var(--hph-white);
+}
+
+.bg-high-contrast-light {
+  background-color: var(--hph-white);
+  color: var(--hph-gray-900);
+}
+
+/* Semantic Colors with Guaranteed Contrast */
+.bg-success-contrast {
+  background-color: var(--hph-tertiary);
+  color: var(--hph-white);
+}
+
+.bg-warning-contrast {
+  background-color: var(--hph-secondary-dark);
+  color: var(--hph-white);
+}
+
+.bg-danger-contrast {
+  background-color: var(--hph-danger-dark);
+  color: var(--hph-white);
+}
+
+.bg-info-contrast {
+  background-color: var(--hph-primary-700);
+  color: var(--hph-white);
+}
+
+/* Status Colors with Guaranteed Contrast */
+.status-available-contrast {
+  background-color: var(--hph-tertiary-dark);
+  color: var(--hph-white);
+}
+
+.status-pending-contrast {
+  background-color: var(--hph-secondary-dark);
+  color: var(--hph-white);
+}
+
+.status-sold-contrast {
+  background-color: var(--hph-danger-dark);
+  color: var(--hph-white);
+}
+
+/* Text on Brand Colors */
+.text-on-primary {
+  color: var(--hph-white);
+}
+
+.text-on-secondary {
+  color: var(--hph-gray-900);
+}
+
+.text-on-tertiary {
+  color: var(--hph-white);
+}
+
+/* Focus & Interactive States */
+.focus-contrast:focus {
+  outline: 3px solid var(--hph-primary-700);
+  outline-offset: 2px;
+}
+
+.focus-contrast-light:focus {
+  outline: 3px solid var(--hph-primary-300);
+  outline-offset: 2px;
+}
+
+/* High Contrast Mode Adjustments */
+@media screen and (prefers-contrast: high) {
+  :root {
+    --hph-primary: #0066cc;
+    --hph-secondary: #994d1a;
+    --hph-tertiary: #2d4a1c;
+    
+    --hph-success: #006600;
+    --hph-warning: #994d00;
+    --hph-danger: #cc0000;
+    --hph-info: #003366;
+  }
+  
+  .text-high-contrast {
+    color: #000000;
+  }
+  
+  .text-high-contrast-light {
+    color: #ffffff;
+  }
+  
+  .focus-contrast:focus {
+    outline: 3px solid #000000;
+  }
+  
+  .focus-contrast-light:focus {
+    outline: 3px solid #ffffff;
+  }
+}

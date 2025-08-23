@@ -99,7 +99,7 @@ class REST_API {
                 'bedrooms' => [
                     'sanitize_callback' => 'absint',
                 ],
-                'bathrooms' => [
+                'bathrooms_full' => [
                     'sanitize_callback' => 'absint',
                 ],
                 'city' => [
@@ -351,7 +351,7 @@ class REST_API {
         // Add bathroom filter
         if (!empty($params['bathrooms'])) {
             $args['meta_query'][] = [
-                'key' => 'bathrooms',
+                'key' => 'bathrooms_full',
                 'value' => $params['bathrooms'],
                 'compare' => '>=',
                 'type' => 'NUMERIC',
@@ -986,11 +986,12 @@ class REST_API {
         
         // Add ACF fields
         if (function_exists('get_field')) {
-            $data['price'] = get_field('price', $listing_id);
+            $data['price'] = get_field('listing_price', $listing_id);
             $data['property_status'] = get_field('property_status', $listing_id);
             $data['mls_number'] = get_field('mls_number', $listing_id);
             $data['bedrooms'] = get_field('bedrooms', $listing_id);
-            $data['bathrooms'] = get_field('bathrooms', $listing_id);
+            $data['bathrooms_full'] = get_field('bathrooms_full', $listing_id);
+            $data['bathrooms_half'] = get_field('bathrooms_half', $listing_id);
             $data['square_feet'] = get_field('square_feet', $listing_id);
             $data['lot_size'] = get_field('lot_size', $listing_id);
             $data['year_built'] = get_field('year_built', $listing_id);
@@ -1010,14 +1011,14 @@ class REST_API {
             ];
             
             // Media
-            $featured_image_id = get_post_thumbnail_id($listing_id);
-            if ($featured_image_id) {
-                $data['featured_image'] = [
-                    'id' => $featured_image_id,
-                    'url' => wp_get_attachment_url($featured_image_id),
-                    'thumb' => wp_get_attachment_image_url($featured_image_id, 'thumbnail'),
-                    'medium' => wp_get_attachment_image_url($featured_image_id, 'medium'),
-                    'large' => wp_get_attachment_image_url($featured_image_id, 'large'),
+            $primary_photo = get_field('primary_photo', $listing_id);
+            if ($primary_photo) {
+                $data['primary_photo'] = [
+                    'id' => $primary_photo['ID'],
+                    'url' => $primary_photo['url'],
+                    'thumb' => $primary_photo['sizes']['thumbnail'] ?? '',
+                    'medium' => $primary_photo['sizes']['medium'] ?? '',
+                    'large' => $primary_photo['sizes']['large'] ?? '',
                 ];
             }
             
@@ -1034,7 +1035,7 @@ class REST_API {
                 $data['property_taxes'] = get_field('property_taxes', $listing_id);
                 
                 // Gallery
-                $gallery = get_field('gallery_images', $listing_id);
+                $gallery = get_field('photo_gallery', $listing_id);
                 if ($gallery) {
                     $data['gallery'] = array_map(function($image_id) {
                         return [

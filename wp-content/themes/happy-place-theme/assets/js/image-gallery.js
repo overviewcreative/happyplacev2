@@ -17,10 +17,13 @@
          * Initialize image galleries
          */
         init: function() {
-            this.initPropertyGalleries();
-            this.initLightbox();
-            this.initThumbnailCarousel();
-            this.initVirtualTour();
+            // Only initialize if there are galleries on the page
+            if ($('.property-gallery, .gallery-grid, [data-lightbox]').length > 0) {
+                this.initPropertyGalleries();
+                this.initLightbox();
+                this.initThumbnailCarousel();
+                this.initVirtualTour();
+            }
         },
         
         /**
@@ -104,6 +107,15 @@
          * Initialize lightbox
          */
         initLightbox: function() {
+            // Don't create lightbox immediately, it will be created on demand
+            // Just set a flag that it's ready to be created
+            this.lightboxReady = true;
+        },
+        
+        /**
+         * Create lightbox DOM element when needed
+         */
+        createLightbox: function() {
             // Create lightbox HTML if it doesn't exist
             if (!$('#hph-lightbox').length) {
                 var lightboxHtml = `
@@ -244,6 +256,9 @@
          */
         openLightboxWithImages: function(images, startIndex = 0) {
             if (!images || images.length === 0) return;
+            
+            // Create lightbox if it doesn't exist
+            this.createLightbox();
             
             var $lightbox = $('#hph-lightbox');
             

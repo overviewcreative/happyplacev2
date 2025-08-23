@@ -11,8 +11,8 @@ if (!defined('ABSPATH')) {
 ?>
 
 <!-- Step 2: Address & Location -->
-<div class="form-step" data-step="2">
-    <h4 class="step-heading">
+<div class="hph-form-step" data-step="2">
+    <h4 class="hph-step-heading">
         <i class="fas fa-map-marker-alt me-2"></i>
         Address & Location
     </h4>
@@ -25,9 +25,9 @@ if (!defined('ABSPATH')) {
     <div class="row">
         <!-- Street Number -->
         <div class="col-md-2 mb-3">
-            <label for="street_number" class="form-label">Street Number</label>
+            <label for="street_number" class="hph-form-label">Street Number</label>
             <input type="text" 
-                   class="form-control" 
+                   class="hph-form-control" 
                    id="street_number" 
                    name="street_number" 
                    placeholder="123"
@@ -37,9 +37,9 @@ if (!defined('ABSPATH')) {
 
         <!-- Street Name -->
         <div class="col-md-4 mb-3">
-            <label for="street_name" class="form-label">Street Name</label>
+            <label for="street_name" class="hph-form-label">Street Name</label>
             <input type="text" 
-                   class="form-control" 
+                   class="hph-form-control" 
                    id="street_name" 
                    name="street_name" 
                    placeholder="Main"
@@ -49,8 +49,8 @@ if (!defined('ABSPATH')) {
 
         <!-- Street Type -->
         <div class="col-md-2 mb-3">
-            <label for="street_suffix" class="form-label">Street Type</label>
-            <select class="form-select" id="street_suffix" name="street_suffix">
+            <label for="street_suffix" class="hph-form-label">Street Type</label>
+            <select class="hph-form-select" id="street_suffix" name="street_suffix">
                 <option value="">Select</option>
                 <option value="St" <?php selected($listing_data['street_suffix'] ?? '', 'St'); ?>>Street</option>
                 <option value="Ave" <?php selected($listing_data['street_suffix'] ?? '', 'Ave'); ?>>Avenue</option>
@@ -69,9 +69,9 @@ if (!defined('ABSPATH')) {
 
         <!-- Unit Number -->
         <div class="col-md-4 mb-3">
-            <label for="unit_number" class="form-label">Unit/Apt (Optional)</label>
+            <label for="unit_number" class="hph-form-label">Unit/Apt (Optional)</label>
             <input type="text" 
-                   class="form-control" 
+                   class="hph-form-control" 
                    id="unit_number" 
                    name="unit_number" 
                    placeholder="Unit 2A"
@@ -83,9 +83,9 @@ if (!defined('ABSPATH')) {
     <div class="row">
         <!-- City -->
         <div class="col-md-4 mb-3">
-            <label for="city" class="form-label">City</label>
+            <label for="city" class="hph-form-label">City</label>
             <input type="text" 
-                   class="form-control" 
+                   class="hph-form-control" 
                    id="city" 
                    name="city" 
                    placeholder="Georgetown"
@@ -95,8 +95,8 @@ if (!defined('ABSPATH')) {
 
         <!-- State -->
         <div class="col-md-4 mb-3">
-            <label for="state" class="form-label">State</label>
-            <select class="form-select" id="state" name="state">
+            <label for="state" class="hph-form-label">State</label>
+            <select class="hph-form-select" id="state" name="state">
                 <option value="">Select State</option>
                 <option value="DE" <?php selected($listing_data['state'] ?? '', 'DE'); ?>>Delaware</option>
                 <option value="MD" <?php selected($listing_data['state'] ?? '', 'MD'); ?>>Maryland</option>
@@ -118,9 +118,9 @@ if (!defined('ABSPATH')) {
 
         <!-- ZIP Code -->
         <div class="col-md-4 mb-3">
-            <label for="zip_code" class="form-label">ZIP Code</label>
+            <label for="zip_code" class="hph-form-label">ZIP Code</label>
             <input type="text" 
-                   class="form-control" 
+                   class="hph-form-control" 
                    id="zip_code" 
                    name="zip_code" 
                    placeholder="19947"
@@ -132,9 +132,9 @@ if (!defined('ABSPATH')) {
     <div class="row">
         <!-- Parcel Number -->
         <div class="col-md-6 mb-3">
-            <label for="parcel_number" class="form-label">Parcel Number (Optional)</label>
+            <label for="parcel_number" class="hph-form-label">Parcel Number (Optional)</label>
             <input type="text" 
-                   class="form-control" 
+                   class="hph-form-control" 
                    id="parcel_number" 
                    name="parcel_number" 
                    placeholder="Enter parcel number"
@@ -144,29 +144,29 @@ if (!defined('ABSPATH')) {
 
         <!-- Address Visibility -->
         <div class="col-md-6 mb-3">
-            <label for="address_visibility" class="form-label">Address Display</label>
-            <select class="form-select" id="address_visibility" name="address_visibility">
+            <label for="address_visibility" class="hph-form-label">Address Display</label>
+            <select class="hph-form-select" id="address_visibility" name="address_visibility">
                 <option value="full" <?php selected($listing_data['address_visibility'] ?? 'full', 'full'); ?>>Show Full Address</option>
                 <option value="partial" <?php selected($listing_data['address_visibility'] ?? '', 'partial'); ?>>Show Street Only</option>
                 <option value="city_only" <?php selected($listing_data['address_visibility'] ?? '', 'city_only'); ?>>Show City/State Only</option>
                 <option value="hidden" <?php selected($listing_data['address_visibility'] ?? '', 'hidden'); ?>>Do Not Display</option>
             </select>
-            <div class="form-text">How should the address be displayed publicly?</div>
+            <div class="hph-form-text">How should the address be displayed publicly?</div>
         </div>
     </div>
 </div>
 
 <!-- Step 3: Features & Amenities -->
-<div class="form-step" data-step="3">
-    <h4 class="step-heading">
+<div class="hph-form-step" data-step="3">
+    <h4 class="hph-step-heading">
         <i class="fas fa-star me-2"></i>
         Features & Amenities
     </h4>
 
     <!-- Interior Features -->
     <div class="mb-4">
-        <label class="form-label">Interior Features</label>
-        <div class="form-text mb-3">Select all applicable interior features</div>
+        <label class="hph-form-label">Interior Features</label>
+        <div class="hph-form-text mb-3">Select all applicable interior features</div>
         
         <div class="row">
             <?php 
@@ -219,8 +219,8 @@ if (!defined('ABSPATH')) {
 
     <!-- Exterior Features -->
     <div class="mb-4">
-        <label class="form-label">Exterior Features</label>
-        <div class="form-text mb-3">Select all applicable exterior features</div>
+        <label class="hph-form-label">Exterior Features</label>
+        <div class="hph-form-text mb-3">Select all applicable exterior features</div>
         
         <div class="row">
             <?php 
@@ -267,20 +267,20 @@ if (!defined('ABSPATH')) {
 </div>
 
 <!-- Step 4: Media & Photos -->
-<div class="form-step" data-step="4">
-    <h4 class="step-heading">
+<div class="hph-form-step" data-step="4">
+    <h4 class="hph-step-heading">
         <i class="fas fa-camera me-2"></i>
         Media & Photos
     </h4>
 
     <!-- Featured Image -->
     <div class="mb-4">
-        <label for="featured_image" class="form-label">Featured Image</label>
-        <div class="form-text mb-3">Upload the main property photo that will be displayed as the featured image</div>
+        <label for="featured_image" class="hph-form-label">Featured Image</label>
+        <div class="hph-form-text mb-3">Upload the main property photo that will be displayed as the featured image</div>
         
         <div class="featured-image-upload">
             <input type="file" 
-                   class="form-control" 
+                   class="hph-form-control" 
                    id="featured_image" 
                    name="featured_image" 
                    accept="image/*">
@@ -295,12 +295,12 @@ if (!defined('ABSPATH')) {
 
     <!-- Property Gallery -->
     <div class="mb-4">
-        <label for="property_gallery" class="form-label">Property Gallery</label>
-        <div class="form-text mb-3">Upload additional property photos (multiple files allowed)</div>
+        <label for="property_gallery" class="hph-form-label">Property Gallery</label>
+        <div class="hph-form-text mb-3">Upload additional property photos (multiple files allowed)</div>
         
         <div class="gallery-upload">
             <input type="file" 
-                   class="form-control" 
+                   class="hph-form-control" 
                    id="property_gallery" 
                    name="property_gallery[]" 
                    accept="image/*" 
@@ -314,33 +314,33 @@ if (!defined('ABSPATH')) {
     <!-- Virtual Tour URL -->
     <div class="row">
         <div class="col-md-6 mb-3">
-            <label for="virtual_tour_url" class="form-label">Virtual Tour URL</label>
+            <label for="virtual_tour_url" class="hph-form-label">Virtual Tour URL</label>
             <input type="url" 
-                   class="form-control" 
+                   class="hph-form-control" 
                    id="virtual_tour_url" 
                    name="virtual_tour_url" 
                    placeholder="https://example.com/virtual-tour"
                    value="<?php echo esc_attr($listing_data['virtual_tour_url'] ?? ''); ?>">
-            <div class="form-text">Link to 360° virtual tour or video walkthrough</div>
+            <div class="hph-form-text">Link to 360° virtual tour or video walkthrough</div>
         </div>
 
         <!-- Video URL -->
         <div class="col-md-6 mb-3">
-            <label for="video_url" class="form-label">Video URL</label>
+            <label for="video_url" class="hph-form-label">Video URL</label>
             <input type="url" 
-                   class="form-control" 
+                   class="hph-form-control" 
                    id="video_url" 
                    name="video_url" 
                    placeholder="https://youtube.com/watch?v=..."
                    value="<?php echo esc_attr($listing_data['video_url'] ?? ''); ?>">
-            <div class="form-text">YouTube, Vimeo, or other video platform URL</div>
+            <div class="hph-form-text">YouTube, Vimeo, or other video platform URL</div>
         </div>
     </div>
 </div>
 
 <!-- Step 5: Financial Information -->
-<div class="form-step" data-step="5">
-    <h4 class="step-heading">
+<div class="hph-form-step" data-step="5">
+    <h4 class="hph-step-heading">
         <i class="fas fa-dollar-sign me-2"></i>
         Financial Information
     </h4>
@@ -348,11 +348,11 @@ if (!defined('ABSPATH')) {
     <div class="row">
         <!-- HOA Fees -->
         <div class="col-md-4 mb-3">
-            <label for="hoa_fees" class="form-label">HOA Fees</label>
+            <label for="hoa_fees" class="hph-form-label">HOA Fees</label>
             <div class="input-group">
                 <span class="input-group-text">$</span>
                 <input type="number" 
-                       class="form-control" 
+                       class="hph-form-control" 
                        id="hoa_fees" 
                        name="hoa_fees" 
                        placeholder="250"
@@ -364,11 +364,11 @@ if (!defined('ABSPATH')) {
 
         <!-- Property Taxes -->
         <div class="col-md-4 mb-3">
-            <label for="property_taxes" class="form-label">Annual Property Taxes</label>
+            <label for="property_taxes" class="hph-form-label">Annual Property Taxes</label>
             <div class="input-group">
                 <span class="input-group-text">$</span>
                 <input type="number" 
-                       class="form-control" 
+                       class="hph-form-control" 
                        id="property_taxes" 
                        name="property_taxes" 
                        placeholder="5000"
@@ -380,11 +380,11 @@ if (!defined('ABSPATH')) {
 
         <!-- Insurance -->
         <div class="col-md-4 mb-3">
-            <label for="insurance_cost" class="form-label">Annual Insurance</label>
+            <label for="insurance_cost" class="hph-form-label">Annual Insurance</label>
             <div class="input-group">
                 <span class="input-group-text">$</span>
                 <input type="number" 
-                       class="form-control" 
+                       class="hph-form-control" 
                        id="insurance_cost" 
                        name="insurance_cost" 
                        placeholder="1200"

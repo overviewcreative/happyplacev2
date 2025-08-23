@@ -30,53 +30,53 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
 
 <div class="transactions-page" id="transactionsPage">
     <!-- Page Header with Stats -->
-    <div class="page-header">
-        <div class="header-stats">
-            <div class="stat-item">
-                <div class="stat-icon stat-icon-primary">
+    <div class="hph-page-header">
+        <div class="hph-header-stats">
+            <div class="hph-stat-item">
+                <div class="hph-stat-icon hph-stat-icon-primary">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                         <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
                     </svg>
                 </div>
-                <div class="stat-content">
-                    <h3 class="stat-value" id="activeTransactions">-</h3>
-                    <p class="stat-label">Active Deals</p>
+                <div class="hph-stat-content">
+                    <h3 class="hph-stat-value" id="activeTransactions">-</h3>
+                    <p class="hph-stat-label">Active Deals</p>
                 </div>
             </div>
             
-            <div class="stat-item">
-                <div class="stat-icon stat-icon-success">
+            <div class="hph-stat-item">
+                <div class="hph-stat-icon hph-stat-icon-success">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 </div>
-                <div class="stat-content">
-                    <h3 class="stat-value" id="closedDeals">-</h3>
-                    <p class="stat-label">Closed This Month</p>
+                <div class="hph-stat-content">
+                    <h3 class="hph-stat-value" id="closedDeals">-</h3>
+                    <p class="hph-stat-label">Closed This Month</p>
                 </div>
             </div>
             
-            <div class="stat-item">
-                <div class="stat-icon stat-icon-warning">
+            <div class="hph-stat-item">
+                <div class="hph-stat-icon hph-stat-icon-warning">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                     </svg>
                 </div>
-                <div class="stat-content">
-                    <h3 class="stat-value" id="totalCommission">-</h3>
-                    <p class="stat-label">Commission YTD</p>
+                <div class="hph-stat-content">
+                    <h3 class="hph-stat-value" id="totalCommission">-</h3>
+                    <p class="hph-stat-label">Commission YTD</p>
                 </div>
             </div>
             
-            <div class="stat-item">
-                <div class="stat-icon stat-icon-info">
+            <div class="hph-stat-item">
+                <div class="hph-stat-icon hph-stat-icon-info">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M2 12C2 6.48 6.48 2 12 2s10 4.48 10 10-4.48 10-10 10S2 17.52 2 12zm4.64-1.96l1.414 1.414L10 9.517l2.946 2.946 1.414-1.414L12 8.69 9.64 10.04z"/>
                     </svg>
                 </div>
-                <div class="stat-content">
-                    <h3 class="stat-value" id="avgDealTime">-</h3>
-                    <p class="stat-label">Avg Days to Close</p>
+                <div class="hph-stat-content">
+                    <h3 class="hph-stat-value" id="avgDealTime">-</h3>
+                    <p class="hph-stat-label">Avg Days to Close</p>
                 </div>
             </div>
         </div>
@@ -139,10 +139,10 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
     </div>
     
     <!-- Controls and Filters -->
-    <div class="page-controls">
-        <div class="controls-left">
-            <div class="filter-group">
-                <select class="form-select" id="statusFilter">
+    <div class="hph-page-controls">
+        <div class="hph-controls-left">
+            <div class="hph-filter-group">
+                <select class="hph-form-select" id="statusFilter">
                     <option value="">All Statuses</option>
                     <option value="prospect">Prospects</option>
                     <option value="under_contract">Under Contract</option>
@@ -153,8 +153,8 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
                 </select>
             </div>
             
-            <div class="filter-group">
-                <select class="form-select" id="typeFilter">
+            <div class="hph-filter-group">
+                <select class="hph-form-select" id="typeFilter">
                     <option value="">All Types</option>
                     <option value="buyer">Buyer Rep</option>
                     <option value="seller">Listing</option>
@@ -162,8 +162,8 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
                 </select>
             </div>
             
-            <div class="filter-group">
-                <select class="form-select" id="timeFilter">
+            <div class="hph-filter-group">
+                <select class="hph-form-select" id="timeFilter">
                     <option value="all">All Time</option>
                     <option value="this_month">This Month</option>
                     <option value="last_30">Last 30 Days</option>
@@ -181,7 +181,7 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
             </button>
         </div>
         
-        <div class="controls-right">
+        <div class="hph-controls-right">
             <button class="btn btn-outline btn-sm" id="exportTransactions">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                     <path d="M8.5 1.5A1.5 1.5 0 0 1 10 0h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h6c-.314.418-.5.937-.5 1.5v6h-2L8 10.5 10.5 8H9V1.5z"/>
@@ -209,8 +209,8 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
     <div class="transactions-content">
         <!-- Loading State -->
         <div class="loading-container" id="transactionsLoading">
-            <div class="loading-spinner">
-                <svg class="spinner" width="48" height="48" viewBox="0 0 48 48">
+            <div class="loading-hph-spinner">
+                <svg class="hph-spinner" width="48" height="48" viewBox="0 0 48 48">
                     <circle cx="24" cy="24" r="20" stroke="var(--hph-primary)" stroke-width="3" fill="none" stroke-dasharray="125.66" stroke-dashoffset="94.245" stroke-linecap="round">
                         <animateTransform attributeName="transform" type="rotate" from="0 24 24" to="360 24 24" dur="1s" repeatCount="indefinite"/>
                     </circle>
@@ -237,10 +237,10 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
         </div>
         
         <!-- Transactions Table -->
-        <div class="transactions-table-container" id="transactionsTableContainer" style="display: none;">
-            <div class="table-header">
+        <div class="hph-transactions-table-container" id="transactionsTableContainer" style="display: none;">
+            <div class="hph-table-header">
                 <h3>All Transactions</h3>
-                <div class="table-actions">
+                <div class="hph-table-actions">
                     <button class="btn btn-outline btn-sm" id="toggleView">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                             <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zM2.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zM1 10.5A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3z"/>
@@ -250,8 +250,8 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
                 </div>
             </div>
             
-            <div class="transactions-table-wrapper">
-                <table class="transactions-table" id="transactionsTable">
+            <div class="hph-transactions-table-wrapper">
+                <table class="hph-transactions-table" id="transactionsTable">
                     <thead>
                         <tr>
                             <th>Property</th>
@@ -331,21 +331,21 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
                 <input type="hidden" id="transactionId" name="transaction_id" value="">
                 
                 <!-- Basic Information -->
-                <div class="form-section">
-                    <h3 class="section-title">Basic Information</h3>
+                <div class="hph-form-section">
+                    <h3 class="hph-section-title">Basic Information</h3>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="transactionType" class="form-label required">Transaction Type</label>
-                            <select id="transactionType" name="transaction_type" class="form-select" required>
+                        <div class="hph-form-group">
+                            <label for="transactionType" class="hph-form-label required">Transaction Type</label>
+                            <select id="transactionType" name="transaction_type" class="hph-form-select" required>
                                 <option value="">Select type...</option>
                                 <option value="buyer">Buyer Representation</option>
                                 <option value="seller">Listing (Seller Rep)</option>
                                 <option value="dual">Dual Agency</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="transactionStatus" class="form-label required">Status</label>
-                            <select id="transactionStatus" name="status" class="form-select" required>
+                        <div class="hph-form-group">
+                            <label for="transactionStatus" class="hph-form-label required">Status</label>
+                            <select id="transactionStatus" name="status" class="hph-form-select" required>
                                 <option value="prospect">Prospect</option>
                                 <option value="under_contract">Under Contract</option>
                                 <option value="pending">Pending</option>
@@ -358,16 +358,16 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
                 </div>
                 
                 <!-- Property Information -->
-                <div class="form-section">
-                    <h3 class="section-title">Property Information</h3>
+                <div class="hph-form-section">
+                    <h3 class="hph-section-title">Property Information</h3>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="propertyAddress" class="form-label required">Property Address</label>
-                            <input type="text" id="propertyAddress" name="property_address" class="form-control" required>
+                        <div class="hph-form-group">
+                            <label for="propertyAddress" class="hph-form-label required">Property Address</label>
+                            <input type="text" id="propertyAddress" name="property_address" class="hph-form-control" required>
                         </div>
-                        <div class="form-group">
-                            <label for="listingId" class="form-label">Associated Listing</label>
-                            <select id="listingId" name="listing_id" class="form-select">
+                        <div class="hph-form-group">
+                            <label for="listingId" class="hph-form-label">Associated Listing</label>
+                            <select id="listingId" name="listing_id" class="hph-form-select">
                                 <option value="">Not associated with listing</option>
                                 <!-- Listings will be loaded dynamically -->
                             </select>
@@ -376,87 +376,87 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
                 </div>
                 
                 <!-- Client Information -->
-                <div class="form-section">
-                    <h3 class="section-title">Client Information</h3>
+                <div class="hph-form-section">
+                    <h3 class="hph-section-title">Client Information</h3>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="clientName" class="form-label required">Client Name</label>
-                            <input type="text" id="clientName" name="client_name" class="form-control" required>
+                        <div class="hph-form-group">
+                            <label for="clientName" class="hph-form-label required">Client Name</label>
+                            <input type="text" id="clientName" name="client_name" class="hph-form-control" required>
                         </div>
-                        <div class="form-group">
-                            <label for="clientEmail" class="form-label">Client Email</label>
-                            <input type="email" id="clientEmail" name="client_email" class="form-control">
+                        <div class="hph-form-group">
+                            <label for="clientEmail" class="hph-form-label">Client Email</label>
+                            <input type="email" id="clientEmail" name="client_email" class="hph-form-control">
                         </div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="clientPhone" class="form-label">Client Phone</label>
-                            <input type="tel" id="clientPhone" name="client_phone" class="form-control">
+                        <div class="hph-form-group">
+                            <label for="clientPhone" class="hph-form-label">Client Phone</label>
+                            <input type="tel" id="clientPhone" name="client_phone" class="hph-form-control">
                         </div>
-                        <div class="form-group">
-                            <label for="coClientName" class="form-label">Co-Client Name</label>
-                            <input type="text" id="coClientName" name="co_client_name" class="form-control">
+                        <div class="hph-form-group">
+                            <label for="coClientName" class="hph-form-label">Co-Client Name</label>
+                            <input type="text" id="coClientName" name="co_client_name" class="hph-form-control">
                         </div>
                     </div>
                 </div>
                 
                 <!-- Financial Information -->
-                <div class="form-section">
-                    <h3 class="section-title">Financial Information</h3>
+                <div class="hph-form-section">
+                    <h3 class="hph-section-title">Financial Information</h3>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="salePrice" class="form-label">Sale Price</label>
-                            <input type="number" id="salePrice" name="sale_price" class="form-control" step="0.01" min="0">
+                        <div class="hph-form-group">
+                            <label for="salePrice" class="hph-form-label">Sale Price</label>
+                            <input type="number" id="salePrice" name="sale_price" class="hph-form-control" step="0.01" min="0">
                         </div>
-                        <div class="form-group">
-                            <label for="commissionRate" class="form-label">Commission Rate (%)</label>
-                            <input type="number" id="commissionRate" name="commission_rate" class="form-control" step="0.01" min="0" max="100">
+                        <div class="hph-form-group">
+                            <label for="commissionRate" class="hph-form-label">Commission Rate (%)</label>
+                            <input type="number" id="commissionRate" name="commission_rate" class="hph-form-control" step="0.01" min="0" max="100">
                         </div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="commissionAmount" class="form-label">Commission Amount</label>
-                            <input type="number" id="commissionAmount" name="commission_amount" class="form-control" step="0.01" min="0" readonly>
+                        <div class="hph-form-group">
+                            <label for="commissionAmount" class="hph-form-label">Commission Amount</label>
+                            <input type="number" id="commissionAmount" name="commission_amount" class="hph-form-control" step="0.01" min="0" readonly>
                         </div>
-                        <div class="form-group">
-                            <label for="brokerageSplit" class="form-label">Brokerage Split (%)</label>
-                            <input type="number" id="brokerageSplit" name="brokerage_split" class="form-control" step="0.01" min="0" max="100" value="50">
+                        <div class="hph-form-group">
+                            <label for="brokerageSplit" class="hph-form-label">Brokerage Split (%)</label>
+                            <input type="number" id="brokerageSplit" name="brokerage_split" class="hph-form-control" step="0.01" min="0" max="100" value="50">
                         </div>
                     </div>
                 </div>
                 
                 <!-- Important Dates -->
-                <div class="form-section">
-                    <h3 class="section-title">Important Dates</h3>
+                <div class="hph-form-section">
+                    <h3 class="hph-section-title">Important Dates</h3>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="contractDate" class="form-label">Contract Date</label>
-                            <input type="date" id="contractDate" name="contract_date" class="form-control">
+                        <div class="hph-form-group">
+                            <label for="contractDate" class="hph-form-label">Contract Date</label>
+                            <input type="date" id="contractDate" name="contract_date" class="hph-form-control">
                         </div>
-                        <div class="form-group">
-                            <label for="expectedCloseDate" class="form-label">Expected Close Date</label>
-                            <input type="date" id="expectedCloseDate" name="expected_close_date" class="form-control">
+                        <div class="hph-form-group">
+                            <label for="expectedCloseDate" class="hph-form-label">Expected Close Date</label>
+                            <input type="date" id="expectedCloseDate" name="expected_close_date" class="hph-form-control">
                         </div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="actualCloseDate" class="form-label">Actual Close Date</label>
-                            <input type="date" id="actualCloseDate" name="actual_close_date" class="form-control">
+                        <div class="hph-form-group">
+                            <label for="actualCloseDate" class="hph-form-label">Actual Close Date</label>
+                            <input type="date" id="actualCloseDate" name="actual_close_date" class="hph-form-control">
                         </div>
-                        <div class="form-group">
-                            <label for="inspectionDate" class="form-label">Inspection Date</label>
-                            <input type="date" id="inspectionDate" name="inspection_date" class="form-control">
+                        <div class="hph-form-group">
+                            <label for="inspectionDate" class="hph-form-label">Inspection Date</label>
+                            <input type="date" id="inspectionDate" name="inspection_date" class="hph-form-control">
                         </div>
                     </div>
                 </div>
                 
                 <!-- Additional Information -->
-                <div class="form-section">
-                    <h3 class="section-title">Additional Information</h3>
+                <div class="hph-form-section">
+                    <h3 class="hph-section-title">Additional Information</h3>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="leadSource" class="form-label">Lead Source</label>
-                            <select id="leadSource" name="lead_source" class="form-select">
+                        <div class="hph-form-group">
+                            <label for="leadSource" class="hph-form-label">Lead Source</label>
+                            <select id="leadSource" name="lead_source" class="hph-form-select">
                                 <option value="">Not specified</option>
                                 <option value="referral">Referral</option>
                                 <option value="website">Website</option>
@@ -468,16 +468,16 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
                                 <option value="other">Other</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="referralSource" class="form-label">Referral Source</label>
-                            <input type="text" id="referralSource" name="referral_source" class="form-control" 
+                        <div class="hph-form-group">
+                            <label for="referralSource" class="hph-form-label">Referral Source</label>
+                            <input type="text" id="referralSource" name="referral_source" class="hph-form-control" 
                                    placeholder="Who referred this client?">
                         </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="transactionNotes" class="form-label">Notes</label>
-                        <textarea id="transactionNotes" name="notes" class="form-control" rows="4" 
+                    <div class="hph-form-group">
+                        <label for="transactionNotes" class="hph-form-label">Notes</label>
+                        <textarea id="transactionNotes" name="notes" class="hph-form-control" rows="4" 
                                   placeholder="Add any additional information about this transaction..."></textarea>
                     </div>
                 </div>
@@ -488,7 +488,7 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
             <button type="submit" form="transactionForm" class="btn btn-primary" id="saveTransactionBtn">
                 <span class="btn-text">Save Transaction</span>
                 <span class="btn-loading" style="display: none;">
-                    <svg class="spinner-sm" width="16" height="16" viewBox="0 0 16 16">
+                    <svg class="hph-hph-spinner-sm" width="16" height="16" viewBox="0 0 16 16">
                         <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="37.7" stroke-dashoffset="28.275" stroke-linecap="round">
                             <animateTransform attributeName="transform" type="rotate" from="0 8 8" to="360 8 8" dur="1s" repeatCount="indefinite"/>
                         </circle>
@@ -509,19 +509,19 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
         </div>
         <div class="modal-body">
             <div class="calculator-form">
-                <div class="form-group">
-                    <label for="calcSalePrice" class="form-label">Sale Price</label>
-                    <input type="number" id="calcSalePrice" class="form-control" step="1" min="0" placeholder="500000">
+                <div class="hph-form-group">
+                    <label for="calcSalePrice" class="hph-form-label">Sale Price</label>
+                    <input type="number" id="calcSalePrice" class="hph-form-control" step="1" min="0" placeholder="500000">
                 </div>
                 
-                <div class="form-group">
-                    <label for="calcCommissionRate" class="form-label">Total Commission Rate (%)</label>
-                    <input type="number" id="calcCommissionRate" class="form-control" step="0.01" min="0" max="100" value="6" placeholder="6.0">
+                <div class="hph-form-group">
+                    <label for="calcCommissionRate" class="hph-form-label">Total Commission Rate (%)</label>
+                    <input type="number" id="calcCommissionRate" class="hph-form-control" step="0.01" min="0" max="100" value="6" placeholder="6.0">
                 </div>
                 
-                <div class="form-group">
-                    <label for="calcSplit" class="form-label">Your Split (%)</label>
-                    <input type="number" id="calcSplit" class="form-control" step="0.01" min="0" max="100" value="50" placeholder="50">
+                <div class="hph-form-group">
+                    <label for="calcSplit" class="hph-form-label">Your Split (%)</label>
+                    <input type="number" id="calcSplit" class="hph-form-control" step="0.01" min="0" max="100" value="50" placeholder="50">
                 </div>
                 
                 <div class="calculation-results">

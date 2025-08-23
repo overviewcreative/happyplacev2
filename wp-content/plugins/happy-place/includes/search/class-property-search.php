@@ -798,7 +798,7 @@ class Property_Search {
         // Bathrooms
         if (!empty($params['bathrooms'])) {
             $args['meta_query'][] = [
-                'key' => 'bathrooms',
+                'key' => 'bathrooms_full',
                 'value' => $params['bathrooms'],
                 'compare' => '>=',
                 'type' => 'NUMERIC',
@@ -949,9 +949,9 @@ class Property_Search {
         
         // Add ACF fields
         if (function_exists('get_field')) {
-            $data['price'] = get_field('price', $listing_id);
+            $data['price'] = get_field('listing_price', $listing_id);
             $data['bedrooms'] = get_field('bedrooms', $listing_id);
-            $data['bathrooms'] = get_field('bathrooms', $listing_id);
+            $data['bathrooms'] = get_field('bathrooms_full', $listing_id);
             $data['square_feet'] = get_field('square_feet', $listing_id);
             $data['property_status'] = get_field('property_status', $listing_id);
             $data['property_type'] = get_field('property_type', $listing_id);

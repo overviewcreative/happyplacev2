@@ -51,6 +51,7 @@ class Airtable_Sync_Manager {
         add_action('wp_ajax_hpt_airtable_sync_from_airtable', [$this, 'handle_sync_from_airtable']);
         add_action('wp_ajax_hpt_airtable_sync_to_airtable', [$this, 'handle_sync_to_airtable']);
         add_action('wp_ajax_hpt_airtable_test_connection', [$this, 'handle_test_connection']);
+        add_action('wp_ajax_hpt_airtable_validate_fields', [$this, 'handle_validate_fields']);
         
         // Save post hooks for automatic sync
         add_action('save_post', [$this, 'maybe_sync_post_to_airtable'], 10, 2);
@@ -152,7 +153,7 @@ class Airtable_Sync_Manager {
                 $airtable_data['Post Status'] = $post->post_status;
                 
                 // Basic property information
-                $airtable_data['Price'] = (float) get_field('price', $post->ID);
+                $airtable_data['Price'] = (float) get_field('listing_price', $post->ID);
                 $airtable_data['MLS Number'] = get_field('mls_number', $post->ID);
                 $airtable_data['Property Type'] = get_field('property_type', $post->ID);
                 $airtable_data['Listing Date'] = get_field('listing_date', $post->ID);
@@ -223,62 +224,139 @@ class Airtable_Sync_Manager {
             public function sync_acf_fields_from_airtable($post_id, $record) {
                 $fields = $record['fields'] ?? [];
                 
+                // Helper function to safely update field with type validation
+                $safe_update = function($field_key, $value, $post_id, $type = 'string') use (&$fields) {
+                    // Skip if value is null, empty string (for non-boolean), or not set
+                    if ($type !== 'boolean' && ($value === null || $value === '')) {
+                        return;
+                    }
+                    
+                    try {
+                        // Type casting and validation based on field type
+                        switch ($type) {
+                            case 'int':
+                                if (is_numeric($value)) {
+                                    $value = (int) $value;
+                                } else {
+                                    hp_log("Invalid integer value for field {$field_key}: {$value}", 'warning', 'AIRTABLE_SYNC');
+                                    return;
+                                }
+                                break;
+                            case 'float':
+                                if (is_numeric($value)) {
+                                    $value = (float) $value;
+                                } else {
+                                    hp_log("Invalid float value for field {$field_key}: {$value}", 'warning', 'AIRTABLE_SYNC');
+                                    return;
+                                }
+                                break;
+                            case 'boolean':
+                                // Handle Airtable checkbox behavior (true or undefined)
+                                if ($value === true || $value === 'Yes' || $value === 'yes' || $value === 1 || $value === '1') {
+                                    $value = true;
+                                } else {
+                                    $value = false;
+                                }
+                                break;
+                            case 'array':
+                                if (is_array($value)) {
+                                    // Already an array from Multiple Select field
+                                    $value = array_filter($value);
+                                } elseif (is_string($value) && $value !== '') {
+                                    // Convert comma-separated string to array
+                                    $value = array_filter(array_map('trim', explode(',', $value)));
+                                } else {
+                                    return; // Skip empty arrays
+                                }
+                                
+                                if (empty($value)) {
+                                    return;
+                                }
+                                break;
+                            case 'url':
+                                if ($value !== '' && !filter_var($value, FILTER_VALIDATE_URL)) {
+                                    hp_log("Invalid URL for field {$field_key}: {$value}", 'warning', 'AIRTABLE_SYNC');
+                                    return;
+                                }
+                                break;
+                            case 'email':
+                                if ($value !== '' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                                    hp_log("Invalid email for field {$field_key}: {$value}", 'warning', 'AIRTABLE_SYNC');
+                                    return;
+                                }
+                                break;
+                            case 'date':
+                                // Validate date format (should be YYYY-MM-DD from Airtable)
+                                if ($value !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+                                    hp_log("Invalid date format for field {$field_key}: {$value}. Expected YYYY-MM-DD", 'warning', 'AIRTABLE_SYNC');
+                                    return;
+                                }
+                                break;
+                        }
+                        
+                        update_field($field_key, $value, $post_id);
+                        
+                    } catch (Exception $e) {
+                        hp_log("Error updating field {$field_key}: " . $e->getMessage(), 'error', 'AIRTABLE_SYNC');
+                    }
+                };
+                
                 // Basic information
-                if (isset($fields['Price'])) {
-                    update_field('price', (float) $fields['Price'], $post_id);
+                if (isset($fields['Price']) && $fields['Price'] !== '') {
+                    $safe_update('price', $fields['Price'], $post_id, 'float');
                 }
                 
-                if (isset($fields['Short Description'])) {
-                    update_field('short_description', $fields['Short Description'], $post_id);
+                if (isset($fields['Short Description']) && $fields['Short Description'] !== '') {
+                    $safe_update('short_description', $fields['Short Description'], $post_id);
                 }
                 
-                if (isset($fields['Full Description'])) {
-                    update_field('full_description', $fields['Full Description'], $post_id);
+                if (isset($fields['Full Description']) && $fields['Full Description'] !== '') {
+                    $safe_update('full_description', $fields['Full Description'], $post_id);
                 }
                 
-                if (isset($fields['MLS Number'])) {
-                    update_field('mls_number', $fields['MLS Number'], $post_id);
+                if (isset($fields['MLS Number']) && $fields['MLS Number'] !== '') {
+                    $safe_update('mls_number', $fields['MLS Number'], $post_id);
                 }
                 
-                if (isset($fields['Property Type'])) {
-                    update_field('property_type', $fields['Property Type'], $post_id);
+                if (isset($fields['Property Type']) && $fields['Property Type'] !== '') {
+                    $safe_update('property_type', $fields['Property Type'], $post_id);
                 }
                 
-                if (isset($fields['Listing Date'])) {
-                    update_field('listing_date', $fields['Listing Date'], $post_id);
+                if (isset($fields['Listing Date']) && $fields['Listing Date'] !== '') {
+                    $safe_update('listing_date', $fields['Listing Date'], $post_id, 'date');
                 }
                 
                 if (isset($fields['Featured Listing'])) {
-                    update_field('featured_listing', $fields['Featured Listing'] === 'Yes', $post_id);
+                    $safe_update('featured_listing', $fields['Featured Listing'], $post_id, 'boolean');
                 }
                 
                 // Property specifications
-                if (isset($fields['Bedrooms'])) {
-                    update_field('bedrooms', (int) $fields['Bedrooms'], $post_id);
+                if (isset($fields['Bedrooms']) && $fields['Bedrooms'] !== '') {
+                    $safe_update('bedrooms', $fields['Bedrooms'], $post_id, 'int');
                 }
                 
-                if (isset($fields['Full Bathrooms'])) {
-                    update_field('full_bathrooms', (int) $fields['Full Bathrooms'], $post_id);
+                if (isset($fields['Full Bathrooms']) && $fields['Full Bathrooms'] !== '') {
+                    $safe_update('full_bathrooms', $fields['Full Bathrooms'], $post_id, 'int');
                 }
                 
-                if (isset($fields['Half Bathrooms'])) {
-                    update_field('half_bathrooms', (int) $fields['Half Bathrooms'], $post_id);
+                if (isset($fields['Half Bathrooms']) && $fields['Half Bathrooms'] !== '') {
+                    $safe_update('half_bathrooms', $fields['Half Bathrooms'], $post_id, 'int');
                 }
                 
-                if (isset($fields['Square Feet'])) {
-                    update_field('square_feet', (int) $fields['Square Feet'], $post_id);
+                if (isset($fields['Square Feet']) && $fields['Square Feet'] !== '') {
+                    $safe_update('square_feet', $fields['Square Feet'], $post_id, 'int');
                 }
                 
-                if (isset($fields['Lot Size (Acres)'])) {
-                    update_field('lot_size_acres', (float) $fields['Lot Size (Acres)'], $post_id);
+                if (isset($fields['Lot Size (Acres)']) && $fields['Lot Size (Acres)'] !== '') {
+                    $safe_update('lot_size_acres', $fields['Lot Size (Acres)'], $post_id, 'float');
                 }
                 
-                if (isset($fields['Year Built'])) {
-                    update_field('year_built', (int) $fields['Year Built'], $post_id);
+                if (isset($fields['Year Built']) && $fields['Year Built'] !== '') {
+                    $safe_update('year_built', $fields['Year Built'], $post_id, 'int');
                 }
                 
-                if (isset($fields['Garage Spaces'])) {
-                    update_field('garage_spaces', (int) $fields['Garage Spaces'], $post_id);
+                if (isset($fields['Garage Spaces']) && $fields['Garage Spaces'] !== '') {
+                    $safe_update('garage_spaces', $fields['Garage Spaces'], $post_id, 'int');
                 }
                 
                 // Address components
@@ -316,19 +394,16 @@ class Airtable_Sync_Manager {
                 }
                 
                 // Features (convert comma-separated strings to arrays)
-                if (isset($fields['Interior Features'])) {
-                    $features = array_map('trim', explode(',', $fields['Interior Features']));
-                    update_field('interior_features', $features, $post_id);
+                if (isset($fields['Interior Features']) && $fields['Interior Features'] !== '') {
+                    $safe_update('interior_features', $fields['Interior Features'], $post_id, 'array');
                 }
                 
-                if (isset($fields['Exterior Features'])) {
-                    $features = array_map('trim', explode(',', $fields['Exterior Features']));
-                    update_field('exterior_features', $features, $post_id);
+                if (isset($fields['Exterior Features']) && $fields['Exterior Features'] !== '') {
+                    $safe_update('exterior_features', $fields['Exterior Features'], $post_id, 'array');
                 }
                 
-                if (isset($fields['Property Features'])) {
-                    $features = array_map('trim', explode(',', $fields['Property Features']));
-                    update_field('property_features', $features, $post_id);
+                if (isset($fields['Property Features']) && $fields['Property Features'] !== '') {
+                    $safe_update('property_features', $fields['Property Features'], $post_id, 'array');
                 }
                 
                 // Special amenities
@@ -370,12 +445,12 @@ class Airtable_Sync_Manager {
                 }
                 
                 // Media information
-                if (isset($fields['Virtual Tour URL'])) {
-                    update_field('virtual_tour_url', $fields['Virtual Tour URL'], $post_id);
+                if (isset($fields['Virtual Tour URL']) && $fields['Virtual Tour URL'] !== '') {
+                    $safe_update('virtual_tour_url', $fields['Virtual Tour URL'], $post_id, 'url');
                 }
                 
-                if (isset($fields['Video Tour URL'])) {
-                    update_field('video_tour_url', $fields['Video Tour URL'], $post_id);
+                if (isset($fields['Video Tour URL']) && $fields['Video Tour URL'] !== '') {
+                    $safe_update('video_tour_url', $fields['Video Tour URL'], $post_id, 'url');
                 }
             }
             
@@ -542,17 +617,48 @@ class Airtable_Sync_Manager {
             public function sync_acf_fields($record, $post_id) {
                 $fields = $record['fields'] ?? [];
                 
+                // Helper function to safely update field  
+                $safe_update = function($field_key, $value, $post_id, $type = 'string') {
+                    // Skip if value is null or empty string (except for booleans)
+                    if ($type !== 'boolean' && ($value === null || $value === '')) {
+                        return;
+                    }
+                    
+                    // Type casting based on field type
+                    switch ($type) {
+                        case 'int':
+                            $value = (int) $value;
+                            break;
+                        case 'float':
+                            $value = (float) $value;
+                            break;
+                        case 'boolean':
+                            $value = in_array($value, ['Yes', 'yes', true, 1, '1'], true);
+                            break;
+                        case 'array':
+                            if (is_string($value)) {
+                                $value = array_filter(array_map('trim', explode(',', $value)));
+                            }
+                            if (empty($value)) {
+                                return;
+                            }
+                            break;
+                    }
+                    
+                    update_field($field_key, $value, $post_id);
+                };
+                
                 // Basic Information
-                if (isset($fields['First Name'])) {
-                    update_field('first_name', $fields['First Name'], $post_id);
+                if (isset($fields['First Name']) && $fields['First Name'] !== '') {
+                    $safe_update('first_name', $fields['First Name'], $post_id);
                 }
                 
-                if (isset($fields['Middle Name'])) {
-                    update_field('middle_name', $fields['Middle Name'], $post_id);
+                if (isset($fields['Middle Name']) && $fields['Middle Name'] !== '') {
+                    $safe_update('middle_name', $fields['Middle Name'], $post_id);
                 }
                 
-                if (isset($fields['Last Name'])) {
-                    update_field('last_name', $fields['Last Name'], $post_id);
+                if (isset($fields['Last Name']) && $fields['Last Name'] !== '') {
+                    $safe_update('last_name', $fields['Last Name'], $post_id);
                 }
                 
                 if (isset($fields['Display Name'])) {
@@ -1102,6 +1208,23 @@ class Airtable_Sync_Manager {
             wp_send_json_error(['message' => $e->getMessage()]);
         }
     }
+    
+    public function handle_validate_fields() {
+        check_ajax_referer('hpt_airtable_nonce', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.'));
+        }
+
+        $table_name = sanitize_text_field($_POST['table_name'] ?? 'Listings');
+        
+        try {
+            $result = $this->validate_field_types($table_name);
+            wp_send_json_success($result);
+        } catch (Exception $e) {
+            wp_send_json_error(['message' => $e->getMessage()]);
+        }
+    }
 
     // Core Sync Methods
     public function sync_from_airtable($post_type) {
@@ -1224,6 +1347,98 @@ class Airtable_Sync_Manager {
             'message' => 'Connection successful!',
             'status_code' => $status_code
         ];
+    }
+    
+    /**
+     * Validate field types by examining sample data from Airtable
+     */
+    public function validate_field_types($table_name = 'Listings') {
+        try {
+            $records = $this->fetch_airtable_records($table_name);
+            
+            if (empty($records)) {
+                return [
+                    'message' => 'No records found to validate field types',
+                    'warnings' => []
+                ];
+            }
+            
+            $warnings = [];
+            $sample_record = $records[0];
+            $fields = $sample_record['fields'] ?? [];
+            
+            // Expected field types for listings
+            $expected_types = [
+                'Price' => 'number',
+                'Bedrooms' => 'integer',
+                'Full Bathrooms' => 'integer',
+                'Half Bathrooms' => 'integer',
+                'Square Feet' => 'integer',
+                'Year Built' => 'integer',
+                'Lot Size (Acres)' => 'number',
+                'Featured Listing' => 'boolean',
+                'Interior Features' => 'array',
+                'Exterior Features' => 'array',
+                'Property Features' => 'array',
+                'Has Pool' => 'boolean',
+                'Has Spa' => 'boolean',
+                'Virtual Tour URL' => 'string',
+                'Video Tour URL' => 'string',
+                'Listing Date' => 'string',
+                'ZIP Code' => 'string'
+            ];
+            
+            foreach ($expected_types as $field_name => $expected_type) {
+                if (!isset($fields[$field_name])) {
+                    $warnings[] = "Missing field: {$field_name}";
+                    continue;
+                }
+                
+                $actual_value = $fields[$field_name];
+                $actual_type = gettype($actual_value);
+                
+                $type_ok = false;
+                
+                switch ($expected_type) {
+                    case 'number':
+                    case 'integer':
+                        $type_ok = is_numeric($actual_value);
+                        if (!$type_ok) {
+                            $warnings[] = "Field '{$field_name}' should be numeric but is {$actual_type}: " . var_export($actual_value, true);
+                        }
+                        break;
+                        
+                    case 'boolean':
+                        $type_ok = is_bool($actual_value) || $actual_value === null;
+                        if (!$type_ok) {
+                            $warnings[] = "Field '{$field_name}' should be boolean (checkbox) but is {$actual_type}: " . var_export($actual_value, true) . ". Use Checkbox field type in Airtable.";
+                        }
+                        break;
+                        
+                    case 'array':
+                        $type_ok = is_array($actual_value);
+                        if (!$type_ok) {
+                            $warnings[] = "Field '{$field_name}' should be array (Multiple Select) but is {$actual_type}: " . var_export($actual_value, true) . ". Use Multiple Select field type in Airtable.";
+                        }
+                        break;
+                        
+                    case 'string':
+                        if ($field_name === 'ZIP Code' && is_numeric($actual_value)) {
+                            $warnings[] = "Field '{$field_name}' should be text to preserve leading zeros but is numeric: " . var_export($actual_value, true) . ". Change to Single Line Text in Airtable.";
+                        }
+                        break;
+                }
+            }
+            
+            return [
+                'message' => count($warnings) === 0 ? 'All field types look correct!' : 'Found ' . count($warnings) . ' field type issues',
+                'warnings' => $warnings,
+                'sample_fields' => array_keys($fields)
+            ];
+            
+        } catch (Exception $e) {
+            throw new Exception('Field validation failed: ' . $e->getMessage());
+        }
     }
 
     // Helper Methods
@@ -1360,6 +1575,7 @@ class Airtable_Sync_Manager {
                     </p>
                     <p>
                         <button type="button" class="button button-secondary" onclick="testAirtableConnection()"><?php _e('Test Connection', 'happy-place'); ?></button>
+                        <button type="button" class="button button-secondary" onclick="validateFieldTypes('Listings')" style="margin-left: 10px;"><?php _e('Validate Field Types', 'happy-place'); ?></button>
                     </p>
                 </div>
 
@@ -1546,6 +1762,38 @@ class Airtable_Sync_Manager {
                         alert('✅ Connection test successful: ' + response.data.message);
                     } else {
                         alert('❌ Connection test failed: ' + (response.data.message || 'Unknown error'));
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('❌ Network error: ' + error);
+                }
+            });
+            return false;
+        }
+        
+        function validateFieldTypes(tableName) {
+            if (typeof jQuery === 'undefined') {
+                alert('jQuery not loaded! Please refresh the page.');
+                return false;
+            }
+            
+            jQuery.ajax({
+                url: '<?php echo admin_url('admin-ajax.php'); ?>',
+                type: 'POST',
+                data: {
+                    action: 'hpt_airtable_validate_fields',
+                    table_name: tableName,
+                    nonce: '<?php echo $nonce; ?>'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        let message = '✅ ' + response.data.message;
+                        if (response.data.warnings && response.data.warnings.length > 0) {
+                            message += '\\n\\n⚠️ Issues found:\\n' + response.data.warnings.join('\\n');
+                        }
+                        alert(message);
+                    } else {
+                        alert('❌ Field validation failed: ' + (response.data.message || 'Unknown error'));
                     }
                 },
                 error: function(xhr, status, error) {

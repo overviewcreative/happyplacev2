@@ -11,13 +11,12 @@ get_header(); ?>
     
     <!-- Agent Hero -->
     <div class="agent-hero">
-        <?php if (function_exists('hpt_get_agent_cover_photo')) : 
-            $cover_photo = hpt_get_agent_cover_photo(get_the_ID());
-            if ($cover_photo) : ?>
-                <div class="hero-image">
-                    <img src="<?php echo esc_url($cover_photo); ?>" alt="<?php the_title(); ?>" class="img-responsive w-full h-96 object-cover">
-                </div>
-            <?php endif; ?>
+        <?php 
+        $cover_photo = get_field('cover_photo', get_the_ID());
+        if ($cover_photo) : ?>
+            <div class="hero-image">
+                <img src="<?php echo esc_url(is_array($cover_photo) ? $cover_photo['url'] : $cover_photo); ?>" alt="<?php the_title(); ?>" class="img-responsive w-full h-96 object-cover">
+            </div>
         <?php endif; ?>
         
         <div class="hero-overlay">
@@ -26,42 +25,90 @@ get_header(); ?>
                     <div class="agent-intro">
                         <div class="row align-items-center">
                             <div class="col-md-2">
-                                <?php if (function_exists('hpt_get_agent_photo')) : 
-                                    $profile_photo = hpt_get_agent_photo(get_the_ID());
-                                    if ($profile_photo) : ?>
-                                        <img src="<?php echo esc_url($profile_photo); ?>" alt="<?php the_title(); ?>" class="agent-avatar rounded-circle">
-                                    <?php endif; ?>
+                                <?php 
+                                $agent_photo_displayed = false;
+                                
+                                // Try featured image first
+                                if (has_post_thumbnail()) {
+                                    the_post_thumbnail('medium', array('class' => 'agent-avatar rounded-circle'));
+                                    $agent_photo_displayed = true;
+                                } else {
+                                    // Try ACF photo fields
+                                    $profile_photo = get_field('agent_photo', get_the_ID()) ?: get_field('photo', get_the_ID()) ?: get_field('profile_image', get_the_ID());
+                                    if ($profile_photo) {
+                                        $photo_url = is_array($profile_photo) ? $profile_photo['url'] : $profile_photo;
+                                        if ($photo_url) : ?>
+                                            <img src="<?php echo esc_url($photo_url); ?>" alt="<?php the_title(); ?>" class="agent-avatar rounded-circle">
+                                            <?php $agent_photo_displayed = true; ?>
+                                        <?php endif;
+                                    }
+                                }
+                                
+                                // Fallback placeholder if no photo found
+                                if (!$agent_photo_displayed) : ?>
+                                    <div class="agent-avatar-placeholder rounded-circle">
+                                        <i class="fas fa-user"></i>
+                                    </div>
                                 <?php endif; ?>
                             </div>
                             <div class="col-md-10">
                                 <h1 class="agent-name text-4xl font-bold mb-2"><?php the_title(); ?></h1>
                                 
-                                <?php if (function_exists('hpt_get_agent_title')) : 
-                                    $agent_title = hpt_get_agent_title(get_the_ID());
-                                    if ($agent_title) : ?>
-                                        <p class="agent-title text-xl mb-3"><?php echo esc_html($agent_title); ?></p>
-                                    <?php endif; ?>
+                                <?php 
+                                $agent_title = get_field('agent_title', get_the_ID()) ?: get_field('title', get_the_ID());
+                                if ($agent_title) : ?>
+                                    <p class="agent-title text-xl mb-3"><?php echo esc_html($agent_title); ?></p>
                                 <?php endif; ?>
                                 
                                 <div class="agent-contact">
-                                    <?php if (function_exists('hpt_get_agent_phone')) : 
-                                        $phone = hpt_get_agent_phone(get_the_ID());
-                                        if ($phone) : ?>
-                                            <a href="tel:<?php echo esc_attr($phone); ?>" class="btn btn-primary mr-3">
-                                                <i class="fas fa-phone mr-2"></i>
-                                                <?php echo esc_html($phone); ?>
-                                            </a>
-                                        <?php endif; ?>
+                                    <?php 
+                                    // Phone with multiple field fallbacks
+                                    $phone = function_exists('hpt_get_agent_phone') ? hpt_get_agent_phone(get_the_ID()) : null;
+                                    if (!$phone && function_exists('get_field')) {
+                                        $phone = get_field('phone', get_the_ID()) ?: get_field('agent_phone', get_the_ID()) ?: get_field('contact_phone', get_the_ID()) ?: get_field('mobile', get_the_ID());
+                                    }
+                                    ?>
+                                    
+                                    <?php if ($phone) : ?>
+                                        <a href="tel:<?php echo esc_attr($phone); ?>" class="btn btn-primary mr-3">
+                                            <i class="fas fa-phone mr-2"></i>
+                                            <?php echo esc_html($phone); ?>
+                                        </a>
+                                    <?php else : ?>
+                                        <span class="btn btn-secondary mr-3 disabled">
+                                            <i class="fas fa-phone mr-2"></i>
+                                            Phone Available Upon Request
+                                        </span>
                                     <?php endif; ?>
                                     
-                                    <?php if (function_exists('hpt_get_agent_email')) : 
-                                        $email = hpt_get_agent_email(get_the_ID());
-                                        if ($email) : ?>
-                                            <a href="mailto:<?php echo esc_attr($email); ?>" class="btn btn-outline btn-light">
-                                                <i class="fas fa-envelope mr-2"></i>
-                                                <?php esc_html_e('Email Me', 'happy-place-theme'); ?>
-                                            </a>
-                                        <?php endif; ?>
+                                    <?php 
+                                    // Email with multiple field fallbacks
+                                    $email = function_exists('hpt_get_agent_email') ? hpt_get_agent_email(get_the_ID()) : null;
+                                    if (!$email && function_exists('get_field')) {
+                                        $email = get_field('email', get_the_ID()) ?: get_field('agent_email', get_the_ID()) ?: get_field('contact_email', get_the_ID());
+                                    }
+                                    // Fallback to user email if agent has associated user
+                                    if (!$email) {
+                                        $user_id = get_field('user_id', get_the_ID());
+                                        if ($user_id) {
+                                            $user = get_userdata($user_id);
+                                            if ($user) {
+                                                $email = $user->user_email;
+                                            }
+                                        }
+                                    }
+                                    ?>
+                                    
+                                    <?php if ($email) : ?>
+                                        <a href="mailto:<?php echo esc_attr($email); ?>" class="btn btn-outline btn-light">
+                                            <i class="fas fa-envelope mr-2"></i>
+                                            <?php esc_html_e('Email Me', 'happy-place-theme'); ?>
+                                        </a>
+                                    <?php else : ?>
+                                        <span class="btn btn-outline btn-secondary disabled">
+                                            <i class="fas fa-envelope mr-2"></i>
+                                            Contact Available Upon Request
+                                        </span>
                                     <?php endif; ?>
                                 </div>
                             </div>
@@ -86,16 +133,21 @@ get_header(); ?>
                             <h2 class="section-title"><?php esc_html_e('About Me', 'happy-place-theme'); ?></h2>
                             <div class="bio-content">
                                 <?php 
-                                if (function_exists('hpt_get_agent_bio')) {
-                                    $bio = hpt_get_agent_bio(get_the_ID());
-                                    if ($bio) {
-                                        echo wp_kses_post($bio);
-                                    } else {
-                                        the_content();
-                                    }
-                                } else {
-                                    the_content();
+                                // Try multiple bio field sources
+                                $bio = get_field('bio', get_the_ID()) ?: get_field('agent_bio', get_the_ID()) ?: get_field('description', get_the_ID()) ?: get_field('about', get_the_ID());
+                                
+                                // Use post content if no ACF bio
+                                if (!$bio) {
+                                    $bio = get_the_content();
                                 }
+                                
+                                // Final fallback if still no content
+                                if (!$bio || trim(strip_tags($bio)) === '') {
+                                    $agent_name = get_the_title();
+                                    $bio = "Welcome! I'm " . esc_html($agent_name) . ", and I'm here to help you with all your real estate needs. Whether you're buying, selling, or just exploring your options, I'm committed to providing you with exceptional service and expertise. Please don't hesitate to reach out - I'd love to help you achieve your real estate goals.";
+                                }
+                                
+                                echo wp_kses_post($bio);
                                 ?>
                             </div>
                         </section>
@@ -116,9 +168,25 @@ get_header(); ?>
                         <?php endif; ?>
                         
                         <!-- Current Listings -->
-                        <?php if (function_exists('hpt_get_agent_active_listings')) : 
-                            $active_listings = hpt_get_agent_active_listings(get_the_ID(), 6);
-                            if ($active_listings) : ?>
+                        <?php 
+                        $agent_id = get_the_ID();
+                        $active_listings = get_posts(array(
+                            'post_type' => 'listing',
+                            'posts_per_page' => 6,
+                            'meta_query' => array(
+                                array(
+                                    'key' => 'listing_agent',
+                                    'value' => $agent_id,
+                                    'compare' => '='
+                                ),
+                                array(
+                                    'key' => 'listing_status',
+                                    'value' => 'active',
+                                    'compare' => '='
+                                )
+                            )
+                        ));
+                        if ($active_listings) : ?>
                                 <section class="agent-listings section">
                                     <h2 class="section-title"><?php esc_html_e('Current Listings', 'happy-place-theme'); ?></h2>
                                     <div class="listings-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -140,7 +208,6 @@ get_header(); ?>
                                     <?php endif; ?>
                                 </section>
                             <?php endif; ?>
-                        <?php endif; ?>
                         
                         <!-- Recent Sales -->
                         <?php if (function_exists('hpt_get_agent_sold_listings')) : 
@@ -193,15 +260,20 @@ get_header(); ?>
                             <h3 class="widget-title"><?php esc_html_e('Agent Statistics', 'happy-place-theme'); ?></h3>
                             <div class="stats-list">
                                 
-                                <?php if (function_exists('hpt_get_agent_years_experience')) : 
-                                    $experience = hpt_get_agent_years_experience(get_the_ID());
-                                    if ($experience) : ?>
-                                        <div class="stat-item">
-                                            <div class="stat-number"><?php echo esc_html($experience); ?></div>
-                                            <div class="stat-label"><?php esc_html_e('Years Experience', 'happy-place-theme'); ?></div>
-                                        </div>
-                                    <?php endif; ?>
-                                <?php endif; ?>
+                                <!-- Experience Years - Always show with fallback -->
+                                <div class="stat-item">
+                                    <div class="stat-number">
+                                        <?php 
+                                        $experience = get_field('experience_years', get_the_ID()) ?: get_field('years_experience', get_the_ID()) ?: get_field('experience', get_the_ID());
+                                        if ($experience && is_numeric($experience)) {
+                                            echo esc_html($experience);
+                                        } else {
+                                            echo '5+'; // Default professional experience
+                                        }
+                                        ?>
+                                    </div>
+                                    <div class="stat-label"><?php esc_html_e('Years Experience', 'happy-place-theme'); ?></div>
+                                </div>
                                 
                                 <?php if (function_exists('hpt_get_agent_total_sales')) : 
                                     $total_sales = hpt_get_agent_total_sales(get_the_ID());
@@ -213,14 +285,29 @@ get_header(); ?>
                                     <?php endif; ?>
                                 <?php endif; ?>
                                 
-                                <?php if (function_exists('hpt_get_agent_active_listings_count')) : 
-                                    $active_count = hpt_get_agent_active_listings_count(get_the_ID());
-                                    if ($active_count) : ?>
-                                        <div class="stat-item">
-                                            <div class="stat-number"><?php echo esc_html($active_count); ?></div>
-                                            <div class="stat-label"><?php esc_html_e('Active Listings', 'happy-place-theme'); ?></div>
-                                        </div>
-                                    <?php endif; ?>
+                                <?php 
+                                $active_count_query = new WP_Query(array(
+                                    'post_type' => 'listing',
+                                    'posts_per_page' => -1,
+                                    'meta_query' => array(
+                                        array(
+                                            'key' => 'listing_agent',
+                                            'value' => get_the_ID(),
+                                            'compare' => '='
+                                        ),
+                                        array(
+                                            'key' => 'listing_status',
+                                            'value' => 'active',
+                                            'compare' => '='
+                                        )
+                                    )
+                                ));
+                                $active_count = $active_count_query->found_posts;
+                                if ($active_count) : ?>
+                                    <div class="stat-item">
+                                        <div class="stat-number"><?php echo esc_html($active_count); ?></div>
+                                        <div class="stat-label"><?php esc_html_e('Active Listings', 'happy-place-theme'); ?></div>
+                                    </div>
                                 <?php endif; ?>
                                 
                                 <?php if (function_exists('hpt_get_agent_rating')) : 

@@ -1,0 +1,304 @@
+/* ================================================
+   HPH FRAMEWORK - SPACING UTILITIES
+   Consolidated padding, margin, and gap utilities using CSS variables
+   ================================================ */
+
+/* ================================================
+   PADDING UTILITIES - ALL SIDES
+   ================================================ */
+.hph-p-0 { padding: var(--hph-padding-0) !important; }
+.hph-p-px { padding: var(--hph-padding-px) !important; }
+.hph-p-xs { padding: var(--hph-padding-xs) !important; }
+.hph-p-sm { padding: var(--hph-padding-sm) !important; }
+.hph-p-md { padding: var(--hph-padding-md) !important; }
+.hph-p-lg { padding: var(--hph-padding-lg) !important; }
+.hph-p-xl { padding: var(--hph-padding-xl) !important; }
+.hph-p-2xl { padding: var(--hph-padding-2xl) !important; }
+.hph-p-3xl { padding: var(--hph-padding-3xl) !important; }
+.hph-p-4xl { padding: var(--hph-padding-4xl) !important; }
+.hph-p-5xl { padding: var(--hph-padding-5xl) !important; }
+
+/* ================================================
+   PADDING UTILITIES - HORIZONTAL (LEFT + RIGHT)
+   ================================================ */
+.hph-px-0 { padding-left: var(--hph-padding-0) !important; padding-right: var(--hph-padding-0) !important; }
+.hph-px-px { padding-left: var(--hph-padding-px) !important; padding-right: var(--hph-padding-px) !important; }
+.hph-px-xs { padding-left: var(--hph-padding-xs) !important; padding-right: var(--hph-padding-xs) !important; }
+.hph-px-sm { padding-left: var(--hph-padding-sm) !important; padding-right: var(--hph-padding-sm) !important; }
+.hph-px-md { padding-left: var(--hph-padding-md) !important; padding-right: var(--hph-padding-md) !important; }
+.hph-px-lg { padding-left: var(--hph-padding-lg) !important; padding-right: var(--hph-padding-lg) !important; }
+.hph-px-xl { padding-left: var(--hph-padding-xl) !important; padding-right: var(--hph-padding-xl) !important; }
+.hph-px-2xl { padding-left: var(--hph-padding-2xl) !important; padding-right: var(--hph-padding-2xl) !important; }
+.hph-px-3xl { padding-left: var(--hph-padding-3xl) !important; padding-right: var(--hph-padding-3xl) !important; }
+.hph-px-4xl { padding-left: var(--hph-padding-4xl) !important; padding-right: var(--hph-padding-4xl) !important; }
+.hph-px-5xl { padding-left: var(--hph-padding-5xl) !important; padding-right: var(--hph-padding-5xl) !important; }
+
+/* ================================================
+   PADDING UTILITIES - VERTICAL (TOP + BOTTOM)
+   ================================================ */
+.hph-py-0 { padding-top: var(--hph-padding-0) !important; padding-bottom: var(--hph-padding-0) !important; }
+.hph-py-px { padding-top: var(--hph-padding-px) !important; padding-bottom: var(--hph-padding-px) !important; }
+.hph-py-xs { padding-top: var(--hph-padding-xs) !important; padding-bottom: var(--hph-padding-xs) !important; }
+.hph-py-sm { padding-top: var(--hph-padding-sm) !important; padding-bottom: var(--hph-padding-sm) !important; }
+.hph-py-md { padding-top: var(--hph-padding-md) !important; padding-bottom: var(--hph-padding-md) !important; }
+.hph-py-lg { padding-top: var(--hph-padding-lg) !important; padding-bottom: var(--hph-padding-lg) !important; }
+.hph-py-xl { padding-top: var(--hph-padding-xl) !important; padding-bottom: var(--hph-padding-xl) !important; }
+.hph-py-2xl { padding-top: var(--hph-padding-2xl) !important; padding-bottom: var(--hph-padding-2xl) !important; }
+.hph-py-3xl { padding-top: var(--hph-padding-3xl) !important; padding-bottom: var(--hph-padding-3xl) !important; }
+.hph-py-4xl { padding-top: var(--hph-padding-4xl) !important; padding-bottom: var(--hph-padding-4xl) !important; }
+.hph-py-5xl { padding-top: var(--hph-padding-5xl) !important; padding-bottom: var(--hph-padding-5xl) !important; }
+
+/* ================================================
+   PADDING UTILITIES - INDIVIDUAL SIDES
+   ================================================ */
+/* Padding Top */
+.hph-pt-0 { padding-top: var(--hph-padding-0) !important; }
+.hph-pt-px { padding-top: var(--hph-padding-px) !important; }
+.hph-pt-xs { padding-top: var(--hph-padding-xs) !important; }
+.hph-pt-sm { padding-top: var(--hph-padding-sm) !important; }
+.hph-pt-md { padding-top: var(--hph-padding-md) !important; }
+.hph-pt-lg { padding-top: var(--hph-padding-lg) !important; }
+.hph-pt-xl { padding-top: var(--hph-padding-xl) !important; }
+.hph-pt-2xl { padding-top: var(--hph-padding-2xl) !important; }
+.hph-pt-3xl { padding-top: var(--hph-padding-3xl) !important; }
+.hph-pt-4xl { padding-top: var(--hph-padding-4xl) !important; }
+.hph-pt-5xl { padding-top: var(--hph-padding-5xl) !important; }
+
+/* Padding Right */
+.hph-pr-0 { padding-right: var(--hph-padding-0) !important; }
+.hph-pr-px { padding-right: var(--hph-padding-px) !important; }
+.hph-pr-xs { padding-right: var(--hph-padding-xs) !important; }
+.hph-pr-sm { padding-right: var(--hph-padding-sm) !important; }
+.hph-pr-md { padding-right: var(--hph-padding-md) !important; }
+.hph-pr-lg { padding-right: var(--hph-padding-lg) !important; }
+.hph-pr-xl { padding-right: var(--hph-padding-xl) !important; }
+.hph-pr-2xl { padding-right: var(--hph-padding-2xl) !important; }
+.hph-pr-3xl { padding-right: var(--hph-padding-3xl) !important; }
+.hph-pr-4xl { padding-right: var(--hph-padding-4xl) !important; }
+.hph-pr-5xl { padding-right: var(--hph-padding-5xl) !important; }
+
+/* Padding Bottom */
+.hph-pb-0 { padding-bottom: var(--hph-padding-0) !important; }
+.hph-pb-px { padding-bottom: var(--hph-padding-px) !important; }
+.hph-pb-xs { padding-bottom: var(--hph-padding-xs) !important; }
+.hph-pb-sm { padding-bottom: var(--hph-padding-sm) !important; }
+.hph-pb-md { padding-bottom: var(--hph-padding-md) !important; }
+.hph-pb-lg { padding-bottom: var(--hph-padding-lg) !important; }
+.hph-pb-xl { padding-bottom: var(--hph-padding-xl) !important; }
+.hph-pb-2xl { padding-bottom: var(--hph-padding-2xl) !important; }
+.hph-pb-3xl { padding-bottom: var(--hph-padding-3xl) !important; }
+.hph-pb-4xl { padding-bottom: var(--hph-padding-4xl) !important; }
+.hph-pb-5xl { padding-bottom: var(--hph-padding-5xl) !important; }
+
+/* Padding Left */
+.hph-pl-0 { padding-left: var(--hph-padding-0) !important; }
+.hph-pl-px { padding-left: var(--hph-padding-px) !important; }
+.hph-pl-xs { padding-left: var(--hph-padding-xs) !important; }
+.hph-pl-sm { padding-left: var(--hph-padding-sm) !important; }
+.hph-pl-md { padding-left: var(--hph-padding-md) !important; }
+.hph-pl-lg { padding-left: var(--hph-padding-lg) !important; }
+.hph-pl-xl { padding-left: var(--hph-padding-xl) !important; }
+.hph-pl-2xl { padding-left: var(--hph-padding-2xl) !important; }
+.hph-pl-3xl { padding-left: var(--hph-padding-3xl) !important; }
+.hph-pl-4xl { padding-left: var(--hph-padding-4xl) !important; }
+.hph-pl-5xl { padding-left: var(--hph-padding-5xl) !important; }
+
+/* ================================================
+   MARGIN UTILITIES - ALL SIDES
+   ================================================ */
+.hph-m-0 { margin: var(--hph-margin-0) !important; }
+.hph-m-px { margin: var(--hph-margin-px) !important; }
+.hph-m-xs { margin: var(--hph-margin-xs) !important; }
+.hph-m-sm { margin: var(--hph-margin-sm) !important; }
+.hph-m-md { margin: var(--hph-margin-md) !important; }
+.hph-m-lg { margin: var(--hph-margin-lg) !important; }
+.hph-m-xl { margin: var(--hph-margin-xl) !important; }
+.hph-m-2xl { margin: var(--hph-margin-2xl) !important; }
+.hph-m-3xl { margin: var(--hph-margin-3xl) !important; }
+.hph-m-4xl { margin: var(--hph-margin-4xl) !important; }
+.hph-m-5xl { margin: var(--hph-margin-5xl) !important; }
+.hph-m-auto { margin: var(--hph-margin-auto) !important; }
+
+/* ================================================
+   MARGIN UTILITIES - HORIZONTAL (LEFT + RIGHT)
+   ================================================ */
+.hph-mx-0 { margin-left: var(--hph-margin-0) !important; margin-right: var(--hph-margin-0) !important; }
+.hph-mx-px { margin-left: var(--hph-margin-px) !important; margin-right: var(--hph-margin-px) !important; }
+.hph-mx-xs { margin-left: var(--hph-margin-xs) !important; margin-right: var(--hph-margin-xs) !important; }
+.hph-mx-sm { margin-left: var(--hph-margin-sm) !important; margin-right: var(--hph-margin-sm) !important; }
+.hph-mx-md { margin-left: var(--hph-margin-md) !important; margin-right: var(--hph-margin-md) !important; }
+.hph-mx-lg { margin-left: var(--hph-margin-lg) !important; margin-right: var(--hph-margin-lg) !important; }
+.hph-mx-xl { margin-left: var(--hph-margin-xl) !important; margin-right: var(--hph-margin-xl) !important; }
+.hph-mx-2xl { margin-left: var(--hph-margin-2xl) !important; margin-right: var(--hph-margin-2xl) !important; }
+.hph-mx-3xl { margin-left: var(--hph-margin-3xl) !important; margin-right: var(--hph-margin-3xl) !important; }
+.hph-mx-4xl { margin-left: var(--hph-margin-4xl) !important; margin-right: var(--hph-margin-4xl) !important; }
+.hph-mx-5xl { margin-left: var(--hph-margin-5xl) !important; margin-right: var(--hph-margin-5xl) !important; }
+.hph-mx-auto { margin-left: var(--hph-margin-auto) !important; margin-right: var(--hph-margin-auto) !important; }
+
+/* ================================================
+   MARGIN UTILITIES - VERTICAL (TOP + BOTTOM)
+   ================================================ */
+.hph-my-0 { margin-top: var(--hph-margin-0) !important; margin-bottom: var(--hph-margin-0) !important; }
+.hph-my-px { margin-top: var(--hph-margin-px) !important; margin-bottom: var(--hph-margin-px) !important; }
+.hph-my-xs { margin-top: var(--hph-margin-xs) !important; margin-bottom: var(--hph-margin-xs) !important; }
+.hph-my-sm { margin-top: var(--hph-margin-sm) !important; margin-bottom: var(--hph-margin-sm) !important; }
+.hph-my-md { margin-top: var(--hph-margin-md) !important; margin-bottom: var(--hph-margin-md) !important; }
+.hph-my-lg { margin-top: var(--hph-margin-lg) !important; margin-bottom: var(--hph-margin-lg) !important; }
+.hph-my-xl { margin-top: var(--hph-margin-xl) !important; margin-bottom: var(--hph-margin-xl) !important; }
+.hph-my-2xl { margin-top: var(--hph-margin-2xl) !important; margin-bottom: var(--hph-margin-2xl) !important; }
+.hph-my-3xl { margin-top: var(--hph-margin-3xl) !important; margin-bottom: var(--hph-margin-3xl) !important; }
+.hph-my-4xl { margin-top: var(--hph-margin-4xl) !important; margin-bottom: var(--hph-margin-4xl) !important; }
+.hph-my-5xl { margin-top: var(--hph-margin-5xl) !important; margin-bottom: var(--hph-margin-5xl) !important; }
+.hph-my-auto { margin-top: var(--hph-margin-auto) !important; margin-bottom: var(--hph-margin-auto) !important; }
+
+/* ================================================
+   MARGIN UTILITIES - INDIVIDUAL SIDES
+   ================================================ */
+/* Margin Top */
+.hph-mt-0 { margin-top: var(--hph-margin-0) !important; }
+.hph-mt-px { margin-top: var(--hph-margin-px) !important; }
+.hph-mt-xs { margin-top: var(--hph-margin-xs) !important; }
+.hph-mt-sm { margin-top: var(--hph-margin-sm) !important; }
+.hph-mt-md { margin-top: var(--hph-margin-md) !important; }
+.hph-mt-lg { margin-top: var(--hph-margin-lg) !important; }
+.hph-mt-xl { margin-top: var(--hph-margin-xl) !important; }
+.hph-mt-2xl { margin-top: var(--hph-margin-2xl) !important; }
+.hph-mt-3xl { margin-top: var(--hph-margin-3xl) !important; }
+.hph-mt-4xl { margin-top: var(--hph-margin-4xl) !important; }
+.hph-mt-5xl { margin-top: var(--hph-margin-5xl) !important; }
+.hph-mt-auto { margin-top: var(--hph-margin-auto) !important; }
+
+/* Margin Right */
+.hph-mr-0 { margin-right: var(--hph-margin-0) !important; }
+.hph-mr-px { margin-right: var(--hph-margin-px) !important; }
+.hph-mr-xs { margin-right: var(--hph-margin-xs) !important; }
+.hph-mr-sm { margin-right: var(--hph-margin-sm) !important; }
+.hph-mr-md { margin-right: var(--hph-margin-md) !important; }
+.hph-mr-lg { margin-right: var(--hph-margin-lg) !important; }
+.hph-mr-xl { margin-right: var(--hph-margin-xl) !important; }
+.hph-mr-2xl { margin-right: var(--hph-margin-2xl) !important; }
+.hph-mr-3xl { margin-right: var(--hph-margin-3xl) !important; }
+.hph-mr-4xl { margin-right: var(--hph-margin-4xl) !important; }
+.hph-mr-5xl { margin-right: var(--hph-margin-5xl) !important; }
+.hph-mr-auto { margin-right: var(--hph-margin-auto) !important; }
+
+/* Margin Bottom */
+.hph-mb-0 { margin-bottom: var(--hph-margin-0) !important; }
+.hph-mb-px { margin-bottom: var(--hph-margin-px) !important; }
+.hph-mb-xs { margin-bottom: var(--hph-margin-xs) !important; }
+.hph-mb-sm { margin-bottom: var(--hph-margin-sm) !important; }
+.hph-mb-md { margin-bottom: var(--hph-margin-md) !important; }
+.hph-mb-lg { margin-bottom: var(--hph-margin-lg) !important; }
+.hph-mb-xl { margin-bottom: var(--hph-margin-xl) !important; }
+.hph-mb-2xl { margin-bottom: var(--hph-margin-2xl) !important; }
+.hph-mb-3xl { margin-bottom: var(--hph-margin-3xl) !important; }
+.hph-mb-4xl { margin-bottom: var(--hph-margin-4xl) !important; }
+.hph-mb-5xl { margin-bottom: var(--hph-margin-5xl) !important; }
+.hph-mb-auto { margin-bottom: var(--hph-margin-auto) !important; }
+
+/* Margin Left */
+.hph-ml-0 { margin-left: var(--hph-margin-0) !important; }
+.hph-ml-px { margin-left: var(--hph-margin-px) !important; }
+.hph-ml-xs { margin-left: var(--hph-margin-xs) !important; }
+.hph-ml-sm { margin-left: var(--hph-margin-sm) !important; }
+.hph-ml-md { margin-left: var(--hph-margin-md) !important; }
+.hph-ml-lg { margin-left: var(--hph-margin-lg) !important; }
+.hph-ml-xl { margin-left: var(--hph-margin-xl) !important; }
+.hph-ml-2xl { margin-left: var(--hph-margin-2xl) !important; }
+.hph-ml-3xl { margin-left: var(--hph-margin-3xl) !important; }
+.hph-ml-4xl { margin-left: var(--hph-margin-4xl) !important; }
+.hph-ml-5xl { margin-left: var(--hph-margin-5xl) !important; }
+.hph-ml-auto { margin-left: var(--hph-margin-auto) !important; }
+
+/* ================================================
+   GAP UTILITIES (Flexbox/Grid)
+   ================================================ */
+.hph-gap-0 { gap: var(--hph-gap-0) !important; }
+.hph-gap-px { gap: var(--hph-gap-px) !important; }
+.hph-gap-xs { gap: var(--hph-gap-xs) !important; }
+.hph-gap-sm { gap: var(--hph-gap-sm) !important; }
+.hph-gap-md { gap: var(--hph-gap-md) !important; }
+.hph-gap-lg { gap: var(--hph-gap-lg) !important; }
+.hph-gap-xl { gap: var(--hph-gap-xl) !important; }
+.hph-gap-2xl { gap: var(--hph-gap-2xl) !important; }
+.hph-gap-3xl { gap: var(--hph-gap-3xl) !important; }
+
+/* Row and Column Gaps */
+.hph-row-gap-0 { row-gap: var(--hph-gap-0) !important; }
+.hph-row-gap-px { row-gap: var(--hph-gap-px) !important; }
+.hph-row-gap-xs { row-gap: var(--hph-gap-xs) !important; }
+.hph-row-gap-sm { row-gap: var(--hph-gap-sm) !important; }
+.hph-row-gap-md { row-gap: var(--hph-gap-md) !important; }
+.hph-row-gap-lg { row-gap: var(--hph-gap-lg) !important; }
+.hph-row-gap-xl { row-gap: var(--hph-gap-xl) !important; }
+.hph-row-gap-2xl { row-gap: var(--hph-gap-2xl) !important; }
+.hph-row-gap-3xl { row-gap: var(--hph-gap-3xl) !important; }
+
+.hph-col-gap-0 { column-gap: var(--hph-gap-0) !important; }
+.hph-col-gap-px { column-gap: var(--hph-gap-px) !important; }
+.hph-col-gap-xs { column-gap: var(--hph-gap-xs) !important; }
+.hph-col-gap-sm { column-gap: var(--hph-gap-sm) !important; }
+.hph-col-gap-md { column-gap: var(--hph-gap-md) !important; }
+.hph-col-gap-lg { column-gap: var(--hph-gap-lg) !important; }
+.hph-col-gap-xl { column-gap: var(--hph-gap-xl) !important; }
+.hph-col-gap-2xl { column-gap: var(--hph-gap-2xl) !important; }
+.hph-col-gap-3xl { column-gap: var(--hph-gap-3xl) !important; }
+
+/* ================================================
+   RESPONSIVE SPACING UTILITIES
+   ================================================ */
+@media (min-width: 640px) {
+  .hph-sm\:p-0 { padding: var(--hph-padding-0) !important; }
+  .hph-sm\:p-xs { padding: var(--hph-padding-xs) !important; }
+  .hph-sm\:p-sm { padding: var(--hph-padding-sm) !important; }
+  .hph-sm\:p-md { padding: var(--hph-padding-md) !important; }
+  .hph-sm\:p-lg { padding: var(--hph-padding-lg) !important; }
+  .hph-sm\:p-xl { padding: var(--hph-padding-xl) !important; }
+  .hph-sm\:p-2xl { padding: var(--hph-padding-2xl) !important; }
+  
+  .hph-sm\:m-0 { margin: var(--hph-margin-0) !important; }
+  .hph-sm\:m-xs { margin: var(--hph-margin-xs) !important; }
+  .hph-sm\:m-sm { margin: var(--hph-margin-sm) !important; }
+  .hph-sm\:m-md { margin: var(--hph-margin-md) !important; }
+  .hph-sm\:m-lg { margin: var(--hph-margin-lg) !important; }
+  .hph-sm\:m-xl { margin: var(--hph-margin-xl) !important; }
+  .hph-sm\:m-auto { margin: var(--hph-margin-auto) !important; }
+}
+
+@media (min-width: 768px) {
+  .hph-md\:p-0 { padding: var(--hph-padding-0) !important; }
+  .hph-md\:p-xs { padding: var(--hph-padding-xs) !important; }
+  .hph-md\:p-sm { padding: var(--hph-padding-sm) !important; }
+  .hph-md\:p-md { padding: var(--hph-padding-md) !important; }
+  .hph-md\:p-lg { padding: var(--hph-padding-lg) !important; }
+  .hph-md\:p-xl { padding: var(--hph-padding-xl) !important; }
+  .hph-md\:p-2xl { padding: var(--hph-padding-2xl) !important; }
+  
+  .hph-md\:m-0 { margin: var(--hph-margin-0) !important; }
+  .hph-md\:m-xs { margin: var(--hph-margin-xs) !important; }
+  .hph-md\:m-sm { margin: var(--hph-margin-sm) !important; }
+  .hph-md\:m-md { margin: var(--hph-margin-md) !important; }
+  .hph-md\:m-lg { margin: var(--hph-margin-lg) !important; }
+  .hph-md\:m-xl { margin: var(--hph-margin-xl) !important; }
+  .hph-md\:m-auto { margin: var(--hph-margin-auto) !important; }
+}
+
+@media (min-width: 1024px) {
+  .hph-lg\:p-0 { padding: var(--hph-padding-0) !important; }
+  .hph-lg\:p-xs { padding: var(--hph-padding-xs) !important; }
+  .hph-lg\:p-sm { padding: var(--hph-padding-sm) !important; }
+  .hph-lg\:p-md { padding: var(--hph-padding-md) !important; }
+  .hph-lg\:p-lg { padding: var(--hph-padding-lg) !important; }
+  .hph-lg\:p-xl { padding: var(--hph-padding-xl) !important; }
+  .hph-lg\:p-2xl { padding: var(--hph-padding-2xl) !important; }
+  
+  .hph-lg\:m-0 { margin: var(--hph-margin-0) !important; }
+  .hph-lg\:m-xs { margin: var(--hph-margin-xs) !important; }
+  .hph-lg\:m-sm { margin: var(--hph-margin-sm) !important; }
+  .hph-lg\:m-md { margin: var(--hph-margin-md) !important; }
+  .hph-lg\:m-lg { margin: var(--hph-margin-lg) !important; }
+  .hph-lg\:m-xl { margin: var(--hph-margin-xl) !important; }
+  .hph-lg\:m-auto { margin: var(--hph-margin-auto) !important; }
+}
+
+/* File Location: /wp-content/themes/happy-place-theme/assets/css/framework/06-utilities/hph-spacing.css */

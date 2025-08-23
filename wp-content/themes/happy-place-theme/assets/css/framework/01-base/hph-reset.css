@@ -1,0 +1,177 @@
+/* ================================================
+   HPH FRAMEWORK - COMPREHENSIVE CSS RESET
+   Modern CSS reset with HPH enhancements
+   ================================================ */
+
+/* ================================================
+   BOX MODEL RESET
+   ================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ================================================
+   DOCUMENT DEFAULTS
+   ================================================ */
+html {
+  /* Improve text rendering */
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  
+  /* Remove tap highlight on iOS */
+  -webkit-tap-highlight-color: transparent;
+  
+  /* Smooth scrolling */
+  scroll-behavior: smooth;
+  
+  /* Prevent horizontal overflow */
+  overflow-x: hidden;
+  
+  /* Base font size for rem calculations */
+  font-size: 16px;
+}
+
+/* Focus visible only for keyboard navigation */
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+/* ================================================
+   BODY DEFAULTS
+   ================================================ */
+body {
+  min-height: 100vh;
+  line-height: 1.5;
+  font-family: var(--hph-font-primary);
+  font-weight: 400;
+  color: var(--hph-text-color);
+  background-color: var(--hph-white);
+  text-rendering: optimizeSpeed;
+  overflow-x: hidden;
+}
+
+/* ================================================
+   TYPOGRAPHY RESET
+   ================================================ */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: inherit;
+  line-height: 1.2;
+}
+
+p, li, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+/* ================================================
+   FORM ELEMENTS RESET
+   ================================================ */
+input, button, textarea, select {
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+input[type="search"] {
+  -webkit-appearance: none;
+}
+
+/* ================================================
+   MEDIA ELEMENTS RESET
+   ================================================ */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+img {
+  border-style: none;
+}
+
+/* ================================================
+   LIST RESET
+   ================================================ */
+ul, ol {
+  list-style: none;
+}
+
+/* ================================================
+   LINK RESET
+   ================================================ */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+}
+
+/* ================================================
+   TABLE RESET
+   ================================================ */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* ================================================
+   FORM RESET
+   ================================================ */
+fieldset {
+  border: none;
+}
+
+legend {
+  padding: 0;
+}
+
+/* ================================================
+   ACCESSIBILITY IMPROVEMENTS
+   ================================================ */
+/* Remove animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+  
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus styles for accessibility */
+:focus-visible {
+  outline: 2px solid var(--hph-primary);
+  outline-offset: 2px;
+}
+
+/* ================================================
+   WORDPRESS SPECIFIC RESETS
+   ================================================ */
+.wp-block-group {
+  margin: 0;
+}
+
+.wp-block-image {
+  margin: 0;
+}
+
+/* File Location: /wp-content/themes/happy-place-theme/assets/css/framework/01-base/hph-reset.css */

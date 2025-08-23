@@ -1,0 +1,346 @@
+{
+    "key": "group_listing_core",
+    "title": "Listing - Core Property Information",
+    "fields": [
+        {
+            "key": "field_listing_price",
+            "label": "Listing Price",
+            "name": "listing_price",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Enter numbers only (no commas or dollar signs)",
+            "required": 1,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "prepend": "$",
+            "min": 0,
+            "step": 1000,
+            "placeholder": 450000,
+            "default_value": "",
+            "max": "",
+            "append": ""
+        },
+        {
+            "key": "field_mls_number",
+            "label": "MLS Number",
+            "name": "mls_number",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Multiple Listing Service ID",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "maxlength": 20,
+            "placeholder": "MLS123456",
+            "default_value": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_featured_listing",
+            "label": "Featured",
+            "name": "is_featured",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "Display as featured listing",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "34",
+                "class": "",
+                "id": ""
+            },
+            "message": "Feature this listing",
+            "ui": 1,
+            "ui_on_text": "Featured",
+            "ui_off_text": "Standard",
+            "default_value": 0
+        },
+        {
+            "key": "field_bedrooms",
+            "label": "Bedrooms",
+            "name": "bedrooms",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default_value": 3,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_bathrooms_full",
+            "label": "Full Bathrooms",
+            "name": "bathrooms_full",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Number of full bathrooms",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "min": 0,
+            "max": 10,
+            "step": 1,
+            "default_value": 2,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_bathrooms_half",
+            "label": "Half Bathrooms",
+            "name": "bathrooms_half",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Number of half bathrooms",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "min": 0,
+            "max": 10,
+            "step": 1,
+            "default_value": 0,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_square_feet",
+            "label": "Square Feet",
+            "name": "square_feet",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Total living area",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "append": "sq ft",
+            "min": 0,
+            "step": 1,
+            "placeholder": 2500,
+            "default_value": "",
+            "max": "",
+            "prepend": ""
+        },
+        {
+            "key": "field_lot_size_acres",
+            "label": "Lot Size",
+            "name": "lot_size_acres",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Lot size in acres (leave blank for condos)",
+            "required": false,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_67890_property_type",
+                        "operator": "!=",
+                        "value": "condo"
+                    },
+                    {
+                        "field": "field_67890_property_type",
+                        "operator": "!=",
+                        "value": "townhouse"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "33",
+                "class": "has-converter",
+                "id": ""
+            },
+            "append": "acres",
+            "min": 0,
+            "step": 0.01,
+            "placeholder": "0.25",
+            "default_value": "",
+            "max": "",
+            "prepend": ""
+        },
+        {
+            "key": "field_lot_size_sqft",
+            "label": "Lot Size (Sq Ft)",
+            "name": "lot_size_sqft",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Alternative: Enter in square feet",
+            "required": false,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_67890_property_type",
+                        "operator": "!=",
+                        "value": "condo"
+                    },
+                    {
+                        "field": "field_67890_property_type",
+                        "operator": "!=",
+                        "value": "townhouse"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "33",
+                "class": "has-converter",
+                "id": ""
+            },
+            "append": "sq ft",
+            "min": 0,
+            "step": 100,
+            "placeholder": 10890,
+            "default_value": "",
+            "max": "",
+            "prepend": ""
+        },
+        {
+            "key": "field_year_built",
+            "label": "Year Built",
+            "name": "year_built",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "34",
+                "class": "",
+                "id": ""
+            },
+            "min": 1800,
+            "max": 2030,
+            "step": 1,
+            "placeholder": 2020,
+            "default_value": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_garage_spaces",
+            "label": "Garage Spaces",
+            "name": "garage_spaces",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "min": 0,
+            "max": 10,
+            "step": 1,
+            "default_value": 2,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_property_style",
+            "label": "Architectural Style",
+            "name": "property_style",
+            "aria-label": "",
+            "type": "select",
+            "instructions": "",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "colonial": "Colonial",
+                "contemporary": "Contemporary",
+                "traditional": "Traditional",
+                "ranch": "Ranch",
+                "cape_cod": "Cape Cod",
+                "victorian": "Victorian",
+                "craftsman": "Craftsman",
+                "modern": "Modern",
+                "tudor": "Tudor",
+                "mediterranean": "Mediterranean",
+                "farmhouse": "Farmhouse",
+                "two_story": "Two Story"
+            },
+            "allow_null": 1,
+            "ui": 1,
+            "placeholder": "Select style...",
+            "multiple": 0,
+            "default_value": false,
+            "ajax": 0,
+            "return_format": "value",
+            "create_options": 0,
+            "save_options": 0
+        },
+        {
+            "key": "field_listing_date",
+            "label": "Listing Date",
+            "name": "listing_date",
+            "aria-label": "",
+            "type": "date_picker",
+            "instructions": "Date property was listed",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "34",
+                "class": "",
+                "id": ""
+            },
+            "display_format": "F j, Y",
+            "return_format": "Y-m-d",
+            "first_day": 0,
+            "default_to_current_date": 0
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "listing"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Essential property information",
+    "show_in_rest": 1,
+    "modified": 1755987753
+}

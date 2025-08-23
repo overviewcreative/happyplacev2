@@ -24,11 +24,11 @@
                     id="newsletter-email" 
                     name="email" 
                     placeholder="<?php esc_attr_e('Enter your email address', 'happy-place-theme'); ?>" 
-                    class="form-input w-full bg-white bg-opacity-20 border-white border-opacity-30 text-white placeholder-white placeholder-opacity-70 focus:bg-opacity-30"
+                    class="hph-form-input w-full bg-white bg-opacity-20 border-white border-opacity-30 text-white placeholder-white placeholder-opacity-70 focus:bg-opacity-30"
                     required
                 >
             </div>
-            <button type="submit" class="btn btn-secondary px-6 whitespace-nowrap">
+            <button type="submit" class="hph-btn hph-btn-secondary px-6 whitespace-nowrap">
                 <?php esc_html_e('Subscribe', 'happy-place-theme'); ?>
             </button>
         </div>

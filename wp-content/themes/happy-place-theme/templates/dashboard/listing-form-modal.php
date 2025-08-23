@@ -33,7 +33,7 @@ if ($is_editing) {
                     <i class="fas fa-home me-2"></i>
                     <?php echo $is_editing ? 'Edit Listing' : 'Add New Listing'; ?>
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-modal-dismiss aria-label="Close"></button>
             </div>
             
             <form id="listingForm" method="post" enctype="multipart/form-data">
@@ -71,8 +71,8 @@ if ($is_editing) {
                     <input type="hidden" name="dashboard_nonce" value="<?php echo wp_create_nonce('dashboard_nonce'); ?>">
 
                     <!-- Step 1: Basic Information -->
-                    <div class="form-step active" data-step="1">
-                        <h4 class="step-heading">
+                    <div class="hph-form-step active" data-step="1">
+                        <h4 class="hph-step-heading">
                             <i class="fas fa-info-circle me-2"></i>
                             Basic Information
                         </h4>
@@ -80,49 +80,49 @@ if ($is_editing) {
                         <div class="row">
                             <!-- Property Title -->
                             <div class="col-12 mb-3">
-                                <label for="post_title" class="form-label required">Property Title</label>
+                                <label for="post_title" class="hph-form-label required">Property Title</label>
                                 <input type="text" 
-                                       class="form-control" 
+                                       class="hph-form-control" 
                                        id="post_title" 
                                        name="post_title" 
                                        placeholder="e.g., Beautiful 3-Bedroom Home in Downtown"
                                        value="<?php echo esc_attr($listing_data['post_title'] ?? ''); ?>"
                                        required>
-                                <div class="form-text">This will be the main headline for your listing</div>
+                                <div class="hph-form-text">This will be the main headline for your listing</div>
                             </div>
 
                             <!-- Short Description -->
                             <div class="col-md-6 mb-3">
-                                <label for="short_description" class="form-label">Short Description</label>
-                                <textarea class="form-control" 
+                                <label for="short_description" class="hph-form-label">Short Description</label>
+                                <textarea class="hph-form-control" 
                                           id="short_description" 
                                           name="short_description" 
                                           rows="3" 
                                           maxlength="200"
                                           placeholder="Brief property summary for search results and previews (150-200 characters)"><?php echo esc_textarea($listing_data['short_description'] ?? ''); ?></textarea>
-                                <div class="form-text">
+                                <div class="hph-form-text">
                                     <span class="char-count">0</span>/200 characters
                                 </div>
                             </div>
 
                             <!-- Full Description -->
                             <div class="col-md-6 mb-3">
-                                <label for="post_content" class="form-label">Full Description</label>
-                                <textarea class="form-control" 
+                                <label for="post_content" class="hph-form-label">Full Description</label>
+                                <textarea class="hph-form-control" 
                                           id="post_content" 
                                           name="post_content" 
                                           rows="3"
                                           placeholder="Complete property description with all details and features"><?php echo esc_textarea($listing_data['post_content'] ?? ''); ?></textarea>
-                                <div class="form-text">Detailed description for the property page</div>
+                                <div class="hph-form-text">Detailed description for the property page</div>
                             </div>
                         </div>
 
                         <div class="row">
                             <!-- Listing Date -->
                             <div class="col-md-4 mb-3">
-                                <label for="listing_date" class="form-label required">Listing Date</label>
+                                <label for="listing_date" class="hph-form-label required">Listing Date</label>
                                 <input type="date" 
-                                       class="form-control" 
+                                       class="hph-form-control" 
                                        id="listing_date" 
                                        name="listing_date" 
                                        value="<?php echo esc_attr($listing_data['listing_date'] ?? date('Y-m-d')); ?>"
@@ -131,11 +131,11 @@ if ($is_editing) {
 
                             <!-- Price -->
                             <div class="col-md-4 mb-3">
-                                <label for="price" class="form-label required">Price</label>
+                                <label for="price" class="hph-form-label required">Price</label>
                                 <div class="input-group">
                                     <span class="input-group-text">$</span>
                                     <input type="number" 
-                                           class="form-control" 
+                                           class="hph-form-control" 
                                            id="price" 
                                            name="price" 
                                            placeholder="750000"
@@ -147,8 +147,8 @@ if ($is_editing) {
 
                             <!-- Listing Status -->
                             <div class="col-md-4 mb-3">
-                                <label for="listing_status_taxonomy" class="form-label required">Listing Status</label>
-                                <select class="form-select" id="listing_status_taxonomy" name="listing_status_taxonomy" required>
+                                <label for="listing_status_taxonomy" class="hph-form-label required">Listing Status</label>
+                                <select class="hph-form-select" id="listing_status_taxonomy" name="listing_status_taxonomy" required>
                                     <option value="">Select Status</option>
                                     <option value="active" <?php selected($listing_data['listing_status_taxonomy'] ?? '', 'active'); ?>>Active</option>
                                     <option value="pending" <?php selected($listing_data['listing_status_taxonomy'] ?? '', 'pending'); ?>>Pending</option>
@@ -161,8 +161,8 @@ if ($is_editing) {
                         <div class="row">
                             <!-- Property Type -->
                             <div class="col-md-4 mb-3">
-                                <label for="property_type" class="form-label required">Property Type</label>
-                                <select class="form-select" id="property_type" name="property_type" required>
+                                <label for="property_type" class="hph-form-label required">Property Type</label>
+                                <select class="hph-form-select" id="property_type" name="property_type" required>
                                     <option value="">Select Type</option>
                                     <option value="single_family" <?php selected($listing_data['property_type'] ?? '', 'single_family'); ?>>Single Family Home</option>
                                     <option value="condo" <?php selected($listing_data['property_type'] ?? '', 'condo'); ?>>Condominium</option>
@@ -177,9 +177,9 @@ if ($is_editing) {
 
                             <!-- MLS Number -->
                             <div class="col-md-4 mb-3">
-                                <label for="mls_number" class="form-label">MLS Number</label>
+                                <label for="mls_number" class="hph-form-label">MLS Number</label>
                                 <input type="text" 
-                                       class="form-control" 
+                                       class="hph-form-control" 
                                        id="mls_number" 
                                        name="mls_number" 
                                        placeholder="MLS123456"
@@ -188,7 +188,7 @@ if ($is_editing) {
 
                             <!-- Featured Listing -->
                             <div class="col-md-4 mb-3">
-                                <label for="featured_listing" class="form-label">Featured Listing</label>
+                                <label for="featured_listing" class="hph-form-label">Featured Listing</label>
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" 
                                            type="checkbox" 
@@ -206,9 +206,9 @@ if ($is_editing) {
                         <div class="row">
                             <!-- Bedrooms -->
                             <div class="col-md-3 mb-3">
-                                <label for="bedrooms" class="form-label">Bedrooms</label>
+                                <label for="bedrooms" class="hph-form-label">Bedrooms</label>
                                 <input type="number" 
-                                       class="form-control" 
+                                       class="hph-form-control" 
                                        id="bedrooms" 
                                        name="bedrooms" 
                                        placeholder="3"
@@ -219,9 +219,9 @@ if ($is_editing) {
 
                             <!-- Full Bathrooms -->
                             <div class="col-md-3 mb-3">
-                                <label for="full_bathrooms" class="form-label">Full Bathrooms</label>
+                                <label for="full_bathrooms" class="hph-form-label">Full Bathrooms</label>
                                 <input type="number" 
-                                       class="form-control" 
+                                       class="hph-form-control" 
                                        id="full_bathrooms" 
                                        name="full_bathrooms" 
                                        placeholder="2"
@@ -232,9 +232,9 @@ if ($is_editing) {
 
                             <!-- Half Bathrooms -->
                             <div class="col-md-3 mb-3">
-                                <label for="half_bathrooms" class="form-label">Half Bathrooms</label>
+                                <label for="half_bathrooms" class="hph-form-label">Half Bathrooms</label>
                                 <input type="number" 
-                                       class="form-control" 
+                                       class="hph-form-control" 
                                        id="half_bathrooms" 
                                        name="half_bathrooms" 
                                        placeholder="1"
@@ -245,9 +245,9 @@ if ($is_editing) {
 
                             <!-- Garage Spaces -->
                             <div class="col-md-3 mb-3">
-                                <label for="garage_spaces" class="form-label">Garage Spaces</label>
+                                <label for="garage_spaces" class="hph-form-label">Garage Spaces</label>
                                 <input type="number" 
-                                       class="form-control" 
+                                       class="hph-form-control" 
                                        id="garage_spaces" 
                                        name="garage_spaces" 
                                        placeholder="2"
@@ -260,10 +260,10 @@ if ($is_editing) {
                         <div class="row">
                             <!-- Square Feet -->
                             <div class="col-md-4 mb-3">
-                                <label for="square_feet" class="form-label">Square Feet</label>
+                                <label for="square_feet" class="hph-form-label">Square Feet</label>
                                 <div class="input-group">
                                     <input type="number" 
-                                           class="form-control" 
+                                           class="hph-form-control" 
                                            id="square_feet" 
                                            name="square_feet" 
                                            placeholder="2500"
@@ -275,10 +275,10 @@ if ($is_editing) {
 
                             <!-- Lot Size -->
                             <div class="col-md-4 mb-3">
-                                <label for="lot_size_acres" class="form-label">Lot Size</label>
+                                <label for="lot_size_acres" class="hph-form-label">Lot Size</label>
                                 <div class="input-group">
                                     <input type="number" 
-                                           class="form-control" 
+                                           class="hph-form-control" 
                                            id="lot_size_acres" 
                                            name="lot_size_acres" 
                                            placeholder="0.25"
@@ -291,9 +291,9 @@ if ($is_editing) {
 
                             <!-- Year Built -->
                             <div class="col-md-4 mb-3">
-                                <label for="year_built" class="form-label">Year Built</label>
+                                <label for="year_built" class="hph-form-label">Year Built</label>
                                 <input type="number" 
-                                       class="form-control" 
+                                       class="hph-form-control" 
                                        id="year_built" 
                                        name="year_built" 
                                        placeholder="2020"
@@ -316,7 +316,7 @@ if ($is_editing) {
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-modal-dismiss>Cancel</button>
                     <button type="submit" class="btn btn-success" id="submitListing">
                         <i class="fas fa-save me-2"></i>
                         <?php echo $is_editing ? 'Update Listing' : 'Create Listing'; ?>
@@ -328,9 +328,9 @@ if ($is_editing) {
 </div>
 
 <!-- Loading Overlay -->
-<div class="listing-form-loading" id="listingFormLoading" style="display: none;">
+<div class="hph-listing-form-loading" id="listingFormLoading" style="display: none;">
     <div class="loading-content">
-        <div class="spinner-border text-primary" role="status">
+        <div class="hph-spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
         <p class="mt-3">Saving listing...</p>

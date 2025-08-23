@@ -1,6 +1,6 @@
 <?php
 /**
- * Post Types Class
+ * Post Types Class - FIXED VERSION
  * 
  * Handles registration and management of custom post types for Happy Place
  *
@@ -21,7 +21,7 @@ class Post_Types {
     private $post_types_config = [];
     
     /**
-     * Default post type configurations (fallback if JSON not available)
+     * Default post type configurations
      */
     private array $default_post_types = [
         'listing' => [
@@ -38,49 +38,22 @@ class Post_Types {
                 'not_found' => 'No listings found',
                 'not_found_in_trash' => 'No listings found in Trash',
                 'all_items' => 'All Listings',
-                'archives' => 'Listing Archives',
-                'attributes' => 'Listing Attributes',
-                'insert_into_item' => 'Insert into listing',
-                'uploaded_to_this_item' => 'Uploaded to this listing',
-                'featured_image' => 'Featured Image',
-                'set_featured_image' => 'Set featured image',
-                'remove_featured_image' => 'Remove featured image',
-                'use_featured_image' => 'Use as featured image',
                 'menu_name' => 'Listings',
-                'filter_items_list' => 'Filter listings list',
-                'filter_by_date' => 'Filter by date',
-                'items_list_navigation' => 'Listings list navigation',
-                'items_list' => 'Listings list',
-                'item_published' => 'Listing published',
-                'item_published_privately' => 'Listing published privately',
-                'item_reverted_to_draft' => 'Listing reverted to draft',
-                'item_scheduled' => 'Listing scheduled',
-                'item_updated' => 'Listing updated',
             ],
-            'args' => [
-                'public' => true,
-                'publicly_queryable' => true,
-                'show_ui' => true,
-                'show_in_menu' => true,
-                'show_in_nav_menus' => true,
-                'show_in_admin_bar' => true,
-                'show_in_rest' => true,
-                'rest_base' => 'listings',
-                'rest_controller_class' => 'WP_REST_Posts_Controller',
-                'menu_position' => 5,
-                'menu_icon' => 'dashicons-admin-home',
-                'capability_type' => ['listing', 'listings'],
-                'map_meta_cap' => true,
-                'hierarchical' => false,
-                'supports' => ['title', 'editor', 'thumbnail', 'excerpt', 'revisions', 'author', 'custom-fields'],
-                'has_archive' => 'listings',
-                'rewrite' => ['slug' => 'listing', 'with_front' => false],
-                'query_var' => true,
-                'can_export' => true,
-                'delete_with_user' => false,
-            ]
+            'public' => true,
+            'publicly_queryable' => true,
+            'show_ui' => true,
+            'show_in_menu' => true,
+            'show_in_rest' => true,
+            'rest_base' => 'listings',
+            'menu_position' => 5,
+            'menu_icon' => 'dashicons-admin-home',
+            'capability_type' => 'post',
+            'hierarchical' => false,
+            'supports' => ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'],
+            'has_archive' => 'listings',
+            'rewrite' => ['slug' => 'listing', 'with_front' => false],
         ],
-        
         'agent' => [
             'labels' => [
                 'name' => 'Agents',
@@ -90,120 +63,21 @@ class Post_Types {
                 'edit_item' => 'Edit Agent',
                 'new_item' => 'New Agent',
                 'view_item' => 'View Agent',
-                'view_items' => 'View Agents',
                 'search_items' => 'Search Agents',
                 'not_found' => 'No agents found',
-                'not_found_in_trash' => 'No agents found in Trash',
                 'all_items' => 'All Agents',
-                'archives' => 'Agent Archives',
-                'attributes' => 'Agent Attributes',
-                'insert_into_item' => 'Insert into agent profile',
-                'uploaded_to_this_item' => 'Uploaded to this agent',
-                'featured_image' => 'Profile Photo',
-                'set_featured_image' => 'Set profile photo',
-                'remove_featured_image' => 'Remove profile photo',
-                'use_featured_image' => 'Use as profile photo',
                 'menu_name' => 'Agents',
-                'filter_items_list' => 'Filter agents list',
-                'items_list_navigation' => 'Agents list navigation',
-                'items_list' => 'Agents list',
-                'item_published' => 'Agent published',
-                'item_updated' => 'Agent updated',
             ],
-            'args' => [
-                'public' => true,
-                'publicly_queryable' => true,
-                'show_ui' => true,
-                'show_in_menu' => true,
-                'show_in_nav_menus' => true,
-                'show_in_admin_bar' => true,
-                'show_in_rest' => true,
-                'rest_base' => 'agents',
-                'menu_position' => 6,
-                'menu_icon' => 'dashicons-businessperson',
-                'capability_type' => ['agent', 'agents'],
-                'map_meta_cap' => true,
-                'hierarchical' => false,
-                'supports' => ['title', 'editor', 'thumbnail', 'excerpt', 'revisions', 'author'],
-                'has_archive' => 'agents',
-                'rewrite' => ['slug' => 'agent', 'with_front' => false],
-                'query_var' => true,
-                'can_export' => true,
-            ]
+            'public' => true,
+            'show_ui' => true,
+            'show_in_menu' => true,
+            'show_in_rest' => true,
+            'menu_position' => 6,
+            'menu_icon' => 'dashicons-businessperson',
+            'supports' => ['title', 'editor', 'thumbnail', 'custom-fields'],
+            'has_archive' => 'agents',
+            'rewrite' => ['slug' => 'agent', 'with_front' => false],
         ],
-        
-        'community' => [
-            'labels' => [
-                'name' => 'Communities',
-                'singular_name' => 'Community',
-                'add_new' => 'Add New Community',
-                'add_new_item' => 'Add New Community',
-                'edit_item' => 'Edit Community',
-                'new_item' => 'New Community',
-                'view_item' => 'View Community',
-                'view_items' => 'View Communities',
-                'search_items' => 'Search Communities',
-                'not_found' => 'No communities found',
-                'not_found_in_trash' => 'No communities found in Trash',
-                'all_items' => 'All Communities',
-                'archives' => 'Community Archives',
-                'menu_name' => 'Communities',
-                'item_published' => 'Community published',
-                'item_updated' => 'Community updated',
-            ],
-            'args' => [
-                'public' => true,
-                'publicly_queryable' => true,
-                'show_ui' => true,
-                'show_in_menu' => true,
-                'show_in_nav_menus' => true,
-                'show_in_rest' => true,
-                'rest_base' => 'communities',
-                'menu_position' => 7,
-                'menu_icon' => 'dashicons-building',
-                'capability_type' => 'post',
-                'hierarchical' => false,
-                'supports' => ['title', 'editor', 'thumbnail', 'excerpt'],
-                'has_archive' => 'communities',
-                'rewrite' => ['slug' => 'community', 'with_front' => false],
-                'query_var' => true,
-                'can_export' => true,
-            ]
-        ],
-        
-        'city' => [
-            'labels' => [
-                'name' => 'Cities',
-                'singular_name' => 'City',
-                'add_new' => 'Add New City',
-                'add_new_item' => 'Add New City',
-                'edit_item' => 'Edit City',
-                'new_item' => 'New City',
-                'view_item' => 'View City',
-                'view_items' => 'View Cities',
-                'search_items' => 'Search Cities',
-                'not_found' => 'No cities found',
-                'all_items' => 'All Cities',
-                'menu_name' => 'Cities',
-            ],
-            'args' => [
-                'public' => true,
-                'publicly_queryable' => true,
-                'show_ui' => true,
-                'show_in_menu' => true,
-                'show_in_rest' => true,
-                'rest_base' => 'cities',
-                'menu_position' => 8,
-                'menu_icon' => 'dashicons-location-alt',
-                'capability_type' => 'post',
-                'hierarchical' => false,
-                'supports' => ['title', 'editor', 'thumbnail', 'excerpt'],
-                'has_archive' => 'cities',
-                'rewrite' => ['slug' => 'city', 'with_front' => false],
-                'query_var' => true,
-            ]
-        ],
-        
         'open_house' => [
             'labels' => [
                 'name' => 'Open Houses',
@@ -218,119 +92,15 @@ class Post_Types {
                 'all_items' => 'All Open Houses',
                 'menu_name' => 'Open Houses',
             ],
-            'args' => [
-                'public' => true,
-                'publicly_queryable' => true,
-                'show_ui' => true,
-                'show_in_menu' => true,
-                'show_in_rest' => true,
-                'rest_base' => 'open-houses',
-                'menu_position' => 9,
-                'menu_icon' => 'dashicons-calendar-alt',
-                'capability_type' => ['open_house', 'open_houses'],
-                'map_meta_cap' => true,
-                'hierarchical' => false,
-                'supports' => ['title', 'editor', 'author', 'custom-fields'],
-                'has_archive' => 'open-houses',
-                'rewrite' => ['slug' => 'open-house', 'with_front' => false],
-                'query_var' => true,
-            ]
-        ],
-        
-        'local_place' => [
-            'labels' => [
-                'name' => 'Local Places',
-                'singular_name' => 'Local Place',
-                'add_new' => 'Add New Local Place',
-                'add_new_item' => 'Add New Local Place',
-                'edit_item' => 'Edit Local Place',
-                'new_item' => 'New Local Place',
-                'view_item' => 'View Local Place',
-                'search_items' => 'Search Local Places',
-                'not_found' => 'No local places found',
-                'all_items' => 'All Local Places',
-                'menu_name' => 'Local Places',
-            ],
-            'args' => [
-                'public' => true,
-                'publicly_queryable' => true,
-                'show_ui' => true,
-                'show_in_menu' => true,
-                'show_in_rest' => true,
-                'rest_base' => 'local-places',
-                'menu_position' => 10,
-                'menu_icon' => 'dashicons-store',
-                'capability_type' => 'post',
-                'hierarchical' => false,
-                'supports' => ['title', 'editor', 'thumbnail', 'excerpt'],
-                'has_archive' => 'local-places',
-                'rewrite' => ['slug' => 'local-place', 'with_front' => false],
-                'query_var' => true,
-            ]
-        ],
-        
-        'team' => [
-            'labels' => [
-                'name' => 'Team Members',
-                'singular_name' => 'Team Member',
-                'add_new' => 'Add New Team Member',
-                'add_new_item' => 'Add New Team Member',
-                'edit_item' => 'Edit Team Member',
-                'new_item' => 'New Team Member',
-                'view_item' => 'View Team Member',
-                'search_items' => 'Search Team Members',
-                'not_found' => 'No team members found',
-                'all_items' => 'All Team Members',
-                'menu_name' => 'Team',
-            ],
-            'args' => [
-                'public' => true,
-                'publicly_queryable' => true,
-                'show_ui' => true,
-                'show_in_menu' => true,
-                'show_in_rest' => true,
-                'rest_base' => 'team',
-                'menu_position' => 11,
-                'menu_icon' => 'dashicons-groups',
-                'capability_type' => 'post',
-                'hierarchical' => false,
-                'supports' => ['title', 'editor', 'thumbnail', 'excerpt'],
-                'has_archive' => 'team',
-                'rewrite' => ['slug' => 'team-member', 'with_front' => false],
-                'query_var' => true,
-            ]
-        ],
-        
-        'transaction' => [
-            'labels' => [
-                'name' => 'Transactions',
-                'singular_name' => 'Transaction',
-                'add_new' => 'Add New Transaction',
-                'add_new_item' => 'Add New Transaction',
-                'edit_item' => 'Edit Transaction',
-                'new_item' => 'New Transaction',
-                'view_item' => 'View Transaction',
-                'search_items' => 'Search Transactions',
-                'not_found' => 'No transactions found',
-                'all_items' => 'All Transactions',
-                'menu_name' => 'Transactions',
-            ],
-            'args' => [
-                'public' => false,
-                'publicly_queryable' => false,
-                'show_ui' => true,
-                'show_in_menu' => true,
-                'show_in_rest' => false,
-                'menu_position' => 12,
-                'menu_icon' => 'dashicons-money-alt',
-                'capability_type' => ['transaction', 'transactions'],
-                'map_meta_cap' => true,
-                'hierarchical' => false,
-                'supports' => ['title', 'editor', 'author', 'custom-fields'],
-                'has_archive' => false,
-                'rewrite' => false,
-                'query_var' => true,
-            ]
+            'public' => true,
+            'show_ui' => true,
+            'show_in_menu' => true,
+            'show_in_rest' => true,
+            'menu_position' => 7,
+            'menu_icon' => 'dashicons-calendar-alt',
+            'supports' => ['title', 'editor', 'custom-fields'],
+            'has_archive' => 'open-houses',
+            'rewrite' => ['slug' => 'open-house', 'with_front' => false],
         ]
     ];
     
@@ -346,7 +116,7 @@ class Post_Types {
     }
     
     /**
-     * Initialize post types
+     * Constructor
      */
     private function __construct() {
         $this->config_file = HP_PLUGIN_DIR . 'includes/config/post-types.json';
@@ -369,7 +139,7 @@ class Post_Types {
         
         // Fallback to default configuration
         $this->post_types_config = $this->default_post_types;
-        hp_log('Post types loaded from default configuration (JSON not found)', 'warning', 'POST_TYPES');
+        hp_log('Post types loaded from default configuration', 'warning', 'POST_TYPES');
     }
     
     /**
@@ -378,20 +148,22 @@ class Post_Types {
     public function init(): void {
         hp_log('Post_Types init() method called', 'info', 'POST_TYPES');
         
-        // Register post types immediately - timing is critical for ACF integration
+        // Register post types immediately
         $this->register_post_types();
         
-        // Schedule other hooks for later execution
-        add_action('init', [$this, 'add_capabilities'], 15);
+        // Add capabilities
+        $this->add_capabilities();
+        
+        // Add hooks
         add_filter('enter_title_here', [$this, 'change_title_placeholders']);
         add_filter('post_updated_messages', [$this, 'update_post_messages']);
-        
-        // Add post type specific hooks
         add_action('add_meta_boxes', [$this, 'add_meta_boxes']);
-        add_action('save_post', [$this, 'save_meta_boxes']);
         
-        // Ensure ACF knows about our post types
-        add_action('acf/init', [$this, 'register_acf_post_type_support'], 5);
+        // FIXED: Simplified save handler that doesn't interfere with ACF
+        add_action('save_post_listing', [$this, 'save_listing_meta'], 10, 3);
+        
+        // FIXED: ACF integration hook - runs after ACF saves
+        add_action('acf/save_post', [$this, 'after_acf_save'], 20);
         
         hp_log('Post Types component initialized', 'debug', 'POST_TYPES');
     }
@@ -400,22 +172,21 @@ class Post_Types {
      * Register all custom post types
      */
     public function register_post_types(): void {
-        hp_log('register_post_types() method called', 'info', 'POST_TYPES');
+        hp_log('Registering post types', 'info', 'POST_TYPES');
         
         foreach ($this->post_types_config as $post_type => $config) {
-            // For JSON config, the structure is different - everything is in the root
-            if (isset($config['labels']) && isset($config['args'])) {
-                // Old structure with separate labels and args
-                $labels = $config['labels'];
+            // Handle both JSON and array configs
+            $labels = $config['labels'] ?? [];
+            $args = $config;
+            
+            if (isset($args['args'])) {
                 $args = $config['args'];
-            } else {
-                // New JSON structure - labels and other args are mixed
-                $labels = $config['labels'] ?? [];
-                $args = $config;
-                unset($args['labels']); // Remove labels from args since we handle them separately
             }
             
-            // Apply text domain to labels
+            // Remove labels from args
+            unset($args['labels']);
+            
+            // Apply text domain
             foreach ($labels as $key => $label) {
                 $labels[$key] = __($label, 'happy-place');
             }
@@ -431,7 +202,7 @@ class Post_Types {
             }
         }
         
-        // Flush rewrite rules on first activation
+        // Flush rewrite rules if needed
         if (get_option('hp_flush_rewrite_rules')) {
             flush_rewrite_rules();
             delete_option('hp_flush_rewrite_rules');
@@ -443,103 +214,78 @@ class Post_Types {
      * Add custom capabilities
      */
     public function add_capabilities(): void {
-        $capabilities = [
-            'listing' => ['edit_listing', 'edit_listings', 'edit_others_listings', 'publish_listings', 'read_private_listings', 'delete_listing', 'delete_listings', 'delete_private_listings', 'delete_published_listings', 'delete_others_listings', 'edit_private_listings', 'edit_published_listings'],
-            'agent' => ['edit_agent', 'edit_agents', 'edit_others_agents', 'publish_agents', 'read_private_agents', 'delete_agent', 'delete_agents', 'delete_private_agents', 'delete_published_agents', 'delete_others_agents', 'edit_private_agents', 'edit_published_agents'],
-            'open_house' => ['edit_open_house', 'edit_open_houses', 'edit_others_open_houses', 'publish_open_houses', 'read_private_open_houses', 'delete_open_house', 'delete_open_houses', 'delete_private_open_houses', 'delete_published_open_houses', 'delete_others_open_houses', 'edit_private_open_houses', 'edit_published_open_houses'],
-            'transaction' => ['edit_transaction', 'edit_transactions', 'edit_others_transactions', 'publish_transactions', 'read_private_transactions', 'delete_transaction', 'delete_transactions', 'delete_private_transactions', 'delete_published_transactions', 'delete_others_transactions', 'edit_private_transactions', 'edit_published_transactions'],
+        $admin_role = get_role('administrator');
+        if (!$admin_role) {
+            return;
+        }
+        
+        // Add listing capabilities
+        $caps = [
+            'edit_listing',
+            'edit_listings',
+            'edit_others_listings',
+            'publish_listings',
+            'read_private_listings',
+            'delete_listings',
         ];
         
-        // Add capabilities to administrator and editor roles
-        $roles = ['administrator', 'editor'];
-        foreach ($roles as $role_name) {
-            $role = get_role($role_name);
-            if ($role) {
-                foreach ($capabilities as $post_type => $caps) {
-                    foreach ($caps as $cap) {
-                        $role->add_cap($cap);
-                    }
-                }
-            }
+        foreach ($caps as $cap) {
+            $admin_role->add_cap($cap);
         }
         
-        // Add specific capabilities for real estate agent role
-        $agent_role = get_role('hp_agent');
-        if (!$agent_role) {
-            add_role('hp_agent', __('Real Estate Agent', 'happy-place'), [
-                'read' => true,
-                'edit_posts' => false,
-                'delete_posts' => false,
-            ]);
-            $agent_role = get_role('hp_agent');
-        }
-        
-        if ($agent_role) {
-            // Agents can manage their own listings and open houses
-            $agent_caps = [
-                'edit_listing', 'edit_listings', 'publish_listings', 'delete_listing', 'delete_listings',
-                'edit_open_house', 'edit_open_houses', 'publish_open_houses', 'delete_open_house', 'delete_open_houses',
-                'edit_agent', 'read_private_listings', 'read_private_open_houses'
-            ];
-            
-            foreach ($agent_caps as $cap) {
-                $agent_role->add_cap($cap);
-            }
-        }
+        hp_log('Capabilities added', 'debug', 'POST_TYPES');
     }
     
     /**
-     * Change title placeholders for custom post types
+     * Change title placeholders
      */
-    public function change_title_placeholders(string $title): string {
-        global $post_type;
+    public function change_title_placeholders($title) {
+        $screen = get_current_screen();
         
-        $placeholders = [
-            'listing' => __('Enter property address', 'happy-place'),
-            'agent' => __('Enter agent name', 'happy-place'),
-            'community' => __('Enter community name', 'happy-place'),
-            'city' => __('Enter city name', 'happy-place'),
-            'open_house' => __('Enter open house title', 'happy-place'),
-            'local_place' => __('Enter place name', 'happy-place'),
-            'team' => __('Enter team member name', 'happy-place'),
-            'transaction' => __('Enter transaction title', 'happy-place'),
-        ];
+        if (!$screen) {
+            return $title;
+        }
         
-        return $placeholders[$post_type] ?? $title;
+        switch ($screen->post_type) {
+            case 'listing':
+                $title = __('Enter property address or title', 'happy-place');
+                break;
+            case 'agent':
+                $title = __('Enter agent name', 'happy-place');
+                break;
+            case 'open_house':
+                $title = __('Enter open house title', 'happy-place');
+                break;
+        }
+        
+        return $title;
     }
     
     /**
-     * Update post messages for custom post types
+     * Update post messages
      */
-    public function update_post_messages(array $messages): array {
-        global $post, $post_ID;
+    public function update_post_messages($messages) {
+        global $post;
         
-        $post_type_labels = [
+        $post_types = [
             'listing' => __('Listing', 'happy-place'),
             'agent' => __('Agent', 'happy-place'),
-            'community' => __('Community', 'happy-place'),
-            'city' => __('City', 'happy-place'),
             'open_house' => __('Open House', 'happy-place'),
-            'local_place' => __('Local Place', 'happy-place'),
-            'team' => __('Team Member', 'happy-place'),
-            'transaction' => __('Transaction', 'happy-place'),
         ];
         
-        foreach ($post_type_labels as $post_type => $label) {
-            $permalink = get_permalink($post_ID);
-            
+        foreach ($post_types as $post_type => $label) {
             $messages[$post_type] = [
-                0  => '', // Unused. Messages start at index 1.
-                1  => sprintf(__('%s updated. <a href="%s">View %s</a>', 'happy-place'), $label, esc_url($permalink), strtolower($label)),
+                0  => '',
+                1  => sprintf(__('%s updated.', 'happy-place'), $label),
                 2  => __('Custom field updated.', 'happy-place'),
                 3  => __('Custom field deleted.', 'happy-place'),
                 4  => sprintf(__('%s updated.', 'happy-place'), $label),
                 5  => isset($_GET['revision']) ? sprintf(__('%s restored to revision from %s', 'happy-place'), $label, wp_post_revision_title((int) $_GET['revision'], false)) : false,
-                6  => sprintf(__('%s published. <a href="%s">View %s</a>', 'happy-place'), $label, esc_url($permalink), strtolower($label)),
+                6  => sprintf(__('%s published.', 'happy-place'), $label),
                 7  => sprintf(__('%s saved.', 'happy-place'), $label),
-                8  => sprintf(__('%s submitted. <a target="_blank" href="%s">Preview %s</a>', 'happy-place'), $label, esc_url(add_query_arg('preview', 'true', $permalink)), strtolower($label)),
-                9  => sprintf(__('%s scheduled for: <strong>%s</strong>. <a target="_blank" href="%s">Preview %s</a>', 'happy-place'), $label, date_i18n(__('M j, Y @ G:i', 'happy-place'), strtotime($post->post_date)), esc_url($permalink), strtolower($label)),
-                10 => sprintf(__('%s draft updated. <a target="_blank" href="%s">Preview %s</a>', 'happy-place'), $label, esc_url(add_query_arg('preview', 'true', $permalink)), strtolower($label)),
+                8  => sprintf(__('%s submitted.', 'happy-place'), $label),
+                9  => sprintf(__('%s scheduled.', 'happy-place'), $label),
+                10 => sprintf(__('%s draft updated.', 'happy-place'), $label),
             ];
         }
         
@@ -560,7 +306,7 @@ class Post_Types {
             'high'
         );
         
-        // Add quick stats meta box for listings
+        // Add quick stats meta box
         add_meta_box(
             'hp_listing_stats',
             __('Quick Stats', 'happy-place'),
@@ -614,61 +360,136 @@ class Post_Types {
         <?php
     }
     
-    /**
-     * Save meta box data
-     */
-    public function save_meta_boxes(int $post_id): void {
-        // Check if our nonce is set and verify it
-        if (!isset($_POST['hp_listing_status_nonce']) || 
-            !wp_verify_nonce($_POST['hp_listing_status_nonce'], 'hp_listing_status_meta_box')) {
-            return;
-        }
-        
-        // Check the user's permissions
-        if (!current_user_can('edit_post', $post_id)) {
-            return;
-        }
-        
-        // Save listing status
-        if (isset($_POST['listing_status'])) {
-            update_post_meta($post_id, '_listing_status', sanitize_text_field($_POST['listing_status']));
-        }
-        
-        // Save featured status
-        $featured = isset($_POST['featured_listing']) ? '1' : '0';
-        update_post_meta($post_id, '_featured_listing', $featured);
+/**
+ * FIXED: Save listing meta - only handles custom meta boxes, not ACF fields
+ */
+public function save_listing_meta($post_id, $post, $update): void {
+    // Skip autosaves and revisions
+    if ((defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) || wp_is_post_revision($post_id)) {
+        hp_log("Skipping save - autosave or revision", 'debug', 'POST_TYPES');
+        return;
     }
     
-    /**
-     * Register ACF post type support
-     */
-    public function register_acf_post_type_support(): void {
-        if (!function_exists('acf_get_setting')) {
-            return;
-        }
+    // Skip if not our form (check for our nonce)
+    if (!isset($_POST['hp_listing_status_nonce'])) {
+        hp_log("Skipping save - no HP nonce found", 'debug', 'POST_TYPES');
+        return;
+    }
+    
+    // Verify nonce
+    if (!wp_verify_nonce($_POST['hp_listing_status_nonce'], 'hp_listing_status_meta_box')) {
+        hp_log("Nonce verification failed", 'warning', 'POST_TYPES');
+        return;
+    }
+    
+    // Check permissions
+    if (!current_user_can('edit_post', $post_id)) {
+        hp_log("User lacks permission to edit post", 'warning', 'POST_TYPES');
+        return;
+    }
+    
+    hp_log("Processing custom meta save for post {$post_id}", 'info', 'POST_TYPES');
+    
+    // Save listing status
+    if (isset($_POST['listing_status'])) {
+        $status = sanitize_text_field($_POST['listing_status']);
+        update_post_meta($post_id, '_listing_status', $status);
+        hp_log("Saved listing status: {$status}", 'debug', 'POST_TYPES');
+    }
+    
+    // Save featured status
+    if (isset($_POST['featured_listing']) && $_POST['featured_listing'] === '1') {
+        update_post_meta($post_id, '_featured_listing', '1');
+        hp_log("Saved featured status: Yes", 'debug', 'POST_TYPES');
+    } else {
+        update_post_meta($post_id, '_featured_listing', '0');
+        hp_log("Saved featured status: No", 'debug', 'POST_TYPES');
+    }
+    
+    hp_log("Custom meta save completed for post {$post_id}", 'info', 'POST_TYPES');
+}
+
+    
+/**
+ * FIXED: After ACF save - sync fields and process calculated values
+ */
+public function after_acf_save($post_id): void {
+    // Skip if not a post ID (could be options page, user, term, etc)
+    if (!is_numeric($post_id)) {
+        return;
+    }
+    
+    // Skip if not a listing
+    if (get_post_type($post_id) !== 'listing') {
+        return;
+    }
+    
+    hp_log("Processing after ACF save for listing {$post_id}", 'info', 'POST_TYPES');
+    
+    // Get all ACF fields for this post
+    $fields = get_field_objects($post_id);
+    
+    if ($fields) {
+        hp_log("Found " . count($fields) . " ACF fields for post {$post_id}", 'debug', 'POST_TYPES');
         
-        $post_types = array_keys($this->post_types_config);
-        
-        foreach ($post_types as $post_type) {
-            // Ensure post type is available in ACF location rules
-            add_filter('acf/location/rule_values/post_type', function($choices) use ($post_type) {
-                if (!isset($choices[$post_type])) {
-                    $post_type_obj = get_post_type_object($post_type);
-                    if ($post_type_obj) {
-                        $choices[$post_type] = $post_type_obj->labels->name;
+        // Process specific fields that need special handling
+        foreach ($fields as $field) {
+            $field_name = $field['name'];
+            $field_value = $field['value'];
+            
+            // Log important fields
+            if (in_array($field_name, ['listing_price', 'bedrooms', 'bathrooms_full', 'bathrooms_half', 'square_feet'])) {
+                hp_log("Field {$field_name}: " . (is_array($field_value) ? json_encode($field_value) : $field_value), 'debug', 'POST_TYPES');
+            }
+            
+            // Sync specific fields to post meta for queries
+            switch ($field_name) {
+                case 'listing_price':
+                    update_post_meta($post_id, '_price', $field_value);
+                    update_post_meta($post_id, 'price', $field_value);
+                    break;
+                    
+                case 'is_featured':
+                    update_post_meta($post_id, '_featured_listing', $field_value ? '1' : '0');
+                    break;
+                    
+                case 'mls_number':
+                    update_post_meta($post_id, '_mls_number', $field_value);
+                    break;
+                    
+                case 'property_title':
+                    // Update post title if set
+                    if (!empty($field_value)) {
+                        wp_update_post([
+                            'ID' => $post_id,
+                            'post_title' => $field_value
+                        ]);
                     }
-                }
-                return $choices;
-            });
+                    break;
+            }
         }
         
-        hp_log('Registered ACF support for post types: ' . implode(', ', $post_types), 'info', 'POST_TYPES');
+        // Calculate total bathrooms
+        $full = get_field('bathrooms_full', $post_id) ?: 0;
+        $half = get_field('bathrooms_half', $post_id) ?: 0;
+        $total_bathrooms = floatval($full) + (floatval($half) * 0.5);
+        update_post_meta($post_id, '_total_bathrooms', $total_bathrooms);
+        hp_log("Calculated total bathrooms: {$total_bathrooms}", 'debug', 'POST_TYPES');
+    } else {
+        hp_log("No ACF fields found for post {$post_id}", 'warning', 'POST_TYPES');
     }
     
-    /**
-     * Get registered post types
-     */
-    public function get_post_types(): array {
-        return array_keys($this->post_types_config);
+    // Use Field Mapper if available
+    if (class_exists('HappyPlace\\Core\\Field_Mapper')) {
+        \HappyPlace\Core\Field_Mapper::sync_fields($post_id);
+        hp_log("Field Mapper sync completed", 'debug', 'POST_TYPES');
     }
+    
+    // Clear caches
+    wp_cache_delete($post_id, 'posts');
+    wp_cache_delete($post_id, 'post_meta');
+    clean_post_cache($post_id);
+    
+    hp_log("After ACF save completed for listing {$post_id}", 'info', 'POST_TYPES');
+}
 }

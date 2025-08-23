@@ -30,69 +30,69 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
 
 <div class="open-houses-page" id="openHousesPage">
     <!-- Page Header with Stats -->
-    <div class="page-header">
-        <div class="header-stats">
-            <div class="stat-item">
-                <div class="stat-icon stat-icon-primary">
+    <div class="hph-page-header">
+        <div class="hph-header-stats">
+            <div class="hph-stat-item">
+                <div class="hph-stat-icon hph-stat-icon-primary">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                     </svg>
                 </div>
-                <div class="stat-content">
-                    <h3 class="stat-value" id="totalOpenHouses">-</h3>
-                    <p class="stat-label">Scheduled</p>
+                <div class="hph-stat-content">
+                    <h3 class="hph-stat-value" id="totalOpenHouses">-</h3>
+                    <p class="hph-stat-label">Scheduled</p>
                 </div>
             </div>
             
-            <div class="stat-item">
-                <div class="stat-icon stat-icon-success">
+            <div class="hph-stat-item">
+                <div class="hph-stat-icon hph-stat-icon-success">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                     </svg>
                 </div>
-                <div class="stat-content">
-                    <h3 class="stat-value" id="totalVisitors">-</h3>
-                    <p class="stat-label">Total Visitors</p>
+                <div class="hph-stat-content">
+                    <h3 class="hph-stat-value" id="totalVisitors">-</h3>
+                    <p class="hph-stat-label">Total Visitors</p>
                 </div>
             </div>
             
-            <div class="stat-item">
-                <div class="stat-icon stat-icon-warning">
+            <div class="hph-stat-item">
+                <div class="hph-stat-icon hph-stat-icon-warning">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
                     </svg>
                 </div>
-                <div class="stat-content">
-                    <h3 class="stat-value" id="avgVisitors">-</h3>
-                    <p class="stat-label">Avg per Event</p>
+                <div class="hph-stat-content">
+                    <h3 class="hph-stat-value" id="avgVisitors">-</h3>
+                    <p class="hph-stat-label">Avg per Event</p>
                 </div>
             </div>
             
-            <div class="stat-item">
-                <div class="stat-icon stat-icon-info">
+            <div class="hph-stat-item">
+                <div class="hph-stat-icon hph-stat-icon-info">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 </div>
-                <div class="stat-content">
-                    <h3 class="stat-value" id="leadsGenerated">-</h3>
-                    <p class="stat-label">Leads Generated</p>
+                <div class="hph-stat-content">
+                    <h3 class="hph-stat-value" id="leadsGenerated">-</h3>
+                    <p class="hph-stat-label">Leads Generated</p>
                 </div>
             </div>
         </div>
     </div>
     
     <!-- View Toggle and Controls -->
-    <div class="page-controls">
-        <div class="controls-left">
-            <div class="view-toggle">
-                <button class="view-btn active" data-view="calendar" aria-label="Calendar view">
+    <div class="hph-page-controls">
+        <div class="hph-controls-left">
+            <div class="hph-view-toggle">
+                <button class="hph-view-btn active" data-view="calendar" aria-label="Calendar view">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                         <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
                     </svg>
                     Calendar
                 </button>
-                <button class="view-btn" data-view="list" aria-label="List view">
+                <button class="hph-view-btn" data-view="list" aria-label="List view">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                         <path d="M2 3h12a1 1 0 0 1 0 2H2a1 1 0 0 1 0-2zm0 4h12a1 1 0 0 1 0 2H2a1 1 0 0 1 0-2zm0 4h12a1 1 0 0 1 0 2H2a1 1 0 0 1 0-2z"/>
                     </svg>
@@ -100,8 +100,8 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
                 </button>
             </div>
             
-            <div class="filter-group">
-                <select class="form-select" id="statusFilter">
+            <div class="hph-filter-group">
+                <select class="hph-form-select" id="statusFilter">
                     <option value="">All Status</option>
                     <option value="scheduled">Scheduled</option>
                     <option value="active">Active</option>
@@ -110,8 +110,8 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
                 </select>
             </div>
             
-            <div class="filter-group">
-                <select class="form-select" id="timeFilter">
+            <div class="hph-filter-group">
+                <select class="hph-form-select" id="timeFilter">
                     <option value="all">All Time</option>
                     <option value="upcoming">Upcoming</option>
                     <option value="this_week">This Week</option>
@@ -121,7 +121,7 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
             </div>
         </div>
         
-        <div class="controls-right">
+        <div class="hph-controls-right">
             <button class="btn btn-outline btn-sm" id="exportOpenHouses">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                     <path d="M8.5 1.5A1.5 1.5 0 0 1 10 0h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h6c-.314.418-.5.937-.5 1.5v6h-2L8 10.5 10.5 8H9V1.5z"/>
@@ -142,8 +142,8 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
     <div class="open-houses-content">
         <!-- Loading State -->
         <div class="loading-container" id="openHousesLoading">
-            <div class="loading-spinner">
-                <svg class="spinner" width="48" height="48" viewBox="0 0 48 48">
+            <div class="loading-hph-spinner">
+                <svg class="hph-spinner" width="48" height="48" viewBox="0 0 48 48">
                     <circle cx="24" cy="24" r="20" stroke="var(--hph-primary)" stroke-width="3" fill="none" stroke-dasharray="125.66" stroke-dashoffset="94.245" stroke-linecap="round">
                         <animateTransform attributeName="transform" type="rotate" from="0 24 24" to="360 24 24" dur="1s" repeatCount="indefinite"/>
                     </circle>
@@ -241,11 +241,11 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
                 <input type="hidden" id="openHouseId" name="open_house_id" value="">
                 
                 <!-- Listing Selection -->
-                <div class="form-section">
-                    <h3 class="section-title">Property</h3>
-                    <div class="form-group">
-                        <label for="listingSelect" class="form-label required">Select Listing</label>
-                        <select id="listingSelect" name="listing_id" class="form-select" required>
+                <div class="hph-form-section">
+                    <h3 class="hph-section-title">Property</h3>
+                    <div class="hph-form-group">
+                        <label for="listingSelect" class="hph-form-label required">Select Listing</label>
+                        <select id="listingSelect" name="listing_id" class="hph-form-select" required>
                             <option value="">Choose a listing...</option>
                             <!-- Listings will be loaded dynamically -->
                         </select>
@@ -257,16 +257,16 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
                 </div>
                 
                 <!-- Event Details -->
-                <div class="form-section">
-                    <h3 class="section-title">Event Details</h3>
+                <div class="hph-form-section">
+                    <h3 class="hph-section-title">Event Details</h3>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="eventDate" class="form-label required">Date</label>
-                            <input type="date" id="eventDate" name="event_date" class="form-control" required>
+                        <div class="hph-form-group">
+                            <label for="eventDate" class="hph-form-label required">Date</label>
+                            <input type="date" id="eventDate" name="event_date" class="hph-form-control" required>
                         </div>
-                        <div class="form-group">
-                            <label for="eventStatus" class="form-label">Status</label>
-                            <select id="eventStatus" name="status" class="form-select">
+                        <div class="hph-form-group">
+                            <label for="eventStatus" class="hph-form-label">Status</label>
+                            <select id="eventStatus" name="status" class="hph-form-select">
                                 <option value="scheduled">Scheduled</option>
                                 <option value="active">Active</option>
                                 <option value="completed">Completed</option>
@@ -276,36 +276,36 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
                     </div>
                     
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="startTime" class="form-label required">Start Time</label>
-                            <input type="time" id="startTime" name="start_time" class="form-control" required>
+                        <div class="hph-form-group">
+                            <label for="startTime" class="hph-form-label required">Start Time</label>
+                            <input type="time" id="startTime" name="start_time" class="hph-form-control" required>
                         </div>
-                        <div class="form-group">
-                            <label for="endTime" class="form-label required">End Time</label>
-                            <input type="time" id="endTime" name="end_time" class="form-control" required>
+                        <div class="hph-form-group">
+                            <label for="endTime" class="hph-form-label required">End Time</label>
+                            <input type="time" id="endTime" name="end_time" class="hph-form-control" required>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Event Information -->
-                <div class="form-section">
-                    <h3 class="section-title">Event Information</h3>
-                    <div class="form-group">
-                        <label for="eventTitle" class="form-label">Custom Title</label>
-                        <input type="text" id="eventTitle" name="title" class="form-control" 
+                <div class="hph-form-section">
+                    <h3 class="hph-section-title">Event Information</h3>
+                    <div class="hph-form-group">
+                        <label for="eventTitle" class="hph-form-label">Custom Title</label>
+                        <input type="text" id="eventTitle" name="title" class="hph-form-control" 
                                placeholder="Leave blank to auto-generate from listing">
                     </div>
                     
-                    <div class="form-group">
-                        <label for="eventDescription" class="form-label">Description</label>
-                        <textarea id="eventDescription" name="description" class="form-control" rows="4" 
+                    <div class="hph-form-group">
+                        <label for="eventDescription" class="hph-form-label">Description</label>
+                        <textarea id="eventDescription" name="description" class="hph-form-control" rows="4" 
                                   placeholder="Add special instructions, highlights, or promotional information..."></textarea>
                     </div>
                 </div>
                 
                 <!-- Marketing Options -->
-                <div class="form-section">
-                    <h3 class="section-title">Marketing & Promotion</h3>
+                <div class="hph-form-section">
+                    <h3 class="hph-section-title">Marketing & Promotion</h3>
                     <div class="checkbox-group">
                         <label class="checkbox-label">
                             <input type="checkbox" name="promote_online" value="1" checked>
@@ -334,17 +334,17 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
                 </div>
                 
                 <!-- Additional Settings -->
-                <div class="form-section">
-                    <h3 class="section-title">Additional Settings</h3>
+                <div class="hph-form-section">
+                    <h3 class="hph-section-title">Additional Settings</h3>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="maxVisitors" class="form-label">Expected Visitors</label>
-                            <input type="number" id="maxVisitors" name="max_visitors" class="form-control" 
+                        <div class="hph-form-group">
+                            <label for="maxVisitors" class="hph-form-label">Expected Visitors</label>
+                            <input type="number" id="maxVisitors" name="max_visitors" class="hph-form-control" 
                                    min="1" placeholder="Optional">
                         </div>
-                        <div class="form-group">
-                            <label for="reminderTime" class="form-label">Reminder</label>
-                            <select id="reminderTime" name="reminder_time" class="form-select">
+                        <div class="hph-form-group">
+                            <label for="reminderTime" class="hph-form-label">Reminder</label>
+                            <select id="reminderTime" name="reminder_time" class="hph-form-select">
                                 <option value="">No reminder</option>
                                 <option value="1_hour">1 hour before</option>
                                 <option value="2_hours">2 hours before</option>
@@ -354,9 +354,9 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
                         </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="specialInstructions" class="form-label">Special Instructions</label>
-                        <textarea id="specialInstructions" name="special_instructions" class="form-control" rows="3" 
+                    <div class="hph-form-group">
+                        <label for="specialInstructions" class="hph-form-label">Special Instructions</label>
+                        <textarea id="specialInstructions" name="special_instructions" class="hph-form-control" rows="3" 
                                   placeholder="Parking instructions, access codes, preparation notes..."></textarea>
                     </div>
                 </div>
@@ -367,7 +367,7 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
             <button type="submit" form="openHouseForm" class="btn btn-primary" id="saveOpenHouseBtn">
                 <span class="btn-text">Schedule Event</span>
                 <span class="btn-loading" style="display: none;">
-                    <svg class="spinner-sm" width="16" height="16" viewBox="0 0 16 16">
+                    <svg class="hph-hph-spinner-sm" width="16" height="16" viewBox="0 0 16 16">
                         <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="37.7" stroke-dashoffset="28.275" stroke-linecap="round">
                             <animateTransform attributeName="transform" type="rotate" from="0 8 8" to="360 8 8" dur="1s" repeatCount="indefinite"/>
                         </circle>
@@ -390,24 +390,24 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
             <form id="visitorForm">
                 <input type="hidden" id="visitorOpenHouseId" name="open_house_id">
                 
-                <div class="form-group">
-                    <label for="visitorName" class="form-label required">Name</label>
-                    <input type="text" id="visitorName" name="name" class="form-control" required>
+                <div class="hph-form-group">
+                    <label for="visitorName" class="hph-form-label required">Name</label>
+                    <input type="text" id="visitorName" name="name" class="hph-form-control" required>
                 </div>
                 
-                <div class="form-group">
-                    <label for="visitorEmail" class="form-label">Email</label>
-                    <input type="email" id="visitorEmail" name="email" class="form-control">
+                <div class="hph-form-group">
+                    <label for="visitorEmail" class="hph-form-label">Email</label>
+                    <input type="email" id="visitorEmail" name="email" class="hph-form-control">
                 </div>
                 
-                <div class="form-group">
-                    <label for="visitorPhone" class="form-label">Phone</label>
-                    <input type="tel" id="visitorPhone" name="phone" class="form-control">
+                <div class="hph-form-group">
+                    <label for="visitorPhone" class="hph-form-label">Phone</label>
+                    <input type="tel" id="visitorPhone" name="phone" class="hph-form-control">
                 </div>
                 
-                <div class="form-group">
-                    <label for="visitorInterest" class="form-label">Interest Level</label>
-                    <select id="visitorInterest" name="interest_level" class="form-select">
+                <div class="hph-form-group">
+                    <label for="visitorInterest" class="hph-form-label">Interest Level</label>
+                    <select id="visitorInterest" name="interest_level" class="hph-form-select">
                         <option value="browsing">Just browsing</option>
                         <option value="interested">Interested</option>
                         <option value="very_interested">Very interested</option>
@@ -415,9 +415,9 @@ $agent_id = function_exists('hpt_get_current_user_agent_id')
                     </select>
                 </div>
                 
-                <div class="form-group">
-                    <label for="visitorNotes" class="form-label">Notes</label>
-                    <textarea id="visitorNotes" name="notes" class="form-control" rows="3" 
+                <div class="hph-form-group">
+                    <label for="visitorNotes" class="hph-form-label">Notes</label>
+                    <textarea id="visitorNotes" name="notes" class="hph-form-control" rows="3" 
                               placeholder="Additional information or comments..."></textarea>
                 </div>
             </form>

@@ -276,7 +276,7 @@ class Agent_Automation {
             $count = 0;
             
             foreach ($sold_listings as $listing) {
-                $price = get_field('price', $listing->ID);
+                $price = get_field('listing_price', $listing->ID);
                 if ($price > 0) {
                     $total_price += $price;
                     $count++;

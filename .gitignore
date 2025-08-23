@@ -10,7 +10,6 @@
 /wp-content/blogs.dir/
 /wp-content/cache/
 /wp-content/db.php
-/wp-content/debug.log
 /wp-content/mu-plugins/
 /wp-content/object-cache.php
 /wp-content/upgrade/
@@ -41,13 +40,25 @@ wp-config-production.php
 /wp-trackback.php
 /xmlrpc.php
 
+# Development and temporary files
+test-*.php
+debug-*.php
+verify-*.php
+flush-*.php
+validate-*.php
+clean-*.php
+*-audit*.php
+*-summary.html
+examples/
+.claude/
+find-api-key.php
+local-xdebuginfo.php
+
 # Node dependency directories
 node_modules/
 jspm_packages/
 
 # Local development files
-/wp-content/debug.log
-*.log
 *.sql
 *.sqlite
 *.bak
@@ -128,7 +139,6 @@ bower_components/
 /wp-content/themes/happy-place-theme/node_modules/
 /wp-content/themes/happy-place-theme/.sass-cache/
 /wp-content/themes/happy-place-theme/build/
-/wp-content/themes/happy-place-theme/dist/
 /wp-content/themes/happy-place-theme/.env*
 /wp-content/themes/happy-place-theme/.cache/
 /wp-content/themes/happy-place-theme/css/maps/
@@ -145,6 +155,25 @@ bower_components/
 /wp-content/themes/happy-place-theme/yarn.lock
 /wp-content/themes/happy-place-theme/mix-manifest.json
 /wp-content/themes/happy-place-theme/hot
+
+# Happy Place Plugin specific ignores
+/wp-content/plugins/happy-place/node_modules/
+/wp-content/plugins/happy-place/.sass-cache/
+/wp-content/plugins/happy-place/.env*
+/wp-content/plugins/happy-place/.cache/
+/wp-content/plugins/happy-place/*.map
+/wp-content/plugins/happy-place/.eslintcache
+/wp-content/plugins/happy-place/.stylelintcache
+/wp-content/plugins/happy-place/yarn-error.log
+/wp-content/plugins/happy-place/npm-debug.log
+/wp-content/plugins/happy-place/.DS_Store
+/wp-content/plugins/happy-place/vendor/
+/wp-content/plugins/happy-place/composer.lock
+/wp-content/plugins/happy-place/yarn.lock
+
+# WP-CLI
+wp-cli.phar
+wp-cli.yml
 
 # WordPress development files
 /wp-content/themes/happy-place-theme/wp-stubs.php
