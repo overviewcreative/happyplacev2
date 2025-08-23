@@ -75,6 +75,47 @@ ehthumbs.db
 Thumbs.db
 Desktop.ini
 
+# Image files (exclude from version control)
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.ico
+*.svg
+*.webp
+*.avif
+*.tiff
+*.tif
+*.psd
+*.ai
+*.eps
+*.raw
+*.cr2
+*.nef
+*.orf
+*.sr2
+
+# Image directories (common upload locations)
+/wp-content/uploads/
+uploads/
+images/uploads/
+**/images/temp/
+**/images/cache/
+**/images/generated/
+
+# Generated thumbnails and resized images
+*-thumbnail.jpg
+*-thumbnail.png
+*-medium.jpg
+*-medium.png
+*-large.jpg
+*-large.png
+*-scaled.jpg
+*-scaled.png
+*-cropped.*
+*-resized.*
+
 # IDE/Editor folders
 .idea/
 .vscode/
