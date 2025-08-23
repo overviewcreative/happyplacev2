@@ -2,18 +2,16 @@
 /**
  * Plugin Name: Happy Place
  * Plugin URI: https://theparkergroup.com
- * Description: Advanced real estate platform with comprehensive property management, agent tools, marketing suite, and MLS compliance
- * Version: 3.0.0
+ * Description: Advanced real estate platform - RESTORED CORE
+ * Version: 4.0.0
  * Author: The Parker Group
  * Author URI: https://theparkergroup.com
  * License: GPL v2 or later
- * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: happy-place
  * Domain Path: /languages
  * Requires at least: 6.0
  * Tested up to: 6.4
  * Requires PHP: 7.4
- * Network: false
  */
 
 // Exit if accessed directly
@@ -22,30 +20,114 @@ if (!defined('ABSPATH')) {
 }
 
 // =============================================================================
-// DEFINE PLUGIN CONSTANTS
+// PLUGIN CONSTANTS
 // =============================================================================
 
-// Plugin Version
-if (!defined('HP_VERSION')) {
-    define('HP_VERSION', '3.0.0');
+define('HP_VERSION', '4.0.0');
+define('HP_PLUGIN_FILE', __FILE__);
+define('HP_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('HP_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('HP_INCLUDES_DIR', HP_PLUGIN_DIR . 'includes/');
+define('HP_ASSETS_DIR', HP_PLUGIN_DIR . 'assets/');
+define('HP_ASSETS_URL', HP_PLUGIN_URL . 'assets/');
+define('HP_DEBUG', defined('WP_DEBUG') && WP_DEBUG);
+
+// Database table prefix
+global $wpdb;
+define('HP_TABLE_PREFIX', $wpdb->prefix . 'hp_');
+
+// =============================================================================
+// ERROR HANDLING
+// =============================================================================
+
+if (!function_exists('hp_log')) {
+    function hp_log($message, $level = 'info', $context = '') {
+        if (HP_DEBUG) {
+            $timestamp = date('Y-m-d H:i:s');
+            $context_str = $context ? "[{$context}] " : '';
+            $log_message = "HP [{$timestamp}] [{$level}] {$context_str}{$message}";
+            
+            if ($level === 'critical' || $level === 'error') {
+                error_log($log_message);
+            } elseif (HP_DEBUG) {
+                error_log($log_message);
+            }
+        }
+    }
 }
 
-// Plugin File Path
-if (!defined('HP_PLUGIN_FILE')) {
-    define('HP_PLUGIN_FILE', __FILE__);
+// =============================================================================
+// LOAD CORE FILES
+// =============================================================================
+
+// Load Container first
+require_once HP_INCLUDES_DIR . 'Core/Container.php';
+require_once HP_INCLUDES_DIR . 'Core/ServiceProvider.php';
+require_once HP_INCLUDES_DIR . 'Core/ErrorHandler.php';
+require_once HP_INCLUDES_DIR . 'Core/ComponentLoader.php';
+
+// Load main plugin class
+require_once HP_INCLUDES_DIR . 'class-plugin.php';
+
+// =============================================================================
+// INITIALIZE PLUGIN
+// =============================================================================
+
+/**
+ * Get plugin instance
+ * 
+ * @return HappyPlace\Plugin
+ */
+function hp_plugin() {
+    return HappyPlace\Plugin::instance();
 }
 
-// Plugin Directory Paths
-if (!defined('HP_PLUGIN_DIR')) {
-    define('HP_PLUGIN_DIR', plugin_dir_path(__FILE__));
+// Initialize plugin
+add_action('plugins_loaded', function() {
+    $plugin = hp_plugin();
+    
+    if (!$plugin->initialize()) {
+        hp_log('Plugin initialization failed', 'critical', 'BOOTSTRAP');
+        
+        // Show admin notice
+        add_action('admin_notices', function() {
+            ?>
+            <div class="notice notice-error">
+                <p>
+                    <strong><?php _e('Happy Place Plugin Error:', 'happy-place'); ?></strong>
+                    <?php _e('The plugin failed to initialize. Please check the error logs for details.', 'happy-place'); ?>
+                </p>
+            </div>
+            <?php
+        });
+        
+        return;
+    }
+    
+    hp_log('Plugin initialized via bootstrap', 'info', 'BOOTSTRAP');
+});
+
+// =============================================================================
+// HELPER FUNCTIONS
+// =============================================================================
+
+/**
+ * Get service from container
+ * 
+ * @param string $service Service ID
+ * @return mixed
+ */
+function hp_service($service) {
+    return hp_plugin()->get($service);
 }
 
-if (!defined('HP_PLUGIN_URL')) {
-    define('HP_PLUGIN_URL', plugin_dir_url(__FILE__));
-}
-
-if (!defined('HP_INCLUDES_DIR')) {
-    define('HP_INCLUDES_DIR', HP_PLUGIN_DIR . 'includes/');
+/**
+ * Check if plugin is ready
+ * 
+ * @return bool
+ */
+function hp_is_ready() {
+    return hp_plugin()->is_booted();
 }
 
 if (!defined('HP_ASSETS_DIR')) {
