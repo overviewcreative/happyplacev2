@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class Lead_Capture {
+class LeadCapture {
     
     /**
      * Single instance

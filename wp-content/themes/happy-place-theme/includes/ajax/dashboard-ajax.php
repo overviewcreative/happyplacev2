@@ -331,6 +331,52 @@ class HPH_Dashboard_Ajax {
             wp_send_json_error('Insufficient permissions');
         }
         
+        // Check if plugin services are available and active
+        if (function_exists('hpt_services_available') && hpt_services_available()) {
+            // Route through plugin DashboardBridge (priority 5 should have already handled this)
+            // If we reach here, it means the service routing failed, so continue with fallback
+            if (function_exists('hpt_create_listing_via_service')) {
+                try {
+                    $service_data = array(
+                        'title' => sanitize_text_field($_POST['title'] ?? ''),
+                        'description' => wp_kses_post($_POST['description'] ?? ''),
+                        'status' => 'publish',
+                        'price' => floatval($_POST['price'] ?? 0),
+                        'bedrooms' => intval($_POST['bedrooms'] ?? 0),
+                        'bathrooms' => floatval($_POST['bathrooms'] ?? 0),
+                        'square_feet' => intval($_POST['square_feet'] ?? 0),
+                        'address' => array(
+                            'street_address' => sanitize_text_field($_POST['address'] ?? ''),
+                            'city' => sanitize_text_field($_POST['city'] ?? ''),
+                            'state' => sanitize_text_field($_POST['state'] ?? ''),
+                            'zip_code' => sanitize_text_field($_POST['zip_code'] ?? '')
+                        )
+                    );
+                    
+                    $result = hpt_create_listing_via_service($service_data);
+                    
+                    if (!is_wp_error($result)) {
+                        wp_send_json_success(array(
+                            'listing_id' => $result,
+                            'message' => 'Listing created successfully via service layer',
+                            'redirect' => get_permalink($result)
+                        ));
+                        return;
+                    } else {
+                        // Log service error but continue with fallback
+                        if (function_exists('hp_log')) {
+                            hp_log('Service create_listing failed: ' . $result->get_error_message(), 'error', 'dashboard');
+                        }
+                    }
+                } catch (Exception $e) {
+                    if (function_exists('hp_log')) {
+                        hp_log('Service create_listing exception: ' . $e->getMessage(), 'error', 'dashboard');
+                    }
+                }
+            }
+        }
+        
+        // Fallback to traditional method
         $listing_data = array(
             'post_title' => sanitize_text_field($_POST['title']),
             'post_content' => wp_kses_post($_POST['description']),
@@ -392,6 +438,53 @@ class HPH_Dashboard_Ajax {
             wp_send_json_error('Insufficient permissions');
         }
         
+        // Check if plugin services are available and active
+        if (function_exists('hpt_services_available') && hpt_services_available()) {
+            if (function_exists('hpt_update_listing_via_service')) {
+                try {
+                    $service_data = array(
+                        'title' => sanitize_text_field($_POST['title'] ?? ''),
+                        'description' => wp_kses_post($_POST['description'] ?? ''),
+                        'price' => floatval($_POST['price'] ?? 0),
+                        'status' => sanitize_text_field($_POST['status'] ?? 'active'),
+                        'bedrooms' => intval($_POST['bedrooms'] ?? 0),
+                        'bathrooms' => floatval($_POST['bathrooms'] ?? 0),
+                        'square_feet' => intval($_POST['square_feet'] ?? 0),
+                        'address' => array(
+                            'street_address' => sanitize_text_field($_POST['address'] ?? ''),
+                            'city' => sanitize_text_field($_POST['city'] ?? ''),
+                            'state' => sanitize_text_field($_POST['state'] ?? ''),
+                            'zip_code' => sanitize_text_field($_POST['zip_code'] ?? '')
+                        ),
+                        'property_type' => sanitize_text_field($_POST['property_type'] ?? ''),
+                        'year_built' => intval($_POST['year_built'] ?? 0),
+                        'mls_number' => sanitize_text_field($_POST['mls_number'] ?? ''),
+                        'featured_listing' => intval($_POST['featured'] ?? 0)
+                    );
+                    
+                    $result = hpt_update_listing_via_service($listing_id, $service_data);
+                    
+                    if (!is_wp_error($result)) {
+                        wp_send_json_success(array(
+                            'message' => 'Listing updated successfully via service layer',
+                            'listing' => hpt_get_listing($listing_id)
+                        ));
+                        return;
+                    } else {
+                        // Log service error but continue with fallback
+                        if (function_exists('hp_log')) {
+                            hp_log('Service update_listing failed: ' . $result->get_error_message(), 'error', 'dashboard');
+                        }
+                    }
+                } catch (Exception $e) {
+                    if (function_exists('hp_log')) {
+                        hp_log('Service update_listing exception: ' . $e->getMessage(), 'error', 'dashboard');
+                    }
+                }
+            }
+        }
+        
+        // Fallback to traditional method
         $listing_data = array(
             'ID' => $listing_id,
             'post_title' => sanitize_text_field($_POST['title']),
@@ -448,6 +541,33 @@ class HPH_Dashboard_Ajax {
             wp_send_json_error('Insufficient permissions');
         }
         
+        // Check if plugin services are available and active
+        if (function_exists('hpt_services_available') && hpt_services_available()) {
+            if (function_exists('hpt_delete_listing_via_service')) {
+                try {
+                    $result = hpt_delete_listing_via_service($listing_id);
+                    
+                    if (!is_wp_error($result) && $result) {
+                        wp_send_json_success(array(
+                            'message' => 'Listing deleted successfully via service layer'
+                        ));
+                        return;
+                    } else {
+                        // Log service error but continue with fallback
+                        if (function_exists('hp_log')) {
+                            $error_msg = is_wp_error($result) ? $result->get_error_message() : 'Unknown error';
+                            hp_log('Service delete_listing failed: ' . $error_msg, 'error', 'dashboard');
+                        }
+                    }
+                } catch (Exception $e) {
+                    if (function_exists('hp_log')) {
+                        hp_log('Service delete_listing exception: ' . $e->getMessage(), 'error', 'dashboard');
+                    }
+                }
+            }
+        }
+        
+        // Fallback to traditional method
         $result = wp_trash_post($listing_id);
         
         if (!$result) {

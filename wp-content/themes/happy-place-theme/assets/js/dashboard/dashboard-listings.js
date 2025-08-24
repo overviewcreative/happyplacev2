@@ -14,6 +14,7 @@
         currentSort: 'date-desc',
         selectedListings: [],
         isLoading: false,
+        servicesAvailable: false,
         
         // Initialize
         init: function() {
@@ -24,10 +25,22 @@
             }
             
             console.log('ListingsController: Initializing...');
+            this.detectServices();
             this.cacheDom();
             this.bindEvents();
             this.loadStats();
             this.loadListings();
+        },
+        
+        // Detect if plugin services are available
+        detectServices: function() {
+            // Check if services are available through global variables
+            this.servicesAvailable = (typeof window.HPH !== 'undefined' && 
+                                    window.HPH.services_available === true) ||
+                                    (typeof hphDashboardSettings !== 'undefined' && 
+                                    hphDashboardSettings.services_available === true);
+            
+            console.log('ListingsController: Services available:', this.servicesAvailable);
         },
         
         // Cache DOM elements
@@ -92,7 +105,8 @@
                 type: 'POST',
                 data: {
                     action: 'hph_get_listing_stats',
-                    nonce: hphDashboardSettings.dashboard_nonce
+                    nonce: hphDashboardSettings.dashboard_nonce,
+                    use_services: this.servicesAvailable ? '1' : '0'
                 },
                 success: (response) => {
                     if (response.success) {
@@ -111,6 +125,11 @@
         renderStats: function(stats) {
             const $statsGrid = $('.stats-grid');
             if (!$statsGrid.length) return;
+            
+            // Add service status indicator
+            if (this.servicesAvailable) {
+                console.log('ListingsController: Rendering stats with enhanced service data');
+            }
             
             const html = `
                 <div class="stat-card">
@@ -200,7 +219,8 @@
                     per_page: this.perPage,
                     status: this.currentFilter,
                     sort: this.currentSort,
-                    search: this.$searchInput.val() || ''
+                    search: this.$searchInput.val() || '',
+                    use_services: this.servicesAvailable ? '1' : '0'
                 },
                 success: (response) => {
                     if (response.success) {
@@ -423,7 +443,8 @@
                 data: {
                     action: 'hph_get_listing',
                     nonce: hphDashboardSettings.dashboard_nonce,
-                    listing_id: id
+                    listing_id: id,
+                    use_services: this.servicesAvailable ? '1' : '0'
                 },
                 success: (response) => {
                     if (response.success) {
@@ -456,11 +477,19 @@
                 data: {
                     action: 'hph_delete_listing',
                     nonce: hphDashboardSettings.dashboard_nonce,
-                    listing_id: id
+                    listing_id: id,
+                    use_services: this.servicesAvailable ? '1' : '0'
                 },
                 success: (response) => {
                     if (response.success) {
-                        this.showNotification('success', 'Listing deleted successfully');
+                        let message = response.data.message || 'Listing deleted successfully';
+                        
+                        // Add service indicator if enhanced services were used
+                        if (this.servicesAvailable && message.includes('service layer')) {
+                            message += ' ⚡';
+                        }
+                        
+                        this.showNotification('success', message);
                         this.loadListings();
                         this.loadStats();
                     } else {
@@ -510,6 +539,7 @@
             
             formData.append('action', listingId ? 'hph_update_listing' : 'hph_create_listing');
             formData.append('nonce', hphDashboardSettings.dashboard_nonce);
+            formData.append('use_services', this.servicesAvailable ? '1' : '0');
             
             // Show loading
             const $submitBtn = $('#saveListingBtn');
@@ -525,7 +555,14 @@
                 contentType: false,
                 success: (response) => {
                     if (response.success) {
-                        this.showNotification('success', response.data.message);
+                        let message = response.data.message || 'Listing saved successfully';
+                        
+                        // Add service indicator if enhanced services were used
+                        if (this.servicesAvailable && message.includes('service layer')) {
+                            message += ' ⚡';
+                        }
+                        
+                        this.showNotification('success', message);
                         this.closeModal();
                         this.loadListings();
                         this.loadStats();

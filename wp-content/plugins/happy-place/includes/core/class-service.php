@@ -1,11 +1,9 @@
-// happy-place-homes/includes/core/class-service.php
-
 <?php
 /**
  * Base Service Class
  * 
  * @package HappyPlace\Core
- * @version 1.0.0
+ * @version 4.0.0
  */
 
 namespace HappyPlace\Core;

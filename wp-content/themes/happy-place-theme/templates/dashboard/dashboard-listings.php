@@ -24,34 +24,74 @@ if (!current_user_can('edit_posts')) {
 $current_user_id = get_current_user_id();
 $agent_id = hpt_get_user_agent_id($current_user_id);
 
-// Build query args using proper WP_Query structure
-$query_args = array(
-    'post_type' => 'listing',
-    'posts_per_page' => 20,
-    'post_status' => array('publish', 'draft', 'private'),
-    'orderby' => 'date',
-    'order' => 'DESC',
-    'no_found_rows' => false, // We need pagination data
-);
+// Use enhanced service-powered listings if available
+$listings = array();
+$total_listings = 0;
 
-// For non-admin users, show only their own listings
-if (!current_user_can('manage_options') && $agent_id) {
-    $query_args['meta_query'] = array(
-        array(
-            'key' => 'listing_agent',
-            'value' => $agent_id,
-            'compare' => '='
-        )
-    );
-} elseif (!current_user_can('manage_options')) {
-    // If no agent ID found, show author's posts
-    $query_args['author'] = $current_user_id;
+if (function_exists('hpt_get_user_listings_via_service') && function_exists('hpt_services_available') && hpt_services_available()) {
+    // Use plugin services for enhanced performance and features
+    try {
+        $listings = hpt_get_user_listings_via_service($current_user_id, array(
+            'per_page' => 20,
+            'page' => 1,
+            'status' => 'all',
+            'sort' => 'date-desc'
+        ));
+        $total_listings = hpt_count_user_listings_enhanced($current_user_id, 'all');
+        
+        // Create mock query object for template compatibility
+        $listings_query = (object) array(
+            'posts' => array_map(function($listing) {
+                return (object) $listing;
+            }, $listings),
+            'found_posts' => $total_listings,
+            'have_posts' => !empty($listings),
+            'post_count' => count($listings)
+        );
+        
+        $using_services = true;
+        
+    } catch (Exception $e) {
+        if (function_exists('hp_log')) {
+            hp_log('Service listings error: ' . $e->getMessage(), 'error', 'dashboard');
+        }
+        $using_services = false;
+    }
+} else {
+    $using_services = false;
 }
 
-// Execute query
-$listings_query = new WP_Query($query_args);
+// Fallback to traditional WP_Query if services aren't available
+if (!$using_services) {
+    // Build query args using proper WP_Query structure
+    $query_args = array(
+        'post_type' => 'listing',
+        'posts_per_page' => 20,
+        'post_status' => array('publish', 'draft', 'private'),
+        'orderby' => 'date',
+        'order' => 'DESC',
+        'no_found_rows' => false, // We need pagination data
+    );
 
-// Get dashboard stats using service
+    // For non-admin users, show only their own listings
+    if (!current_user_can('manage_options') && $agent_id) {
+        $query_args['meta_query'] = array(
+            array(
+                'key' => 'listing_agent',
+                'value' => $agent_id,
+                'compare' => '='
+            )
+        );
+    } elseif (!current_user_can('manage_options')) {
+        // If no agent ID found, show author's posts
+        $query_args['author'] = $current_user_id;
+    }
+
+    // Execute query
+    $listings_query = new WP_Query($query_args);
+}
+
+// Get enhanced dashboard stats using service layer
 $stats = array(
     'active_listings' => 0,
     'pending_listings' => 0,
@@ -59,7 +99,22 @@ $stats = array(
     'total_leads' => 0
 );
 
-if ($dashboard_service && method_exists($dashboard_service, 'get_user_stats')) {
+// Try to use enhanced plugin service stats first
+if (function_exists('hpt_get_dashboard_stats_enhanced') && $using_services) {
+    try {
+        $enhanced_stats = hpt_get_dashboard_stats_enhanced($current_user_id);
+        if ($enhanced_stats && is_array($enhanced_stats)) {
+            $stats = array_merge($stats, $enhanced_stats);
+        }
+    } catch (Exception $e) {
+        if (function_exists('hp_log')) {
+            hp_log('Enhanced stats error: ' . $e->getMessage(), 'error', 'dashboard');
+        }
+    }
+}
+
+// Fallback to theme service if plugin services aren't available
+if ((!$stats || array_sum($stats) === 0) && $dashboard_service && method_exists($dashboard_service, 'get_user_stats')) {
     try {
         $stats = $dashboard_service->get_user_stats($current_user_id);
     } catch (Exception $e) {
@@ -70,27 +125,31 @@ if ($dashboard_service && method_exists($dashboard_service, 'get_user_stats')) {
     }
 }
 
-// Fallback stats calculation if service fails
-if (!$stats || empty($stats)) {
-    $active_count = new WP_Query(array_merge($query_args, array(
-        'posts_per_page' => -1,
-        'meta_query' => array_merge(
-            isset($query_args['meta_query']) ? $query_args['meta_query'] : array(),
-            array(
-                array(
-                    'key' => 'listing_status',
-                    'value' => 'active',
-                    'compare' => '='
-                )
-            )
-        )
+// Final fallback stats calculation if all services fail
+if (!$stats || empty($stats) || array_sum($stats) === 0) {
+    // Use the query args from fallback if they exist, otherwise create minimal ones
+    $fallback_query_args = isset($query_args) ? $query_args : array(
+        'post_type' => 'listing',
+        'author' => $current_user_id,
+        'posts_per_page' => -1
+    );
+    
+    $active_count = new WP_Query(array_merge($fallback_query_args, array(
+        'post_status' => 'publish',
+        'fields' => 'ids'
+    )));
+    
+    $draft_count = new WP_Query(array_merge($fallback_query_args, array(
+        'post_status' => 'draft',
+        'fields' => 'ids'
     )));
     
     $stats = array(
         'active_listings' => $active_count->found_posts,
+        'draft_listings' => $draft_count->found_posts,
         'pending_listings' => 0,
         'sold_listings' => 0,
-        'total_leads' => 0
+        'total_listings' => $active_count->found_posts + $draft_count->found_posts
     );
     wp_reset_postdata();
 }

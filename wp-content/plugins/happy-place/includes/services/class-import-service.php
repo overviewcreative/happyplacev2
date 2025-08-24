@@ -1,0 +1,793 @@
+<?php
+/**
+ * Import Service - CSV & Bulk Operations
+ * 
+ * Handles CSV importing, field mapping, progress tracking, and bulk data operations.
+ * 
+ * @package HappyPlace\Services
+ * @version 4.0.0
+ */
+
+namespace HappyPlace\Services;
+
+use HappyPlace\Core\Service;
+
+// Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+/**
+ * Import Service Class
+ * 
+ * Handles CSV import and bulk operations as specified in services.md
+ */
+class ImportService extends Service {
+    
+    /**
+     * Service name
+     */
+    protected string $name = 'import_service';
+    
+    /**
+     * Service version
+     */
+    protected string $version = '4.0.0';
+    
+    /**
+     * Session key prefix
+     */
+    private string $session_prefix = 'hp_import_session_';
+    
+    /**
+     * Maximum file size (in bytes)
+     */
+    private int $max_file_size = 10485760; // 10MB
+    
+    /**
+     * Allowed file types
+     */
+    private array $allowed_types = ['csv', 'txt'];
+    
+    /**
+     * Mapping templates cache
+     */
+    private array $mapping_templates = [];
+    
+    /**
+     * Default field mappings
+     */
+    private array $default_mappings = [];
+    
+    /**
+     * Initialize service
+     */
+    public function init(): void {
+        if ($this->initialized) {
+            return;
+        }
+        
+        // Load mapping templates
+        $this->load_mapping_templates();
+        $this->load_default_mappings();
+        
+        // Register AJAX handlers
+        add_action('wp_ajax_hp_upload_import_file', [$this, 'ajax_upload_file']);
+        add_action('wp_ajax_hp_validate_csv', [$this, 'ajax_validate_csv']);
+        add_action('wp_ajax_hp_process_import', [$this, 'ajax_process_import']);
+        add_action('wp_ajax_hp_get_import_progress', [$this, 'ajax_get_progress']);
+        
+        $this->initialized = true;
+        $this->log('Import Service initialized successfully');
+    }
+    
+    /**
+     * Import CSV file
+     * 
+     * @param string $file_path Path to CSV file
+     * @param array $mapping Field mapping configuration
+     * @return array|WP_Error Import results or error
+     */
+    public function import_csv(string $file_path, array $mapping) {
+        // Validate file
+        $validation = $this->validate_csv($file_path);
+        if (is_wp_error($validation)) {
+            return $validation;
+        }
+        
+        // Get CSV headers and data
+        $csv_data = $this->parse_csv($file_path);
+        if (is_wp_error($csv_data)) {
+            return $csv_data;
+        }
+        
+        // Initialize import session
+        $total_rows = count($csv_data['data']);
+        $session_id = $this->init_import_session($total_rows);
+        
+        // Process data in batches
+        $batch_size = 50; // Process 50 records at a time
+        $results = [
+            'success' => 0,
+            'failed' => 0,
+            'skipped' => 0,
+            'errors' => [],
+            'session_id' => $session_id
+        ];
+        
+        $listing_service = new ListingService();
+        
+        for ($i = 0; $i < $total_rows; $i += $batch_size) {
+            $batch = array_slice($csv_data['data'], $i, $batch_size);
+            
+            foreach ($batch as $row_index => $row) {
+                $actual_row = $i + $row_index + 1; // +1 for header row
+                
+                try {
+                    // Map CSV row to listing data
+                    $listing_data = $this->map_csv_row($row, $csv_data['headers'], $mapping);
+                    
+                    // Skip empty rows
+                    if (empty($listing_data['title'])) {
+                        $results['skipped']++;
+                        continue;
+                    }
+                    
+                    // Check for duplicates
+                    if ($this->is_duplicate($listing_data)) {
+                        $this->log_import_error($actual_row, 'Duplicate listing found');
+                        $results['skipped']++;
+                        continue;
+                    }
+                    
+                    // Create listing
+                    $listing_id = $listing_service->create_listing($listing_data);
+                    
+                    if (is_wp_error($listing_id)) {
+                        $this->log_import_error($actual_row, $listing_id->get_error_message());
+                        $results['failed']++;
+                        $results['errors'][] = [
+                            'row' => $actual_row,
+                            'error' => $listing_id->get_error_message(),
+                            'data' => $listing_data
+                        ];
+                    } else {
+                        $results['success']++;
+                    }
+                    
+                } catch (\Exception $e) {
+                    $this->log_import_error($actual_row, $e->getMessage());
+                    $results['failed']++;
+                    $results['errors'][] = [
+                        'row' => $actual_row,
+                        'error' => $e->getMessage(),
+                        'data' => $row ?? []
+                    ];
+                }
+            }
+            
+            // Update progress
+            $processed = min($i + $batch_size, $total_rows);
+            $this->update_progress($session_id, $processed, $total_rows);
+            
+            // Allow for memory cleanup
+            if ($i % 200 === 0) {
+                wp_cache_flush();
+                if (function_exists('gc_collect_cycles')) {
+                    gc_collect_cycles();
+                }
+            }
+        }
+        
+        // Complete import session
+        $this->complete_import_session($session_id, $results);
+        
+        return $results;
+    }
+    
+    /**
+     * Validate CSV file
+     * 
+     * @param string $file_path Path to CSV file
+     * @return bool|WP_Error True if valid, WP_Error if invalid
+     */
+    public function validate_csv(string $file_path) {
+        // Check if file exists
+        if (!file_exists($file_path)) {
+            return new \WP_Error('file_not_found', 'CSV file not found');
+        }
+        
+        // Check file size
+        $file_size = filesize($file_path);
+        if ($file_size > $this->max_file_size) {
+            return new \WP_Error('file_too_large', sprintf('File size exceeds maximum of %s', size_format($this->max_file_size)));
+        }
+        
+        // Check file extension
+        $file_info = pathinfo($file_path);
+        if (!in_array(strtolower($file_info['extension']), $this->allowed_types)) {
+            return new \WP_Error('invalid_file_type', 'Invalid file type. Only CSV files are allowed.');
+        }
+        
+        // Try to parse first few lines
+        $handle = fopen($file_path, 'r');
+        if (!$handle) {
+            return new \WP_Error('file_read_error', 'Unable to read CSV file');
+        }
+        
+        // Check for valid CSV format
+        $headers = fgetcsv($handle);
+        if (!$headers || count($headers) < 2) {
+            fclose($handle);
+            return new \WP_Error('invalid_csv', 'Invalid CSV format or insufficient columns');
+        }
+        
+        fclose($handle);
+        
+        return true;
+    }
+    
+    /**
+     * Get CSV headers
+     * 
+     * @param string $file_path Path to CSV file
+     * @return array|WP_Error Headers array or error
+     */
+    public function get_csv_headers(string $file_path) {
+        $validation = $this->validate_csv($file_path);
+        if (is_wp_error($validation)) {
+            return $validation;
+        }
+        
+        $handle = fopen($file_path, 'r');
+        if (!$handle) {
+            return new \WP_Error('file_read_error', 'Unable to read CSV file');
+        }
+        
+        $headers = fgetcsv($handle);
+        fclose($handle);
+        
+        return array_map('trim', $headers);
+    }
+    
+    /**
+     * Auto-map CSV fields to listing fields
+     * 
+     * @param array $csv_headers CSV column headers
+     * @return array Suggested field mapping
+     */
+    public function auto_map_fields(array $csv_headers): array {
+        $mapping = [];
+        
+        foreach ($csv_headers as $index => $header) {
+            $header_lower = strtolower(trim($header));
+            $mapped_field = null;
+            
+            // Try to find matching field
+            foreach ($this->default_mappings as $csv_pattern => $listing_field) {
+                if (stripos($header_lower, $csv_pattern) !== false) {
+                    $mapped_field = $listing_field;
+                    break;
+                }
+            }
+            
+            $mapping[$index] = [
+                'csv_header' => $header,
+                'listing_field' => $mapped_field,
+                'suggested' => !is_null($mapped_field)
+            ];
+        }
+        
+        return $mapping;
+    }
+    
+    /**
+     * Save mapping template
+     * 
+     * @param string $name Template name
+     * @param array $mapping Field mapping
+     * @return bool Success status
+     */
+    public function save_mapping_template(string $name, array $mapping): bool {
+        $templates = get_option('hp_import_mapping_templates', []);
+        $templates[$name] = [
+            'name' => $name,
+            'mapping' => $mapping,
+            'created' => current_time('mysql'),
+            'created_by' => get_current_user_id()
+        ];
+        
+        return update_option('hp_import_mapping_templates', $templates);
+    }
+    
+    /**
+     * Get mapping templates
+     * 
+     * @return array Available mapping templates
+     */
+    public function get_mapping_templates(): array {
+        return get_option('hp_import_mapping_templates', []);
+    }
+    
+    /**
+     * Initialize import session
+     * 
+     * @param int $total_rows Total number of rows to process
+     * @return string Session ID
+     */
+    public function init_import_session(int $total_rows): string {
+        $session_id = uniqid('import_');
+        
+        $session_data = [
+            'id' => $session_id,
+            'total_rows' => $total_rows,
+            'processed' => 0,
+            'status' => 'in_progress',
+            'started' => current_time('mysql'),
+            'user_id' => get_current_user_id(),
+            'errors' => []
+        ];
+        
+        set_transient($this->session_prefix . $session_id, $session_data, 3600); // 1 hour
+        
+        return $session_id;
+    }
+    
+    /**
+     * Update import progress
+     * 
+     * @param string $session_id Session ID
+     * @param int $processed Number of processed rows
+     * @param int $total Total rows
+     * @return bool Success status
+     */
+    public function update_progress(string $session_id, int $processed, int $total): bool {
+        $session_data = get_transient($this->session_prefix . $session_id);
+        
+        if (!$session_data) {
+            return false;
+        }
+        
+        $session_data['processed'] = $processed;
+        $session_data['progress_percent'] = ($processed / $total) * 100;
+        $session_data['updated'] = current_time('mysql');
+        
+        return set_transient($this->session_prefix . $session_id, $session_data, 3600);
+    }
+    
+    /**
+     * Complete import session
+     * 
+     * @param string $session_id Session ID
+     * @param array $results Import results
+     * @return bool Success status
+     */
+    public function complete_import_session(string $session_id, array $results): bool {
+        $session_data = get_transient($this->session_prefix . $session_id);
+        
+        if (!$session_data) {
+            return false;
+        }
+        
+        $session_data['status'] = 'completed';
+        $session_data['completed'] = current_time('mysql');
+        $session_data['results'] = $results;
+        
+        // Store completed session for 24 hours
+        return set_transient($this->session_prefix . $session_id, $session_data, 86400);
+    }
+    
+    /**
+     * Get import progress
+     * 
+     * @param string $session_id Session ID
+     * @return array|false Session data or false if not found
+     */
+    public function get_import_progress(string $session_id) {
+        return get_transient($this->session_prefix . $session_id);
+    }
+    
+    /**
+     * Log import error
+     * 
+     * @param int $row Row number
+     * @param string $error Error message
+     * @return void
+     */
+    public function log_import_error(int $row, string $error): void {
+        $log_entry = sprintf('[Row %d] %s', $row, $error);
+        
+        if (HP_DEBUG) {
+            error_log('Happy Place Import Error: ' . $log_entry);
+        }
+        
+        // Could also save to database for detailed reporting
+        do_action('hp_import_error', $row, $error);
+    }
+    
+    /**
+     * Get import report
+     * 
+     * @param string $session_id Session ID
+     * @return array|WP_Error Import report or error
+     */
+    public function get_import_report(string $session_id) {
+        $session_data = get_transient($this->session_prefix . $session_id);
+        
+        if (!$session_data) {
+            return new \WP_Error('session_not_found', 'Import session not found');
+        }
+        
+        $report = [
+            'session_id' => $session_id,
+            'status' => $session_data['status'],
+            'started' => $session_data['started'],
+            'completed' => $session_data['completed'] ?? null,
+            'total_rows' => $session_data['total_rows'],
+            'processed' => $session_data['processed'],
+            'progress_percent' => $session_data['progress_percent'] ?? 0
+        ];
+        
+        if (isset($session_data['results'])) {
+            $report['results'] = $session_data['results'];
+        }
+        
+        return $report;
+    }
+    
+    /**
+     * Parse CSV file
+     * 
+     * @param string $file_path Path to CSV file
+     * @return array|WP_Error Parsed data or error
+     */
+    private function parse_csv(string $file_path) {
+        $handle = fopen($file_path, 'r');
+        if (!$handle) {
+            return new \WP_Error('file_read_error', 'Unable to read CSV file');
+        }
+        
+        $headers = fgetcsv($handle);
+        if (!$headers) {
+            fclose($handle);
+            return new \WP_Error('no_headers', 'CSV file has no headers');
+        }
+        
+        $data = [];
+        while (($row = fgetcsv($handle)) !== false) {
+            // Ensure row has same number of columns as headers
+            $row = array_pad($row, count($headers), '');
+            $data[] = array_combine($headers, $row);
+        }
+        
+        fclose($handle);
+        
+        return [
+            'headers' => $headers,
+            'data' => $data
+        ];
+    }
+    
+    /**
+     * Map CSV row to listing data
+     * 
+     * @param array $row CSV row data
+     * @param array $headers CSV headers
+     * @param array $mapping Field mapping
+     * @return array Mapped listing data
+     */
+    private function map_csv_row(array $row, array $headers, array $mapping): array {
+        $listing_data = [];
+        
+        foreach ($mapping as $csv_index => $field_config) {
+            if (empty($field_config['listing_field'])) {
+                continue;
+            }
+            
+            $csv_header = $headers[$csv_index] ?? '';
+            $value = $row[$csv_header] ?? '';
+            $listing_field = $field_config['listing_field'];
+            
+            // Apply data transformation if specified
+            if (!empty($field_config['transform'])) {
+                $value = $this->transform_field_value($value, $field_config['transform']);
+            }
+            
+            // Handle nested fields (like address)
+            if (strpos($listing_field, '.') !== false) {
+                $parts = explode('.', $listing_field);
+                if (count($parts) === 2) {
+                    if (!isset($listing_data[$parts[0]])) {
+                        $listing_data[$parts[0]] = [];
+                    }
+                    $listing_data[$parts[0]][$parts[1]] = $value;
+                }
+            } else {
+                $listing_data[$listing_field] = $value;
+            }
+        }
+        
+        // Set default values
+        if (empty($listing_data['status'])) {
+            $listing_data['status'] = 'draft';
+        }
+        
+        if (empty($listing_data['author_id'])) {
+            $listing_data['author_id'] = get_current_user_id();
+        }
+        
+        return $listing_data;
+    }
+    
+    /**
+     * Transform field value based on transformation rules
+     * 
+     * @param mixed $value Original value
+     * @param array $transform Transformation rules
+     * @return mixed Transformed value
+     */
+    private function transform_field_value($value, array $transform) {
+        switch ($transform['type'] ?? '') {
+            case 'price':
+                // Remove currency symbols and convert to number
+                $value = preg_replace('/[^0-9.]/', '', $value);
+                return floatval($value);
+                
+            case 'boolean':
+                $true_values = ['yes', 'y', 'true', '1', 'on'];
+                return in_array(strtolower(trim($value)), $true_values);
+                
+            case 'date':
+                $timestamp = strtotime($value);
+                return $timestamp ? date('Y-m-d', $timestamp) : '';
+                
+            case 'phone':
+                // Clean phone number
+                return preg_replace('/[^0-9]/', '', $value);
+                
+            case 'mapping':
+                // Map values using provided mapping
+                return $transform['map'][strtolower(trim($value))] ?? $value;
+                
+            default:
+                return trim($value);
+        }
+    }
+    
+    /**
+     * Check if listing is duplicate
+     * 
+     * @param array $listing_data Listing data
+     * @return bool True if duplicate found
+     */
+    private function is_duplicate(array $listing_data): bool {
+        $args = [
+            'post_type' => 'listing',
+            'post_status' => ['publish', 'draft', 'pending'],
+            'posts_per_page' => 1,
+            'meta_query' => []
+        ];
+        
+        // Check by MLS number if available
+        if (!empty($listing_data['mls_number'])) {
+            $args['meta_query'][] = [
+                'key' => 'mls_number',
+                'value' => $listing_data['mls_number'],
+                'compare' => '='
+            ];
+        }
+        // Check by address if no MLS number
+        elseif (!empty($listing_data['address']['street_address'])) {
+            $args['meta_query'][] = [
+                'key' => 'street_address',
+                'value' => $listing_data['address']['street_address'],
+                'compare' => '='
+            ];
+        }
+        // Check by title as fallback
+        else {
+            $args['s'] = $listing_data['title'];
+        }
+        
+        $query = new \WP_Query($args);
+        return $query->have_posts();
+    }
+    
+    /**
+     * Load mapping templates from database
+     */
+    private function load_mapping_templates(): void {
+        $this->mapping_templates = get_option('hp_import_mapping_templates', []);
+    }
+    
+    /**
+     * Load default field mappings
+     */
+    private function load_default_mappings(): void {
+        $this->default_mappings = [
+            'title' => 'title',
+            'property title' => 'title',
+            'listing title' => 'title',
+            'name' => 'title',
+            
+            'description' => 'description',
+            'details' => 'description',
+            'property description' => 'description',
+            
+            'price' => 'price',
+            'listing price' => 'price',
+            'asking price' => 'price',
+            'sale price' => 'price',
+            
+            'bedrooms' => 'bedrooms',
+            'beds' => 'bedrooms',
+            'bedroom' => 'bedrooms',
+            'bed' => 'bedrooms',
+            
+            'bathrooms' => 'bathrooms',
+            'baths' => 'bathrooms',
+            'bathroom' => 'bathrooms',
+            'bath' => 'bathrooms',
+            
+            'square feet' => 'square_feet',
+            'sqft' => 'square_feet',
+            'sq ft' => 'square_feet',
+            'size' => 'square_feet',
+            
+            'lot size' => 'lot_size',
+            'lot' => 'lot_size',
+            'acres' => 'lot_size',
+            
+            'year built' => 'year_built',
+            'built' => 'year_built',
+            'construction year' => 'year_built',
+            
+            'mls' => 'mls_number',
+            'mls number' => 'mls_number',
+            'mls #' => 'mls_number',
+            'listing id' => 'mls_number',
+            
+            'address' => 'address.street_address',
+            'street' => 'address.street_address',
+            'street address' => 'address.street_address',
+            
+            'city' => 'address.city',
+            'state' => 'address.state',
+            'zip' => 'address.zip_code',
+            'zip code' => 'address.zip_code',
+            'postal code' => 'address.zip_code',
+            
+            'status' => 'status',
+            'listing status' => 'status'
+        ];
+    }
+    
+    /**
+     * AJAX handler for file upload
+     */
+    public function ajax_upload_file(): void {
+        // Verify nonce
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'hp_import_upload')) {
+            wp_send_json_error(['message' => 'Security check failed']);
+        }
+        
+        // Check permissions
+        if (!current_user_can('import_data')) {
+            wp_send_json_error(['message' => 'Insufficient permissions']);
+        }
+        
+        // Handle file upload
+        $uploaded_file = $_FILES['csv_file'] ?? null;
+        if (!$uploaded_file || $uploaded_file['error'] !== UPLOAD_ERR_OK) {
+            wp_send_json_error(['message' => 'File upload failed']);
+        }
+        
+        // Move file to temporary location
+        $upload_dir = wp_upload_dir();
+        $temp_file = $upload_dir['path'] . '/' . uniqid('import_') . '.csv';
+        
+        if (!move_uploaded_file($uploaded_file['tmp_name'], $temp_file)) {
+            wp_send_json_error(['message' => 'Failed to save uploaded file']);
+        }
+        
+        // Validate CSV
+        $validation = $this->validate_csv($temp_file);
+        if (is_wp_error($validation)) {
+            unlink($temp_file);
+            wp_send_json_error(['message' => $validation->get_error_message()]);
+        }
+        
+        // Get headers for mapping
+        $headers = $this->get_csv_headers($temp_file);
+        if (is_wp_error($headers)) {
+            unlink($temp_file);
+            wp_send_json_error(['message' => $headers->get_error_message()]);
+        }
+        
+        // Auto-map fields
+        $suggested_mapping = $this->auto_map_fields($headers);
+        
+        wp_send_json_success([
+            'file_path' => $temp_file,
+            'headers' => $headers,
+            'suggested_mapping' => $suggested_mapping,
+            'mapping_templates' => $this->get_mapping_templates()
+        ]);
+    }
+    
+    /**
+     * AJAX handler for CSV validation
+     */
+    public function ajax_validate_csv(): void {
+        $file_path = $_POST['file_path'] ?? '';
+        
+        if (empty($file_path) || !file_exists($file_path)) {
+            wp_send_json_error(['message' => 'File not found']);
+        }
+        
+        $validation = $this->validate_csv($file_path);
+        
+        if (is_wp_error($validation)) {
+            wp_send_json_error(['message' => $validation->get_error_message()]);
+        }
+        
+        wp_send_json_success(['message' => 'CSV file is valid']);
+    }
+    
+    /**
+     * AJAX handler for import processing
+     */
+    public function ajax_process_import(): void {
+        // Verify nonce
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'hp_import_process')) {
+            wp_send_json_error(['message' => 'Security check failed']);
+        }
+        
+        // Check permissions
+        if (!current_user_can('import_data')) {
+            wp_send_json_error(['message' => 'Insufficient permissions']);
+        }
+        
+        $file_path = $_POST['file_path'] ?? '';
+        $mapping = $_POST['mapping'] ?? [];
+        
+        if (empty($file_path) || !file_exists($file_path)) {
+            wp_send_json_error(['message' => 'File not found']);
+        }
+        
+        if (empty($mapping)) {
+            wp_send_json_error(['message' => 'Field mapping is required']);
+        }
+        
+        // Start import process
+        $results = $this->import_csv($file_path, $mapping);
+        
+        if (is_wp_error($results)) {
+            wp_send_json_error(['message' => $results->get_error_message()]);
+        }
+        
+        // Clean up temp file
+        unlink($file_path);
+        
+        wp_send_json_success($results);
+    }
+    
+    /**
+     * AJAX handler for progress checking
+     */
+    public function ajax_get_progress(): void {
+        $session_id = $_POST['session_id'] ?? '';
+        
+        if (empty($session_id)) {
+            wp_send_json_error(['message' => 'Session ID required']);
+        }
+        
+        $progress = $this->get_import_progress($session_id);
+        
+        if (!$progress) {
+            wp_send_json_error(['message' => 'Session not found']);
+        }
+        
+        wp_send_json_success($progress);
+    }
+}

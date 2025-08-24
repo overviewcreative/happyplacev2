@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class ACF_Sync_Manager {
+class AcfSyncManager {
 
     private static $instance = null;
     private $json_save_path;

@@ -36,6 +36,31 @@ function hpt_get_dashboard_stats($user_id = null) {
         );
     }
     
+    // Try to use enhanced plugin service stats first
+    if (function_exists('hpt_get_dashboard_stats_enhanced') && function_exists('hpt_services_available') && hpt_services_available()) {
+        try {
+            $enhanced_stats = hpt_get_dashboard_stats_enhanced($user_id);
+            if ($enhanced_stats && is_array($enhanced_stats)) {
+                // Merge with traditional stats for compatibility
+                $base_stats = array(
+                    'active_listings' => $enhanced_stats['active_listings'] ?? 0,
+                    'closed_this_month' => hpt_count_closed_transactions($user_id, 'month'),
+                    'new_leads' => hpt_count_new_leads($user_id, 'week'),
+                    'open_houses' => hpt_count_upcoming_open_houses($user_id)
+                );
+                
+                // Add enhanced stats
+                $base_stats = array_merge($base_stats, $enhanced_stats);
+                return $base_stats;
+            }
+        } catch (Exception $e) {
+            if (function_exists('hp_log')) {
+                hp_log('Enhanced dashboard stats error: ' . $e->getMessage(), 'error', 'dashboard');
+            }
+        }
+    }
+    
+    // Fallback to traditional stats
     return array(
         'active_listings' => hpt_count_user_listings($user_id, 'active'),
         'closed_this_month' => hpt_count_closed_transactions($user_id, 'month'),
@@ -65,6 +90,29 @@ function hpt_get_user_listings($user_id = null, $status = 'all', $limit = 10) {
     $limit = max(1, min(100, intval($limit))); // Limit between 1-100
     $status = sanitize_text_field($status);
     
+    // Try to use enhanced plugin service first
+    if (function_exists('hpt_get_user_listings_via_service') && function_exists('hpt_services_available') && hpt_services_available()) {
+        try {
+            $service_args = array(
+                'user_id' => $user_id,
+                'per_page' => $limit,
+                'status' => $status,
+                'sort' => 'date-desc'
+            );
+            
+            $service_listings = hpt_get_user_listings_via_service($user_id, $service_args);
+            
+            if (!empty($service_listings) && is_array($service_listings)) {
+                return $service_listings;
+            }
+        } catch (Exception $e) {
+            if (function_exists('hp_log')) {
+                hp_log('Service listings error: ' . $e->getMessage(), 'error', 'dashboard');
+            }
+        }
+    }
+    
+    // Fallback to traditional WP_Query approach
     $args = array(
         'post_type' => 'listing',
         'author' => $user_id,

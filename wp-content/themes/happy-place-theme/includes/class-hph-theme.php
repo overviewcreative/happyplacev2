@@ -159,6 +159,7 @@ class HPH_Theme {
     private function load_integrations() {
         $integrations = array(
             'class-google-maps.php',
+            'dashboard-bridge-functions.php', // Bridge functions for plugin integration
         );
         
         foreach ($integrations as $integration) {

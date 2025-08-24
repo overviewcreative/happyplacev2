@@ -127,6 +127,9 @@ class Bootstrap {
             error_log('Happy Place: Taxonomies initialized');
         }
         
+        // Initialize Core Services
+        self::init_services();
+        
         // Initialize Admin Menu
         if (is_admin() && class_exists('HappyPlace\\Admin\\AdminMenu')) {
             add_action('admin_menu', function() {
@@ -134,6 +137,74 @@ class Bootstrap {
                 $admin_menu->init();
                 error_log('Happy Place: Admin menu initialized');
             });
+        }
+        
+        // Initialize Admin Service Test (only in debug mode)
+        if (is_admin() && HP_DEBUG && class_exists('HappyPlace\\Admin\\AdminServiceTest')) {
+            $service_test = new \HappyPlace\Admin\AdminServiceTest();
+            $service_test->init();
+            error_log('Happy Place: Admin service test initialized');
+        }
+        
+        // Initialize Form Handlers
+        self::init_form_handlers();
+        
+        // Initialize Dashboard Bridge (if theme is active)
+        self::init_dashboard_bridge();
+        
+        // Mark services as initialized
+        update_option('hp_services_initialized', true);
+    }
+    
+    /**
+     * Initialize dashboard bridge integration
+     */
+    private static function init_dashboard_bridge(): void {
+        // Only initialize if theme functions indicate dashboard usage
+        if (function_exists('hpt_get_dashboard_stats') || 
+            (defined('HPH_DASHBOARD_LOADING') && HPH_DASHBOARD_LOADING)) {
+            
+            if (class_exists('HappyPlace\\Integrations\\DashboardBridge')) {
+                $dashboard_bridge = \HappyPlace\Integrations\DashboardBridge::get_instance();
+                error_log('Happy Place: Dashboard bridge initialized');
+            }
+        }
+    }
+    
+    /**
+     * Initialize core services
+     */
+    private static function init_services(): void {
+        // Initialize Listing Service
+        if (class_exists('HappyPlace\\Services\\ListingService')) {
+            $listing_service = new \HappyPlace\Services\ListingService();
+            $listing_service->init();
+            error_log('Happy Place: Listing service initialized');
+        }
+        
+        // Initialize Form Service
+        if (class_exists('HappyPlace\\Services\\FormService')) {
+            $form_service = new \HappyPlace\Services\FormService();
+            $form_service->init();
+            error_log('Happy Place: Form service initialized');
+        }
+        
+        // Initialize Import Service
+        if (class_exists('HappyPlace\\Services\\ImportService')) {
+            $import_service = new \HappyPlace\Services\ImportService();
+            $import_service->init();
+            error_log('Happy Place: Import service initialized');
+        }
+    }
+    
+    /**
+     * Initialize form handlers
+     */
+    private static function init_form_handlers(): void {
+        // Initialize Listing Form Handler
+        if (class_exists('HappyPlace\\Forms\\ListingFormHandler')) {
+            $form_handler = new \HappyPlace\Forms\ListingFormHandler();
+            error_log('Happy Place: Listing form handler initialized');
         }
     }
     

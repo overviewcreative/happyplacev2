@@ -1,435 +1,413 @@
 <?php
 /**
  * Listing Form Handler
- * Handles dynamic listing form creation and submission
+ * Handles dynamic listing form creation and submission - Updated for v4.0.0
  * 
  * @package HappyPlace\Forms
- * @version 1.0.0
+ * @version 4.0.0
  */
 
 namespace HappyPlace\Forms;
 
-use HappyPlace\Services\ACF_Field_Service;
+use HappyPlace\Services\FormService;
+use HappyPlace\Services\ListingService;
 
 // Prevent direct access
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class Listing_Form_Handler {
+/**
+ * Listing Form Handler Class
+ * 
+ * Integrates with new FormService and ListingService architecture
+ */
+class ListingFormHandler {
     
     /**
-     * ACF Field Service instance
+     * Form Service instance
      */
-    private ACF_Field_Service $field_service;
+    private FormService $form_service;
+    
+    /**
+     * Listing Service instance
+     */
+    private ListingService $listing_service;
     
     /**
      * Constructor
      */
     public function __construct() {
-        $this->field_service = new ACF_Field_Service();
-        $this->field_service->init();
+        $this->form_service = new FormService();
+        $this->listing_service = new ListingService();
+        
+        // Initialize services
+        $this->form_service->init();
+        $this->listing_service->init();
         
         // Register AJAX handlers
-        add_action('wp_ajax_hph_save_listing', [$this, 'ajax_save_listing']);
-        add_action('wp_ajax_hph_validate_field', [$this, 'ajax_validate_field']);
-        add_action('wp_ajax_hph_get_field_config', [$this, 'ajax_get_field_config']);
+        add_action('wp_ajax_hp_save_listing', [$this, 'ajax_save_listing']);
+        add_action('wp_ajax_nopriv_hp_save_listing', [$this, 'ajax_save_listing']);
+        add_action('wp_ajax_hp_validate_listing_field', [$this, 'ajax_validate_field']);
+        add_action('wp_ajax_hp_get_listing_form', [$this, 'ajax_get_form']);
         
         // Enqueue scripts
         add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
-        
-        hp_log('Listing Form Handler initialized', 'info', 'FORM_HANDLER');
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_scripts']);
     }
     
     /**
-     * Render dynamic listing form
+     * Render listing form
+     * 
+     * @param int|null $listing_id Listing ID for editing
+     * @return string Form HTML
      */
-    public function render_form(?int $listing_id = null): void {
-        // Get all listing field groups
-        $field_groups = $this->field_service->get_listing_field_groups();
-        
-        if (empty($field_groups)) {
-            echo '<p class="hph-error">No field configuration found for listings.</p>';
-            return;
-        }
-        
-        // Get existing values if editing
-        $values = [];
-        if ($listing_id) {
-            $values = $this->get_listing_values($listing_id);
-        }
-        
-        ?>
-        <form id="hph-listing-form" class="hph-dynamic-form" data-listing-id="<?php echo esc_attr($listing_id); ?>">
-            <?php wp_nonce_field('hph_save_listing', 'listing_nonce'); ?>
-            <input type="hidden" name="listing_id" value="<?php echo esc_attr($listing_id); ?>">
-            
-            <div class="hph-form-tabs">
-                <?php $this->render_form_tabs($field_groups); ?>
-            </div>
-            
-            <div class="hph-form-sections">
-                <?php $this->render_form_sections($field_groups, $values, $listing_id); ?>
-            </div>
-            
-            <div class="hph-form-actions">
-                <button type="submit" class="hph-btn hph-btn-primary">
-                    <span class="btn-text">Save Listing</span>
-                    <span class="btn-loading" style="display: none;">Saving...</span>
-                </button>
-                <button type="button" class="hph-btn hph-btn-secondary" onclick="history.back()">
-                    Cancel
-                </button>
-                <?php if ($listing_id): ?>
-                    <a href="<?php echo get_permalink($listing_id); ?>" class="hph-btn hph-btn-link" target="_blank">
-                        View Listing
-                    </a>
-                <?php endif; ?>
-            </div>
-        </form>
-        <?php
+    public function render_form(?int $listing_id = null): string {
+        return $this->form_service->render_listing_form($listing_id);
     }
     
     /**
-     * Render form tabs
+     * Display form (for direct output)
+     * 
+     * @param int|null $listing_id Listing ID for editing
+     * @return void
      */
-    private function render_form_tabs(array $field_groups): void {
-        $tabs = [
-            'group_listing_core' => ['icon' => 'dashicons-admin-home', 'label' => 'Basic Info'],
-            'group_listing_address' => ['icon' => 'dashicons-location', 'label' => 'Address'],
-            'group_listing_content' => ['icon' => 'dashicons-edit', 'label' => 'Description'],
-            'group_listing_features' => ['icon' => 'dashicons-yes', 'label' => 'Features'],
-            'group_listing_media' => ['icon' => 'dashicons-format-gallery', 'label' => 'Media'],
-            'group_listing_financial' => ['icon' => 'dashicons-money-alt', 'label' => 'Financial'],
-            'group_listing_agent' => ['icon' => 'dashicons-businessperson', 'label' => 'Agent']
-        ];
-        
-        ?>
-        <ul class="hph-form-tab-list">
-            <?php 
-            $first = true;
-            foreach ($field_groups as $group_key => $group_config): 
-                if (!isset($tabs[$group_key])) continue;
-                $tab = $tabs[$group_key];
-            ?>
-                <li class="hph-form-tab <?php echo $first ? 'active' : ''; ?>" data-tab="<?php echo esc_attr($group_key); ?>">
-                    <a href="#<?php echo esc_attr($group_key); ?>">
-                        <span class="<?php echo esc_attr($tab['icon']); ?>"></span>
-                        <span><?php echo esc_html($tab['label']); ?></span>
-                    </a>
-                </li>
-            <?php 
-                $first = false;
-            endforeach; 
-            ?>
-        </ul>
-        <?php
+    public function display_form(?int $listing_id = null): void {
+        echo $this->render_form($listing_id);
     }
     
     /**
-     * Render form sections
-     */
-    private function render_form_sections(array $field_groups, array $values, ?int $listing_id): void {
-        $first = true;
-        foreach ($field_groups as $group_key => $group_config) {
-            ?>
-            <div class="hph-form-section <?php echo $first ? 'active' : ''; ?>" id="<?php echo esc_attr($group_key); ?>">
-                <h3 class="hph-form-section-title">
-                    <?php echo esc_html($group_config['group']['title']); ?>
-                </h3>
-                
-                <?php if (!empty($group_config['group']['description'])): ?>
-                    <p class="hph-form-section-description">
-                        <?php echo esc_html($group_config['group']['description']); ?>
-                    </p>
-                <?php endif; ?>
-                
-                <div class="hph-form-fields">
-                    <?php $this->render_section_fields($group_config['fields'], $values, $listing_id); ?>
-                </div>
-            </div>
-            <?php
-            $first = false;
-        }
-    }
-    
-    /**
-     * Render section fields
-     */
-    private function render_section_fields(array $fields_by_section, array $values, ?int $listing_id): void {
-        foreach ($fields_by_section as $section => $fields) {
-            if ($section !== 'main' && count($fields_by_section) > 1) {
-                echo '<h4 class="hph-form-subsection-title">' . ucfirst(str_replace('-', ' ', $section)) . '</h4>';
-            }
-            
-            echo '<div class="hph-form-row">';
-            foreach ($fields as $field) {
-                $value = $values[$field['name']] ?? null;
-                echo $this->field_service->render_field($field, $value, $listing_id);
-            }
-            echo '</div>';
-        }
-    }
-    
-    /**
-     * Get listing values for editing
-     */
-    private function get_listing_values(int $listing_id): array {
-        $values = [];
-        
-        // Get all ACF fields for the listing
-        $fields = get_fields($listing_id);
-        
-        if ($fields) {
-            $values = $fields;
-        }
-        
-        return $values;
-    }
-    
-    /**
-     * AJAX: Save listing
+     * AJAX handler for saving listings
+     * 
+     * @return void
      */
     public function ajax_save_listing(): void {
-        // Verify nonce
-        if (!wp_verify_nonce($_POST['listing_nonce'] ?? '', 'hph_save_listing')) {
-            wp_send_json_error('Security check failed');
-        }
-        
-        // Check capabilities
-        if (!current_user_can('edit_posts')) {
-            wp_send_json_error('Insufficient permissions');
-        }
-        
-        $listing_id = !empty($_POST['listing_id']) ? intval($_POST['listing_id']) : null;
-        $acf_data = $_POST['acf'] ?? [];
-        
-        // Validate required fields
-        $validation_errors = $this->validate_listing_data($acf_data);
-        
-        if (!empty($validation_errors)) {
-            wp_send_json_error([
-                'message' => 'Please fix the validation errors',
-                'errors' => $validation_errors
-            ]);
-        }
-        
         try {
-            // Create or update the listing post
-            $listing_id = $this->save_listing_post($listing_id, $acf_data);
+            // Process the form submission
+            $result = $this->form_service->process_submission($_POST, 'listing');
             
-            // Save ACF fields
-            $this->save_acf_fields($listing_id, $acf_data);
+            if (is_wp_error($result)) {
+                wp_send_json_error([
+                    'message' => $result->get_error_message(),
+                    'errors' => $result->get_error_data()
+                ]);
+                return;
+            }
             
-            // Clear any caches
-            clean_post_cache($listing_id);
-            
-            wp_send_json_success([
-                'listing_id' => $listing_id,
-                'message' => 'Listing saved successfully',
-                'redirect' => get_permalink($listing_id)
-            ]);
+            wp_send_json_success($result);
             
         } catch (\Exception $e) {
-            hp_log('Error saving listing: ' . $e->getMessage(), 'error', 'FORM_HANDLER');
-            wp_send_json_error('Error saving listing: ' . $e->getMessage());
+            wp_send_json_error([
+                'message' => 'An unexpected error occurred: ' . $e->getMessage()
+            ]);
         }
     }
     
     /**
-     * Validate listing data
+     * AJAX handler for field validation
+     * 
+     * @return void
      */
-    private function validate_listing_data(array $data): array {
-        $errors = [];
-        
-        // Get field configurations for validation
-        $field_groups = $this->field_service->get_listing_field_groups();
-        
-        foreach ($field_groups as $group_config) {
-            foreach ($group_config['fields'] as $section => $fields) {
-                foreach ($fields as $field) {
-                    // Check required fields
-                    if (!empty($field['required'])) {
-                        $field_value = $data[$field['key']] ?? '';
-                        
-                        if (empty($field_value)) {
-                            $errors[$field['key']] = $field['label'] . ' is required';
-                        }
-                    }
-                    
-                    // Type-specific validation
-                    if (!empty($data[$field['key']])) {
-                        $validation_error = $this->validate_field_value(
-                            $data[$field['key']], 
-                            $field
-                        );
-                        
-                        if ($validation_error) {
-                            $errors[$field['key']] = $validation_error;
-                        }
-                    }
-                }
-            }
-        }
-        
-        return $errors;
-    }
-    
-    /**
-     * Validate field value based on type
-     */
-    private function validate_field_value($value, array $field): ?string {
-        switch ($field['type']) {
-            case 'email':
-                if (!is_email($value)) {
-                    return 'Please enter a valid email address';
-                }
-                break;
-                
-            case 'url':
-                if (!filter_var($value, FILTER_VALIDATE_URL)) {
-                    return 'Please enter a valid URL';
-                }
-                break;
-                
-            case 'number':
-                if (!is_numeric($value)) {
-                    return 'Please enter a valid number';
-                }
-                
-                if (isset($field['min']) && $value < $field['min']) {
-                    return 'Value must be at least ' . $field['min'];
-                }
-                
-                if (isset($field['max']) && $value > $field['max']) {
-                    return 'Value must not exceed ' . $field['max'];
-                }
-                break;
-        }
-        
-        return null;
-    }
-    
-    /**
-     * Save listing post
-     */
-    private function save_listing_post(?int $listing_id, array $data): int {
-        // Generate title from address or marketing title
-        $title = $this->generate_listing_title($data);
-        
-        $post_data = [
-            'post_type' => 'listing',
-            'post_status' => 'publish',
-            'post_title' => $title
-        ];
-        
-        if ($listing_id) {
-            $post_data['ID'] = $listing_id;
-            $result = wp_update_post($post_data);
-        } else {
-            $result = wp_insert_post($post_data);
-        }
-        
-        if (is_wp_error($result)) {
-            throw new \Exception($result->get_error_message());
-        }
-        
-        return $result;
-    }
-    
-    /**
-     * Generate listing title
-     */
-    private function generate_listing_title(array $data): string {
-        // Check for marketing title first
-        if (!empty($data['field_property_title'])) {
-            return sanitize_text_field($data['field_property_title']);
-        }
-        
-        // Build title from address components
-        $title_parts = [];
-        
-        if (!empty($data['field_street_number'])) {
-            $title_parts[] = $data['field_street_number'];
-        }
-        
-        if (!empty($data['field_street_name'])) {
-            $title_parts[] = $data['field_street_name'];
-        }
-        
-        if (!empty($data['field_street_type'])) {
-            $title_parts[] = $data['field_street_type'];
-        }
-        
-        if (!empty($title_parts)) {
-            $title = implode(' ', $title_parts);
-            
-            if (!empty($data['field_city'])) {
-                $title .= ', ' . $data['field_city'];
-            }
-            
-            return sanitize_text_field($title);
-        }
-        
-        return 'Listing ' . date('Y-m-d H:i:s');
-    }
-    
-    /**
-     * Save ACF fields
-     */
-    private function save_acf_fields(int $listing_id, array $data): void {
-        foreach ($data as $field_key => $value) {
-            // Skip non-field keys
-            if (strpos($field_key, 'field_') !== 0) {
-                continue;
-            }
-            
-            // Let ACF handle the field saving
-            update_field($field_key, $value, $listing_id);
-        }
-    }
-    
-    /**
-     * Enqueue scripts
-     */
-    public function enqueue_scripts(): void {
-        if (!$this->is_listing_form_page()) {
+    public function ajax_validate_field(): void {
+        // Verify nonce
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'hp_listing_form')) {
+            wp_send_json_error(['message' => 'Security check failed']);
             return;
         }
         
-        // Enqueue ACF scripts if available
-        if (function_exists('acf_enqueue_scripts')) {
-            acf_enqueue_scripts();
+        $field_name = sanitize_text_field($_POST['field_name'] ?? '');
+        $field_value = sanitize_text_field($_POST['field_value'] ?? '');
+        
+        if (empty($field_name)) {
+            wp_send_json_error(['message' => 'Field name is required']);
+            return;
         }
         
-        // Enqueue our dynamic form script
+        // Validate single field
+        $validation = $this->form_service->validate_form(
+            [$field_name => $field_value], 
+            'listing'
+        );
+        
+        if (is_wp_error($validation)) {
+            wp_send_json_error([
+                'field' => $field_name,
+                'message' => $validation->get_error_message()
+            ]);
+            return;
+        }
+        
+        wp_send_json_success([
+            'field' => $field_name,
+            'message' => 'Field is valid'
+        ]);
+    }
+    
+    /**
+     * AJAX handler for getting form HTML
+     * 
+     * @return void
+     */
+    public function ajax_get_form(): void {
+        // Verify nonce
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'hp_get_form')) {
+            wp_send_json_error(['message' => 'Security check failed']);
+            return;
+        }
+        
+        // Check permissions
+        if (!current_user_can('edit_listings')) {
+            wp_send_json_error(['message' => 'Insufficient permissions']);
+            return;
+        }
+        
+        $listing_id = intval($_POST['listing_id'] ?? 0);
+        $listing_id = $listing_id > 0 ? $listing_id : null;
+        
+        $form_html = $this->render_form($listing_id);
+        
+        wp_send_json_success([
+            'html' => $form_html,
+            'listing_id' => $listing_id
+        ]);
+    }
+    
+    /**
+     * Enqueue frontend scripts
+     * 
+     * @return void
+     */
+    public function enqueue_scripts(): void {
+        if (!$this->should_enqueue_scripts()) {
+            return;
+        }
+        
+        // Main listing form script
         wp_enqueue_script(
-            'hph-dynamic-listing-form',
-            HP_PLUGIN_URL . '/assets/js/dynamic-listing-form.js',
+            'hp-listing-form',
+            HP_ASSETS_URL . 'js/listing-form.js',
+            ['jquery', 'wp-util'],
+            HP_VERSION,
+            true
+        );
+        
+        // Form validation script
+        wp_enqueue_script(
+            'hp-form-validation',
+            HP_ASSETS_URL . 'js/form-validation.js',
             ['jquery'],
             HP_VERSION,
             true
         );
         
+        // Listing form styles
+        wp_enqueue_style(
+            'hp-listing-form',
+            HP_ASSETS_URL . 'css/listing-form.css',
+            [],
+            HP_VERSION
+        );
+        
         // Localize script
-        wp_localize_script('hph-dynamic-listing-form', 'HPH_Form', [
+        wp_localize_script('hp-listing-form', 'HP_ListingForm', [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('hph_ajax_nonce'),
+            'nonce' => wp_create_nonce('hp_listing_form'),
+            'get_form_nonce' => wp_create_nonce('hp_get_form'),
             'messages' => [
-                'saving' => __('Saving...', 'happy-place'),
-                'saved' => __('Saved successfully', 'happy-place'),
-                'error' => __('An error occurred', 'happy-place'),
-                'validation_error' => __('Please fix the validation errors', 'happy-place')
+                'saving' => __('Saving listing...', 'happy-place'),
+                'saved' => __('Listing saved successfully!', 'happy-place'),
+                'error' => __('An error occurred while saving.', 'happy-place'),
+                'confirm_delete' => __('Are you sure you want to delete this listing?', 'happy-place'),
+                'required_field' => __('This field is required.', 'happy-place'),
+                'invalid_format' => __('Please enter a valid value.', 'happy-place')
+            ],
+            'settings' => [
+                'auto_save' => true,
+                'auto_save_interval' => 30000, // 30 seconds
+                'validate_on_blur' => true,
+                'show_character_count' => true
             ]
         ]);
     }
     
     /**
-     * Check if current page has listing form
+     * Enqueue admin scripts
+     * 
+     * @return void
      */
-    private function is_listing_form_page(): bool {
-        // Check if we're on a dashboard page or listing edit page
-        return is_page_template('template-dashboard.php') || 
-               (isset($_GET['hph_section']) && $_GET['hph_section'] === 'listings');
+    public function enqueue_admin_scripts(): void {
+        $screen = get_current_screen();
+        
+        if (!$screen || !in_array($screen->id, ['listing', 'edit-listing'])) {
+            return;
+        }
+        
+        // Admin-specific form enhancements
+        wp_enqueue_script(
+            'hp-admin-listing-form',
+            HP_ASSETS_URL . 'js/admin-listing-form.js',
+            ['hp-listing-form'],
+            HP_VERSION,
+            true
+        );
+        
+        wp_enqueue_style(
+            'hp-admin-listing-form',
+            HP_ASSETS_URL . 'css/admin-listing-form.css',
+            ['hp-listing-form'],
+            HP_VERSION
+        );
+    }
+    
+    /**
+     * Check if scripts should be enqueued
+     * 
+     * @return bool
+     */
+    private function should_enqueue_scripts(): bool {
+        global $post;
+        
+        // Always enqueue on listing post type pages
+        if (is_singular('listing') || is_post_type_archive('listing')) {
+            return true;
+        }
+        
+        // Enqueue on pages with listing forms
+        if ($post && has_shortcode($post->post_content, 'hp_listing_form')) {
+            return true;
+        }
+        
+        // Enqueue on dashboard pages
+        if (get_query_var('hp_dashboard')) {
+            return true;
+        }
+        
+        // Check for template files that might need the form
+        $template = get_page_template_slug();
+        $form_templates = [
+            'templates/dashboard.php',
+            'templates/submit-listing.php',
+            'templates/edit-listing.php'
+        ];
+        
+        return in_array($template, $form_templates);
+    }
+    
+    /**
+     * Get form field configuration for JavaScript
+     * 
+     * @param string $form_type Form type
+     * @return array Field configuration
+     */
+    public function get_js_field_config(string $form_type = 'listing'): array {
+        $config = $this->form_service->get_form_fields($form_type);
+        $validation_rules = $this->form_service->get_validation_rules($form_type);
+        
+        // Format for JavaScript consumption
+        $js_config = [];
+        
+        foreach ($config as $section => $fields) {
+            foreach ($fields as $field_name => $field_config) {
+                $js_config[$field_name] = [
+                    'type' => $field_config['type'],
+                    'label' => $field_config['label'],
+                    'required' => $field_config['required'] ?? false,
+                    'validation' => $validation_rules[$field_name] ?? []
+                ];
+            }
+        }
+        
+        return $js_config;
+    }
+    
+    /**
+     * Shortcode handler for listing form
+     * 
+     * @param array $atts Shortcode attributes
+     * @return string Form HTML
+     */
+    public function shortcode_handler(array $atts): string {
+        $atts = shortcode_atts([
+            'id' => null,
+            'class' => 'hp-listing-form-container',
+            'redirect' => '',
+            'show_title' => 'true'
+        ], $atts, 'hp_listing_form');
+        
+        $listing_id = $atts['id'] ? intval($atts['id']) : null;
+        
+        // Check permissions
+        if (!current_user_can('edit_listings')) {
+            return '<p class="hp-error">' . __('You do not have permission to submit listings.', 'happy-place') . '</p>';
+        }
+        
+        $output = '<div class="' . esc_attr($atts['class']) . '">';
+        
+        if ($atts['show_title'] === 'true') {
+            $title = $listing_id ? __('Edit Listing', 'happy-place') : __('Submit New Listing', 'happy-place');
+            $output .= '<h2 class="hp-form-title">' . esc_html($title) . '</h2>';
+        }
+        
+        $output .= $this->render_form($listing_id);
+        $output .= '</div>';
+        
+        return $output;
+    }
+    
+    /**
+     * Initialize shortcode
+     * 
+     * @return void
+     */
+    public function init_shortcode(): void {
+        add_shortcode('hp_listing_form', [$this, 'shortcode_handler']);
+    }
+    
+    /**
+     * Process form submission for compatibility
+     * 
+     * @param array $data Form data
+     * @return array|WP_Error Processing result
+     * @deprecated Use FormService::process_submission() directly
+     */
+    public function process_listing_data(array $data) {
+        _deprecated_function(__METHOD__, '4.0.0', 'FormService::process_submission()');
+        return $this->form_service->process_submission($data, 'listing');
+    }
+    
+    /**
+     * Get listing form data for editing
+     * 
+     * @param int $listing_id Listing ID
+     * @return array Form data
+     * @deprecated Use FormService methods directly
+     */
+    public function get_listing_values(int $listing_id): array {
+        _deprecated_function(__METHOD__, '4.0.0', 'Use FormService methods directly');
+        
+        $post = get_post($listing_id);
+        if (!$post || $post->post_type !== 'listing') {
+            return [];
+        }
+        
+        $data = [
+            'title' => $post->post_title,
+            'description' => $post->post_content,
+            'status' => $post->post_status
+        ];
+        
+        // Get ACF fields
+        $acf_fields = get_fields($listing_id);
+        if ($acf_fields) {
+            $data = array_merge($data, $acf_fields);
+        }
+        
+        return $data;
     }
 }
+
+// Initialize shortcode support
+add_action('init', function() {
+    $form_handler = new ListingFormHandler();
+    $form_handler->init_shortcode();
+});

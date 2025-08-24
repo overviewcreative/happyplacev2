@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class ACF_Field_Service extends Service {
+class AcfFieldService extends Service {
     
     /**
      * Field group configurations cache
