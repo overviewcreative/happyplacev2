@@ -2,9 +2,10 @@
 /**
  * Assets Manager Class
  * 
- * Handles loading and management of CSS/JS assets for the Happy Place Plugin
+ * Handles registration and enqueuing of CSS and JavaScript assets
  *
  * @package HappyPlace\Core
+ * @version 4.0.0
  */
 
 namespace HappyPlace\Core;
@@ -14,435 +15,708 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class Assets_Manager {
-    
-    private static $instance = null;
+/**
+ * Assets Manager Class
+ * 
+ * @since 4.0.0
+ */
+class AssetsManager {
     
     /**
-     * Asset configurations
+     * Single instance
+     * 
+     * @var AssetsManager|null
      */
-    private $frontend_assets = [
-        'scripts' => [
-            'happy-place-frontend' => [
-                'src' => 'dist/frontend.js',
-                'deps' => ['jquery'],
-                'footer' => true,
-                'localize' => [
-                    'object' => 'hp_frontend',
-                    'data' => 'get_frontend_data'
-                ]
-            ],
-            'happy-place-dashboard' => [
-                'src' => 'dist/dashboard.js',
-                'deps' => ['jquery', 'wp-api'],
-                'footer' => true,
-                'condition' => 'is_dashboard_page',
-                'localize' => [
-                    'object' => 'hp_dashboard',
-                    'data' => 'get_dashboard_data'
-                ]
-            ]
-        ],
-        'styles' => [
-            'happy-place-frontend' => [
-                'src' => 'dist/frontend.css',
-                'deps' => [],
-            ],
-            'happy-place-dashboard' => [
-                'src' => 'dist/dashboard.css',
-                'deps' => ['happy-place-frontend'],
-                'condition' => 'is_dashboard_page',
-            ]
-        ]
-    ];
+    private static ?AssetsManager $instance = null;
     
-    private $admin_assets = [
-        'scripts' => [
-            'happy-place-admin' => [
-                'src' => 'dist/admin.js',
-                'deps' => ['jquery', 'wp-api'],
-                'footer' => true,
-                'localize' => [
-                    'object' => 'hp_admin',
-                    'data' => 'get_admin_data'
-                ]
-            ],
-            'happy-place-listing-automation' => [
-                'src' => 'assets/js/listing-automation.js',
-                'deps' => ['jquery', 'acf-input'],
-                'footer' => true,
-                'condition' => 'is_listing_edit_page',
-                'localize' => [
-                    'object' => 'hp_listing_automation',
-                    'data' => 'get_listing_automation_data'
-                ]
-            ],
-            'happy-place-agent-automation' => [
-                'src' => 'assets/js/agent-automation.js',
-                'deps' => ['jquery', 'acf-input'],
-                'footer' => true,
-                'condition' => 'is_agent_edit_page',
-                'localize' => [
-                    'object' => 'hp_agent_automation',
-                    'data' => 'get_agent_automation_data'
-                ]
-            ]
-        ],
-        'styles' => [
-            'happy-place-admin' => [
-                'src' => 'dist/admin.css',
-                'deps' => [],
-            ],
-            'happy-place-listing-automation' => [
-                'src' => 'assets/css/listing-automation.css',
-                'deps' => [],
-                'condition' => 'is_listing_edit_page',
-            ],
-            'happy-place-agent-automation' => [
-                'src' => 'assets/css/agent-automation.css',
-                'deps' => [],
-                'condition' => 'is_agent_edit_page',
-            ]
-        ]
+    /**
+     * Registered assets
+     * 
+     * @var array
+     */
+    private array $assets = [
+        'styles' => [],
+        'scripts' => [],
     ];
     
     /**
-     * Get singleton instance
+     * Asset version for cache busting
+     * 
+     * @var string
      */
-    public static function get_instance() {
-        if (self::$instance === null) {
+    private string $version;
+    
+    /**
+     * Asset base URLs
+     * 
+     * @var array
+     */
+    private array $urls = [];
+    
+    /**
+     * Get instance
+     * 
+     * @return AssetsManager
+     */
+    public static function get_instance(): AssetsManager {
+        if (null === self::$instance) {
             self::$instance = new self();
         }
         return self::$instance;
     }
     
     /**
-     * Initialize assets manager
+     * Constructor
      */
     private function __construct() {
-        // Assets will be enqueued via main plugin class
+        $this->version = HP_DEBUG ? time() : HP_VERSION;
+        $this->setup_urls();
+        $this->register_assets();
     }
     
     /**
-     * Initialize component
+     * Initialize assets manager
+     * 
+     * @return void
      */
-    public function init() {
-        // Register asset enqueue hooks
-        add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend'], 10);
-        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin'], 10);
+    public function init(): void {
+        // Frontend assets
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
         
-        // Add inline styles for critical CSS
-        add_action('wp_head', [$this, 'add_critical_css'], 1);
+        // Admin assets
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
         
-        // Preload key assets
-        add_action('wp_head', [$this, 'preload_assets'], 2);
+        // Block editor assets
+        add_action('enqueue_block_editor_assets', [$this, 'enqueue_block_editor_assets']);
         
-        hp_log('Assets Manager hooks registered', 'info', 'ASSETS');
+        // Login page assets
+        add_action('login_enqueue_scripts', [$this, 'enqueue_login_assets']);
+        
+        // Add custom script attributes
+        add_filter('script_loader_tag', [$this, 'add_script_attributes'], 10, 3);
+        
+        // Add custom style attributes
+        add_filter('style_loader_tag', [$this, 'add_style_attributes'], 10, 4);
+        
+        // Preload critical assets
+        add_action('wp_head', [$this, 'preload_critical_assets'], 2);
+        
+        hp_log('Assets Manager initialized', 'info', 'ASSETS');
+    }
+    
+    /**
+     * Setup URLs
+     * 
+     * @return void
+     */
+    private function setup_urls(): void {
+        $this->urls = [
+            'css' => HP_ASSETS_URL . 'css/',
+            'js' => HP_ASSETS_URL . 'js/',
+            'images' => HP_ASSETS_URL . 'images/',
+            'fonts' => HP_ASSETS_URL . 'fonts/',
+            'vendor' => HP_ASSETS_URL . 'vendor/',
+        ];
+    }
+    
+    /**
+     * Register all assets
+     * 
+     * @return void
+     */
+    private function register_assets(): void {
+        $this->register_styles();
+        $this->register_scripts();
+    }
+    
+    /**
+     * Register styles
+     * 
+     * @return void
+     */
+    private function register_styles(): void {
+        $styles = [
+            // Core styles
+            'hp-variables' => [
+                'src' => 'core/variables.css',
+                'deps' => [],
+                'priority' => 1,
+            ],
+            'hp-base' => [
+                'src' => 'core/base.css',
+                'deps' => ['hp-variables'],
+                'priority' => 2,
+            ],
+            'hp-utilities' => [
+                'src' => 'core/utilities.css',
+                'deps' => ['hp-base'],
+                'priority' => 3,
+            ],
+            
+            // Component styles
+            'hp-buttons' => [
+                'src' => 'components/buttons.css',
+                'deps' => ['hp-base'],
+            ],
+            'hp-cards' => [
+                'src' => 'components/cards.css',
+                'deps' => ['hp-base'],
+            ],
+            'hp-forms' => [
+                'src' => 'components/forms.css',
+                'deps' => ['hp-base'],
+            ],
+            'hp-modals' => [
+                'src' => 'components/modals.css',
+                'deps' => ['hp-base'],
+            ],
+            'hp-tables' => [
+                'src' => 'components/tables.css',
+                'deps' => ['hp-base'],
+            ],
+            
+            // Page-specific styles
+            'hp-listing-single' => [
+                'src' => 'pages/single-listing.css',
+                'deps' => ['hp-base', 'hp-cards'],
+                'condition' => 'is_singular:listing',
+            ],
+            'hp-listing-archive' => [
+                'src' => 'pages/archive-listing.css',
+                'deps' => ['hp-base', 'hp-cards'],
+                'condition' => 'is_post_type_archive:listing',
+            ],
+            'hp-agent-single' => [
+                'src' => 'pages/single-agent.css',
+                'deps' => ['hp-base', 'hp-cards'],
+                'condition' => 'is_singular:agent',
+            ],
+            'hp-search-results' => [
+                'src' => 'pages/search-results.css',
+                'deps' => ['hp-base', 'hp-cards', 'hp-forms'],
+                'condition' => 'is_search',
+            ],
+            
+            // Admin styles
+            'hp-admin' => [
+                'src' => 'admin/admin.css',
+                'deps' => [],
+                'context' => 'admin',
+            ],
+            'hp-admin-listings' => [
+                'src' => 'admin/listings.css',
+                'deps' => ['hp-admin'],
+                'context' => 'admin',
+                'screen' => ['edit-listing', 'listing'],
+            ],
+            'hp-admin-dashboard' => [
+                'src' => 'admin/dashboard.css',
+                'deps' => ['hp-admin'],
+                'context' => 'admin',
+                'screen' => 'toplevel_page_happy-place',
+            ],
+            
+            // Vendor styles
+            'slick-carousel' => [
+                'src' => 'vendor/slick/slick.css',
+                'deps' => [],
+                'version' => '1.8.1',
+                'external' => true,
+            ],
+            'leaflet' => [
+                'src' => 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
+                'deps' => [],
+                'version' => '1.9.4',
+                'external' => true,
+                'integrity' => 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=',
+            ],
+        ];
+        
+        foreach ($styles as $handle => $config) {
+            $this->assets['styles'][$handle] = $config;
+        }
+    }
+    
+    /**
+     * Register scripts
+     * 
+     * @return void
+     */
+    private function register_scripts(): void {
+        $scripts = [
+            // Core scripts
+            'hp-utils' => [
+                'src' => 'core/utils.js',
+                'deps' => ['jquery'],
+                'in_footer' => true,
+                'priority' => 1,
+            ],
+            'hp-api' => [
+                'src' => 'core/api.js',
+                'deps' => ['hp-utils'],
+                'in_footer' => true,
+                'localize' => [
+                    'object' => 'hpAPI',
+                    'data' => [$this, 'get_api_localization'],
+                ],
+            ],
+            
+            // Component scripts
+            'hp-search' => [
+                'src' => 'components/search.js',
+                'deps' => ['hp-api'],
+                'in_footer' => true,
+            ],
+            'hp-filters' => [
+                'src' => 'components/filters.js',
+                'deps' => ['hp-api'],
+                'in_footer' => true,
+            ],
+            'hp-gallery' => [
+                'src' => 'components/gallery.js',
+                'deps' => ['jquery'],
+                'in_footer' => true,
+            ],
+            'hp-map' => [
+                'src' => 'components/map.js',
+                'deps' => ['leaflet'],
+                'in_footer' => true,
+            ],
+            'hp-mortgage-calculator' => [
+                'src' => 'components/mortgage-calculator.js',
+                'deps' => ['hp-utils'],
+                'in_footer' => true,
+            ],
+            'hp-contact-form' => [
+                'src' => 'components/contact-form.js',
+                'deps' => ['hp-api'],
+                'in_footer' => true,
+            ],
+            
+            // Page-specific scripts
+            'hp-listing-single' => [
+                'src' => 'pages/single-listing.js',
+                'deps' => ['hp-gallery', 'hp-map', 'hp-contact-form'],
+                'in_footer' => true,
+                'condition' => 'is_singular:listing',
+            ],
+            'hp-listing-archive' => [
+                'src' => 'pages/archive-listing.js',
+                'deps' => ['hp-search', 'hp-filters', 'hp-map'],
+                'in_footer' => true,
+                'condition' => 'is_post_type_archive:listing',
+            ],
+            
+            // Admin scripts
+            'hp-admin' => [
+                'src' => 'admin/admin.js',
+                'deps' => ['jquery', 'wp-api'],
+                'in_footer' => true,
+                'context' => 'admin',
+            ],
+            'hp-admin-listings' => [
+                'src' => 'admin/listings.js',
+                'deps' => ['hp-admin'],
+                'in_footer' => true,
+                'context' => 'admin',
+                'screen' => ['edit-listing', 'listing'],
+            ],
+            'hp-admin-media' => [
+                'src' => 'admin/media.js',
+                'deps' => ['hp-admin', 'media-upload'],
+                'in_footer' => true,
+                'context' => 'admin',
+            ],
+            
+            // Vendor scripts
+            'slick-carousel' => [
+                'src' => 'vendor/slick/slick.min.js',
+                'deps' => ['jquery'],
+                'version' => '1.8.1',
+                'in_footer' => true,
+                'external' => true,
+            ],
+            'leaflet' => [
+                'src' => 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
+                'deps' => [],
+                'version' => '1.9.4',
+                'in_footer' => true,
+                'external' => true,
+                'integrity' => 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=',
+            ],
+            'chart-js' => [
+                'src' => 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js',
+                'deps' => [],
+                'version' => '4.4.0',
+                'in_footer' => true,
+                'external' => true,
+            ],
+        ];
+        
+        foreach ($scripts as $handle => $config) {
+            $this->assets['scripts'][$handle] = $config;
+        }
     }
     
     /**
      * Enqueue frontend assets
+     * 
+     * @return void
      */
-    public function enqueue_frontend() {
-        $this->enqueue_asset_group($this->frontend_assets);
+    public function enqueue_frontend_assets(): void {
+        // Register all assets first
+        $this->register_all_assets();
         
-        // Add inline variables
-        $this->add_inline_variables();
+        // Enqueue global styles
+        wp_enqueue_style('hp-base');
+        wp_enqueue_style('hp-utilities');
+        wp_enqueue_style('hp-buttons');
+        wp_enqueue_style('hp-forms');
+        
+        // Enqueue global scripts
+        wp_enqueue_script('hp-utils');
+        wp_enqueue_script('hp-api');
+        
+        // Enqueue conditional assets
+        $this->enqueue_conditional_assets();
+        
+        // Allow themes to enqueue additional assets
+        do_action('hp_enqueue_frontend_assets');
     }
     
     /**
      * Enqueue admin assets
+     * 
+     * @param string $hook
+     * @return void
      */
-    public function enqueue_admin($hook) {
-        // Only load on our plugin pages
-        if (!$this->is_plugin_admin_page($hook)) {
-            return;
+    public function enqueue_admin_assets(string $hook): void {
+        // Register all assets first
+        $this->register_all_assets();
+        
+        // Get current screen
+        $screen = get_current_screen();
+        
+        // Enqueue admin base assets
+        wp_enqueue_style('hp-admin');
+        wp_enqueue_script('hp-admin');
+        
+        // Enqueue screen-specific assets
+        $this->enqueue_admin_screen_assets($screen, $hook);
+        
+        // Media uploader
+        if (in_array($screen->post_type ?? '', ['listing', 'agent', 'community'])) {
+            wp_enqueue_media();
+            wp_enqueue_script('hp-admin-media');
         }
         
-        $this->enqueue_asset_group($this->admin_assets);
+        // Allow plugins to enqueue additional admin assets
+        do_action('hp_enqueue_admin_assets', $hook, $screen);
     }
     
     /**
-     * Enqueue a group of assets
+     * Enqueue block editor assets
+     * 
+     * @return void
      */
-    private function enqueue_asset_group($assets) {
-        // Enqueue styles first
-        if (!empty($assets['styles'])) {
-            foreach ($assets['styles'] as $handle => $config) {
-                $this->enqueue_style($handle, $config);
+    public function enqueue_block_editor_assets(): void {
+        // Register block editor specific assets
+        wp_register_script(
+            'hp-blocks',
+            $this->urls['js'] . 'blocks/blocks.js',
+            ['wp-blocks', 'wp-element', 'wp-editor'],
+            $this->version,
+            true
+        );
+        
+        wp_register_style(
+            'hp-blocks',
+            $this->urls['css'] . 'blocks/blocks.css',
+            ['wp-edit-blocks'],
+            $this->version
+        );
+        
+        wp_enqueue_script('hp-blocks');
+        wp_enqueue_style('hp-blocks');
+    }
+    
+    /**
+     * Enqueue login page assets
+     * 
+     * @return void
+     */
+    public function enqueue_login_assets(): void {
+        wp_register_style(
+            'hp-login',
+            $this->urls['css'] . 'login.css',
+            [],
+            $this->version
+        );
+        
+        wp_enqueue_style('hp-login');
+    }
+    
+    /**
+     * Register all assets with WordPress
+     * 
+     * @return void
+     */
+    private function register_all_assets(): void {
+        // Register styles
+        foreach ($this->assets['styles'] as $handle => $config) {
+            if (isset($config['registered']) && $config['registered']) {
+                continue;
+            }
+            
+            $src = $config['external'] ?? false
+                ? $config['src']
+                : $this->urls['css'] . $config['src'];
+            
+            $deps = $config['deps'] ?? [];
+            $version = $config['version'] ?? $this->version;
+            $media = $config['media'] ?? 'all';
+            
+            wp_register_style($handle, $src, $deps, $version, $media);
+            $this->assets['styles'][$handle]['registered'] = true;
+        }
+        
+        // Register scripts
+        foreach ($this->assets['scripts'] as $handle => $config) {
+            if (isset($config['registered']) && $config['registered']) {
+                continue;
+            }
+            
+            $src = $config['external'] ?? false
+                ? $config['src']
+                : $this->urls['js'] . $config['src'];
+            
+            $deps = $config['deps'] ?? [];
+            $version = $config['version'] ?? $this->version;
+            $in_footer = $config['in_footer'] ?? false;
+            
+            wp_register_script($handle, $src, $deps, $version, $in_footer);
+            
+            // Add localization if specified
+            if (isset($config['localize'])) {
+                $data = is_callable($config['localize']['data'])
+                    ? call_user_func($config['localize']['data'])
+                    : $config['localize']['data'];
+                
+                wp_localize_script($handle, $config['localize']['object'], $data);
+            }
+            
+            $this->assets['scripts'][$handle]['registered'] = true;
+        }
+    }
+    
+    /**
+     * Enqueue conditional assets
+     * 
+     * @return void
+     */
+    private function enqueue_conditional_assets(): void {
+        foreach ($this->assets['styles'] as $handle => $config) {
+            if (isset($config['condition']) && $this->check_condition($config['condition'])) {
+                wp_enqueue_style($handle);
             }
         }
         
-        // Enqueue scripts
-        if (!empty($assets['scripts'])) {
-            foreach ($assets['scripts'] as $handle => $config) {
-                $this->enqueue_script($handle, $config);
+        foreach ($this->assets['scripts'] as $handle => $config) {
+            if (isset($config['condition']) && $this->check_condition($config['condition'])) {
+                wp_enqueue_script($handle);
             }
         }
     }
     
     /**
-     * Enqueue a single style
+     * Enqueue admin screen-specific assets
+     * 
+     * @param \WP_Screen $screen
+     * @param string $hook
+     * @return void
      */
-    private function enqueue_style($handle, $config) {
-        // Check condition if specified
-        if (!empty($config['condition']) && !$this->check_condition($config['condition'])) {
-            return;
+    private function enqueue_admin_screen_assets(\WP_Screen $screen, string $hook): void {
+        foreach ($this->assets['styles'] as $handle => $config) {
+            if (($config['context'] ?? '') !== 'admin') {
+                continue;
+            }
+            
+            if (isset($config['screen'])) {
+                $screens = (array) $config['screen'];
+                if (in_array($screen->id, $screens) || in_array($hook, $screens)) {
+                    wp_enqueue_style($handle);
+                }
+            }
         }
         
-        $src = HP_ASSETS_URL . $config['src'];
-        $deps = $config['deps'] ?? [];
-        $version = $this->get_asset_version($config['src']);
-        
-        wp_enqueue_style($handle, $src, $deps, $version);
-    }
-    
-    /**
-     * Enqueue a single script
-     */
-    private function enqueue_script($handle, $config) {
-        // Check condition if specified
-        if (!empty($config['condition']) && !$this->check_condition($config['condition'])) {
-            return;
-        }
-        
-        $src = HP_ASSETS_URL . $config['src'];
-        $deps = $config['deps'] ?? [];
-        $version = $this->get_asset_version($config['src']);
-        $in_footer = $config['footer'] ?? true;
-        
-        wp_enqueue_script($handle, $src, $deps, $version, $in_footer);
-        
-        // Add localization if specified
-        if (!empty($config['localize'])) {
-            $this->localize_script($handle, $config['localize']);
+        foreach ($this->assets['scripts'] as $handle => $config) {
+            if (($config['context'] ?? '') !== 'admin') {
+                continue;
+            }
+            
+            if (isset($config['screen'])) {
+                $screens = (array) $config['screen'];
+                if (in_array($screen->id, $screens) || in_array($hook, $screens)) {
+                    wp_enqueue_script($handle);
+                }
+            }
         }
     }
     
     /**
-     * Localize script with data
+     * Check condition for asset loading
+     * 
+     * @param string $condition
+     * @return bool
      */
-    private function localize_script($handle, $localize_config) {
-        $object = $localize_config['object'];
-        $data_method = $localize_config['data'];
+    private function check_condition(string $condition): bool {
+        if (strpos($condition, ':') !== false) {
+            list($function, $param) = explode(':', $condition, 2);
+            return function_exists($function) && call_user_func($function, $param);
+        }
         
-        if (method_exists($this, $data_method)) {
-            $data = $this->$data_method();
-            wp_localize_script($handle, $object, $data);
+        return function_exists($condition) && call_user_func($condition);
+    }
+    
+    /**
+     * Add script attributes
+     * 
+     * @param string $tag
+     * @param string $handle
+     * @param string $src
+     * @return string
+     */
+    public function add_script_attributes(string $tag, string $handle, string $src): string {
+        $config = $this->assets['scripts'][$handle] ?? null;
+        
+        if (!$config) {
+            return $tag;
+        }
+        
+        // Add async attribute
+        if (!empty($config['async'])) {
+            $tag = str_replace(' src', ' async src', $tag);
+        }
+        
+        // Add defer attribute
+        if (!empty($config['defer'])) {
+            $tag = str_replace(' src', ' defer src', $tag);
+        }
+        
+        // Add module type
+        if (!empty($config['module'])) {
+            $tag = str_replace('<script ', '<script type="module" ', $tag);
+        }
+        
+        // Add integrity attribute for external scripts
+        if (!empty($config['integrity'])) {
+            $tag = str_replace(' src', sprintf(' integrity="%s" crossorigin="anonymous" src', $config['integrity']), $tag);
+        }
+        
+        return $tag;
+    }
+    
+    /**
+     * Add style attributes
+     * 
+     * @param string $tag
+     * @param string $handle
+     * @param string $href
+     * @param string $media
+     * @return string
+     */
+    public function add_style_attributes(string $tag, string $handle, string $href, string $media): string {
+        $config = $this->assets['styles'][$handle] ?? null;
+        
+        if (!$config) {
+            return $tag;
+        }
+        
+        // Add integrity attribute for external styles
+        if (!empty($config['integrity'])) {
+            $tag = str_replace(' href', sprintf(' integrity="%s" crossorigin="anonymous" href', $config['integrity']), $tag);
+        }
+        
+        // Add preload for critical styles
+        if (!empty($config['preload'])) {
+            $tag = str_replace(' rel=', ' rel="preload" as="style" onload="this.onload=null;this.rel=\'stylesheet\'" original-rel=', $tag);
+        }
+        
+        return $tag;
+    }
+    
+    /**
+     * Preload critical assets
+     * 
+     * @return void
+     */
+    public function preload_critical_assets(): void {
+        // Preload fonts
+        $fonts = [
+            'inter-regular' => $this->urls['fonts'] . 'inter-regular.woff2',
+            'inter-bold' => $this->urls['fonts'] . 'inter-bold.woff2',
+        ];
+        
+        foreach ($fonts as $handle => $url) {
+            printf(
+                '<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>',
+                esc_url($url)
+            );
+        }
+        
+        // Preload critical images
+        if (is_front_page()) {
+            $logo = get_theme_mod('hp_logo');
+            if ($logo) {
+                printf(
+                    '<link rel="preload" href="%s" as="image">',
+                    esc_url($logo)
+                );
+            }
         }
     }
     
     /**
-     * Get frontend localization data
+     * Get API localization data
+     * 
+     * @return array
      */
-    private function get_frontend_data() {
+    public function get_api_localization(): array {
         return [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('hp_ajax_nonce'),
             'rest_url' => rest_url('hp/v1/'),
-            'rest_nonce' => wp_create_nonce('wp_rest'),
-            'is_user_logged_in' => is_user_logged_in(),
-            'current_user_id' => get_current_user_id(),
+            'nonce' => wp_create_nonce('hp_api_nonce'),
+            'user_id' => get_current_user_id(),
+            'is_logged_in' => is_user_logged_in(),
             'strings' => [
                 'loading' => __('Loading...', 'happy-place'),
                 'error' => __('An error occurred', 'happy-place'),
                 'success' => __('Success!', 'happy-place'),
-            ]
+                'confirm' => __('Are you sure?', 'happy-place'),
+            ],
         ];
     }
     
     /**
-     * Get dashboard localization data
+     * Add inline style
+     * 
+     * @param string $handle
+     * @param string $css
+     * @return bool
      */
-    private function get_dashboard_data() {
-        return array_merge($this->get_frontend_data(), [
-            'dashboard_url' => home_url('/agent-dashboard/'),
-            'current_section' => get_query_var('dashboard_section', 'overview'),
-            'user_can_edit_listings' => current_user_can('edit_listings'),
-            'strings' => array_merge($this->get_frontend_data()['strings'], [
-                'confirm_delete' => __('Are you sure you want to delete this item?', 'happy-place'),
-                'save_success' => __('Changes saved successfully', 'happy-place'),
-                'save_error' => __('Error saving changes', 'happy-place'),
-            ])
-        ]);
+    public function add_inline_style(string $handle, string $css): bool {
+        return wp_add_inline_style($handle, $css);
     }
     
     /**
-     * Get admin localization data
+     * Add inline script
+     * 
+     * @param string $handle
+     * @param string $js
+     * @param string $position
+     * @return bool
      */
-    private function get_admin_data() {
-        return [
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('hp_admin_nonce'),
-            'strings' => [
-                'loading' => __('Loading...', 'happy-place'),
-                'saved' => __('Settings saved', 'happy-place'),
-                'error' => __('Error occurred', 'happy-place'),
-            ]
-        ];
-    }
-    
-    /**
-     * Get listing automation localization data
-     */
-    private function get_listing_automation_data() {
-        return [
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('hp_listing_auto'),
-            'post_id' => get_the_ID(),
-            'strings' => [
-                'bathroom_display_label' => __('Bathroom Display Format', 'happy-place'),
-                'slug_preview_label' => __('Post Slug Preview', 'happy-place'),
-                'status_preview_label' => __('Status Badge Preview', 'happy-place'),
-                'tag_summary_label' => __('Image Categories', 'happy-place'),
-                'no_images' => __('No images categorized yet.', 'happy-place'),
-                'formatting' => __('Formatting...', 'happy-place'),
-                'error_format' => __('Error formatting data', 'happy-place'),
-            ]
-        ];
-    }
-    
-    /**
-     * Get agent automation localization data
-     */
-    private function get_agent_automation_data() {
-        return [
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('hp_agent_auto'),
-            'post_id' => get_the_ID(),
-            'strings' => [
-                'display_name_preview' => __('Display Name Preview', 'happy-place'),
-                'slug_preview' => __('Slug Preview', 'happy-place'),
-                'experience_preview' => __('Experience Preview', 'happy-place'),
-                'performance_preview' => __('Performance Preview', 'happy-place'),
-                'certification_summary' => __('Certifications Summary', 'happy-place'),
-                'no_certifications' => __('No certifications added yet.', 'happy-place'),
-                'calculating' => __('Calculating...', 'happy-place'),
-                'error_calculation' => __('Error calculating data', 'happy-place'),
-            ]
-        ];
-    }
-    
-    /**
-     * Check loading condition
-     */
-    private function check_condition($condition) {
-        switch ($condition) {
-            case 'is_dashboard_page':
-                return $this->is_dashboard_page();
-                
-            case 'is_listing_page':
-                return is_singular('listing') || is_post_type_archive('listing');
-                
-            case 'is_agent_page':
-                return is_singular('agent') || is_post_type_archive('agent');
-                
-            case 'is_listing_edit_page':
-                return $this->is_listing_edit_page();
-                
-            case 'is_agent_edit_page':
-                return $this->is_agent_edit_page();
-                
-            default:
-                return true;
-        }
-    }
-    
-    /**
-     * Check if current page is dashboard
-     */
-    private function is_dashboard_page() {
-        global $wp_query;
-        return isset($wp_query->query_vars['pagename']) && 
-               $wp_query->query_vars['pagename'] === 'agent-dashboard';
-    }
-    
-    /**
-     * Check if current page is listing edit
-     */
-    private function is_listing_edit_page() {
-        global $post, $pagenow;
-        return is_admin() && 
-               (($pagenow === 'post.php' && isset($_GET['post']) && get_post_type($_GET['post']) === 'listing') ||
-                ($pagenow === 'post-new.php' && isset($_GET['post_type']) && $_GET['post_type'] === 'listing'));
-    }
-    
-    /**
-     * Check if current page is agent edit
-     */
-    private function is_agent_edit_page() {
-        global $post, $pagenow;
-        return is_admin() && 
-               (($pagenow === 'post.php' && isset($_GET['post']) && get_post_type($_GET['post']) === 'agent') ||
-                ($pagenow === 'post-new.php' && isset($_GET['post_type']) && $_GET['post_type'] === 'agent'));
-    }
-    
-    /**
-     * Check if current admin page belongs to plugin
-     */
-    private function is_plugin_admin_page($hook) {
-        $plugin_pages = [
-            'toplevel_page_happy-place',
-            'happy-place_page_happy-place-settings',
-            'happy-place_page_happy-place-dashboard',
-        ];
-        
-        return in_array($hook, $plugin_pages) || 
-               strpos($hook, 'happy-place') !== false;
-    }
-    
-    /**
-     * Get asset version for cache busting
-     */
-    private function get_asset_version($asset_path) {
-        if (HP_DEBUG) {
-            return time(); // Always fresh in debug mode
-        }
-        
-        $file_path = HP_ASSETS_DIR . $asset_path;
-        if (file_exists($file_path)) {
-            return filemtime($file_path);
-        }
-        
-        return HP_VERSION;
-    }
-    
-    /**
-     * Add critical CSS inline
-     */
-    public function add_critical_css() {
-        if ($this->is_dashboard_page() || is_singular('listing')) {
-            echo '<style id="hp-critical-css">';
-            echo '.hp-loading{display:flex;justify-content:center;align-items:center;height:200px;}';
-            echo '.hp-spinner{border:3px solid #f3f3f3;border-top:3px solid #3498db;border-radius:50%;width:30px;height:30px;animation:spin 1s linear infinite;}';
-            echo '@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}';
-            echo '</style>';
-        }
-    }
-    
-    /**
-     * Preload key assets
-     */
-    public function preload_assets() {
-        // Preload key fonts
-        echo '<link rel="preload" href="' . HP_ASSETS_URL . 'fonts/inter.woff2" as="font" type="font/woff2" crossorigin>';
-        
-        // Preload critical images
-        if (is_front_page()) {
-            echo '<link rel="preload" href="' . HP_ASSETS_URL . 'images/hero-bg.jpg" as="image">';
-        }
-    }
-    
-    /**
-     * Add inline JavaScript variables
-     */
-    private function add_inline_variables() {
-        $variables = [
-            'HP_ASSETS_URL' => HP_ASSETS_URL,
-            'HP_VERSION' => HP_VERSION,
-            'HP_DEBUG' => HP_DEBUG,
-        ];
-        
-        echo '<script>window.HappyPlace = ' . wp_json_encode($variables) . ';</script>';
+    public function add_inline_script(string $handle, string $js, string $position = 'after'): bool {
+        return wp_add_inline_script($handle, $js, $position);
     }
 }

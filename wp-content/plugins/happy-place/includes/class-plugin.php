@@ -110,7 +110,7 @@ final class Plugin {
     private array $core_components = [
         'PostTypes' => [
             'file' => 'core/class-post-types.php',
-            'class' => 'HappyPlace\\Core\\Post_Types',
+            'class' => 'HappyPlace\\Core\\PostTypes',
             'init' => true
         ],
         'Taxonomies' => [
@@ -120,22 +120,22 @@ final class Plugin {
         ],
         'ACFManager' => [
             'file' => 'core/class-acf-manager.php',
-            'class' => 'HappyPlace\\Core\\ACF_Manager',
+            'class' => 'HappyPlace\\Core\\ACFManager',
             'init' => true
         ],
         'FieldMapper' => [
             'file' => 'core/class-field-mapper.php',
-            'class' => 'HappyPlace\\Core\\Field_Mapper',
+            'class' => 'HappyPlace\\Core\\FieldMapper',
             'init' => false
         ],
         'ConfigSyncManager' => [
             'file' => 'core/class-config-sync-manager.php',
-            'class' => 'HappyPlace\\Core\\Config_Sync_Manager',
+            'class' => 'HappyPlace\\Core\\ConfigSyncManager',
             'init' => true
         ],
         'AssetsManager' => [
             'file' => 'core/class-assets-manager.php',
-            'class' => 'HappyPlace\\Core\\Assets_Manager',
+            'class' => 'HappyPlace\\Core\\AssetsManager',
             'init' => true
         ],
     ];
@@ -148,7 +148,7 @@ final class Plugin {
     private array $admin_components = [
         'AdminMenu' => [
             'file' => 'admin/class-admin-menu.php',
-            'class' => 'HappyPlace\\Admin\\Admin_Menu',
+            'class' => 'HappyPlace\\Admin\\AdminMenu',
             'init' => true
         ],
         'ACFSyncManager' => [

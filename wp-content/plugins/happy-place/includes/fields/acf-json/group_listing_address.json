@@ -1,0 +1,240 @@
+{
+  "key": "group_listing_address",
+  "title": "Listing - Property Address",
+  "fields": [
+    {
+      "key": "field_street_number",
+      "label": "Street Number",
+      "name": "street_number",
+      "type": "text",
+      "wrapper": {
+        "width": "20"
+      },
+      "maxlength": 10,
+      "placeholder": "123"
+    },
+    {
+      "key": "field_street_dir_prefix",
+      "label": "Prefix",
+      "name": "street_dir_prefix",
+      "type": "select",
+      "wrapper": {
+        "width": "15"
+      },
+      "choices": {
+        "": "None",
+        "N": "N",
+        "S": "S",
+        "E": "E",
+        "W": "W",
+        "NE": "NE",
+        "NW": "NW",
+        "SE": "SE",
+        "SW": "SW"
+      },
+      "allow_null": 1,
+      "ui": 0
+    },
+    {
+      "key": "field_street_name",
+      "label": "Street Name",
+      "name": "street_name",
+      "type": "text",
+      "required": 1,
+      "wrapper": {
+        "width": "25"
+      },
+      "placeholder": "Main"
+    },
+    {
+      "key": "field_street_type",
+      "label": "Type",
+      "name": "street_type",
+      "type": "select",
+      "wrapper": {
+        "width": "15"
+      },
+      "choices": {
+        "St": "Street",
+        "Ave": "Avenue",
+        "Blvd": "Boulevard",
+        "Dr": "Drive",
+        "Rd": "Road",
+        "Ln": "Lane",
+        "Way": "Way",
+        "Ct": "Court",
+        "Pl": "Place",
+        "Cir": "Circle",
+        "Pkwy": "Parkway",
+        "Trl": "Trail"
+      },
+      "default_value": "St",
+      "ui": 0
+    },
+    {
+      "key": "field_street_dir_suffix",
+      "label": "Suffix",
+      "name": "street_dir_suffix",
+      "type": "select",
+      "wrapper": {
+        "width": "15"
+      },
+      "choices": {
+        "": "None",
+        "N": "N",
+        "S": "S",
+        "E": "E",
+        "W": "W",
+        "NE": "NE",
+        "NW": "NW",
+        "SE": "SE",
+        "SW": "SW"
+      },
+      "allow_null": 1,
+      "ui": 0
+    },
+    {
+      "key": "field_unit_number",
+      "label": "Unit/Apt",
+      "name": "unit_number",
+      "type": "text",
+      "wrapper": {
+        "width": "10"
+      },
+      "placeholder": "#2A"
+    },
+    {
+      "key": "field_city",
+      "label": "City",
+      "name": "city",
+      "type": "text",
+      "required": 1,
+      "wrapper": {
+        "width": "40"
+      },
+      "placeholder": "Georgetown"
+    },
+    {
+      "key": "field_state",
+      "label": "State",
+      "name": "state",
+      "type": "select",
+      "wrapper": {
+        "width": "20"
+      },
+      "choices": {
+        "DE": "Delaware",
+        "MD": "Maryland",
+        "PA": "Pennsylvania",
+        "NJ": "New Jersey",
+        "VA": "Virginia",
+        "DC": "Washington DC"
+      },
+      "default_value": "DE",
+      "ui": 0
+    },
+    {
+      "key": "field_zip_code",
+      "label": "ZIP Code",
+      "name": "zip_code",
+      "type": "text",
+      "required": 1,
+      "wrapper": {
+        "width": "20"
+      },
+      "maxlength": 10,
+      "placeholder": "19947"
+    },
+    {
+      "key": "field_county",
+      "label": "County",
+      "name": "county",
+      "type": "text",
+      "wrapper": {
+        "width": "20"
+      },
+      "placeholder": "Sussex County"
+    },
+    {
+      "key": "field_parcel_number",
+      "label": "Parcel Number",
+      "name": "parcel_number",
+      "type": "text",
+      "instructions": "Property tax parcel ID",
+      "conditional_logic": [
+        [
+          {
+            "field": "field_67890_property_type",
+            "operator": "==",
+            "value": "land"
+          }
+        ]
+      ],
+      "wrapper": {
+        "width": "40"
+      },
+      "placeholder": "Enter parcel number"
+    },
+    {
+      "key": "field_address_display",
+      "label": "Address Display",
+      "name": "address_display",
+      "type": "select",
+      "instructions": "How to display address publicly",
+      "wrapper": {
+        "width": "40"
+      },
+      "choices": {
+        "full": "Show Full Address",
+        "street": "Street Only (No Number)",
+        "area": "Area Only (City/State)",
+        "hidden": "Do Not Display"
+      },
+      "default_value": "full",
+      "ui": 1
+    },
+    {
+      "key": "field_latitude",
+      "label": "Latitude",
+      "name": "latitude",
+      "type": "number",
+      "instructions": "Auto-generated from address",
+      "wrapper": {
+        "width": "20",
+        "class": "auto-generated"
+      },
+      "readonly": 1,
+      "step": "any"
+    },
+    {
+      "key": "field_longitude",
+      "label": "Longitude",
+      "name": "longitude",
+      "type": "number",
+      "instructions": "Auto-generated from address",
+      "wrapper": {
+        "width": "20",
+        "class": "auto-generated"
+      },
+      "readonly": 1,
+      "step": "any"
+    }
+  ],
+  "location": [
+    [
+      {
+        "param": "post_type",
+        "operator": "==",
+        "value": "listing"
+      }
+    ]
+  ],
+  "menu_order": 1,
+  "position": "normal",
+  "style": "default",
+  "label_placement": "top",
+  "instruction_placement": "label",
+  "active": true,
+  "description": "Property location and address components",
+  "show_in_rest": 1
+}

@@ -1,644 +1,636 @@
 <?php
 /**
- * Configuration Sync Manager
- * Handles synchronization of post types, taxonomies, and ACF field groups
- * with automatic change detection and dashboard integration
+ * Config Sync Manager Class
+ * 
+ * Handles synchronization of configuration between files, database, and ACF
  *
  * @package HappyPlace\Core
+ * @version 4.0.0
  */
 
 namespace HappyPlace\Core;
 
+// Prevent direct access
 if (!defined('ABSPATH')) {
     exit;
 }
 
+/**
+ * Config Sync Manager Class
+ * 
+ * @since 4.0.0
+ */
 class Config_Sync_Manager {
-
-    private static $instance = null;
-    private $config_dir;
-    private $changes_detected = [];
-    private $last_check_time;
-
-    public static function get_instance() {
-        if (self::$instance === null) {
+    
+    /**
+     * Single instance
+     * 
+     * @var Config_Sync_Manager|null
+     */
+    private static ?Config_Sync_Manager $instance = null;
+    
+    /**
+     * Configuration sources
+     * 
+     * @var array
+     */
+    private array $sources = [
+        'files' => [],
+        'database' => [],
+        'acf' => [],
+    ];
+    
+    /**
+     * Sync status
+     * 
+     * @var array
+     */
+    private array $sync_status = [];
+    
+    /**
+     * Config directory
+     * 
+     * @var string
+     */
+    private string $config_dir;
+    
+    /**
+     * Get instance
+     * 
+     * @return Config_Sync_Manager
+     */
+    public static function get_instance(): Config_Sync_Manager {
+        if (null === self::$instance) {
             self::$instance = new self();
         }
         return self::$instance;
     }
-
+    
+    /**
+     * Constructor
+     */
     private function __construct() {
-        $this->config_dir = HP_PLUGIN_DIR . 'includes/config/';
-        $this->last_check_time = get_option('hp_config_last_check', 0);
+        $this->config_dir = HP_CONFIG_DIR;
     }
-
-    public function init() {
-        // Hook into WordPress init to check for changes
-        add_action('init', [$this, 'check_config_changes'], 1);
+    
+    /**
+     * Initialize config sync manager
+     * 
+     * @return void
+     */
+    public function init(): void {
+        // Load configurations from all sources
+        add_action('init', [$this, 'load_configurations'], 5);
         
-        // Admin hooks for sync management
-        add_action('admin_init', [$this, 'handle_sync_actions']);
+        // Sync on admin init
+        add_action('admin_init', [$this, 'maybe_sync_configurations']);
+        
+        // Add admin notices for sync status
         add_action('admin_notices', [$this, 'show_sync_notices']);
         
-        // Dashboard integration
-        add_action('wp_ajax_hp_get_sync_status', [$this, 'ajax_get_sync_status']);
+        // Register sync AJAX handlers
         add_action('wp_ajax_hp_sync_config', [$this, 'ajax_sync_config']);
-        add_action('wp_ajax_hp_dismiss_sync_notice', [$this, 'ajax_dismiss_sync_notice']);
+        
+        // Export/Import handlers
+        add_action('admin_post_hp_export_config', [$this, 'handle_export']);
+        add_action('admin_post_hp_import_config', [$this, 'handle_import']);
         
         hp_log('Config Sync Manager initialized', 'info', 'CONFIG_SYNC');
     }
-
+    
     /**
-     * Check for configuration changes in JSON files
+     * Load configurations from all sources
+     * 
+     * @return void
      */
-    public function check_config_changes() {
-        $current_time = time();
+    public function load_configurations(): void {
+        $this->load_file_configs();
+        $this->load_database_configs();
+        $this->load_acf_configs();
         
-        // Only check every 5 minutes to avoid performance issues
-        if ($current_time - $this->last_check_time < 300) {
-            return;
-        }
-
-        $this->changes_detected = [];
-        
-        // Check post types
-        $this->check_post_types_changes();
-        
-        // Check taxonomies
-        $this->check_taxonomies_changes();
-        
-        // Check ACF field groups
-        $this->check_acf_field_groups_changes();
-        
-        // Update last check time
-        update_option('hp_config_last_check', $current_time);
-        $this->last_check_time = $current_time;
-        
-        // Store detected changes
-        if (!empty($this->changes_detected)) {
-            update_option('hp_config_changes_detected', $this->changes_detected);
-            hp_log('Configuration changes detected: ' . json_encode($this->changes_detected), 'info', 'CONFIG_SYNC');
-        }
+        // Check for differences
+        $this->check_sync_status();
     }
-
+    
     /**
-     * Check for post type configuration changes
+     * Load file-based configurations
+     * 
+     * @return void
      */
-    private function check_post_types_changes() {
-        $config_file = $this->config_dir . 'post-types.json';
+    private function load_file_configs(): void {
+        $config_files = [
+            'post-types.json',
+            'taxonomies.json',
+            'settings.json',
+            'features.json',
+            'api.json',
+        ];
         
-        if (!file_exists($config_file)) {
-            return;
-        }
-
-        $file_mtime = filemtime($config_file);
-        $last_sync = get_option('hp_post_types_last_sync', 0);
-        
-        if ($file_mtime > $last_sync) {
-            $this->changes_detected['post_types'] = [
-                'type' => 'post_types',
-                'file' => 'post-types.json',
-                'last_modified' => $file_mtime,
-                'last_sync' => $last_sync,
-                'status' => 'needs_sync'
-            ];
-        }
-    }
-
-    /**
-     * Check for taxonomy configuration changes
-     */
-    private function check_taxonomies_changes() {
-        $config_file = $this->config_dir . 'taxonomies.json';
-        
-        if (!file_exists($config_file)) {
-            return;
-        }
-
-        $file_mtime = filemtime($config_file);
-        $last_sync = get_option('hp_taxonomies_last_sync', 0);
-        
-        if ($file_mtime > $last_sync) {
-            $this->changes_detected['taxonomies'] = [
-                'type' => 'taxonomies',
-                'file' => 'taxonomies.json',
-                'last_modified' => $file_mtime,
-                'last_sync' => $last_sync,
-                'status' => 'needs_sync'
-            ];
-        }
-    }
-
-    /**
-     * Check for ACF field group changes
-     */
-    private function check_acf_field_groups_changes() {
-        $acf_json_dir = HP_PLUGIN_DIR . 'includes/fields/acf-json/';
-        
-        if (!is_dir($acf_json_dir)) {
-            return;
-        }
-
-        $json_files = glob($acf_json_dir . '*.json');
-        $last_sync = get_option('hp_acf_fields_last_sync', 0);
-        $needs_sync = false;
-
-        foreach ($json_files as $file) {
-            // Skip export files
-            if (strpos(basename($file), 'acf-export-') === 0) {
-                continue;
+        foreach ($config_files as $file) {
+            $path = $this->config_dir . $file;
+            if (file_exists($path)) {
+                $content = file_get_contents($path);
+                $config = json_decode($content, true);
+                
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $key = str_replace('.json', '', $file);
+                    $this->sources['files'][$key] = $config;
+                    $this->sources['files'][$key]['_modified'] = filemtime($path);
+                } else {
+                    hp_log("Invalid JSON in config file: {$file}", 'error', 'CONFIG_SYNC');
+                }
             }
-
-            $file_mtime = filemtime($file);
-            if ($file_mtime > $last_sync) {
-                $needs_sync = true;
+        }
+    }
+    
+    /**
+     * Load database configurations
+     * 
+     * @return void
+     */
+    private function load_database_configs(): void {
+        $db_configs = [
+            'post-types' => 'hp_config_post_types',
+            'taxonomies' => 'hp_config_taxonomies',
+            'settings' => 'hp_settings',
+            'features' => 'hp_features',
+            'api' => 'hp_api_config',
+        ];
+        
+        foreach ($db_configs as $key => $option_name) {
+            $config = get_option($option_name);
+            if ($config !== false) {
+                $this->sources['database'][$key] = $config;
+                $this->sources['database'][$key]['_modified'] = get_option($option_name . '_modified', 0);
+            }
+        }
+    }
+    
+    /**
+     * Load ACF configurations
+     * 
+     * @return void
+     */
+    private function load_acf_configs(): void {
+        if (!function_exists('acf_get_field_groups')) {
+            return;
+        }
+        
+        // Load ACF field groups
+        $field_groups = acf_get_field_groups();
+        
+        foreach ($field_groups as $group) {
+            // Check if it's a Happy Place field group
+            if (strpos($group['key'], 'group_hp_') === 0) {
+                $key = str_replace('group_hp_', '', $group['key']);
+                $this->sources['acf'][$key] = [
+                    'group' => $group,
+                    'fields' => acf_get_fields($group['key']),
+                    '_modified' => strtotime($group['modified'] ?? 'now'),
+                ];
+            }
+        }
+    }
+    
+    /**
+     * Check sync status between sources
+     * 
+     * @return void
+     */
+    private function check_sync_status(): void {
+        $this->sync_status = [];
+        
+        // Get all unique keys
+        $all_keys = array_unique(array_merge(
+            array_keys($this->sources['files']),
+            array_keys($this->sources['database']),
+            array_keys($this->sources['acf'])
+        ));
+        
+        foreach ($all_keys as $key) {
+            $status = [
+                'key' => $key,
+                'in_files' => isset($this->sources['files'][$key]),
+                'in_database' => isset($this->sources['database'][$key]),
+                'in_acf' => isset($this->sources['acf'][$key]),
+                'synced' => true,
+                'conflicts' => [],
+            ];
+            
+            // Check for conflicts
+            $sources_with_key = [];
+            foreach (['files', 'database', 'acf'] as $source) {
+                if (isset($this->sources[$source][$key])) {
+                    $sources_with_key[$source] = $this->sources[$source][$key];
+                }
+            }
+            
+            if (count($sources_with_key) > 1) {
+                // Compare configurations
+                $hashes = [];
+                foreach ($sources_with_key as $source => $config) {
+                    // Remove metadata before comparison
+                    unset($config['_modified']);
+                    $hashes[$source] = md5(json_encode($config));
+                }
+                
+                if (count(array_unique($hashes)) > 1) {
+                    $status['synced'] = false;
+                    $status['conflicts'] = $this->identify_conflicts($key, $sources_with_key);
+                }
+            }
+            
+            $this->sync_status[$key] = $status;
+        }
+    }
+    
+    /**
+     * Identify conflicts between configurations
+     * 
+     * @param string $key
+     * @param array $sources
+     * @return array
+     */
+    private function identify_conflicts(string $key, array $sources): array {
+        $conflicts = [];
+        
+        // Get the most recent source
+        $most_recent = null;
+        $most_recent_time = 0;
+        
+        foreach ($sources as $source_name => $config) {
+            $modified = $config['_modified'] ?? 0;
+            if ($modified > $most_recent_time) {
+                $most_recent = $source_name;
+                $most_recent_time = $modified;
+            }
+        }
+        
+        $conflicts[] = [
+            'type' => 'version_mismatch',
+            'message' => sprintf(
+                __('Configuration "%s" differs between sources. Most recent: %s', 'happy-place'),
+                $key,
+                $most_recent
+            ),
+            'most_recent' => $most_recent,
+        ];
+        
+        return $conflicts;
+    }
+    
+    /**
+     * Maybe sync configurations
+     * 
+     * @return void
+     */
+    public function maybe_sync_configurations(): void {
+        // Check if auto-sync is enabled
+        if (!get_option('hp_auto_sync_config', false)) {
+            return;
+        }
+        
+        // Check if there are conflicts
+        $has_conflicts = false;
+        foreach ($this->sync_status as $status) {
+            if (!$status['synced']) {
+                $has_conflicts = true;
                 break;
             }
         }
-
-        if ($needs_sync) {
-            $this->changes_detected['acf_fields'] = [
-                'type' => 'acf_fields',
-                'file' => 'acf-json/*.json',
-                'last_modified' => max(array_map('filemtime', $json_files)),
-                'last_sync' => $last_sync,
-                'status' => 'needs_sync',
-                'count' => count($json_files)
-            ];
+        
+        if ($has_conflicts) {
+            $this->sync_all_configurations();
         }
     }
-
-    /**
-     * Get current sync status for dashboard
-     */
-    public function get_sync_status() {
-        $this->check_config_changes();
-        
-        $stored_changes = get_option('hp_config_changes_detected', []);
-        $dismissed_notices = get_option('hp_dismissed_sync_notices', []);
-        
-        $status = [
-            'has_changes' => !empty($stored_changes),
-            'changes' => $stored_changes,
-            'dismissed' => $dismissed_notices,
-            'last_check' => $this->last_check_time
-        ];
-
-        return $status;
-    }
-
-    /**
-     * Sync post types from JSON configuration
-     */
-    public function sync_post_types() {
-        $config_file = $this->config_dir . 'post-types.json';
-        
-        if (!file_exists($config_file)) {
-            return ['success' => false, 'message' => 'Post types configuration file not found'];
-        }
-
-        $config_data = json_decode(file_get_contents($config_file), true);
-        if (!$config_data || !isset($config_data['post_types'])) {
-            return ['success' => false, 'message' => 'Invalid post types configuration'];
-        }
-
-        $synced_count = 0;
-        $errors = [];
-
-        foreach ($config_data['post_types'] as $post_type => $config) {
-            try {
-                // Register the post type
-                register_post_type($post_type, $config);
-                $synced_count++;
-                hp_log("Synced post type: {$post_type}", 'info', 'CONFIG_SYNC');
-            } catch (Exception $e) {
-                $errors[] = "Failed to sync post type {$post_type}: " . $e->getMessage();
-                hp_log("Error syncing post type {$post_type}: " . $e->getMessage(), 'error', 'CONFIG_SYNC');
-            }
-        }
-
-        // Update last sync time
-        update_option('hp_post_types_last_sync', time());
-
-        // Flush rewrite rules
-        flush_rewrite_rules();
-
-        return [
-            'success' => true,
-            'synced' => $synced_count,
-            'errors' => $errors
-        ];
-    }
-
-    /**
-     * Sync taxonomies from JSON configuration
-     */
-    public function sync_taxonomies() {
-        $config_file = $this->config_dir . 'taxonomies.json';
-        
-        if (!file_exists($config_file)) {
-            return ['success' => false, 'message' => 'Taxonomies configuration file not found'];
-        }
-
-        $config_data = json_decode(file_get_contents($config_file), true);
-        if (!$config_data || !isset($config_data['taxonomies'])) {
-            return ['success' => false, 'message' => 'Invalid taxonomies configuration'];
-        }
-
-        $synced_count = 0;
-        $errors = [];
-
-        foreach ($config_data['taxonomies'] as $taxonomy => $config) {
-            try {
-                $object_type = $config['object_type'] ?? ['post'];
-                unset($config['object_type']); // Remove from config as it's passed separately
-
-                register_taxonomy($taxonomy, $object_type, $config);
-                $synced_count++;
-                hp_log("Synced taxonomy: {$taxonomy}", 'info', 'CONFIG_SYNC');
-            } catch (Exception $e) {
-                $errors[] = "Failed to sync taxonomy {$taxonomy}: " . $e->getMessage();
-                hp_log("Error syncing taxonomy {$taxonomy}: " . $e->getMessage(), 'error', 'CONFIG_SYNC');
-            }
-        }
-
-        // Update last sync time
-        update_option('hp_taxonomies_last_sync', time());
-
-        // Flush rewrite rules
-        flush_rewrite_rules();
-
-        return [
-            'success' => true,
-            'synced' => $synced_count,
-            'errors' => $errors
-        ];
-    }
-
-    /**
-     * Sync ACF field groups
-     */
-    public function sync_acf_field_groups() {
-        if (!class_exists('HappyPlace\\Core\\ACF_Manager')) {
-            return ['success' => false, 'message' => 'ACF Manager not available'];
-        }
-
-        $acf_manager = ACF_Manager::get_instance();
-        
-        if (!method_exists($acf_manager, 'force_sync_field_groups')) {
-            return ['success' => false, 'message' => 'ACF sync method not available'];
-        }
-
-        $result = $acf_manager->force_sync_field_groups();
-
-        if ($result !== false) {
-            // Update last sync time
-            update_option('hp_acf_fields_last_sync', time());
-
-            return [
-                'success' => true,
-                'synced' => $result,
-                'errors' => []
-            ];
-        } else {
-            return ['success' => false, 'message' => 'ACF field groups sync failed'];
-        }
-    }
-
+    
     /**
      * Sync all configurations
+     * 
+     * @param string $priority_source Which source takes priority
+     * @return bool
      */
-    public function sync_all() {
-        $results = [
-            'post_types' => $this->sync_post_types(),
-            'taxonomies' => $this->sync_taxonomies(),
-            'acf_fields' => $this->sync_acf_field_groups()
+    public function sync_all_configurations(string $priority_source = 'files'): bool {
+        $success = true;
+        
+        foreach ($this->sync_status as $key => $status) {
+            if (!$status['synced']) {
+                if (!$this->sync_configuration($key, $priority_source)) {
+                    $success = false;
+                }
+            }
+        }
+        
+        // Clear cache after sync
+        if (function_exists('wp_cache_flush')) {
+            wp_cache_flush();
+        }
+        
+        return $success;
+    }
+    
+    /**
+     * Sync a specific configuration
+     * 
+     * @param string $key
+     * @param string $priority_source
+     * @return bool
+     */
+    public function sync_configuration(string $key, string $priority_source = 'files'): bool {
+        // Get the source configuration
+        if (!isset($this->sources[$priority_source][$key])) {
+            return false;
+        }
+        
+        $config = $this->sources[$priority_source][$key];
+        unset($config['_modified']);
+        
+        $success = true;
+        
+        // Sync to files
+        if ($priority_source !== 'files') {
+            if (!$this->save_to_file($key, $config)) {
+                $success = false;
+            }
+        }
+        
+        // Sync to database
+        if ($priority_source !== 'database') {
+            if (!$this->save_to_database($key, $config)) {
+                $success = false;
+            }
+        }
+        
+        // Sync to ACF (if applicable)
+        if ($priority_source !== 'acf' && $this->is_acf_config($key)) {
+            if (!$this->save_to_acf($key, $config)) {
+                $success = false;
+            }
+        }
+        
+        if ($success) {
+            hp_log("Configuration '{$key}' synced from {$priority_source}", 'info', 'CONFIG_SYNC');
+        }
+        
+        return $success;
+    }
+    
+    /**
+     * Save configuration to file
+     * 
+     * @param string $key
+     * @param array $config
+     * @return bool
+     */
+    private function save_to_file(string $key, array $config): bool {
+        $file_path = $this->config_dir . $key . '.json';
+        
+        // Create backup
+        if (file_exists($file_path)) {
+            $backup_path = $this->config_dir . 'backups/' . $key . '-' . date('Y-m-d-His') . '.json';
+            wp_mkdir_p(dirname($backup_path));
+            copy($file_path, $backup_path);
+        }
+        
+        // Save configuration
+        $json = json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        
+        if (file_put_contents($file_path, $json) !== false) {
+            $this->sources['files'][$key] = $config;
+            $this->sources['files'][$key]['_modified'] = time();
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Save configuration to database
+     * 
+     * @param string $key
+     * @param array $config
+     * @return bool
+     */
+    private function save_to_database(string $key, array $config): bool {
+        $option_map = [
+            'post-types' => 'hp_config_post_types',
+            'taxonomies' => 'hp_config_taxonomies',
+            'settings' => 'hp_settings',
+            'features' => 'hp_features',
+            'api' => 'hp_api_config',
         ];
-
-        // Clear detected changes after successful sync
-        $all_success = true;
-        foreach ($results as $result) {
-            if (!$result['success']) {
-                $all_success = false;
-                break;
-            }
+        
+        if (!isset($option_map[$key])) {
+            return false;
         }
-
-        if ($all_success) {
-            delete_option('hp_config_changes_detected');
+        
+        $option_name = $option_map[$key];
+        
+        if (update_option($option_name, $config)) {
+            update_option($option_name . '_modified', time());
+            $this->sources['database'][$key] = $config;
+            $this->sources['database'][$key]['_modified'] = time();
+            return true;
         }
-
-        return $results;
+        
+        return false;
     }
-
+    
     /**
-     * Handle sync actions from admin
+     * Save configuration to ACF
+     * 
+     * @param string $key
+     * @param array $config
+     * @return bool
      */
-    public function handle_sync_actions() {
-        if (!current_user_can('manage_options')) {
-            return;
+    private function save_to_acf(string $key, array $config): bool {
+        if (!function_exists('acf_update_field_group')) {
+            return false;
         }
-
-        if (isset($_GET['hp_sync_action'])) {
-            $action = sanitize_text_field($_GET['hp_sync_action']);
-            $nonce = $_GET['_wpnonce'] ?? '';
-
-            if (!wp_verify_nonce($nonce, 'hp_sync_action')) {
-                return;
-            }
-
-            switch ($action) {
-                case 'sync_post_types':
-                    $result = $this->sync_post_types();
-                    $this->show_admin_notice($result, 'Post Types');
-                    break;
-
-                case 'sync_taxonomies':
-                    $result = $this->sync_taxonomies();
-                    $this->show_admin_notice($result, 'Taxonomies');
-                    break;
-
-                case 'sync_acf_fields':
-                    $result = $this->sync_acf_field_groups();
-                    $this->show_admin_notice($result, 'ACF Field Groups');
-                    break;
-
-                case 'sync_all':
-                    $results = $this->sync_all();
-                    $this->show_sync_all_notice($results);
-                    break;
-            }
-        }
+        
+        // This would require complex ACF field group manipulation
+        // For now, just log that manual ACF sync is needed
+        hp_log("ACF configuration for '{$key}' needs manual sync", 'warning', 'CONFIG_SYNC');
+        
+        return false;
     }
-
+    
     /**
-     * Show admin notice for sync results
+     * Check if configuration is ACF-related
+     * 
+     * @param string $key
+     * @return bool
      */
-    private function show_admin_notice($result, $type) {
-        if ($result['success']) {
-            add_action('admin_notices', function() use ($result, $type) {
-                echo '<div class="notice notice-success is-dismissible">';
-                echo '<p><strong>' . $type . ' Sync:</strong> Successfully synced ' . $result['synced'] . ' items.</p>';
-                if (!empty($result['errors'])) {
-                    echo '<p><strong>Warnings:</strong></p><ul>';
-                    foreach ($result['errors'] as $error) {
-                        echo '<li>' . esc_html($error) . '</li>';
-                    }
-                    echo '</ul>';
-                }
-                echo '</div>';
-            });
-        } else {
-            add_action('admin_notices', function() use ($result, $type) {
-                echo '<div class="notice notice-error is-dismissible">';
-                echo '<p><strong>' . $type . ' Sync Failed:</strong> ' . esc_html($result['message']) . '</p>';
-                echo '</div>';
-            });
-        }
+    private function is_acf_config(string $key): bool {
+        $acf_configs = ['listing_fields', 'agent_fields', 'settings_fields'];
+        return in_array($key, $acf_configs);
     }
-
-    /**
-     * Show admin notice for sync all results
-     */
-    private function show_sync_all_notice($results) {
-        add_action('admin_notices', function() use ($results) {
-            $success_count = 0;
-            $total_synced = 0;
-
-            foreach ($results as $type => $result) {
-                if ($result['success']) {
-                    $success_count++;
-                    $total_synced += $result['synced'] ?? 0;
-                }
-            }
-
-            if ($success_count === count($results)) {
-                echo '<div class="notice notice-success is-dismissible">';
-                echo '<p><strong>Complete Sync Successful:</strong> Synced ' . $total_synced . ' configuration items.</p>';
-                echo '</div>';
-            } else {
-                echo '<div class="notice notice-warning is-dismissible">';
-                echo '<p><strong>Partial Sync Completed:</strong> ' . $success_count . ' of ' . count($results) . ' configurations synced successfully.</p>';
-                echo '</div>';
-            }
-        });
-    }
-
+    
     /**
      * Show sync notices in admin
+     * 
+     * @return void
      */
-    public function show_sync_notices() {
+    public function show_sync_notices(): void {
         if (!current_user_can('manage_options')) {
             return;
         }
-
-        $changes = get_option('hp_config_changes_detected', []);
-        $dismissed = get_option('hp_dismissed_sync_notices', []);
-
-        if (empty($changes)) {
-            return;
-        }
-
-        foreach ($changes as $type => $change) {
-            if (in_array($type, $dismissed)) {
-                continue;
+        
+        $has_conflicts = false;
+        foreach ($this->sync_status as $status) {
+            if (!$status['synced']) {
+                $has_conflicts = true;
+                break;
             }
-
-            $this->render_sync_notice($type, $change);
+        }
+        
+        if ($has_conflicts) {
+            ?>
+            <div class="notice notice-warning is-dismissible">
+                <p>
+                    <strong><?php _e('Happy Place Configuration Sync:', 'happy-place'); ?></strong>
+                    <?php _e('Some configurations are out of sync.', 'happy-place'); ?>
+                    <a href="<?php echo admin_url('admin.php?page=hp-config-sync'); ?>">
+                        <?php _e('Review and sync', 'happy-place'); ?>
+                    </a>
+                </p>
+            </div>
+            <?php
         }
     }
-
+    
     /**
-     * Render individual sync notice
+     * AJAX handler for config sync
+     * 
+     * @return void
      */
-    private function render_sync_notice($type, $change) {
-        $type_labels = [
-            'post_types' => 'Post Types',
-            'taxonomies' => 'Taxonomies',
-            'acf_fields' => 'ACF Field Groups'
-        ];
-
-        $label = $type_labels[$type] ?? ucfirst($type);
-        $sync_url = wp_nonce_url(
-            admin_url("admin.php?page=happy-place-sync&sync_action=sync_{$type}"),
-            'hp_sync_action'
-        );
-        $dismiss_url = wp_nonce_url(
-            admin_url("admin.php?hp_dismiss_notice={$type}"),
-            'hp_dismiss_notice'
-        );
-
-        echo '<div class="notice notice-info is-dismissible hp-sync-notice" data-type="' . esc_attr($type) . '">';
-        echo '<p><strong>🔄 Happy Place Configuration Update</strong></p>';
-        echo '<p>' . $label . ' configuration has been updated. ';
-        echo '<strong>Last modified:</strong> ' . date('M j, Y g:i A', $change['last_modified']) . '</p>';
-        
-        echo '<p>';
-        echo '<a href="' . esc_url($sync_url) . '" class="button button-primary">Sync ' . $label . '</a> ';
-        echo '<a href="' . esc_url($dismiss_url) . '" class="button button-secondary">Dismiss</a>';
-        echo '</p>';
-        echo '</div>';
-    }
-
-    /**
-     * AJAX handler for getting sync status
-     */
-    public function ajax_get_sync_status() {
-        check_ajax_referer('hp_dashboard', 'nonce');
+    public function ajax_sync_config(): void {
+        check_ajax_referer('hp_sync_config', 'nonce');
         
         if (!current_user_can('manage_options')) {
-            wp_send_json_error('Insufficient permissions');
+            wp_send_json_error(__('Permission denied', 'happy-place'));
         }
-
-        $status = $this->get_sync_status();
-        wp_send_json_success($status);
-    }
-
-    /**
-     * AJAX handler for syncing configurations
-     */
-    public function ajax_sync_config() {
-        check_ajax_referer('hp_dashboard', 'nonce');
         
-        if (!current_user_can('manage_options')) {
-            wp_send_json_error('Insufficient permissions');
-        }
-
-        $type = sanitize_text_field($_POST['type'] ?? 'all');
-
-        switch ($type) {
-            case 'post_types':
-                $result = $this->sync_post_types();
-                break;
-            case 'taxonomies':
-                $result = $this->sync_taxonomies();
-                break;
-            case 'acf_fields':
-                $result = $this->sync_acf_field_groups();
-                break;
-            case 'all':
-            default:
-                $result = $this->sync_all();
-                break;
-        }
-
-        wp_send_json_success($result);
-    }
-
-    /**
-     * AJAX handler for dismissing sync notices
-     */
-    public function ajax_dismiss_sync_notice() {
-        check_ajax_referer('hp_dashboard', 'nonce');
+        $key = sanitize_text_field($_POST['key'] ?? '');
+        $source = sanitize_text_field($_POST['source'] ?? 'files');
         
+        if (empty($key)) {
+            wp_send_json_error(__('Invalid configuration key', 'happy-place'));
+        }
+        
+        if ($this->sync_configuration($key, $source)) {
+            wp_send_json_success([
+                'message' => sprintf(__('Configuration "%s" synced successfully', 'happy-place'), $key),
+            ]);
+        } else {
+            wp_send_json_error(__('Sync failed', 'happy-place'));
+        }
+    }
+    
+    /**
+     * Handle configuration export
+     * 
+     * @return void
+     */
+    public function handle_export(): void {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error('Insufficient permissions');
+            wp_die(__('Permission denied', 'happy-place'));
         }
-
-        $type = sanitize_text_field($_POST['type'] ?? '');
-        if (empty($type)) {
-            wp_send_json_error('Type not specified');
-        }
-
-        $dismissed = get_option('hp_dismissed_sync_notices', []);
-        if (!in_array($type, $dismissed)) {
-            $dismissed[] = $type;
-            update_option('hp_dismissed_sync_notices', $dismissed);
-        }
-
-        wp_send_json_success(['dismissed' => $type]);
-    }
-
-    /**
-     * Export current WordPress configurations to JSON
-     */
-    public function export_current_configs() {
-        $results = [
-            'post_types' => $this->export_post_types_config(),
-            'taxonomies' => $this->export_taxonomies_config()
+        
+        check_admin_referer('hp_export_config');
+        
+        $export_data = [
+            'version' => HP_VERSION,
+            'exported' => date('Y-m-d H:i:s'),
+            'site_url' => home_url(),
+            'configurations' => [],
         ];
-
-        return $results;
+        
+        // Collect all configurations
+        foreach ($this->sources['files'] as $key => $config) {
+            unset($config['_modified']);
+            $export_data['configurations'][$key] = $config;
+        }
+        
+        // Generate filename
+        $filename = 'hp-config-' . date('Y-m-d-His') . '.json';
+        
+        // Send download headers
+        header('Content-Type: application/json');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+        
+        echo json_encode($export_data, JSON_PRETTY_PRINT);
+        exit;
     }
-
+    
     /**
-     * Export registered post types to JSON configuration
+     * Handle configuration import
+     * 
+     * @return void
      */
-    private function export_post_types_config() {
-        $post_types = get_post_types(['_builtin' => false], 'objects');
-        $config = [
-            'version' => '1.0.0',
-            'last_modified' => time(),
-            'post_types' => []
-        ];
-
-        foreach ($post_types as $post_type => $post_type_object) {
-            // Only export Happy Place post types
-            if (!in_array($post_type, ['listing', 'agent', 'community', 'open_house', 'lead'])) {
-                continue;
+    public function handle_import(): void {
+        if (!current_user_can('manage_options')) {
+            wp_die(__('Permission denied', 'happy-place'));
+        }
+        
+        check_admin_referer('hp_import_config');
+        
+        if (!isset($_FILES['import_file'])) {
+            wp_die(__('No file uploaded', 'happy-place'));
+        }
+        
+        $file = $_FILES['import_file'];
+        
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            wp_die(__('Upload failed', 'happy-place'));
+        }
+        
+        $content = file_get_contents($file['tmp_name']);
+        $import_data = json_decode($content, true);
+        
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            wp_die(__('Invalid JSON file', 'happy-place'));
+        }
+        
+        // Validate import data
+        if (!isset($import_data['configurations'])) {
+            wp_die(__('Invalid configuration file', 'happy-place'));
+        }
+        
+        // Import configurations
+        $success = true;
+        foreach ($import_data['configurations'] as $key => $config) {
+            if (!$this->save_to_file($key, $config) || !$this->save_to_database($key, $config)) {
+                $success = false;
             }
-
-            $config['post_types'][$post_type] = [
-                'label' => $post_type_object->label,
-                'labels' => (array) $post_type_object->labels,
-                'description' => $post_type_object->description,
-                'public' => $post_type_object->public,
-                'publicly_queryable' => $post_type_object->publicly_queryable,
-                'show_ui' => $post_type_object->show_ui,
-                'show_in_menu' => $post_type_object->show_in_menu,
-                'query_var' => $post_type_object->query_var,
-                'rewrite' => $post_type_object->rewrite,
-                'capability_type' => $post_type_object->capability_type,
-                'has_archive' => $post_type_object->has_archive,
-                'hierarchical' => $post_type_object->hierarchical,
-                'menu_position' => $post_type_object->menu_position,
-                'menu_icon' => $post_type_object->menu_icon,
-                'supports' => $post_type_object->supports ?? [],
-                'show_in_rest' => $post_type_object->show_in_rest,
-            ];
         }
-
-        $config_file = $this->config_dir . 'post-types.json';
-        $result = file_put_contents($config_file, json_encode($config, JSON_PRETTY_PRINT));
-
-        return $result !== false ? ['success' => true, 'count' => count($config['post_types'])] : ['success' => false];
+        
+        if ($success) {
+            wp_redirect(admin_url('admin.php?page=hp-config-sync&imported=1'));
+        } else {
+            wp_die(__('Import failed', 'happy-place'));
+        }
+        
+        exit;
     }
-
+    
     /**
-     * Export registered taxonomies to JSON configuration
+     * Get sync status
+     * 
+     * @return array
      */
-    private function export_taxonomies_config() {
-        $taxonomies = get_taxonomies(['_builtin' => false], 'objects');
-        $config = [
-            'version' => '1.0.0',
-            'last_modified' => time(),
-            'taxonomies' => []
-        ];
-
-        foreach ($taxonomies as $taxonomy => $taxonomy_object) {
-            $config['taxonomies'][$taxonomy] = [
-                'label' => $taxonomy_object->label,
-                'labels' => (array) $taxonomy_object->labels,
-                'description' => $taxonomy_object->description,
-                'public' => $taxonomy_object->public,
-                'publicly_queryable' => $taxonomy_object->publicly_queryable,
-                'hierarchical' => $taxonomy_object->hierarchical,
-                'show_ui' => $taxonomy_object->show_ui,
-                'show_in_menu' => $taxonomy_object->show_in_menu,
-                'show_in_nav_menus' => $taxonomy_object->show_in_nav_menus,
-                'show_tagcloud' => $taxonomy_object->show_tagcloud,
-                'show_in_quick_edit' => $taxonomy_object->show_in_quick_edit,
-                'show_admin_column' => $taxonomy_object->show_admin_column,
-                'object_type' => $taxonomy_object->object_type,
-                'rewrite' => $taxonomy_object->rewrite,
-                'query_var' => $taxonomy_object->query_var,
-                'show_in_rest' => $taxonomy_object->show_in_rest,
-            ];
-        }
-
-        $config_file = $this->config_dir . 'taxonomies.json';
-        $result = file_put_contents($config_file, json_encode($config, JSON_PRETTY_PRINT));
-
-        return $result !== false ? ['success' => true, 'count' => count($config['taxonomies'])] : ['success' => false];
+    public function get_sync_status(): array {
+        return $this->sync_status;
+    }
+    
+    /**
+     * Get configuration sources
+     * 
+     * @return array
+     */
+    public function get_sources(): array {
+        return $this->sources;
     }
 }
