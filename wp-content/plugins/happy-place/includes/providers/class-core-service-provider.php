@@ -35,20 +35,25 @@ class CoreServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register(): void {
-        // Configuration
+        // Configuration - loads from config/ directory
         $this->singleton('config', function() {
-            return new Config(HP_PLUGIN_DIR . 'config/');
+            return new Config(HP_CONFIG_DIR);
         });
         
-        // Database
+        // Database abstraction
         $this->singleton('database', function() {
             return new Database();
         });
         
-        // Cache
+        // Cache layer
         $this->singleton('cache', function($container) {
             $config = $container->get('config');
-            return new Cache($config->get('cache'));
+            $cache_config = $config->get('cache', [
+                'driver' => 'transient',
+                'prefix' => 'hp_cache_',
+                'ttl' => 3600
+            ]);
+            return new Cache($cache_config);
         });
         
         // Logger
@@ -56,12 +61,12 @@ class CoreServiceProvider extends ServiceProvider {
             return new Logger();
         });
         
-        // Scheduler
+        // Scheduler for cron jobs
         $this->singleton('scheduler', function() {
             return new Scheduler();
         });
         
-        // Aliases
+        // Create aliases for convenience
         $this->alias('db', 'database');
         $this->alias('log', 'logger');
     }
@@ -72,10 +77,21 @@ class CoreServiceProvider extends ServiceProvider {
      * @return void
      */
     public function boot(): void {
-        // Initialize database
-        $this->container->get('database')->init();
+        // Initialize database tables if needed
+        $database = $this->container->get('database');
+        if (method_exists($database, 'init')) {
+            $database->init();
+        }
         
         // Set up scheduled jobs
-        $this->container->get('scheduler')->init();
+        $scheduler = $this->container->get('scheduler');
+        if (method_exists($scheduler, 'init')) {
+            $scheduler->init();
+        }
+        
+        // Set up hooks for cache clearing
+        add_action('hp_clear_cache', function() {
+            $this->container->get('cache')->flush();
+        });
     }
 }

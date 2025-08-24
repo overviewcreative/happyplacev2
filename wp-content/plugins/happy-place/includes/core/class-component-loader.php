@@ -58,14 +58,17 @@ class ComponentLoader {
      * @var array
      */
     private array $dependencies = [
-        'Post_Types' => [],
-        'Taxonomies' => ['Post_Types'],
-        'ACF_Manager' => [],
-        'Field_Mapper' => ['ACF_Manager'],
-        'Admin_Menu' => ['Post_Types'],
-        'REST_API' => ['Post_Types', 'ACF_Manager'],
-        'Assets_Manager' => [],
-        'Dashboard_Manager' => ['Post_Types', 'ACF_Manager'],
+        'PostTypes' => [],
+        'Taxonomies' => ['PostTypes'],
+        'ACFManager' => [],
+        'FieldMapper' => ['ACFManager'],
+        'AdminMenu' => ['PostTypes'],
+        'RestAPI' => ['PostTypes', 'ACFManager'],
+        'AssetsManager' => [],
+        'DashboardManager' => ['PostTypes', 'ACFManager'],
+        'ConfigSyncManager' => [],
+        'Database' => [],
+        'Cache' => [],
     ];
     
     /**
@@ -74,7 +77,7 @@ class ComponentLoader {
      * @var array
      */
     private array $critical = [
-        'Post_Types',
+        'PostTypes',
         'Taxonomies',
     ];
     
@@ -113,8 +116,9 @@ class ComponentLoader {
                 throw new Exception("Dependencies not met for component: {$component}");
             }
             
-            // Get component class
-            $class = $config['class'] ?? "HappyPlace\\Core\\{$component}";
+            // Get component class - convert component name to class name
+            $class_name = str_replace('_', '', $component); // Remove underscores
+            $class = $config['class'] ?? "HappyPlace\\Core\\{$class_name}";
             
             // Check if class exists
             if (!class_exists($class)) {
@@ -198,34 +202,52 @@ class ComponentLoader {
     }
     
     /**
-     * Get component file path
+     * Get component file path using lowercase hyphenated convention
      * 
      * @param string $component Component name
      * @return string|null
      */
     private function get_component_file(string $component): ?string {
-        $mappings = [
-            'Post_Types' => 'core/class-post-types.php',
-            'Taxonomies' => 'core/class-taxonomies.php',
-            'ACF_Manager' => 'core/class-acf-manager.php',
-            'Field_Mapper' => 'core/class-field-mapper.php',
-            'Admin_Menu' => 'admin/class-admin-menu.php',
-            'REST_API' => 'api/class-rest-api.php',
-            'Assets_Manager' => 'core/class-assets-manager.php',
-            'Dashboard_Manager' => 'dashboard/class-dashboard-manager.php',
+        // Convert component name to file name
+        // PostTypes -> class-post-types.php
+        // ACFManager -> class-acf-manager.php
+        $file_name = preg_replace('/([a-z])([A-Z])/', '$1-$2', $component);
+        $file_name = 'class-' . strtolower($file_name) . '.php';
+        
+        // Map to correct directories
+        $directory_mappings = [
+            'PostTypes' => 'core',
+            'Taxonomies' => 'core',
+            'ACFManager' => 'core',
+            'ACFJsonLoader' => 'core',
+            'FieldMapper' => 'core',
+            'AssetsManager' => 'core',
+            'ConfigSyncManager' => 'core',
+            'Database' => 'core',
+            'Cache' => 'core',
+            'AdminMenu' => 'admin',
+            'ACFSyncManager' => 'admin',
+            'RestAPI' => 'api',
+            'DashboardManager' => 'dashboard',
+            'DashboardAjax' => 'api/ajax',
         ];
         
-        if (isset($mappings[$component])) {
-            return HP_INCLUDES_DIR . $mappings[$component];
+        $directory = $directory_mappings[$component] ?? 'core';
+        $file_path = HP_INCLUDES_DIR . $directory . '/' . $file_name;
+        
+        // Check if file exists
+        if (file_exists($file_path)) {
+            return $file_path;
         }
         
-        // Try standard naming
-        $file = str_replace('_', '-', strtolower($component));
-        $path = HP_INCLUDES_DIR . "core/class-{$file}.php";
-        
-        if (file_exists($path)) {
-            return $path;
+        // Try without directory for root-level files
+        $root_path = HP_INCLUDES_DIR . $file_name;
+        if (file_exists($root_path)) {
+            return $root_path;
         }
+        
+        // Log the attempted paths for debugging
+        hp_log("Component file not found. Tried: {$file_path} and {$root_path}", 'debug', 'LOADER');
         
         return null;
     }
@@ -288,13 +310,20 @@ class ComponentLoader {
      */
     private function load_fallback(string $component): void {
         $fallbacks = [
-            'ACF_Manager' => 'HappyPlace\\Core\\Fallback\\SimpleFieldManager',
-            'Assets_Manager' => 'HappyPlace\\Core\\Fallback\\BasicAssetManager',
+            'ACFManager' => 'HappyPlace\\Core\\Fallback\\SimpleFieldManager',
+            'AssetsManager' => 'HappyPlace\\Core\\Fallback\\BasicAssetManager',
+            'Cache' => 'HappyPlace\\Core\\Fallback\\NoOpCache',
         ];
         
         if (isset($fallbacks[$component])) {
             try {
                 $fallback_class = $fallbacks[$component];
+                
+                // Try to load fallback file
+                $fallback_file = $this->get_fallback_file($fallback_class);
+                if ($fallback_file && file_exists($fallback_file)) {
+                    require_once $fallback_file;
+                }
                 
                 if (class_exists($fallback_class)) {
                     $instance = new $fallback_class();
@@ -306,6 +335,25 @@ class ComponentLoader {
                 hp_log("Failed to load fallback for {$component}: " . $e->getMessage(), 'error', 'LOADER');
             }
         }
+    }
+    
+    /**
+     * Get fallback file path
+     * 
+     * @param string $class_name Full class name
+     * @return string|null
+     */
+    private function get_fallback_file(string $class_name): ?string {
+        // Extract class name from namespace
+        $parts = explode('\\', $class_name);
+        $class = array_pop($parts);
+        
+        // Convert to file name
+        $file_name = preg_replace('/([a-z])([A-Z])/', '$1-$2', $class);
+        $file_name = 'class-' . strtolower($file_name) . '.php';
+        
+        // Fallback files are in core/fallback/
+        return HP_INCLUDES_DIR . 'core/fallback/' . $file_name;
     }
     
     /**

@@ -2,9 +2,10 @@
 /**
  * Taxonomies Class
  * 
- * Handles registration and management of custom taxonomies for Happy Place
+ * Handles registration and management of custom taxonomies
  *
  * @package HappyPlace\Core
+ * @version 4.0.0
  */
 
 namespace HappyPlace\Core;
@@ -14,300 +15,228 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+/**
+ * Taxonomies Class
+ * 
+ * @since 4.0.0
+ */
 class Taxonomies {
     
-    private static $instance = null;
-    private $config_file;
-    private $taxonomies_config = [];
+    /**
+     * Single instance
+     * 
+     * @var Taxonomies|null
+     */
+    private static ?Taxonomies $instance = null;
     
     /**
-     * Default taxonomy configurations (fallback if JSON not available)
+     * Configuration file path
+     * 
+     * @var string
      */
-    private $default_taxonomies = [
+    private string $config_file;
+    
+    /**
+     * Taxonomies configuration
+     * 
+     * @var array
+     */
+    private array $taxonomies_config = [];
+    
+    /**
+     * Default taxonomy configurations
+     * 
+     * @var array
+     */
+    private array $default_taxonomies = [
         'property_type' => [
-            'post_types' => ['listing'],
+            'object_type' => ['listing'],
             'labels' => [
                 'name' => 'Property Types',
                 'singular_name' => 'Property Type',
                 'search_items' => 'Search Property Types',
-                'popular_items' => 'Popular Property Types',
                 'all_items' => 'All Property Types',
                 'parent_item' => 'Parent Property Type',
                 'parent_item_colon' => 'Parent Property Type:',
                 'edit_item' => 'Edit Property Type',
-                'view_item' => 'View Property Type',
                 'update_item' => 'Update Property Type',
                 'add_new_item' => 'Add New Property Type',
                 'new_item_name' => 'New Property Type Name',
-                'separate_items_with_commas' => 'Separate property types with commas',
-                'add_or_remove_items' => 'Add or remove property types',
-                'choose_from_most_used' => 'Choose from the most used property types',
-                'not_found' => 'No property types found',
-                'no_terms' => 'No property types',
-                'filter_by_item' => 'Filter by property type',
-                'items_list_navigation' => 'Property types list navigation',
-                'items_list' => 'Property types list',
-                'most_used' => 'Most Used',
-                'back_to_items' => '&larr; Back to Property Types',
-                'item_link' => 'Property Type Link',
-                'item_link_description' => 'A link to a property type',
+                'menu_name' => 'Property Types',
             ],
-            'args' => [
+            'hierarchical' => true,
+            'public' => true,
+            'show_ui' => true,
+            'show_admin_column' => true,
+            'show_in_nav_menus' => true,
+            'show_tagcloud' => false,
+            'show_in_rest' => true,
+            'rewrite' => [
+                'slug' => 'property-type',
+                'with_front' => false,
                 'hierarchical' => true,
-                'public' => true,
-                'publicly_queryable' => true,
-                'show_ui' => true,
-                'show_in_menu' => true,
-                'show_in_nav_menus' => true,
-                'show_in_rest' => true,
-                'rest_base' => 'property-types',
-                'show_tagcloud' => true,
-                'show_in_quick_edit' => true,
-                'show_admin_column' => true,
-                'query_var' => true,
-                'rewrite' => [
-                    'slug' => 'property-type',
-                    'with_front' => false,
-                    'hierarchical' => true,
-                ],
-                'default_term' => [
-                    'name' => 'Single Family Home',
-                    'slug' => 'single-family-home',
-                    'description' => 'Traditional single family residential homes',
-                ]
-            ]
+            ],
         ],
-        
         'property_status' => [
-            'post_types' => ['listing'],
+            'object_type' => ['listing'],
             'labels' => [
                 'name' => 'Property Status',
                 'singular_name' => 'Property Status',
                 'search_items' => 'Search Property Status',
-                'popular_items' => 'Popular Status',
                 'all_items' => 'All Property Status',
                 'edit_item' => 'Edit Property Status',
-                'view_item' => 'View Property Status',
                 'update_item' => 'Update Property Status',
                 'add_new_item' => 'Add New Property Status',
-                'new_item_name' => 'New Property Status Name',
-                'separate_items_with_commas' => 'Separate status with commas',
-                'add_or_remove_items' => 'Add or remove status',
-                'choose_from_most_used' => 'Choose from the most used status',
-                'not_found' => 'No property status found',
-                'no_terms' => 'No property status',
-                'items_list' => 'Property status list',
+                'new_item_name' => 'New Property Status',
+                'menu_name' => 'Property Status',
             ],
-            'args' => [
-                'hierarchical' => false,
-                'public' => true,
-                'publicly_queryable' => true,
-                'show_ui' => true,
-                'show_in_menu' => true,
-                'show_in_nav_menus' => true,
-                'show_in_rest' => true,
-                'rest_base' => 'property-status',
-                'show_tagcloud' => false,
-                'show_in_quick_edit' => true,
-                'show_admin_column' => true,
-                'query_var' => true,
-                'rewrite' => [
-                    'slug' => 'status',
-                    'with_front' => false,
-                ],
-                'default_term' => [
-                    'name' => 'For Sale',
-                    'slug' => 'for-sale',
-                    'description' => 'Properties currently for sale',
-                ]
-            ]
-        ],
-        
-        'listing_features' => [
-            'post_types' => ['listing'],
-            'labels' => [
-                'name' => 'Features',
-                'singular_name' => 'Feature',
-                'search_items' => 'Search Features',
-                'popular_items' => 'Popular Features',
-                'all_items' => 'All Features',
-                'edit_item' => 'Edit Feature',
-                'view_item' => 'View Feature',
-                'update_item' => 'Update Feature',
-                'add_new_item' => 'Add New Feature',
-                'new_item_name' => 'New Feature Name',
-                'separate_items_with_commas' => 'Separate features with commas',
-                'add_or_remove_items' => 'Add or remove features',
-                'choose_from_most_used' => 'Choose from the most used features',
-                'not_found' => 'No features found',
-                'items_list' => 'Features list',
+            'hierarchical' => false,
+            'public' => true,
+            'show_ui' => true,
+            'show_admin_column' => true,
+            'show_in_nav_menus' => true,
+            'show_tagcloud' => false,
+            'show_in_rest' => true,
+            'rewrite' => [
+                'slug' => 'property-status',
+                'with_front' => false,
             ],
-            'args' => [
-                'hierarchical' => false,
-                'public' => true,
-                'publicly_queryable' => true,
-                'show_ui' => true,
-                'show_in_menu' => true,
-                'show_in_nav_menus' => false,
-                'show_in_rest' => true,
-                'rest_base' => 'listing-features',
-                'show_tagcloud' => true,
-                'show_in_quick_edit' => true,
-                'show_admin_column' => false,
-                'query_var' => true,
-                'rewrite' => [
-                    'slug' => 'feature',
-                    'with_front' => false,
-                ],
-            ]
         ],
-        
         'location' => [
-            'post_types' => ['listing', 'agent', 'community', 'local_place'],
+            'object_type' => ['listing'],
             'labels' => [
                 'name' => 'Locations',
                 'singular_name' => 'Location',
                 'search_items' => 'Search Locations',
-                'popular_items' => 'Popular Locations',
                 'all_items' => 'All Locations',
                 'parent_item' => 'Parent Location',
                 'parent_item_colon' => 'Parent Location:',
                 'edit_item' => 'Edit Location',
-                'view_item' => 'View Location',
                 'update_item' => 'Update Location',
                 'add_new_item' => 'Add New Location',
                 'new_item_name' => 'New Location Name',
-                'separate_items_with_commas' => 'Separate locations with commas',
-                'add_or_remove_items' => 'Add or remove locations',
-                'choose_from_most_used' => 'Choose from the most used locations',
-                'not_found' => 'No locations found',
-                'items_list' => 'Locations list',
+                'menu_name' => 'Locations',
             ],
-            'args' => [
+            'hierarchical' => true,
+            'public' => true,
+            'show_ui' => true,
+            'show_admin_column' => true,
+            'show_in_nav_menus' => true,
+            'show_tagcloud' => true,
+            'show_in_rest' => true,
+            'rewrite' => [
+                'slug' => 'location',
+                'with_front' => false,
                 'hierarchical' => true,
-                'public' => true,
-                'publicly_queryable' => true,
-                'show_ui' => true,
-                'show_in_menu' => true,
-                'show_in_nav_menus' => true,
-                'show_in_rest' => true,
-                'rest_base' => 'locations',
-                'show_tagcloud' => false,
-                'show_in_quick_edit' => true,
-                'show_admin_column' => true,
-                'query_var' => true,
-                'rewrite' => [
-                    'slug' => 'location',
-                    'with_front' => false,
-                    'hierarchical' => true,
-                ],
-            ]
+            ],
         ],
-        
-        'agent_specialty' => [
-            'post_types' => ['agent'],
+        'property_feature' => [
+            'object_type' => ['listing'],
             'labels' => [
-                'name' => 'Specialties',
-                'singular_name' => 'Specialty',
+                'name' => 'Property Features',
+                'singular_name' => 'Property Feature',
+                'search_items' => 'Search Property Features',
+                'all_items' => 'All Property Features',
+                'edit_item' => 'Edit Property Feature',
+                'update_item' => 'Update Property Feature',
+                'add_new_item' => 'Add New Property Feature',
+                'new_item_name' => 'New Property Feature',
+                'menu_name' => 'Property Features',
+                'popular_items' => 'Popular Features',
+                'separate_items_with_commas' => 'Separate features with commas',
+                'add_or_remove_items' => 'Add or remove features',
+                'choose_from_most_used' => 'Choose from the most used features',
+            ],
+            'hierarchical' => false,
+            'public' => true,
+            'show_ui' => true,
+            'show_admin_column' => true,
+            'show_in_nav_menus' => true,
+            'show_tagcloud' => true,
+            'show_in_rest' => true,
+            'rewrite' => [
+                'slug' => 'property-feature',
+                'with_front' => false,
+            ],
+        ],
+        'agent_specialty' => [
+            'object_type' => ['agent'],
+            'labels' => [
+                'name' => 'Agent Specialties',
+                'singular_name' => 'Agent Specialty',
                 'search_items' => 'Search Specialties',
-                'popular_items' => 'Popular Specialties',
                 'all_items' => 'All Specialties',
                 'edit_item' => 'Edit Specialty',
-                'view_item' => 'View Specialty',
                 'update_item' => 'Update Specialty',
                 'add_new_item' => 'Add New Specialty',
-                'new_item_name' => 'New Specialty Name',
-                'separate_items_with_commas' => 'Separate specialties with commas',
-                'add_or_remove_items' => 'Add or remove specialties',
-                'choose_from_most_used' => 'Choose from the most used specialties',
-                'not_found' => 'No specialties found',
-                'items_list' => 'Specialties list',
+                'new_item_name' => 'New Specialty',
+                'menu_name' => 'Specialties',
             ],
-            'args' => [
-                'hierarchical' => false,
-                'public' => true,
-                'publicly_queryable' => true,
-                'show_ui' => true,
-                'show_in_menu' => true,
-                'show_in_nav_menus' => true,
-                'show_in_rest' => true,
-                'rest_base' => 'agent-specialties',
-                'show_tagcloud' => true,
-                'show_in_quick_edit' => true,
-                'show_admin_column' => true,
-                'query_var' => true,
-                'rewrite' => [
-                    'slug' => 'specialty',
-                    'with_front' => false,
-                ],
-            ]
+            'hierarchical' => false,
+            'public' => true,
+            'show_ui' => true,
+            'show_admin_column' => true,
+            'show_in_nav_menus' => false,
+            'show_tagcloud' => false,
+            'show_in_rest' => true,
+            'rewrite' => [
+                'slug' => 'agent-specialty',
+                'with_front' => false,
+            ],
         ],
-        
-        'place_category' => [
-            'post_types' => ['local_place'],
+        'community_type' => [
+            'object_type' => ['community'],
             'labels' => [
-                'name' => 'Place Categories',
-                'singular_name' => 'Place Category',
-                'search_items' => 'Search Categories',
-                'popular_items' => 'Popular Categories',
-                'all_items' => 'All Categories',
-                'parent_item' => 'Parent Category',
-                'parent_item_colon' => 'Parent Category:',
-                'edit_item' => 'Edit Category',
-                'view_item' => 'View Category',
-                'update_item' => 'Update Category',
-                'add_new_item' => 'Add New Category',
-                'new_item_name' => 'New Category Name',
-                'separate_items_with_commas' => 'Separate categories with commas',
-                'add_or_remove_items' => 'Add or remove categories',
-                'choose_from_most_used' => 'Choose from the most used categories',
-                'not_found' => 'No categories found',
-                'items_list' => 'Categories list',
+                'name' => 'Community Types',
+                'singular_name' => 'Community Type',
+                'search_items' => 'Search Community Types',
+                'all_items' => 'All Community Types',
+                'edit_item' => 'Edit Community Type',
+                'update_item' => 'Update Community Type',
+                'add_new_item' => 'Add New Community Type',
+                'new_item_name' => 'New Community Type',
+                'menu_name' => 'Community Types',
             ],
-            'args' => [
-                'hierarchical' => true,
-                'public' => true,
-                'publicly_queryable' => true,
-                'show_ui' => true,
-                'show_in_menu' => true,
-                'show_in_nav_menus' => true,
-                'show_in_rest' => true,
-                'rest_base' => 'place-categories',
-                'show_tagcloud' => true,
-                'show_in_quick_edit' => true,
-                'show_admin_column' => true,
-                'query_var' => true,
-                'rewrite' => [
-                    'slug' => 'place-category',
-                    'with_front' => false,
-                    'hierarchical' => true,
-                ],
-            ]
-        ]
+            'hierarchical' => true,
+            'public' => true,
+            'show_ui' => true,
+            'show_admin_column' => true,
+            'show_in_nav_menus' => true,
+            'show_tagcloud' => false,
+            'show_in_rest' => true,
+            'rewrite' => [
+                'slug' => 'community-type',
+                'with_front' => false,
+            ],
+        ],
     ];
     
     /**
-     * Get singleton instance
+     * Get instance
+     * 
+     * @return Taxonomies
      */
-    public static function get_instance() {
-        if (self::$instance === null) {
+    public static function get_instance(): Taxonomies {
+        if (null === self::$instance) {
             self::$instance = new self();
         }
         return self::$instance;
     }
     
     /**
-     * Initialize taxonomies
+     * Constructor
      */
     private function __construct() {
-        $this->config_file = HP_PLUGIN_DIR . 'includes/config/taxonomies.json';
+        $this->config_file = HP_CONFIG_DIR . 'taxonomies.json';
         $this->load_config();
     }
-
+    
     /**
-     * Load taxonomies configuration from JSON file
+     * Load configuration
+     * 
+     * @return void
      */
-    private function load_config() {
+    private function load_config(): void {
         if (file_exists($this->config_file)) {
             $config_data = json_decode(file_get_contents($this->config_file), true);
             if ($config_data && isset($config_data['taxonomies'])) {
@@ -319,255 +248,342 @@ class Taxonomies {
         
         // Fallback to default configuration
         $this->taxonomies_config = $this->default_taxonomies;
-        hp_log('Taxonomies loaded from default configuration (JSON not found)', 'warning', 'TAXONOMIES');
+        hp_log('Taxonomies loaded from default configuration', 'info', 'TAXONOMIES');
     }
     
     /**
-     * Initialize component
+     * Initialize
+     * 
+     * @return void
      */
-    public function init() {
-        // Register taxonomies immediately - timing is critical for ACF integration
+    public function init(): void {
+        // Register taxonomies early
         $this->register_taxonomies();
         
-        // Schedule other hooks for later execution
+        // Add default terms
         add_action('init', [$this, 'add_default_terms'], 15);
-        add_action('create_term', [$this, 'set_term_meta'], 10, 3);
-        add_filter('manage_edit-listing_columns', [$this, 'add_taxonomy_columns']);
-        add_action('manage_listing_posts_custom_column', [$this, 'show_taxonomy_columns'], 10, 2);
         
-        // Register ACF taxonomy support
-        add_action('acf/init', [$this, 'register_acf_taxonomy_support'], 5);
+        // Set up hooks
+        $this->setup_hooks();
         
-        hp_log('Taxonomies component initialized', 'debug', 'TAXONOMIES');
+        hp_log('Taxonomies initialized', 'info', 'TAXONOMIES');
     }
     
     /**
-     * Register all custom taxonomies
+     * Register taxonomies
+     * 
+     * @return void
      */
-    public function register_taxonomies() {
+    public function register_taxonomies(): void {
         foreach ($this->taxonomies_config as $taxonomy => $config) {
-            // Handle both old and new config formats
-            if (isset($config['post_types'])) {
-                // Old structure with separate post_types, labels, and args
-                $post_types = $config['post_types'];
-                $labels = $config['labels'] ?? [];
-                $args = $config['args'] ?? [];
-            } else {
-                // New JSON structure - object_type contains post types
-                $post_types = $config['object_type'] ?? ['post'];
-                $labels = $config['labels'] ?? [];
-                $args = $config;
-                unset($args['labels'], $args['object_type']); // Remove from args
-            }
+            // Extract object types
+            $object_type = $config['object_type'] ?? ['post'];
+            unset($config['object_type']);
             
             // Apply text domain to labels
-            foreach ($labels as $key => $label) {
-                $labels[$key] = __($label, 'happy-place');
+            if (isset($config['labels'])) {
+                foreach ($config['labels'] as $key => $label) {
+                    $config['labels'][$key] = __($label, 'happy-place');
+                }
             }
             
-            $args['labels'] = $labels;
-            
-            $result = register_taxonomy($taxonomy, $post_types, $args);
+            $result = register_taxonomy($taxonomy, $object_type, $config);
             
             if (is_wp_error($result)) {
                 hp_log("Failed to register taxonomy {$taxonomy}: " . $result->get_error_message(), 'error', 'TAXONOMIES');
             } else {
-                hp_log("Successfully registered taxonomy: {$taxonomy} for post types: " . implode(', ', $post_types), 'info', 'TAXONOMIES');
+                hp_log("Registered taxonomy: {$taxonomy}", 'debug', 'TAXONOMIES');
             }
         }
     }
     
     /**
      * Add default terms
+     * 
+     * @return void
      */
-    public function add_default_terms() {
-        foreach ($this->taxonomies_config as $taxonomy => $config) {
-            if (isset($config['args']['default_term'])) {
-                $default_term = $config['args']['default_term'];
-                
-                if (!term_exists($default_term['slug'], $taxonomy)) {
-                    wp_insert_term(
-                        $default_term['name'],
-                        $taxonomy,
-                        [
-                            'slug' => $default_term['slug'],
-                            'description' => $default_term['description'] ?? '',
-                        ]
-                    );
-                    
-                    hp_log("Added default term '{$default_term['name']}' for taxonomy: {$taxonomy}", 'debug', 'TAXONOMIES');
-                }
-            }
-        }
-        
-        // Add common property types
-        $this->add_property_type_terms();
-        
-        // Add common property status terms
-        $this->add_property_status_terms();
-        
-        // Add common features
-        $this->add_feature_terms();
-        
-        // Add common agent specialties
-        $this->add_agent_specialty_terms();
-        
-        // Add common place categories
-        $this->add_place_category_terms();
-    }
-    
-    /**
-     * Add common property type terms
-     */
-    private function add_property_type_terms() {
+    public function add_default_terms(): void {
+        // Property types
         $property_types = [
-            'Single Family Home' => 'single-family-home',
-            'Townhouse' => 'townhouse',
-            'Condominium' => 'condominium',
-            'Multi-Family' => 'multi-family',
-            'Vacant Land' => 'vacant-land',
-            'Commercial' => 'commercial',
-            'Mobile Home' => 'mobile-home',
+            'Single Family Home',
+            'Condo',
+            'Townhouse',
+            'Multi-Family',
+            'Land',
+            'Commercial',
+            'Rental',
         ];
         
-        foreach ($property_types as $name => $slug) {
-            if (!term_exists($slug, 'property_type')) {
-                wp_insert_term($name, 'property_type', ['slug' => $slug]);
+        foreach ($property_types as $type) {
+            if (!term_exists($type, 'property_type')) {
+                wp_insert_term($type, 'property_type');
+            }
+        }
+        
+        // Property status
+        $property_statuses = [
+            'For Sale',
+            'For Rent',
+            'Pending',
+            'Sold',
+            'Off Market',
+        ];
+        
+        foreach ($property_statuses as $status) {
+            if (!term_exists($status, 'property_status')) {
+                wp_insert_term($status, 'property_status');
+            }
+        }
+        
+        // Property features
+        $property_features = [
+            'Air Conditioning',
+            'Hardwood Floors',
+            'Swimming Pool',
+            'Garage',
+            'Fireplace',
+            'Garden',
+            'Security System',
+            'Walk-in Closet',
+            'Home Office',
+            'Basement',
+            'Balcony',
+            'Waterfront',
+        ];
+        
+        foreach ($property_features as $feature) {
+            if (!term_exists($feature, 'property_feature')) {
+                wp_insert_term($feature, 'property_feature');
+            }
+        }
+        
+        // Agent specialties
+        $agent_specialties = [
+            'Buyer\'s Agent',
+            'Listing Agent',
+            'Relocation',
+            'Foreclosure',
+            'Short-Sale',
+            'Consulting',
+            'Property Management',
+            'Commercial',
+            'Luxury Homes',
+            'First-Time Buyers',
+        ];
+        
+        foreach ($agent_specialties as $specialty) {
+            if (!term_exists($specialty, 'agent_specialty')) {
+                wp_insert_term($specialty, 'agent_specialty');
+            }
+        }
+        
+        // Community types
+        $community_types = [
+            'Urban',
+            'Suburban',
+            'Rural',
+            'Gated Community',
+            'Golf Community',
+            'Waterfront',
+            'Active Adult',
+            'Master Planned',
+        ];
+        
+        foreach ($community_types as $type) {
+            if (!term_exists($type, 'community_type')) {
+                wp_insert_term($type, 'community_type');
             }
         }
     }
     
     /**
-     * Add common property status terms
+     * Setup hooks
+     * 
+     * @return void
      */
-    private function add_property_status_terms() {
-        $statuses = [
-            'For Sale' => 'for-sale',
-            'Pending' => 'pending',
-            'Sold' => 'sold',
-            'Coming Soon' => 'coming-soon',
-            'Off Market' => 'off-market',
-            'Rent' => 'rent',
-            'Leased' => 'leased',
-        ];
+    private function setup_hooks(): void {
+        // Add custom fields to taxonomies
+        add_action('property_type_add_form_fields', [$this, 'add_taxonomy_fields']);
+        add_action('property_type_edit_form_fields', [$this, 'edit_taxonomy_fields']);
+        add_action('created_property_type', [$this, 'save_taxonomy_fields']);
+        add_action('edited_property_type', [$this, 'save_taxonomy_fields']);
         
-        foreach ($statuses as $name => $slug) {
-            if (!term_exists($slug, 'property_status')) {
-                wp_insert_term($name, 'property_status', ['slug' => $slug]);
-            }
-        }
-    }
-    
-    /**
-     * Add common feature terms
-     */
-    private function add_feature_terms() {
-        $features = [
-            'Pool' => 'pool',
-            'Spa' => 'spa',
-            'Fireplace' => 'fireplace',
-            'Garage' => 'garage',
-            'Hardwood Floors' => 'hardwood-floors',
-            'Updated Kitchen' => 'updated-kitchen',
-            'Master Suite' => 'master-suite',
-            'Walk-in Closet' => 'walk-in-closet',
-            'Patio' => 'patio',
-            'Balcony' => 'balcony',
-            'Garden' => 'garden',
-            'Security System' => 'security-system',
-        ];
+        add_action('location_add_form_fields', [$this, 'add_location_fields']);
+        add_action('location_edit_form_fields', [$this, 'edit_location_fields']);
+        add_action('created_location', [$this, 'save_location_fields']);
+        add_action('edited_location', [$this, 'save_location_fields']);
         
-        foreach ($features as $name => $slug) {
-            if (!term_exists($slug, 'listing_features')) {
-                wp_insert_term($name, 'listing_features', ['slug' => $slug]);
-            }
-        }
-    }
-    
-    /**
-     * Add common agent specialty terms
-     */
-    private function add_agent_specialty_terms() {
-        $specialties = [
-            'Buyer\'s Agent' => 'buyers-agent',
-            'Listing Agent' => 'listing-agent',
-            'First Time Buyers' => 'first-time-buyers',
-            'Luxury Homes' => 'luxury-homes',
-            'Investment Properties' => 'investment-properties',
-            'Commercial Real Estate' => 'commercial-real-estate',
-            'Relocation' => 'relocation',
-            'Short Sales' => 'short-sales',
-            'Foreclosures' => 'foreclosures',
-        ];
+        // Add columns to taxonomy list tables
+        add_filter('manage_edit-property_type_columns', [$this, 'add_taxonomy_columns']);
+        add_filter('manage_property_type_custom_column', [$this, 'display_taxonomy_columns'], 10, 3);
         
-        foreach ($specialties as $name => $slug) {
-            if (!term_exists($slug, 'agent_specialty')) {
-                wp_insert_term($name, 'agent_specialty', ['slug' => $slug]);
-            }
-        }
+        add_filter('manage_edit-location_columns', [$this, 'add_location_columns']);
+        add_filter('manage_location_custom_column', [$this, 'display_location_columns'], 10, 3);
     }
     
     /**
-     * Add common place category terms
+     * Add taxonomy fields
+     * 
+     * @return void
      */
-    private function add_place_category_terms() {
-        $categories = [
-            'Restaurants' => 'restaurants',
-            'Shopping' => 'shopping',
-            'Schools' => 'schools',
-            'Parks' => 'parks',
-            'Healthcare' => 'healthcare',
-            'Entertainment' => 'entertainment',
-            'Transportation' => 'transportation',
-            'Services' => 'services',
-            'Fitness' => 'fitness',
-            'Worship' => 'worship',
-        ];
+    public function add_taxonomy_fields(): void {
+        ?>
+        <div class="form-field">
+            <label for="property_type_icon"><?php _e('Icon', 'happy-place'); ?></label>
+            <input type="text" name="property_type_icon" id="property_type_icon" value="">
+            <p class="description"><?php _e('Icon class or URL', 'happy-place'); ?></p>
+        </div>
+        <div class="form-field">
+            <label for="property_type_color"><?php _e('Color', 'happy-place'); ?></label>
+            <input type="color" name="property_type_color" id="property_type_color" value="#000000">
+            <p class="description"><?php _e('Display color', 'happy-place'); ?></p>
+        </div>
+        <?php
+    }
+    
+    /**
+     * Edit taxonomy fields
+     * 
+     * @param \WP_Term $term
+     * @return void
+     */
+    public function edit_taxonomy_fields(\WP_Term $term): void {
+        $icon = get_term_meta($term->term_id, 'icon', true);
+        $color = get_term_meta($term->term_id, 'color', true);
+        ?>
+        <tr class="form-field">
+            <th scope="row">
+                <label for="property_type_icon"><?php _e('Icon', 'happy-place'); ?></label>
+            </th>
+            <td>
+                <input type="text" name="property_type_icon" id="property_type_icon" value="<?php echo esc_attr($icon); ?>">
+                <p class="description"><?php _e('Icon class or URL', 'happy-place'); ?></p>
+            </td>
+        </tr>
+        <tr class="form-field">
+            <th scope="row">
+                <label for="property_type_color"><?php _e('Color', 'happy-place'); ?></label>
+            </th>
+            <td>
+                <input type="color" name="property_type_color" id="property_type_color" value="<?php echo esc_attr($color ?: '#000000'); ?>">
+                <p class="description"><?php _e('Display color', 'happy-place'); ?></p>
+            </td>
+        </tr>
+        <?php
+    }
+    
+    /**
+     * Save taxonomy fields
+     * 
+     * @param int $term_id
+     * @return void
+     */
+    public function save_taxonomy_fields(int $term_id): void {
+        if (isset($_POST['property_type_icon'])) {
+            update_term_meta($term_id, 'icon', sanitize_text_field($_POST['property_type_icon']));
+        }
         
-        foreach ($categories as $name => $slug) {
-            if (!term_exists($slug, 'place_category')) {
-                wp_insert_term($name, 'place_category', ['slug' => $slug]);
-            }
+        if (isset($_POST['property_type_color'])) {
+            update_term_meta($term_id, 'color', sanitize_hex_color($_POST['property_type_color']));
         }
     }
     
     /**
-     * Set term meta on creation
+     * Add location fields
+     * 
+     * @return void
      */
-    public function set_term_meta($term_id, $tt_id, $taxonomy) {
-        // Add custom meta for specific taxonomies
-        switch ($taxonomy) {
-            case 'location':
-                add_term_meta($term_id, 'location_type', 'city', true);
-                add_term_meta($term_id, 'coordinates', '', true);
-                break;
-                
-            case 'property_type':
-                add_term_meta($term_id, 'icon', 'dashicons-admin-home', true);
-                add_term_meta($term_id, 'color', '#3498db', true);
-                break;
-                
-            case 'listing_features':
-                add_term_meta($term_id, 'icon', 'dashicons-yes', true);
-                add_term_meta($term_id, 'featured', '0', true);
-                break;
+    public function add_location_fields(): void {
+        ?>
+        <div class="form-field">
+            <label for="location_latitude"><?php _e('Latitude', 'happy-place'); ?></label>
+            <input type="text" name="location_latitude" id="location_latitude" value="">
+        </div>
+        <div class="form-field">
+            <label for="location_longitude"><?php _e('Longitude', 'happy-place'); ?></label>
+            <input type="text" name="location_longitude" id="location_longitude" value="">
+        </div>
+        <div class="form-field">
+            <label for="location_featured_image"><?php _e('Featured Image URL', 'happy-place'); ?></label>
+            <input type="text" name="location_featured_image" id="location_featured_image" value="">
+        </div>
+        <?php
+    }
+    
+    /**
+     * Edit location fields
+     * 
+     * @param \WP_Term $term
+     * @return void
+     */
+    public function edit_location_fields(\WP_Term $term): void {
+        $latitude = get_term_meta($term->term_id, 'latitude', true);
+        $longitude = get_term_meta($term->term_id, 'longitude', true);
+        $featured_image = get_term_meta($term->term_id, 'featured_image', true);
+        ?>
+        <tr class="form-field">
+            <th scope="row">
+                <label for="location_latitude"><?php _e('Latitude', 'happy-place'); ?></label>
+            </th>
+            <td>
+                <input type="text" name="location_latitude" id="location_latitude" value="<?php echo esc_attr($latitude); ?>">
+            </td>
+        </tr>
+        <tr class="form-field">
+            <th scope="row">
+                <label for="location_longitude"><?php _e('Longitude', 'happy-place'); ?></label>
+            </th>
+            <td>
+                <input type="text" name="location_longitude" id="location_longitude" value="<?php echo esc_attr($longitude); ?>">
+            </td>
+        </tr>
+        <tr class="form-field">
+            <th scope="row">
+                <label for="location_featured_image"><?php _e('Featured Image URL', 'happy-place'); ?></label>
+            </th>
+            <td>
+                <input type="text" name="location_featured_image" id="location_featured_image" value="<?php echo esc_attr($featured_image); ?>">
+            </td>
+        </tr>
+        <?php
+    }
+    
+    /**
+     * Save location fields
+     * 
+     * @param int $term_id
+     * @return void
+     */
+    public function save_location_fields(int $term_id): void {
+        if (isset($_POST['location_latitude'])) {
+            update_term_meta($term_id, 'latitude', sanitize_text_field($_POST['location_latitude']));
+        }
+        
+        if (isset($_POST['location_longitude'])) {
+            update_term_meta($term_id, 'longitude', sanitize_text_field($_POST['location_longitude']));
+        }
+        
+        if (isset($_POST['location_featured_image'])) {
+            update_term_meta($term_id, 'featured_image', esc_url_raw($_POST['location_featured_image']));
         }
     }
     
     /**
-     * Add taxonomy columns to listing admin
+     * Add taxonomy columns
+     * 
+     * @param array $columns
+     * @return array
      */
-    public function add_taxonomy_columns($columns) {
+    public function add_taxonomy_columns(array $columns): array {
         $new_columns = [];
         
-        foreach ($columns as $key => $label) {
-            $new_columns[$key] = $label;
-            
-            // Insert taxonomy columns after title
-            if ($key === 'title') {
-                $new_columns['property_type'] = __('Type', 'happy-place');
-                $new_columns['property_status'] = __('Status', 'happy-place');
-                $new_columns['location'] = __('Location', 'happy-place');
+        foreach ($columns as $key => $value) {
+            if ($key === 'name') {
+                $new_columns[$key] = $value;
+                $new_columns['icon'] = __('Icon', 'happy-place');
+                $new_columns['color'] = __('Color', 'happy-place');
+            } else {
+                $new_columns[$key] = $value;
             }
         }
         
@@ -575,79 +591,104 @@ class Taxonomies {
     }
     
     /**
-     * Show taxonomy columns content
+     * Display taxonomy columns
+     * 
+     * @param string $content
+     * @param string $column_name
+     * @param int $term_id
+     * @return string
      */
-    public function show_taxonomy_columns($column, $post_id) {
-        switch ($column) {
-            case 'property_type':
-                $terms = get_the_terms($post_id, 'property_type');
-                if ($terms && !is_wp_error($terms)) {
-                    $term_names = wp_list_pluck($terms, 'name');
-                    echo implode(', ', $term_names);
-                } else {
-                    echo '—';
-                }
-                break;
-                
-            case 'property_status':
-                $terms = get_the_terms($post_id, 'property_status');
-                if ($terms && !is_wp_error($terms)) {
-                    $term_names = wp_list_pluck($terms, 'name');
-                    echo implode(', ', $term_names);
-                } else {
-                    echo '—';
-                }
-                break;
-                
-            case 'location':
-                $terms = get_the_terms($post_id, 'location');
-                if ($terms && !is_wp_error($terms)) {
-                    $term_names = wp_list_pluck($terms, 'name');
-                    echo implode(', ', $term_names);
-                } else {
-                    echo '—';
-                }
-                break;
-        }
-    }
-    
-    /**
-     * Register ACF taxonomy support
-     */
-    public function register_acf_taxonomy_support(): void {
-        if (!function_exists('acf_get_setting')) {
-            return;
-        }
-        
-        $taxonomies = array_keys($this->taxonomies_config);
-        
-        foreach ($taxonomies as $taxonomy) {
-            // Ensure taxonomy is available in ACF location rules
-            add_filter('acf/location/rule_values/taxonomy', function($choices) use ($taxonomy) {
-                if (!isset($choices[$taxonomy])) {
-                    $taxonomy_obj = get_taxonomy($taxonomy);
-                    if ($taxonomy_obj) {
-                        $choices[$taxonomy] = $taxonomy_obj->labels->name;
+    public function display_taxonomy_columns(string $content, string $column_name, int $term_id): string {
+        switch ($column_name) {
+            case 'icon':
+                $icon = get_term_meta($term_id, 'icon', true);
+                if ($icon) {
+                    if (strpos($icon, 'http') === 0) {
+                        $content = '<img src="' . esc_url($icon) . '" width="20" height="20">';
+                    } else {
+                        $content = '<i class="' . esc_attr($icon) . '"></i>';
                     }
                 }
-                return $choices;
-            });
+                break;
+                
+            case 'color':
+                $color = get_term_meta($term_id, 'color', true);
+                if ($color) {
+                    $content = '<span style="display:inline-block;width:20px;height:20px;background-color:' . esc_attr($color) . ';border:1px solid #ccc;"></span>';
+                }
+                break;
         }
         
-        hp_log('Registered ACF support for taxonomies: ' . implode(', ', $taxonomies), 'info', 'TAXONOMIES');
+        return $content;
     }
     
     /**
-     * Get registered taxonomies
+     * Add location columns
+     * 
+     * @param array $columns
+     * @return array
      */
-    public function get_taxonomies() {
-        return array_keys($this->taxonomies_config);
+    public function add_location_columns(array $columns): array {
+        $new_columns = [];
+        
+        foreach ($columns as $key => $value) {
+            if ($key === 'name') {
+                $new_columns[$key] = $value;
+                $new_columns['coordinates'] = __('Coordinates', 'happy-place');
+                $new_columns['listings'] = __('Listings', 'happy-place');
+            } else {
+                $new_columns[$key] = $value;
+            }
+        }
+        
+        return $new_columns;
+    }
+    
+    /**
+     * Display location columns
+     * 
+     * @param string $content
+     * @param string $column_name
+     * @param int $term_id
+     * @return string
+     */
+    public function display_location_columns(string $content, string $column_name, int $term_id): string {
+        switch ($column_name) {
+            case 'coordinates':
+                $latitude = get_term_meta($term_id, 'latitude', true);
+                $longitude = get_term_meta($term_id, 'longitude', true);
+                if ($latitude && $longitude) {
+                    $content = $latitude . ', ' . $longitude;
+                }
+                break;
+                
+            case 'listings':
+                $term = get_term($term_id, 'location');
+                if ($term && !is_wp_error($term)) {
+                    $content = $term->count;
+                }
+                break;
+        }
+        
+        return $content;
     }
     
     /**
      * Get taxonomy configuration
+     * 
+     * @param string $taxonomy
+     * @return array|null
      */
-    public function get_taxonomy_config($taxonomy) {
+    public function get_taxonomy_config(string $taxonomy): ?array {
         return $this->taxonomies_config[$taxonomy] ?? null;
+    }
+    
+    /**
+     * Get all taxonomies
+     * 
+     * @return array
+     */
+    public function get_taxonomies(): array {
+        return array_keys($this->taxonomies_config);
     }
 }

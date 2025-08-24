@@ -1,6 +1,6 @@
 <?php
 /**
- * Main Plugin Class
+ * Main Plugin Class - RESTORED
  * 
  * Central orchestrator for the Happy Place Plugin with proper service container,
  * dependency injection, and error recovery mechanisms
@@ -86,7 +86,7 @@ final class Plugin {
     private bool $booted = false;
     
     /**
-     * Service providers
+     * Service providers with lowercase hyphenated paths
      * 
      * @var array
      */
@@ -99,6 +99,81 @@ final class Plugin {
         'HappyPlace\\Providers\\APIServiceProvider',
         'HappyPlace\\Providers\\AssetServiceProvider',
         'HappyPlace\\Providers\\SecurityServiceProvider',
+        'HappyPlace\\Providers\\DashboardServiceProvider',
+    ];
+    
+    /**
+     * Core components to load (using actual file names)
+     * 
+     * @var array
+     */
+    private array $core_components = [
+        'PostTypes' => [
+            'file' => 'core/class-post-types.php',
+            'class' => 'HappyPlace\\Core\\Post_Types',
+            'init' => true
+        ],
+        'Taxonomies' => [
+            'file' => 'core/class-taxonomies.php',
+            'class' => 'HappyPlace\\Core\\Taxonomies',
+            'init' => true
+        ],
+        'ACFManager' => [
+            'file' => 'core/class-acf-manager.php',
+            'class' => 'HappyPlace\\Core\\ACF_Manager',
+            'init' => true
+        ],
+        'FieldMapper' => [
+            'file' => 'core/class-field-mapper.php',
+            'class' => 'HappyPlace\\Core\\Field_Mapper',
+            'init' => false
+        ],
+        'ConfigSyncManager' => [
+            'file' => 'core/class-config-sync-manager.php',
+            'class' => 'HappyPlace\\Core\\Config_Sync_Manager',
+            'init' => true
+        ],
+        'AssetsManager' => [
+            'file' => 'core/class-assets-manager.php',
+            'class' => 'HappyPlace\\Core\\Assets_Manager',
+            'init' => true
+        ],
+    ];
+    
+    /**
+     * Admin components
+     * 
+     * @var array
+     */
+    private array $admin_components = [
+        'AdminMenu' => [
+            'file' => 'admin/class-admin-menu.php',
+            'class' => 'HappyPlace\\Admin\\Admin_Menu',
+            'init' => true
+        ],
+        'ACFSyncManager' => [
+            'file' => 'admin/class-acf-sync-manager.php',
+            'class' => 'HappyPlace\\Admin\\ACF_Sync_Manager',
+            'init' => false
+        ],
+    ];
+    
+    /**
+     * API components
+     * 
+     * @var array
+     */
+    private array $api_components = [
+        'RestAPI' => [
+            'file' => 'api/class-rest-api.php',
+            'class' => 'HappyPlace\\API\\REST_API',
+            'init' => false
+        ],
+        'DashboardAjax' => [
+            'file' => 'api/ajax/class-dashboard-ajax.php',
+            'class' => 'HappyPlace\\API\\Ajax\\Dashboard_Ajax',
+            'init' => false
+        ],
     ];
     
     /**
@@ -160,8 +235,8 @@ final class Plugin {
             // Load text domain
             $this->load_textdomain();
             
-            // Register autoloader
-            $this->register_autoloader();
+            // Load core components
+            $this->load_core_components();
             
             // Register service providers
             $this->register_providers();
@@ -192,6 +267,14 @@ final class Plugin {
         }
         
         try {
+            // Load admin components if in admin
+            if (is_admin()) {
+                $this->load_admin_components();
+            }
+            
+            // Load API components
+            $this->load_api_components();
+            
             // Boot all registered service providers
             foreach ($this->container->getProviders() as $provider) {
                 if (method_exists($provider, 'boot')) {
@@ -299,29 +382,48 @@ final class Plugin {
     }
     
     /**
-     * Register autoloader for plugin classes
+     * Load core components
      * 
      * @return void
      */
-    private function register_autoloader(): void {
-        spl_autoload_register(function($class) {
-            // Check if it's our namespace
-            if (strpos($class, 'HappyPlace\\') !== 0) {
-                return;
+    private function load_core_components(): void {
+        hp_log('Loading core components', 'info', 'PLUGIN');
+        
+        foreach ($this->core_components as $name => $config) {
+            if (!$this->loader->load($name, $config)) {
+                hp_log("Failed to load core component: {$name}", 'error', 'PLUGIN');
             }
-            
-            // Convert namespace to file path
-            $relative_class = substr($class, 11);
-            $file_path = str_replace('\\', '/', $relative_class);
-            
-            // Build full path
-            $file = HP_PLUGIN_DIR . 'includes/' . $file_path . '.php';
-            
-            // Load file if it exists
-            if (file_exists($file)) {
-                require_once $file;
+        }
+    }
+    
+    /**
+     * Load admin components
+     * 
+     * @return void
+     */
+    private function load_admin_components(): void {
+        hp_log('Loading admin components', 'info', 'PLUGIN');
+        
+        foreach ($this->admin_components as $name => $config) {
+            if (!$this->loader->load($name, $config)) {
+                hp_log("Failed to load admin component: {$name}", 'warning', 'PLUGIN');
             }
-        });
+        }
+    }
+    
+    /**
+     * Load API components
+     * 
+     * @return void
+     */
+    private function load_api_components(): void {
+        hp_log('Loading API components', 'info', 'PLUGIN');
+        
+        foreach ($this->api_components as $name => $config) {
+            if (!$this->loader->load($name, $config)) {
+                hp_log("Failed to load API component: {$name}", 'warning', 'PLUGIN');
+            }
+        }
     }
     
     /**
@@ -332,6 +434,13 @@ final class Plugin {
     private function register_providers(): void {
         foreach ($this->providers as $provider_class) {
             try {
+                // Check if provider file exists using our naming convention
+                $provider_file = $this->get_provider_file($provider_class);
+                
+                if ($provider_file && file_exists($provider_file)) {
+                    require_once $provider_file;
+                }
+                
                 if (!class_exists($provider_class)) {
                     hp_log("Provider class not found: {$provider_class}", 'warning', 'PLUGIN');
                     continue;
@@ -353,6 +462,24 @@ final class Plugin {
                 $this->error_handler->handle_exception($e);
             }
         }
+    }
+    
+    /**
+     * Get provider file path
+     * 
+     * @param string $class_name Full class name with namespace
+     * @return string|null
+     */
+    private function get_provider_file(string $class_name): ?string {
+        // Extract just the class name
+        $parts = explode('\\', $class_name);
+        $class = array_pop($parts);
+        
+        // Convert to file name: CoreServiceProvider -> class-core-service-provider.php
+        $file_name = preg_replace('/([a-z])([A-Z])/', '$1-$2', $class);
+        $file_name = 'class-' . strtolower($file_name) . '.php';
+        
+        return HP_INCLUDES_DIR . 'providers/' . $file_name;
     }
     
     /**
@@ -379,6 +506,7 @@ final class Plugin {
         
         // AJAX hooks
         add_action('wp_ajax_hp_heartbeat', [$this, 'ajax_heartbeat']);
+        add_action('wp_ajax_nopriv_hp_heartbeat', [$this, 'ajax_heartbeat']);
         
         // Activation/Deactivation hooks
         register_activation_hook(HP_PLUGIN_FILE, [$this, 'activate']);
@@ -423,6 +551,30 @@ final class Plugin {
      * @return void
      */
     public function admin_assets(string $hook): void {
+        // Global admin assets
+        wp_enqueue_style(
+            'hp-admin-global',
+            HP_ASSETS_URL . 'css/admin/admin-global.css',
+            [],
+            self::VERSION
+        );
+        
+        wp_enqueue_script(
+            'hp-admin-global',
+            HP_ASSETS_URL . 'js/admin/admin-global.js',
+            ['jquery'],
+            self::VERSION,
+            true
+        );
+        
+        // Localize script
+        wp_localize_script('hp-admin-global', 'hp_admin', [
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce(HP_AJAX_NONCE_KEY),
+            'plugin_url' => HP_PLUGIN_URL,
+            'version' => self::VERSION,
+        ]);
+        
         // Trigger admin assets action
         do_action('hp_admin_assets', $hook);
     }
@@ -433,6 +585,29 @@ final class Plugin {
      * @return void
      */
     public function frontend_assets(): void {
+        // Global frontend assets
+        wp_enqueue_style(
+            'hp-frontend',
+            HP_ASSETS_URL . 'css/frontend.css',
+            [],
+            self::VERSION
+        );
+        
+        wp_enqueue_script(
+            'hp-frontend',
+            HP_ASSETS_URL . 'js/frontend.js',
+            ['jquery'],
+            self::VERSION,
+            true
+        );
+        
+        // Localize script
+        wp_localize_script('hp-frontend', 'hp_frontend', [
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce(HP_AJAX_NONCE_KEY),
+            'plugin_url' => HP_PLUGIN_URL,
+        ]);
+        
         // Trigger frontend assets action
         do_action('hp_frontend_assets');
     }
@@ -443,7 +618,7 @@ final class Plugin {
      * @return void
      */
     public function ajax_heartbeat(): void {
-        check_ajax_referer('hp_ajax_nonce', 'nonce');
+        check_ajax_referer(HP_AJAX_NONCE_KEY, 'nonce');
         
         wp_send_json_success([
             'status' => 'alive',
@@ -458,22 +633,35 @@ final class Plugin {
      */
     public function activate(): void {
         try {
+            hp_log('Plugin activation started', 'info', 'PLUGIN');
+            
             // Create database tables
-            $this->container->get('database')->create_tables();
+            if ($this->container->has('database')) {
+                $database = $this->container->get('database');
+                if (method_exists($database, 'create_tables')) {
+                    $database->create_tables();
+                }
+            }
             
             // Flush rewrite rules
             flush_rewrite_rules();
             
             // Set activation flag
             update_option('hp_plugin_activated', time());
+            update_option('hp_plugin_version', self::VERSION);
             
             // Schedule cron jobs
-            $this->container->get('scheduler')->schedule_jobs();
+            if ($this->container->has('scheduler')) {
+                $scheduler = $this->container->get('scheduler');
+                if (method_exists($scheduler, 'schedule_jobs')) {
+                    $scheduler->schedule_jobs();
+                }
+            }
             
-            hp_log('Plugin activated', 'info', 'PLUGIN');
+            hp_log('Plugin activated successfully', 'info', 'PLUGIN');
             
         } catch (\Exception $e) {
-            $this->error_handler->handle_exception($e);
+            hp_log('Activation failed: ' . $e->getMessage(), 'error', 'PLUGIN');
             
             // Deactivate plugin on error
             deactivate_plugins(plugin_basename(HP_PLUGIN_FILE));
@@ -496,19 +684,34 @@ final class Plugin {
      */
     public function deactivate(): void {
         try {
+            hp_log('Plugin deactivation started', 'info', 'PLUGIN');
+            
             // Clear scheduled cron jobs
-            $this->container->get('scheduler')->clear_jobs();
+            if ($this->container->has('scheduler')) {
+                $scheduler = $this->container->get('scheduler');
+                if (method_exists($scheduler, 'clear_jobs')) {
+                    $scheduler->clear_jobs();
+                }
+            }
             
             // Flush rewrite rules
             flush_rewrite_rules();
             
             // Clear cache
-            $this->container->get('cache')->flush();
+            if ($this->container->has('cache')) {
+                $cache = $this->container->get('cache');
+                if (method_exists($cache, 'flush')) {
+                    $cache->flush();
+                }
+            }
             
-            hp_log('Plugin deactivated', 'info', 'PLUGIN');
+            // Update deactivation time
+            update_option('hp_plugin_deactivated', time());
+            
+            hp_log('Plugin deactivated successfully', 'info', 'PLUGIN');
             
         } catch (\Exception $e) {
-            $this->error_handler->handle_exception($e);
+            hp_log('Deactivation error: ' . $e->getMessage(), 'error', 'PLUGIN');
         }
     }
     
@@ -534,6 +737,7 @@ final class Plugin {
                 $wpdb->prefix . 'hp_agent_meta',
                 $wpdb->prefix . 'hp_analytics',
                 $wpdb->prefix . 'hp_leads',
+                $wpdb->prefix . 'hp_error_log',
             ];
             
             foreach ($tables as $table) {
@@ -547,9 +751,23 @@ final class Plugin {
             $wpdb->query("DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE 'hp_%'");
             
             // Delete posts
-            $post_types = ['listing', 'agent', 'open_house', 'lead'];
+            $post_types = ['listing', 'agent', 'open_house', 'lead', 'community'];
             foreach ($post_types as $post_type) {
                 $wpdb->query("DELETE FROM {$wpdb->posts} WHERE post_type = '{$post_type}'");
+            }
+            
+            // Delete taxonomies and terms
+            $taxonomies = ['property_type', 'property_status', 'location', 'property_feature'];
+            foreach ($taxonomies as $taxonomy) {
+                $terms = get_terms([
+                    'taxonomy' => $taxonomy,
+                    'hide_empty' => false,
+                    'fields' => 'ids'
+                ]);
+                
+                foreach ($terms as $term_id) {
+                    wp_delete_term($term_id, $taxonomy);
+                }
             }
         }
         

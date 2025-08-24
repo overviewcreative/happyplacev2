@@ -81,7 +81,23 @@ class ErrorHandler {
      */
     public function __construct(Container $container) {
         $this->container = $container;
-        $this->log_file = WP_CONTENT_DIR . '/hp-errors.log';
+        
+        // Use WordPress content directory for log file
+        $upload_dir = wp_upload_dir();
+        $log_dir = $upload_dir['basedir'] . '/hp-logs';
+        
+        // Create log directory if it doesn't exist
+        if (!file_exists($log_dir)) {
+            wp_mkdir_p($log_dir);
+            
+            // Add .htaccess to protect log files
+            $htaccess = $log_dir . '/.htaccess';
+            if (!file_exists($htaccess)) {
+                file_put_contents($htaccess, 'Deny from all');
+            }
+        }
+        
+        $this->log_file = $log_dir . '/errors.log';
     }
     
     /**
@@ -372,7 +388,7 @@ class ErrorHandler {
                 <h1><?php _e('Something went wrong', 'happy-place'); ?></h1>
                 <p><?php _e('We apologize for the inconvenience. An error has occurred and we\'re working to fix it.', 'happy-place'); ?></p>
                 
-                <?php if (WP_DEBUG && current_user_can('manage_options')): ?>
+                <?php if (HP_DEBUG && current_user_can('manage_options')): ?>
                     <div class="error-code">
                         <?php echo esc_html($message); ?>
                     </div>

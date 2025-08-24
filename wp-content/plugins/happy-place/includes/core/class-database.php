@@ -2,9 +2,10 @@
 /**
  * Database Class
  * 
- * Handles database operations and custom table creation for Happy Place
+ * Handles database operations, table creation, and queries
  *
  * @package HappyPlace\Core
+ * @version 4.0.0
  */
 
 namespace HappyPlace\Core;
@@ -14,325 +15,477 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+/**
+ * Database Class
+ * 
+ * @since 4.0.0
+ */
 class Database {
     
-    private static $instance = null;
+    /**
+     * WordPress database object
+     * 
+     * @var \wpdb
+     */
+    private \wpdb $wpdb;
     
     /**
-     * Get singleton instance
+     * Database version
+     * 
+     * @var string
      */
-    public static function get_instance() {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-        return self::$instance;
+    private string $db_version = '1.0.0';
+    
+    /**
+     * Table names cache
+     * 
+     * @var array
+     */
+    private array $tables = [];
+    
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        global $wpdb;
+        $this->wpdb = $wpdb;
+        $this->init_tables();
+    }
+    
+    /**
+     * Initialize table names
+     * 
+     * @return void
+     */
+    private function init_tables(): void {
+        $this->tables = [
+            'listings_meta' => HP_TABLE_PREFIX . 'listings_meta',
+            'agent_meta' => HP_TABLE_PREFIX . 'agent_meta',
+            'analytics' => HP_TABLE_PREFIX . 'analytics',
+            'leads' => HP_TABLE_PREFIX . 'leads',
+            'lead_meta' => HP_TABLE_PREFIX . 'lead_meta',
+            'saved_searches' => HP_TABLE_PREFIX . 'saved_searches',
+            'property_views' => HP_TABLE_PREFIX . 'property_views',
+            'inquiries' => HP_TABLE_PREFIX . 'inquiries',
+            'error_log' => HP_TABLE_PREFIX . 'error_log',
+            'activity_log' => HP_TABLE_PREFIX . 'activity_log',
+        ];
     }
     
     /**
      * Initialize database
+     * 
+     * @return void
      */
-    private function __construct() {
-        add_action('hp_activate', [$this, 'create_tables']);
+    public function init(): void {
+        // Check if tables need to be created or updated
+        $installed_version = get_option('hp_db_version', '0');
+        
+        if (version_compare($installed_version, $this->db_version, '<')) {
+            $this->create_tables();
+            update_option('hp_db_version', $this->db_version);
+        }
     }
     
     /**
-     * Initialize component
+     * Create database tables
+     * 
+     * @return void
      */
-    public function init() {
-        // Database operations are handled via activation hook
-        hp_log('Database component initialized', 'debug', 'DATABASE');
-    }
-    
-    /**
-     * Create custom database tables
-     */
-    public function create_tables() {
-        global $wpdb;
+    public function create_tables(): void {
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         
-        $charset_collate = $wpdb->get_charset_collate();
+        $charset_collate = $this->wpdb->get_charset_collate();
         
-        // Analytics table for tracking views, inquiries, etc.
-        $analytics_table = HP_TABLE_PREFIX . 'analytics';
-        $sql_analytics = "CREATE TABLE $analytics_table (
+        // Listings Meta Table
+        $sql = "CREATE TABLE IF NOT EXISTS {$this->tables['listings_meta']} (
             id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-            post_id bigint(20) UNSIGNED NOT NULL,
-            post_type varchar(20) NOT NULL DEFAULT '',
-            event_type varchar(50) NOT NULL DEFAULT '',
-            user_id bigint(20) UNSIGNED DEFAULT NULL,
-            ip_address varchar(45) DEFAULT NULL,
-            user_agent text DEFAULT NULL,
-            referrer varchar(255) DEFAULT NULL,
-            metadata longtext DEFAULT NULL,
-            created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            KEY post_id (post_id),
-            KEY post_type (post_type),
-            KEY event_type (event_type),
-            KEY user_id (user_id),
-            KEY created_at (created_at)
-        ) $charset_collate;";
-        
-        // Lead management table
-        $leads_table = HP_TABLE_PREFIX . 'leads';
-        $sql_leads = "CREATE TABLE $leads_table (
-            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-            listing_id bigint(20) UNSIGNED DEFAULT NULL,
-            agent_id bigint(20) UNSIGNED DEFAULT NULL,
-            name varchar(100) NOT NULL DEFAULT '',
-            email varchar(100) NOT NULL DEFAULT '',
-            phone varchar(20) DEFAULT NULL,
-            message longtext DEFAULT NULL,
-            status varchar(20) NOT NULL DEFAULT 'new',
-            source varchar(50) DEFAULT NULL,
-            priority varchar(10) DEFAULT 'medium',
-            assigned_to bigint(20) UNSIGNED DEFAULT NULL,
-            metadata longtext DEFAULT NULL,
+            listing_id bigint(20) UNSIGNED NOT NULL,
+            meta_key varchar(255) NOT NULL,
+            meta_value longtext,
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
             updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             KEY listing_id (listing_id),
+            KEY meta_key (meta_key),
+            KEY listing_meta (listing_id, meta_key)
+        ) $charset_collate;";
+        dbDelta($sql);
+        
+        // Agent Meta Table
+        $sql = "CREATE TABLE IF NOT EXISTS {$this->tables['agent_meta']} (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            agent_id bigint(20) UNSIGNED NOT NULL,
+            meta_key varchar(255) NOT NULL,
+            meta_value longtext,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
             KEY agent_id (agent_id),
+            KEY meta_key (meta_key),
+            KEY agent_meta (agent_id, meta_key)
+        ) $charset_collate;";
+        dbDelta($sql);
+        
+        // Analytics Table
+        $sql = "CREATE TABLE IF NOT EXISTS {$this->tables['analytics']} (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            object_type varchar(50) NOT NULL,
+            object_id bigint(20) UNSIGNED NOT NULL,
+            event_type varchar(50) NOT NULL,
+            event_value varchar(255),
+            user_id bigint(20) UNSIGNED DEFAULT NULL,
+            ip_address varchar(45),
+            user_agent text,
+            referrer text,
+            session_id varchar(255),
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY object_lookup (object_type, object_id),
+            KEY event_type (event_type),
+            KEY user_id (user_id),
+            KEY created_at (created_at),
+            KEY session_id (session_id)
+        ) $charset_collate;";
+        dbDelta($sql);
+        
+        // Leads Table
+        $sql = "CREATE TABLE IF NOT EXISTS {$this->tables['leads']} (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            first_name varchar(100),
+            last_name varchar(100),
+            email varchar(255) NOT NULL,
+            phone varchar(20),
+            source varchar(50),
+            status varchar(20) DEFAULT 'new',
+            score int(11) DEFAULT 0,
+            assigned_agent_id bigint(20) UNSIGNED DEFAULT NULL,
+            listing_id bigint(20) UNSIGNED DEFAULT NULL,
+            notes text,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
             KEY email (email),
             KEY status (status),
-            KEY assigned_to (assigned_to),
+            KEY assigned_agent_id (assigned_agent_id),
             KEY created_at (created_at)
         ) $charset_collate;";
+        dbDelta($sql);
         
-        // Saved searches table
-        $searches_table = HP_TABLE_PREFIX . 'saved_searches';
-        $sql_searches = "CREATE TABLE $searches_table (
+        // Lead Meta Table
+        $sql = "CREATE TABLE IF NOT EXISTS {$this->tables['lead_meta']} (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            lead_id bigint(20) UNSIGNED NOT NULL,
+            meta_key varchar(255) NOT NULL,
+            meta_value longtext,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY lead_id (lead_id),
+            KEY meta_key (meta_key)
+        ) $charset_collate;";
+        dbDelta($sql);
+        
+        // Saved Searches Table
+        $sql = "CREATE TABLE IF NOT EXISTS {$this->tables['saved_searches']} (
             id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             user_id bigint(20) UNSIGNED NOT NULL,
-            name varchar(100) NOT NULL DEFAULT '',
-            search_params longtext NOT NULL,
-            alert_frequency varchar(20) DEFAULT 'weekly',
-            last_alert datetime DEFAULT NULL,
+            search_name varchar(255),
+            search_criteria longtext,
+            frequency varchar(20) DEFAULT 'daily',
+            last_sent datetime DEFAULT NULL,
             is_active tinyint(1) DEFAULT 1,
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
             updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             KEY user_id (user_id),
-            KEY is_active (is_active),
+            KEY is_active (is_active)
+        ) $charset_collate;";
+        dbDelta($sql);
+        
+        // Property Views Table
+        $sql = "CREATE TABLE IF NOT EXISTS {$this->tables['property_views']} (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            listing_id bigint(20) UNSIGNED NOT NULL,
+            user_id bigint(20) UNSIGNED DEFAULT NULL,
+            ip_address varchar(45),
+            view_duration int(11) DEFAULT 0,
+            referrer text,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY listing_id (listing_id),
+            KEY user_id (user_id),
             KEY created_at (created_at)
         ) $charset_collate;";
+        dbDelta($sql);
         
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        // Inquiries Table
+        $sql = "CREATE TABLE IF NOT EXISTS {$this->tables['inquiries']} (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            listing_id bigint(20) UNSIGNED DEFAULT NULL,
+            agent_id bigint(20) UNSIGNED DEFAULT NULL,
+            name varchar(255) NOT NULL,
+            email varchar(255) NOT NULL,
+            phone varchar(20),
+            message text,
+            inquiry_type varchar(50),
+            status varchar(20) DEFAULT 'new',
+            ip_address varchar(45),
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY listing_id (listing_id),
+            KEY agent_id (agent_id),
+            KEY status (status),
+            KEY created_at (created_at)
+        ) $charset_collate;";
+        dbDelta($sql);
         
-        dbDelta($sql_analytics);
-        dbDelta($sql_leads);
-        dbDelta($sql_searches);
+        // Error Log Table
+        $sql = "CREATE TABLE IF NOT EXISTS {$this->tables['error_log']} (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            error_level int(11) NOT NULL,
+            error_message text NOT NULL,
+            error_context text,
+            user_id bigint(20) UNSIGNED DEFAULT NULL,
+            url varchar(500),
+            ip_address varchar(45),
+            error_time datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY error_level (error_level),
+            KEY user_id (user_id),
+            KEY error_time (error_time)
+        ) $charset_collate;";
+        dbDelta($sql);
         
-        hp_log('Custom database tables created', 'info', 'DATABASE');
+        // Activity Log Table
+        $sql = "CREATE TABLE IF NOT EXISTS {$this->tables['activity_log']} (
+            id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            user_id bigint(20) UNSIGNED DEFAULT NULL,
+            action varchar(100) NOT NULL,
+            object_type varchar(50),
+            object_id bigint(20) UNSIGNED DEFAULT NULL,
+            description text,
+            ip_address varchar(45),
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY user_id (user_id),
+            KEY action (action),
+            KEY object_lookup (object_type, object_id),
+            KEY created_at (created_at)
+        ) $charset_collate;";
+        dbDelta($sql);
+        
+        hp_log('Database tables created/updated', 'info', 'DATABASE');
     }
     
     /**
-     * Get analytics data
+     * Get table name
+     * 
+     * @param string $table Table identifier
+     * @return string|null
      */
-    public function get_analytics($args = []) {
-        global $wpdb;
+    public function get_table(string $table): ?string {
+        return $this->tables[$table] ?? null;
+    }
+    
+    /**
+     * Insert data into table
+     * 
+     * @param string $table Table name
+     * @param array $data Data to insert
+     * @param array $format Data formats
+     * @return int|false Insert ID or false on failure
+     */
+    public function insert(string $table, array $data, array $format = []): int|false {
+        $table_name = $this->get_table($table);
+        
+        if (!$table_name) {
+            return false;
+        }
+        
+        $result = $this->wpdb->insert($table_name, $data, $format);
+        
+        return $result ? $this->wpdb->insert_id : false;
+    }
+    
+    /**
+     * Update data in table
+     * 
+     * @param string $table Table name
+     * @param array $data Data to update
+     * @param array $where WHERE conditions
+     * @param array $format Data formats
+     * @param array $where_format WHERE formats
+     * @return int|false Number of rows updated or false
+     */
+    public function update(string $table, array $data, array $where, array $format = [], array $where_format = []): int|false {
+        $table_name = $this->get_table($table);
+        
+        if (!$table_name) {
+            return false;
+        }
+        
+        return $this->wpdb->update($table_name, $data, $where, $format, $where_format);
+    }
+    
+    /**
+     * Delete data from table
+     * 
+     * @param string $table Table name
+     * @param array $where WHERE conditions
+     * @param array $where_format WHERE formats
+     * @return int|false Number of rows deleted or false
+     */
+    public function delete(string $table, array $where, array $where_format = []): int|false {
+        $table_name = $this->get_table($table);
+        
+        if (!$table_name) {
+            return false;
+        }
+        
+        return $this->wpdb->delete($table_name, $where, $where_format);
+    }
+    
+    /**
+     * Get row from table
+     * 
+     * @param string $table Table name
+     * @param array $where WHERE conditions
+     * @param string $output Output type
+     * @return mixed
+     */
+    public function get_row(string $table, array $where, string $output = OBJECT) {
+        $table_name = $this->get_table($table);
+        
+        if (!$table_name) {
+            return null;
+        }
+        
+        $where_clause = $this->build_where_clause($where);
+        $query = "SELECT * FROM {$table_name} WHERE {$where_clause} LIMIT 1";
+        
+        return $this->wpdb->get_row($query, $output);
+    }
+    
+    /**
+     * Get results from table
+     * 
+     * @param string $table Table name
+     * @param array $args Query arguments
+     * @param string $output Output type
+     * @return array|null
+     */
+    public function get_results(string $table, array $args = [], string $output = OBJECT): ?array {
+        $table_name = $this->get_table($table);
+        
+        if (!$table_name) {
+            return null;
+        }
         
         $defaults = [
-            'post_id' => null,
-            'post_type' => null,
-            'event_type' => null,
-            'date_from' => null,
-            'date_to' => null,
+            'where' => [],
+            'orderby' => 'id',
+            'order' => 'DESC',
             'limit' => 100,
             'offset' => 0,
         ];
         
         $args = wp_parse_args($args, $defaults);
         
-        $table = HP_TABLE_PREFIX . 'analytics';
-        $where = ['1=1'];
-        $values = [];
+        $query = "SELECT * FROM {$table_name}";
         
-        if ($args['post_id']) {
-            $where[] = 'post_id = %d';
-            $values[] = $args['post_id'];
+        if (!empty($args['where'])) {
+            $where_clause = $this->build_where_clause($args['where']);
+            $query .= " WHERE {$where_clause}";
         }
         
-        if ($args['post_type']) {
-            $where[] = 'post_type = %s';
-            $values[] = $args['post_type'];
+        $query .= " ORDER BY {$args['orderby']} {$args['order']}";
+        $query .= " LIMIT {$args['limit']}";
+        
+        if ($args['offset'] > 0) {
+            $query .= " OFFSET {$args['offset']}";
         }
         
-        if ($args['event_type']) {
-            $where[] = 'event_type = %s';
-            $values[] = $args['event_type'];
+        return $this->wpdb->get_results($query, $output);
+    }
+    
+    /**
+     * Build WHERE clause from array
+     * 
+     * @param array $where WHERE conditions
+     * @return string
+     */
+    private function build_where_clause(array $where): string {
+        $conditions = [];
+        
+        foreach ($where as $key => $value) {
+            if (is_null($value)) {
+                $conditions[] = "`{$key}` IS NULL";
+            } elseif (is_array($value)) {
+                $values = array_map([$this->wpdb, 'prepare'], array_fill(0, count($value), '%s'), $value);
+                $conditions[] = "`{$key}` IN (" . implode(',', $values) . ")";
+            } else {
+                $conditions[] = $this->wpdb->prepare("`{$key}` = %s", $value);
+            }
         }
         
-        if ($args['date_from']) {
-            $where[] = 'created_at >= %s';
-            $values[] = $args['date_from'];
-        }
-        
-        if ($args['date_to']) {
-            $where[] = 'created_at <= %s';
-            $values[] = $args['date_to'];
-        }
-        
-        $where_clause = implode(' AND ', $where);
-        $limit_clause = '';
-        
-        if ($args['limit'] > 0) {
-            $limit_clause = $wpdb->prepare(' LIMIT %d OFFSET %d', $args['limit'], $args['offset']);
-        }
-        
-        $sql = "SELECT * FROM $table WHERE $where_clause ORDER BY created_at DESC$limit_clause";
-        
-        if (!empty($values)) {
-            $sql = $wpdb->prepare($sql, $values);
-        }
-        
-        return $wpdb->get_results($sql, ARRAY_A) ?: [];
+        return implode(' AND ', $conditions);
     }
     
     /**
      * Track analytics event
+     * 
+     * @param string $object_type Object type
+     * @param int $object_id Object ID
+     * @param string $event_type Event type
+     * @param mixed $event_value Event value
+     * @return int|false
      */
-    public function track_event($post_id, $event_type, $metadata = []) {
-        global $wpdb;
-        
-        $table = HP_TABLE_PREFIX . 'analytics';
-        $post = get_post($post_id);
-        
-        if (!$post) {
-            return false;
-        }
-        
-        $data = [
-            'post_id' => $post_id,
-            'post_type' => $post->post_type,
-            'event_type' => sanitize_key($event_type),
+    public function track_event(string $object_type, int $object_id, string $event_type, $event_value = null): int|false {
+        return $this->insert('analytics', [
+            'object_type' => $object_type,
+            'object_id' => $object_id,
+            'event_type' => $event_type,
+            'event_value' => $event_value,
             'user_id' => get_current_user_id() ?: null,
-            'ip_address' => $this->get_user_ip(),
+            'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
             'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
-            'referrer' => wp_get_referer() ?: null,
-            'metadata' => json_encode($metadata),
-        ];
-        
-        $formats = ['%d', '%s', '%s', '%d', '%s', '%s', '%s', '%s'];
-        
-        $result = $wpdb->insert($table, $data, $formats);
-        
-        if ($result === false) {
-            hp_log("Failed to track event: {$event_type} for post: {$post_id}", 'error', 'DATABASE');
-            return false;
-        }
-        
-        return true;
-    }
-    
-    /**
-     * Save lead
-     */
-    public function save_lead($lead_data) {
-        global $wpdb;
-        
-        $table = HP_TABLE_PREFIX . 'leads';
-        
-        $data = wp_parse_args($lead_data, [
-            'listing_id' => null,
-            'agent_id' => null,
-            'name' => '',
-            'email' => '',
-            'phone' => '',
-            'message' => '',
-            'status' => 'new',
-            'source' => 'website',
-            'priority' => 'medium',
-            'assigned_to' => null,
-            'metadata' => json_encode([]),
+            'referrer' => $_SERVER['HTTP_REFERER'] ?? null,
+            'session_id' => session_id() ?: null,
         ]);
-        
-        // Sanitize data
-        $data['name'] = sanitize_text_field($data['name']);
-        $data['email'] = sanitize_email($data['email']);
-        $data['phone'] = sanitize_text_field($data['phone']);
-        $data['message'] = sanitize_textarea_field($data['message']);
-        $data['status'] = sanitize_key($data['status']);
-        $data['source'] = sanitize_key($data['source']);
-        $data['priority'] = sanitize_key($data['priority']);
-        
-        $formats = ['%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s'];
-        
-        $result = $wpdb->insert($table, $data, $formats);
-        
-        if ($result === false) {
-            hp_log("Failed to save lead for email: {$data['email']}", 'error', 'DATABASE');
-            return false;
-        }
-        
-        return $wpdb->insert_id;
     }
     
     /**
-     * Get leads
+     * Log activity
+     * 
+     * @param string $action Action performed
+     * @param string|null $object_type Object type
+     * @param int|null $object_id Object ID
+     * @param string|null $description Description
+     * @return int|false
      */
-    public function get_leads($args = []) {
-        global $wpdb;
-        
-        $defaults = [
-            'agent_id' => null,
-            'listing_id' => null,
-            'status' => null,
-            'limit' => 50,
-            'offset' => 0,
-        ];
-        
-        $args = wp_parse_args($args, $defaults);
-        
-        $table = HP_TABLE_PREFIX . 'leads';
-        $where = ['1=1'];
-        $values = [];
-        
-        if ($args['agent_id']) {
-            $where[] = 'agent_id = %d';
-            $values[] = $args['agent_id'];
-        }
-        
-        if ($args['listing_id']) {
-            $where[] = 'listing_id = %d';
-            $values[] = $args['listing_id'];
-        }
-        
-        if ($args['status']) {
-            $where[] = 'status = %s';
-            $values[] = $args['status'];
-        }
-        
-        $where_clause = implode(' AND ', $where);
-        $limit_clause = $wpdb->prepare(' LIMIT %d OFFSET %d', $args['limit'], $args['offset']);
-        
-        $sql = "SELECT * FROM $table WHERE $where_clause ORDER BY created_at DESC$limit_clause";
-        
-        if (!empty($values)) {
-            $sql = $wpdb->prepare($sql, $values);
-        }
-        
-        return $wpdb->get_results($sql, ARRAY_A) ?: [];
+    public function log_activity(string $action, ?string $object_type = null, ?int $object_id = null, ?string $description = null): int|false {
+        return $this->insert('activity_log', [
+            'user_id' => get_current_user_id() ?: null,
+            'action' => $action,
+            'object_type' => $object_type,
+            'object_id' => $object_id,
+            'description' => $description,
+            'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+        ]);
     }
     
     /**
-     * Get user IP address
+     * Drop all plugin tables
+     * 
+     * @return void
      */
-    private function get_user_ip() {
-        $ip_keys = ['HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR'];
-        
-        foreach ($ip_keys as $key) {
-            if (!empty($_SERVER[$key])) {
-                $ip = sanitize_text_field($_SERVER[$key]);
-                // Handle comma-separated IPs
-                if (strpos($ip, ',') !== false) {
-                    $ip = trim(explode(',', $ip)[0]);
-                }
-                if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
-                    return $ip;
-                }
-            }
+    public function drop_tables(): void {
+        foreach ($this->tables as $table) {
+            $this->wpdb->query("DROP TABLE IF EXISTS {$table}");
         }
         
-        return $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+        delete_option('hp_db_version');
+        
+        hp_log('Database tables dropped', 'info', 'DATABASE');
     }
 }
