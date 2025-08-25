@@ -1,724 +1,498 @@
 <?php
 /**
- * HPH Card Component - Professional card layout matching section quality
+ * HPH Card Component Template
  * 
- * A flexible, beautiful card component using proper HPH utilities and variables:
- * - Dynamic post-type adaptation (listing, agent, post)
- * - Bridge function integration for data
- * - Professional hover effects and animations
- * - Responsive image handling with fallbacks
- * - Interactive elements (favorites, sharing, contact)
- * 
- * Configurable variations:
- * - Layout: default, horizontal, featured, compact, minimal
- * - Style: modern, classic, bordered, elevated, flat
- * - Image: top, left, right, background, none
- * - Size: small, medium, large, full
+ * A versatile card component for displaying content in various layouts:
+ * - Multiple card styles (default, elevated, bordered, gradient, overlay, minimal)
+ * - Flexible layouts (vertical, horizontal, compact)
+ * - Support for images, videos, badges, and metadata
+ * - Hover effects and animations
+ * - Responsive design with mobile-first approach
  * 
  * @package HappyPlaceTheme
  * @since 3.0.0
  * 
- * LAYOUT OPTIONS:
- * - layout: 'default' | 'horizontal' | 'featured' | 'compact' | 'minimal' | 'overlay'
- * - style: 'modern' | 'classic' | 'bordered' | 'elevated' | 'flat' | 'glass'
- * - image_position: 'top' | 'left' | 'right' | 'background' | 'none'
- * - size: 'small' | 'medium' | 'large' | 'full'
+ * Args:
+ * - style: 'default' | 'elevated' | 'bordered' | 'gradient' | 'overlay' | 'minimal' | 'property'
+ * - layout: 'vertical' | 'horizontal' | 'compact'
+ * - size: 'sm' | 'md' | 'lg' | 'xl'
+ * - image: string (URL)
+ * - image_position: 'top' | 'left' | 'right' | 'background'
+ * - image_ratio: 'square' | 'landscape' | 'portrait' | 'wide' | 'cinema'
+ * - video: string (URL for video preview)
+ * - badge: string
+ * - badge_style: 'default' | 'primary' | 'success' | 'warning' | 'danger'
+ * - badge_position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
+ * - title: string
+ * - subtitle: string
+ * - content: string
+ * - content_limit: int (character limit for content)
+ * - meta: array of meta items
+ * - buttons: array of button configurations
+ * - link_url: string (makes entire card clickable)
+ * - link_target: '_self' | '_blank'
+ * - hover_effect: 'none' | 'lift' | 'scale' | 'shadow' | 'overlay'
+ * - animate: boolean
+ * - animation_delay: string (ms)
+ * - classes: string (additional custom classes)
+ * - attributes: array (additional HTML attributes)
  * 
- * VISUAL STYLING:
- * - hover_effect: 'lift' | 'scale' | 'tilt' | 'glow' | 'none'
- * - border_radius: 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
- * - shadow: 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'inner'
- * - overlay_style: 'none' | 'gradient' | 'solid' | 'blur'
- * 
- * CONTENT ELEMENTS:
- * - show_image: boolean
- * - show_badge: boolean (status, featured, etc.)
- * - show_meta: boolean (date, author, stats)
- * - show_excerpt: boolean
- * - show_actions: boolean (buttons, interactions)
- * - show_price: boolean (for listings)
- * - show_stats: boolean (beds/baths for listings, ratings for agents)
- * 
- * POST-TYPE SPECIFIC:
- * - listing: price, address, bed/bath/sqft, status, gallery count
- * - agent: company, title, rating, contact info, listings count
- * - post: date, author, categories, reading time
- * - open_house: date/time, location, agent
- * 
- * INTERACTIVE ELEMENTS:
- * - actions: array of custom action buttons
- * - enable_favorites: boolean (heart icon for listings)
- * - enable_sharing: boolean (share button)
- * - enable_quick_view: boolean (modal preview)
- * - click_action: 'navigate' | 'modal' | 'none'
- * 
- * DATA INTEGRATION:
- * - post_id: int (WordPress post ID)
- * - post_type: string (auto-detected or manual)
- * - bridge_data: array (override bridge function data)
- * - fallback_image: string (custom fallback image URL)
- * 
- * RESPONSIVE & ACCESSIBILITY:
- * - responsive_images: boolean (srcset support)
- * - lazy_loading: boolean (intersection observer)
- * - aria_labels: array (custom accessibility labels)
- * - keyboard_navigation: boolean
+ * Property-specific args:
+ * - listing_id: int
+ * - show_price: boolean
+ * - show_status: boolean
+ * - show_address: boolean
+ * - show_details: boolean (beds, baths, sqft)
+ * - show_mls: boolean
+ * - show_favorite: boolean
+ * - show_compare: boolean
  */
 
-// Default arguments with comprehensive options
+// Default arguments
 $defaults = array(
-    // Core Configuration
-    'post_id' => get_the_ID(),
-    'post_type' => get_post_type(),
-    
-    // Layout & Style
-    'layout' => 'default',
-    'style' => 'modern',
+    'style' => 'default',
+    'layout' => 'vertical',
+    'size' => 'md',
+    'image' => '',
     'image_position' => 'top',
-    'size' => 'medium',
-    
-    // Visual Effects
+    'image_ratio' => 'landscape',
+    'video' => '',
+    'badge' => '',
+    'badge_style' => 'default',
+    'badge_position' => 'top-left',
+    'title' => '',
+    'subtitle' => '',
+    'content' => '',
+    'content_limit' => 150,
+    'meta' => array(),
+    'buttons' => array(),
+    'link_url' => '',
+    'link_target' => '_self',
     'hover_effect' => 'lift',
-    'border_radius' => 'lg',
-    'shadow' => 'sm',
-    'overlay_style' => 'gradient',
-    
-    // Content Display
-    'show_image' => true,
-    'show_badge' => true,
-    'show_meta' => true,
-    'show_excerpt' => false,
-    'show_actions' => true,
+    'animate' => false,
+    'animation_delay' => '0',
+    'classes' => '',
+    'attributes' => array(),
+    // Property-specific defaults
+    'listing_id' => 0,
     'show_price' => true,
-    'show_stats' => true,
-    
-    // Interactive Features
-    'enable_favorites' => true,
-    'enable_sharing' => true,
-    'enable_quick_view' => false,
-    'click_action' => 'navigate',
-    
-    // Image Settings
-    'image_size' => 'medium_large',
-    'responsive_images' => true,
-    'lazy_loading' => true,
-    'fallback_image' => '',
-    
-    // Custom Content
-    'actions' => array(),
-    'bridge_data' => array(),
-    'container_class' => '',
-    'data_attributes' => array(),
-    
-    // Accessibility
-    'aria_labels' => array(),
-    'keyboard_navigation' => true
+    'show_status' => true,
+    'show_address' => true,
+    'show_details' => true,
+    'show_mls' => false,
+    'show_favorite' => true,
+    'show_compare' => false
 );
 
-$args = wp_parse_args($args ?? [], $defaults);
+// Merge with provided args
+$config = wp_parse_args($args ?? array(), $defaults);
 
-$post_id = $args['post_id'];
-$post_type = $args['post_type'];
+// Extract configuration
+$style = $config['style'];
+$layout = $config['layout'];
+$size = $config['size'];
+$image = $config['image'];
+$image_position = $config['image_position'];
+$image_ratio = $config['image_ratio'];
+$video = $config['video'];
+$badge = $config['badge'];
+$badge_style = $config['badge_style'];
+$badge_position = $config['badge_position'];
+$title = $config['title'];
+$subtitle = $config['subtitle'];
+$content = $config['content'];
+$content_limit = $config['content_limit'];
+$meta = $config['meta'];
+$buttons = $config['buttons'];
+$link_url = $config['link_url'];
+$link_target = $config['link_target'];
+$hover_effect = $config['hover_effect'];
+$animate = $config['animate'];
+$animation_delay = $config['animation_delay'];
+$custom_classes = $config['classes'];
+$custom_attributes = $config['attributes'];
 
-if (!$post_id || !get_post($post_id)) return;
+// Property-specific configuration
+$listing_id = $config['listing_id'];
+$show_price = $config['show_price'];
+$show_status = $config['show_status'];
+$show_address = $config['show_address'];
+$show_details = $config['show_details'];
+$show_mls = $config['show_mls'];
+$show_favorite = $config['show_favorite'];
+$show_compare = $config['show_compare'];
 
-// Get post data using bridge functions or fallback
-$post_data = array();
-if (!empty($args['bridge_data'])) {
-    $post_data = $args['bridge_data'];
-} else {
-    switch ($post_type) {
-        case 'listing':
-            if (function_exists('hpt_get_listing')) {
-                $post_data = hpt_get_listing($post_id);
+// Property mode auto-configuration
+if ($style === 'property' && $listing_id) {
+    // Get property data using bridge functions
+    if (function_exists('hpt_get_listing_title') && empty($title)) {
+        $title = hpt_get_listing_title($listing_id);
+    }
+    if (function_exists('hpt_get_listing_address') && empty($subtitle) && $show_address) {
+        $subtitle = hpt_get_listing_address($listing_id);
+    }
+    if (function_exists('hpt_get_listing_featured_image') && empty($image)) {
+        $image = hpt_get_listing_featured_image($listing_id);
+    }
+    if (function_exists('hpt_get_listing_permalink') && empty($link_url)) {
+        $link_url = hpt_get_listing_permalink($listing_id);
+    }
+    if (function_exists('hpt_get_listing_excerpt') && empty($content)) {
+        $content = hpt_get_listing_excerpt($listing_id);
+    }
+    
+    // Build property meta array
+    $property_meta = array();
+    
+    if ($show_details) {
+        if (function_exists('hpt_get_listing_bedrooms')) {
+            $beds = hpt_get_listing_bedrooms($listing_id);
+            if ($beds) {
+                $property_meta[] = array(
+                    'icon' => 'fas fa-bed',
+                    'text' => $beds . ' ' . _n('Bed', 'Beds', intval($beds), 'happy-place-theme')
+                );
             }
-            break;
-        case 'agent':
-            if (function_exists('hpt_get_agent')) {
-                $post_data = hpt_get_agent($post_id);
+        }
+        if (function_exists('hpt_get_listing_bathrooms')) {
+            $baths = hpt_get_listing_bathrooms($listing_id);
+            if ($baths) {
+                $property_meta[] = array(
+                    'icon' => 'fas fa-bath',
+                    'text' => $baths . ' ' . _n('Bath', 'Baths', floatval($baths), 'happy-place-theme')
+                );
             }
-            break;
-        case 'open_house':
-            if (function_exists('hpt_get_open_house')) {
-                $post_data = hpt_get_open_house($post_id);
+        }
+        if (function_exists('hpt_get_listing_square_footage')) {
+            $sqft = hpt_get_listing_square_footage($listing_id);
+            if ($sqft) {
+                $property_meta[] = array(
+                    'icon' => 'fas fa-ruler-combined',
+                    'text' => number_format($sqft) . ' Sq Ft'
+                );
             }
-            break;
-        default:
-            $post_data = array(
-                'title' => get_the_title($post_id),
-                'excerpt' => get_the_excerpt($post_id),
-                'permalink' => get_permalink($post_id),
-                'date' => get_the_date('', $post_id),
-                'author' => get_the_author_meta('display_name', get_post_field('post_author', $post_id))
+        }
+    }
+    
+    if ($show_mls && function_exists('hpt_get_listing_mls_number')) {
+        $mls = hpt_get_listing_mls_number($listing_id);
+        if ($mls) {
+            $property_meta[] = array(
+                'icon' => 'fas fa-hashtag',
+                'text' => 'MLS #' . $mls
             );
-            break;
-    }
-}
-
-// Merge with fallback data
-$post_data = wp_parse_args($post_data, array(
-    'title' => get_the_title($post_id),
-    'permalink' => get_permalink($post_id)
-));
-
-// Build sophisticated card classes using utility system
-$card_classes = array('hph-card');
-
-// Base styling
-$base_styles = array(
-    'modern' => array('hph-bg-white', 'hph-overflow-hidden', 'hph-transition-all', 'hph-duration-300'),
-    'classic' => array('hph-bg-white', 'hph-border', 'hph-border-gray-200', 'hph-transition-all', 'hph-duration-300'),
-    'bordered' => array('hph-bg-white', 'hph-border-2', 'hph-border-gray-300', 'hph-transition-all', 'hph-duration-300'),
-    'elevated' => array('hph-bg-white', 'hph-shadow-lg', 'hph-transition-all', 'hph-duration-300'),
-    'flat' => array('hph-bg-gray-50', 'hph-transition-all', 'hph-duration-300'),
-    'glass' => array('hph-bg-white', 'hph-bg-opacity-90', 'hph-backdrop-blur-sm', 'hph-transition-all', 'hph-duration-300')
-);
-
-// Border radius variations
-$radius_classes = array(
-    'none' => array(),
-    'sm' => array('hph-rounded-sm'),
-    'md' => array('hph-rounded-md'),
-    'lg' => array('hph-rounded-lg'),
-    'xl' => array('hph-rounded-xl'),
-    'full' => array('hph-rounded-2xl')
-);
-
-// Shadow variations
-$shadow_classes = array(
-    'none' => array(),
-    'sm' => array('hph-shadow-sm'),
-    'md' => array('hph-shadow-md'),
-    'lg' => array('hph-shadow-lg'),
-    'xl' => array('hph-shadow-xl'),
-    'inner' => array('hph-shadow-inner')
-);
-
-// Hover effects
-$hover_effects = array(
-    'lift' => array('hph-hover:shadow-xl', 'hph-hover:-translate-y-2', 'hph-hover:border-primary-200'),
-    'scale' => array('hph-hover:scale-105', 'hph-hover:shadow-lg'),
-    'tilt' => array('hph-hover:rotate-1', 'hph-hover:shadow-lg'),
-    'glow' => array('hph-hover:shadow-2xl', 'hph-hover:ring-2', 'hph-hover:ring-primary-200'),
-    'none' => array()
-);
-
-// Layout-specific classes
-$layout_classes = array(
-    'horizontal' => array('hph-flex', 'hph-flex-col', 'md:hph-flex-row'),
-    'featured' => array('hph-ring-2', 'hph-ring-primary-100'),
-    'compact' => array('hph-text-sm'),
-    'minimal' => array('hph-border-0', 'hph-shadow-none'),
-    'overlay' => array('hph-relative', 'hph-text-white')
-);
-
-// Size variations
-$size_classes = array(
-    'small' => array('hph-max-w-xs'),
-    'medium' => array('hph-max-w-sm'),
-    'large' => array('hph-max-w-md'),
-    'full' => array('hph-w-full')
-);
-
-// Merge all classes
-$card_classes = array_merge(
-    $card_classes,
-    $base_styles[$args['style']] ?? $base_styles['modern'],
-    $radius_classes[$args['border_radius']] ?? $radius_classes['lg'],
-    $shadow_classes[$args['shadow']] ?? $shadow_classes['sm'],
-    $hover_effects[$args['hover_effect']] ?? $hover_effects['lift'],
-    $layout_classes[$args['layout']] ?? array(),
-    $size_classes[$args['size']] ?? $size_classes['medium']
-);
-
-// Add post-type specific classes
-$card_classes[] = 'hph-card--' . $post_type;
-$card_classes[] = 'hph-card--' . $args['layout'];
-$card_classes[] = 'hph-card--' . $args['style'];
-
-// Add container class if provided
-if ($args['container_class']) {
-    $card_classes[] = $args['container_class'];
-}
-
-$card_class = implode(' ', array_unique($card_classes));
-
-// Get post image with sophisticated handling
-$post_image = '';
-$image_alt = '';
-$has_gallery = false;
-$gallery_count = 0;
-
-if ($args['show_image'] && $args['image_position'] !== 'none') {
-    $post_image = get_the_post_thumbnail_url($post_id, $args['image_size']);
-    $image_alt = get_the_title($post_id);
-    
-    // Check for gallery
-    if ($post_type === 'listing' && function_exists('hpt_get_listing_gallery')) {
-        $gallery_images = hpt_get_listing_gallery($post_id);
-        $has_gallery = !empty($gallery_images);
-        $gallery_count = count($gallery_images);
+        }
     }
     
-    if (!$post_image) {
-        // Post-type specific fallback images
-        $fallback_images = array(
-            'listing' => get_template_directory_uri() . '/assets/images/fallback-property.jpg',
-            'agent' => get_template_directory_uri() . '/assets/images/fallback-agent.jpg',
-            'open_house' => get_template_directory_uri() . '/assets/images/fallback-event.jpg',
-            'default' => get_template_directory_uri() . '/assets/images/fallback-post.jpg'
-        );
-        $post_image = $args['fallback_image'] ?: ($fallback_images[$post_type] ?? $fallback_images['default']);
+    // Merge property meta with any provided meta
+    $meta = array_merge($property_meta, $meta);
+    
+    // Set up price badge if enabled
+    if ($show_price && function_exists('hpt_get_listing_price_formatted')) {
+        $price = hpt_get_listing_price_formatted($listing_id);
+        if ($price && empty($badge)) {
+            $badge = $price;
+            $badge_style = 'primary';
+            $badge_position = 'bottom-left';
+        }
+    }
+    
+    // Set up status badge if enabled
+    if ($show_status && function_exists('hpt_get_listing_status')) {
+        $status = hpt_get_listing_status($listing_id);
+        if ($status && $status !== 'Active') {
+            // Override price badge if status is not active
+            $badge = $status;
+            $badge_style = $status === 'Sold' ? 'success' : 'warning';
+            $badge_position = 'top-right';
+        }
     }
 }
 
-// Build data attributes
-$data_attrs = array(
-    'data-post-id' => $post_id,
-    'data-post-type' => $post_type,
-    'data-card-layout' => $args['layout']
+// Build card classes
+$card_classes = array(
+    'hph-card',
+    'hph-card-' . $style,
+    'hph-card-' . $layout,
+    'hph-card-' . $size
 );
 
-if (!empty($args['data_attributes'])) {
-    $data_attrs = array_merge($data_attrs, $args['data_attributes']);
+// Add hover effect class
+if ($hover_effect !== 'none') {
+    $card_classes[] = 'hph-card-hover-' . $hover_effect;
 }
 
-$data_attributes = '';
-foreach ($data_attrs as $key => $value) {
-    $data_attributes .= sprintf(' %s="%s"', esc_attr($key), esc_attr($value));
+// Add animation classes
+if ($animate) {
+    $card_classes[] = 'hph-card-animate';
+    $card_classes[] = 'hph-fade-in-up';
 }
 
-$unique_id = 'card-' . $post_id . '-' . uniqid();
+// Add image position class
+if ($image && $image_position !== 'top') {
+    $card_classes[] = 'hph-card-image-' . $image_position;
+}
+
+// Add custom classes
+if ($custom_classes) {
+    $card_classes[] = $custom_classes;
+}
+
+// Build wrapper element
+$wrapper_tag = $link_url ? 'a' : 'article';
+$wrapper_attrs = array(
+    'class' => implode(' ', $card_classes)
+);
+
+if ($link_url) {
+    $wrapper_attrs['href'] = esc_url($link_url);
+    if ($link_target !== '_self') {
+        $wrapper_attrs['target'] = esc_attr($link_target);
+    }
+}
+
+if ($animate && $animation_delay !== '0') {
+    $wrapper_attrs['style'] = 'animation-delay: ' . esc_attr($animation_delay) . 'ms';
+}
+
+// Add custom attributes
+foreach ($custom_attributes as $key => $value) {
+    $wrapper_attrs[$key] = esc_attr($value);
+}
+
+// Limit content if specified
+if ($content && $content_limit > 0) {
+    $content = wp_trim_words($content, $content_limit, '...');
+}
+
+// Build image ratio class
+$image_ratio_class = 'hph-card-media-' . $image_ratio;
+
+// Ensure Font Awesome is loaded
+if (!wp_script_is('font-awesome', 'enqueued')) {
+    wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css', array(), '6.5.1');
+}
 ?>
 
-<article class="<?php echo esc_attr($card_class); ?>" id="<?php echo esc_attr($unique_id); ?>"<?php echo $data_attributes; ?>>
+<<?php echo $wrapper_tag; ?> <?php foreach ($wrapper_attrs as $attr => $value): ?>
+    <?php echo $attr; ?>="<?php echo $value; ?>"
+<?php endforeach; ?>>
     
-    <?php if ($post_image && $args['show_image'] && $args['image_position'] !== 'none') : ?>
-        <!-- Card Image Section -->
-        <div class="<?php echo $args['layout'] === 'horizontal' ? 'hph-w-full md:hph-w-2/5' : 'hph-w-full'; ?> hph-relative hph-overflow-hidden <?php echo $args['image_position'] === 'background' ? 'hph-absolute hph-inset-0' : ''; ?>">
-            
-            <?php if ($args['click_action'] === 'navigate') : ?>
-                <a href="<?php echo esc_url($post_data['permalink']); ?>" 
-                   class="hph-block hph-relative hph-group hph-focus:outline-none hph-focus:ring-2 hph-focus:ring-primary-500 hph-focus:ring-offset-2 hph-rounded-lg"
-                   aria-label="<?php echo esc_attr(sprintf(__('View %s', 'happy-place-theme'), $post_data['title'])); ?>">
-            <?php else : ?>
-                <div class="hph-block hph-relative hph-group">
-            <?php endif; ?>
-            
-                <!-- Main Image -->
-                <?php if ($args['responsive_images'] && function_exists('wp_get_attachment_image')) : ?>
-                    <?php
-                    $attachment_id = get_post_thumbnail_id($post_id);
-                    if ($attachment_id) :
-                        echo wp_get_attachment_image(
-                            $attachment_id,
-                            $args['image_size'],
-                            false,
-                            array(
-                                'class' => 'hph-w-full hph-h-64 hph-object-cover hph-transition-transform hph-duration-500 hph-group-hover:scale-110',
-                                'alt' => $image_alt,
-                                'loading' => $args['lazy_loading'] ? 'lazy' : 'eager'
-                            )
-                        );
-                    else : ?>
-                        <img src="<?php echo esc_url($post_image); ?>" 
-                             alt="<?php echo esc_attr($image_alt); ?>"
-                             class="hph-w-full hph-h-64 hph-object-cover hph-transition-transform hph-duration-500 hph-group-hover:scale-110"
-                             <?php echo $args['lazy_loading'] ? 'loading="lazy"' : ''; ?>>
-                    <?php endif; ?>
-                <?php else : ?>
-                    <img src="<?php echo esc_url($post_image); ?>" 
-                         alt="<?php echo esc_attr($image_alt); ?>"
-                         class="hph-w-full hph-h-64 hph-object-cover hph-transition-transform hph-duration-500 hph-group-hover:scale-110"
-                         <?php echo $args['lazy_loading'] ? 'loading="lazy"' : ''; ?>>
-                <?php endif; ?>
-                
-                <!-- Image Overlay -->
-                <?php if ($args['overlay_style'] !== 'none') : ?>
-                    <?php
-                    $overlay_classes = array('hph-absolute', 'hph-inset-0', 'hph-transition-all', 'hph-duration-300');
-                    switch ($args['overlay_style']) {
-                        case 'gradient':
-                            $overlay_classes[] = 'hph-bg-gradient-to-t hph-from-black/60 hph-via-black/20 hph-to-transparent hph-opacity-0 hph-group-hover:opacity-100';
-                            break;
-                        case 'solid':
-                            $overlay_classes[] = 'hph-bg-black/40 hph-opacity-0 hph-group-hover:opacity-100';
-                            break;
-                        case 'blur':
-                            $overlay_classes[] = 'hph-backdrop-blur-sm hph-bg-white/10 hph-opacity-0 hph-group-hover:opacity-100';
-                            break;
-                    }
-                    ?>
-                    <div class="<?php echo esc_attr(implode(' ', $overlay_classes)); ?>"></div>
-                <?php endif; ?>
-                
-                <!-- Status Badge -->
-                <?php if ($args['show_badge'] && !empty($post_data['status'])) : ?>
-                    <div class="hph-absolute hph-top-4 hph-left-4 hph-z-10">
-                        <?php
-                        $badge_classes = array(
-                            'hph-inline-block',
-                            'hph-px-md',
-                            'hph-py-sm',
-                            'hph-text-xs',
-                            'hph-font-bold',
-                            'hph-uppercase',
-                            'hph-tracking-wide',
-                            'hph-rounded-full',
-                            'hph-shadow-sm',
-                            'hph-backdrop-blur-sm'
-                        );
-                        
-                        // Status-specific colors
-                        $status = strtolower($post_data['status']);
-                        switch ($status) {
-                            case 'active':
-                            case 'available':
-                            case 'for_sale':
-                                $badge_classes = array_merge($badge_classes, array('hph-bg-success-600', 'hph-text-white'));
-                                break;
-                            case 'sold':
-                            case 'rented':
-                            case 'off_market':
-                                $badge_classes = array_merge($badge_classes, array('hph-bg-gray-600', 'hph-text-white'));
-                                break;
-                            case 'pending':
-                            case 'under_contract':
-                                $badge_classes = array_merge($badge_classes, array('hph-bg-warning-600', 'hph-text-white'));
-                                break;
-                            case 'featured':
-                                $badge_classes = array_merge($badge_classes, array('hph-bg-primary-600', 'hph-text-white'));
-                                break;
-                            default:
-                                $badge_classes = array_merge($badge_classes, array('hph-bg-gray-500', 'hph-text-white'));
-                        }
-                        ?>
-                        <span class="<?php echo esc_attr(implode(' ', $badge_classes)); ?>">
-                            <?php echo esc_html(ucfirst(str_replace(['_', '-'], ' ', $post_data['status']))); ?>
-                        </span>
-                    </div>
-                <?php endif; ?>
-                
-                <!-- Price Badge (Listings) -->
-                <?php if ($args['show_price'] && !empty($post_data['price']) && $post_type === 'listing') : ?>
-                    <div class="hph-absolute hph-bottom-4 hph-right-4 hph-z-10">
-                        <span class="hph-inline-block hph-px-lg hph-py-sm hph-bg-white hph-bg-opacity-95 hph-backdrop-blur-sm hph-text-gray-900 hph-font-bold hph-text-lg hph-rounded-lg hph-shadow-md">
-                            <?php if (is_numeric($post_data['price'])) : ?>
-                                $<?php echo esc_html(number_format($post_data['price'])); ?>
-                            <?php else : ?>
-                                <?php echo esc_html($post_data['price']); ?>
-                            <?php endif; ?>
-                        </span>
-                    </div>
-                <?php endif; ?>
-                
-                <!-- Gallery Indicator -->
-                <?php if ($has_gallery && $gallery_count > 1) : ?>
-                    <div class="hph-absolute hph-bottom-4 hph-left-4 hph-z-10">
-                        <span class="hph-inline-flex hph-items-center hph-gap-xs hph-px-sm hph-py-xs hph-bg-black/70 hph-text-white hph-text-xs hph-font-medium hph-rounded-md hph-backdrop-blur-sm">
-                            <i class="fas fa-images"></i>
-                            <?php echo esc_html($gallery_count); ?>
-                        </span>
-                    </div>
-                <?php endif; ?>
-                
-                <!-- Hover Action Overlay -->
-                <div class="hph-absolute hph-inset-0 hph-flex hph-items-center hph-justify-center hph-opacity-0 hph-group-hover:opacity-100 hph-transition-all hph-duration-300 hph-z-10">
-                    <div class="hph-transform hph-translate-y-2 hph-group-hover:translate-y-0 hph-transition-transform hph-duration-300">
-                        <?php if ($args['enable_quick_view']) : ?>
-                            <button class="hph-inline-flex hph-items-center hph-gap-sm hph-px-lg hph-py-md hph-bg-white hph-bg-opacity-95 hph-text-gray-900 hph-font-semibold hph-rounded-lg hph-shadow-lg hph-backdrop-blur-sm hph-hover:bg-opacity-100 hph-transition-all hph-duration-200" 
-                                    data-action="quick-view" 
-                                    data-post-id="<?php echo esc_attr($post_id); ?>">
-                                <i class="fas fa-search-plus"></i>
-                                <?php _e('Quick View', 'happy-place-theme'); ?>
-                            </button>
-                        <?php else : ?>
-                            <span class="hph-inline-flex hph-items-center hph-gap-sm hph-px-lg hph-py-md hph-bg-white hph-bg-opacity-95 hph-text-gray-900 hph-font-semibold hph-rounded-lg hph-shadow-lg hph-backdrop-blur-sm">
-                                <i class="fas fa-eye"></i>
-                                <?php _e('View Details', 'happy-place-theme'); ?>
-                            </span>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            
-            <?php if ($args['click_action'] === 'navigate') : ?>
-                </a>
-            <?php else : ?>
-                </div>
-            <?php endif; ?>
-            
+    <?php if ($image && in_array($image_position, array('top', 'left', 'right', 'background'))): ?>
+    <!-- Card Media -->
+    <div class="hph-card-media <?php echo esc_attr($image_ratio_class); ?>">
+        <?php if ($video): ?>
+        <!-- Video Preview -->
+        <video 
+            class="hph-card-video"
+            muted 
+            loop 
+            playsinline
+            data-autoplay="hover"
+            poster="<?php echo esc_url($image); ?>"
+        >
+            <source src="<?php echo esc_url($video); ?>" type="video/mp4">
+            <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="hph-card-image">
+        </video>
+        <?php else: ?>
+        <!-- Image -->
+        <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="hph-card-image" loading="lazy">
+        <?php endif; ?>
+        
+        <?php if ($style === 'overlay'): ?>
+        <!-- Overlay Gradient -->
+        <div class="hph-card-overlay"></div>
+        <?php endif; ?>
+        
+        <?php if ($badge && in_array($image_position, array('top', 'background'))): ?>
+        <!-- Badge -->
+        <div class="hph-card-badge hph-badge-<?php echo esc_attr($badge_position); ?> hph-badge-<?php echo esc_attr($badge_style); ?>">
+            <span><?php echo esc_html($badge); ?></span>
         </div>
+        <?php endif; ?>
+        
+        <?php if ($style === 'property' && ($show_favorite || $show_compare)): ?>
+        <!-- Property Actions -->
+        <div class="hph-card-actions">
+            <?php if ($show_favorite): ?>
+            <button class="hph-card-action hph-action-favorite" data-listing-id="<?php echo esc_attr($listing_id); ?>" aria-label="Add to favorites">
+                <i class="far fa-heart"></i>
+            </button>
+            <?php endif; ?>
+            <?php if ($show_compare): ?>
+            <button class="hph-card-action hph-action-compare" data-listing-id="<?php echo esc_attr($listing_id); ?>" aria-label="Add to compare">
+                <i class="fas fa-exchange-alt"></i>
+            </button>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
+    </div>
     <?php endif; ?>
     
-    <!-- Card Content Section -->
-    <div class="<?php echo $args['layout'] === 'horizontal' ? 'hph-flex-1' : 'hph-w-full'; ?> hph-p-lg hph-space-y-md">
+    <!-- Card Content -->
+    <div class="hph-card-content">
         
-        <!-- Post Type Icon (Optional) -->
-        <?php if ($args['show_badge'] && empty($post_data['status'])) : ?>
-            <div class="hph-flex hph-items-center hph-gap-sm hph-text-xs hph-text-gray-500 hph-uppercase hph-tracking-wide hph-font-medium">
-                <?php
-                $type_icons = array(
-                    'listing' => 'fa-home',
-                    'agent' => 'fa-user-tie',
-                    'open_house' => 'fa-calendar-alt',
-                    'post' => 'fa-file-alt'
-                );
-                $icon = $type_icons[$post_type] ?? $type_icons['post'];
-                ?>
-                <i class="fas <?php echo esc_attr($icon); ?>"></i>
-                <span><?php echo esc_html(ucfirst(str_replace('_', ' ', $post_type))); ?></span>
-            </div>
+        <?php if ($badge && !in_array($image_position, array('top', 'background'))): ?>
+        <!-- Badge (for non-image cards) -->
+        <div class="hph-card-badge-inline hph-badge-<?php echo esc_attr($badge_style); ?>">
+            <span><?php echo esc_html($badge); ?></span>
+        </div>
         <?php endif; ?>
         
-        <!-- Title -->
-        <h3 class="hph-text-xl hph-font-bold hph-text-gray-900 hph-leading-tight hph-line-clamp-2">
-            <a href="<?php echo esc_url($post_data['permalink']); ?>" 
-               class="hph-hover:text-primary-600 hph-transition-colors hph-duration-200 hph-focus:outline-none hph-focus:text-primary-600">
-                <?php echo esc_html($post_data['title']); ?>
-            </a>
+        <?php if ($subtitle): ?>
+        <!-- Card Subtitle -->
+        <div class="hph-card-subtitle">
+            <?php echo esc_html($subtitle); ?>
+        </div>
+        <?php endif; ?>
+        
+        <?php if ($title): ?>
+        <!-- Card Title -->
+        <h3 class="hph-card-title">
+            <?php echo esc_html($title); ?>
         </h3>
+        <?php endif; ?>
         
-        <!-- Post-Type Specific Meta -->
-        <?php if ($args['show_meta']) : ?>
-            <div class="hph-space-y-sm">
-                
-                <?php if ($post_type === 'listing') : ?>
-                    
-                    <!-- Address -->
-                    <?php if (!empty($post_data['address'])) : ?>
-                        <div class="hph-flex hph-items-start hph-text-gray-600 hph-text-sm">
-                            <i class="fas fa-map-marker-alt hph-mt-1 hph-mr-sm hph-text-primary-500 hph-flex-shrink-0"></i>
-                            <span class="hph-line-clamp-1"><?php echo esc_html($post_data['address']); ?></span>
-                        </div>
-                    <?php endif; ?>
-                    
-                    <!-- Property Stats -->
-                    <?php if ($args['show_stats'] && (!empty($post_data['bedrooms']) || !empty($post_data['bathrooms']) || !empty($post_data['square_feet']))) : ?>
-                        <div class="hph-flex hph-items-center hph-gap-lg hph-text-gray-600 hph-text-sm">
-                            <?php if (!empty($post_data['bedrooms'])) : ?>
-                                <span class="hph-flex hph-items-center hph-gap-xs">
-                                    <i class="fas fa-bed hph-text-primary-500"></i>
-                                    <?php echo esc_html($post_data['bedrooms']); ?>
-                                    <span class="hph-hidden sm:hph-inline"><?php echo $post_data['bedrooms'] == 1 ? 'bed' : 'beds'; ?></span>
-                                </span>
-                            <?php endif; ?>
-                            <?php if (!empty($post_data['bathrooms'])) : ?>
-                                <span class="hph-flex hph-items-center hph-gap-xs">
-                                    <i class="fas fa-bath hph-text-primary-500"></i>
-                                    <?php echo esc_html($post_data['bathrooms']); ?>
-                                    <span class="hph-hidden sm:hph-inline"><?php echo $post_data['bathrooms'] == 1 ? 'bath' : 'baths'; ?></span>
-                                </span>
-                            <?php endif; ?>
-                            <?php if (!empty($post_data['square_feet'])) : ?>
-                                <span class="hph-flex hph-items-center hph-gap-xs">
-                                    <i class="fas fa-ruler-combined hph-text-primary-500"></i>
-                                    <?php echo esc_html(number_format($post_data['square_feet'])); ?>
-                                    <span class="hph-hidden sm:hph-inline">sq ft</span>
-                                </span>
-                            <?php endif; ?>
-                        </div>
-                    <?php endif; ?>
-                    
-                <?php elseif ($post_type === 'agent') : ?>
-                    
-                    <div class="hph-space-y-xs">
-                        <!-- Agent Title & Company -->
-                        <?php if (!empty($post_data['title']) || !empty($post_data['company'])) : ?>
-                            <div class="hph-text-sm">
-                                <?php if (!empty($post_data['title'])) : ?>
-                                    <div class="hph-text-gray-600"><?php echo esc_html($post_data['title']); ?></div>
-                                <?php endif; ?>
-                                <?php if (!empty($post_data['company'])) : ?>
-                                    <div class="hph-text-primary-600 hph-font-medium"><?php echo esc_html($post_data['company']); ?></div>
-                                <?php endif; ?>
-                            </div>
-                        <?php endif; ?>
-                        
-                        <!-- Agent Stats -->
-                        <?php if ($args['show_stats']) : ?>
-                            <div class="hph-flex hph-items-center hph-gap-lg hph-text-xs hph-text-gray-500">
-                                <?php if (!empty($post_data['stats']['active_listings'])) : ?>
-                                    <span class="hph-flex hph-items-center hph-gap-xs">
-                                        <i class="fas fa-home hph-text-primary-400"></i>
-                                        <?php echo esc_html($post_data['stats']['active_listings']); ?> listings
-                                    </span>
-                                <?php endif; ?>
-                                <?php if (!empty($post_data['stats']['total_sales'])) : ?>
-                                    <span class="hph-flex hph-items-center hph-gap-xs">
-                                        <i class="fas fa-handshake hph-text-primary-400"></i>
-                                        <?php echo esc_html($post_data['stats']['total_sales']); ?> sold
-                                    </span>
-                                <?php endif; ?>
-                            </div>
-                        <?php endif; ?>
-                        
-                        <!-- Agent Rating -->
-                        <?php if (!empty($post_data['stats']['average_rating']) && $post_data['stats']['average_rating'] > 0) : ?>
-                            <div class="hph-flex hph-items-center hph-gap-xs hph-text-sm">
-                                <div class="hph-flex hph-text-yellow-400">
-                                    <?php for ($i = 1; $i <= 5; $i++) : ?>
-                                        <i class="fas fa-star<?php echo $i > $post_data['stats']['average_rating'] ? ' hph-text-gray-300' : ''; ?> hph-text-xs"></i>
-                                    <?php endfor; ?>
-                                </div>
-                                <span class="hph-text-gray-600 hph-text-xs"><?php echo esc_html(number_format($post_data['stats']['average_rating'], 1)); ?></span>
-                                <?php if (!empty($post_data['stats']['review_count'])) : ?>
-                                    <span class="hph-text-gray-400 hph-text-xs">(<?php echo esc_html($post_data['stats']['review_count']); ?>)</span>
-                                <?php endif; ?>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                    
-                <?php elseif ($post_type === 'open_house') : ?>
-                    
-                    <!-- Date & Time -->
-                    <?php if (!empty($post_data['start_date'])) : ?>
-                        <div class="hph-flex hph-items-center hph-text-gray-600 hph-text-sm">
-                            <i class="fas fa-calendar-alt hph-mr-sm hph-text-primary-500"></i>
-                            <span><?php echo esc_html(date('M j, Y g:i A', strtotime($post_data['start_date']))); ?></span>
-                        </div>
-                    <?php endif; ?>
-                    
-                    <!-- Location -->
-                    <?php if (!empty($post_data['address'])) : ?>
-                        <div class="hph-flex hph-items-start hph-text-gray-600 hph-text-sm">
-                            <i class="fas fa-map-marker-alt hph-mt-1 hph-mr-sm hph-text-primary-500 hph-flex-shrink-0"></i>
-                            <span class="hph-line-clamp-1"><?php echo esc_html($post_data['address']); ?></span>
-                        </div>
-                    <?php endif; ?>
-                    
-                <?php else : ?>
-                    
-                    <!-- Standard Post Meta -->
-                    <div class="hph-flex hph-items-center hph-text-gray-500 hph-text-sm">
-                        <i class="fas fa-calendar-alt hph-mr-sm"></i>
-                        <time datetime="<?php echo esc_attr(get_the_date('c', $post_id)); ?>">
-                            <?php echo esc_html($post_data['date'] ?? get_the_date('', $post_id)); ?>
-                        </time>
-                        <?php if (!empty($post_data['author'])) : ?>
-                            <span class="hph-mx-sm hph-text-gray-400">•</span>
-                            <span><?php echo esc_html($post_data['author']); ?></span>
-                        <?php endif; ?>
-                    </div>
-                    
+        <?php if ($content): ?>
+        <!-- Card Description -->
+        <div class="hph-card-description">
+            <?php echo wp_kses_post($content); ?>
+        </div>
+        <?php endif; ?>
+        
+        <?php if (!empty($meta)): ?>
+        <!-- Card Meta -->
+        <div class="hph-card-meta">
+            <?php foreach ($meta as $meta_item): 
+                $meta_defaults = array(
+                    'icon' => '',
+                    'text' => '',
+                    'url' => '',
+                    'tooltip' => ''
+                );
+                $meta_item = wp_parse_args($meta_item, $meta_defaults);
+            ?>
+            <div class="hph-card-meta-item" <?php if ($meta_item['tooltip']): ?>title="<?php echo esc_attr($meta_item['tooltip']); ?>"<?php endif; ?>>
+                <?php if ($meta_item['icon']): ?>
+                <i class="<?php echo esc_attr($meta_item['icon']); ?> hph-meta-icon"></i>
                 <?php endif; ?>
-                
-            </div>
-        <?php endif; ?>
-        
-        <!-- Excerpt -->
-        <?php if ($args['show_excerpt']) : ?>
-            <div class="hph-text-gray-600 hph-text-sm hph-leading-relaxed hph-line-clamp-2">
-                <?php 
-                $excerpt = $post_data['excerpt'] ?? get_the_excerpt($post_id);
-                echo esc_html(wp_trim_words($excerpt, 20));
-                ?>
-            </div>
-        <?php endif; ?>
-        
-        <!-- Actions -->
-        <?php if ($args['show_actions']) : ?>
-            <div class="hph-flex hph-items-center hph-justify-between hph-pt-sm hph-border-t hph-border-gray-100">
-                
-                <!-- Primary Action -->
-                <a href="<?php echo esc_url($post_data['permalink']); ?>" 
-                   class="hph-inline-flex hph-items-center hph-gap-sm hph-px-lg hph-py-sm hph-bg-primary-600 hph-text-white hph-font-medium hph-rounded-lg hph-transition-all hph-duration-200 hph-hover:bg-primary-700 hph-hover:scale-105 hph-shadow-sm hph-hover:shadow-md hph-focus:outline-none hph-focus:ring-2 hph-focus:ring-primary-500 hph-focus:ring-offset-2">
-                    <i class="fas <?php 
-                        echo $post_type === 'listing' ? 'fa-home' : 
-                            ($post_type === 'agent' ? 'fa-user' : 
-                            ($post_type === 'open_house' ? 'fa-calendar-check' : 'fa-arrow-right')); 
-                    ?>"></i>
-                    <?php 
-                    switch ($post_type) {
-                        case 'listing':
-                            _e('View Property', 'happy-place-theme');
-                            break;
-                        case 'agent':
-                            _e('View Profile', 'happy-place-theme');
-                            break;
-                        case 'open_house':
-                            _e('More Details', 'happy-place-theme');
-                            break;
-                        default:
-                            _e('Read More', 'happy-place-theme');
-                            break;
-                    }
-                    ?>
+                <?php if ($meta_item['url']): ?>
+                <a href="<?php echo esc_url($meta_item['url']); ?>" class="hph-meta-link">
+                    <?php echo esc_html($meta_item['text']); ?>
                 </a>
-                
-                <!-- Secondary Actions -->
-                <div class="hph-flex hph-items-center hph-gap-sm">
-                    
-                    <?php if ($post_type === 'listing') : ?>
-                        
-                        <!-- Favorite Button -->
-                        <?php if ($args['enable_favorites']) : ?>
-                            <button class="hph-action-btn hph-favorite-btn hph-inline-flex hph-items-center hph-justify-center hph-w-10 hph-h-10 hph-text-gray-500 hph-hover:text-red-500 hph-hover:bg-red-50 hph-rounded-lg hph-transition-all hph-duration-200 hph-focus:outline-none hph-focus:ring-2 hph-focus:ring-red-500 hph-focus:ring-offset-2" 
-                                    title="<?php esc_attr_e('Add to favorites', 'happy-place-theme'); ?>"
-                                    data-action="favorite" 
-                                    data-post-id="<?php echo esc_attr($post_id); ?>"
-                                    aria-label="<?php esc_attr_e('Add to favorites', 'happy-place-theme'); ?>">
-                                <i class="far fa-heart"></i>
-                            </button>
-                        <?php endif; ?>
-                        
-                        <!-- Share Button -->
-                        <?php if ($args['enable_sharing']) : ?>
-                            <button class="hph-action-btn hph-share-btn hph-inline-flex hph-items-center hph-justify-center hph-w-10 hph-h-10 hph-text-gray-500 hph-hover:text-primary-500 hph-hover:bg-primary-50 hph-rounded-lg hph-transition-all hph-duration-200 hph-focus:outline-none hph-focus:ring-2 hph-focus:ring-primary-500 hph-focus:ring-offset-2" 
-                                    title="<?php esc_attr_e('Share property', 'happy-place-theme'); ?>"
-                                    data-action="share" 
-                                    data-post-id="<?php echo esc_attr($post_id); ?>"
-                                    data-title="<?php echo esc_attr($post_data['title']); ?>"
-                                    data-url="<?php echo esc_attr($post_data['permalink']); ?>"
-                                    aria-label="<?php esc_attr_e('Share property', 'happy-place-theme'); ?>">
-                                <i class="fas fa-share-alt"></i>
-                            </button>
-                        <?php endif; ?>
-                        
-                    <?php elseif ($post_type === 'agent') : ?>
-                        
-                        <!-- Contact Actions -->
-                        <?php if (!empty($post_data['phone'])) : ?>
-                            <a href="tel:<?php echo esc_attr(preg_replace('/[^0-9+]/', '', $post_data['phone'])); ?>" 
-                               class="hph-action-btn hph-inline-flex hph-items-center hph-justify-center hph-w-10 hph-h-10 hph-text-gray-500 hph-hover:text-green-500 hph-hover:bg-green-50 hph-rounded-lg hph-transition-all hph-duration-200 hph-focus:outline-none hph-focus:ring-2 hph-focus:ring-green-500 hph-focus:ring-offset-2" 
-                               title="<?php esc_attr_e('Call agent', 'happy-place-theme'); ?>"
-                               aria-label="<?php esc_attr_e('Call agent', 'happy-place-theme'); ?>">
-                                <i class="fas fa-phone"></i>
-                            </a>
-                        <?php endif; ?>
-                        
-                        <?php if (!empty($post_data['email'])) : ?>
-                            <a href="mailto:<?php echo esc_attr($post_data['email']); ?>" 
-                               class="hph-action-btn hph-inline-flex hph-items-center hph-justify-center hph-w-10 hph-h-10 hph-text-gray-500 hph-hover:text-blue-500 hph-hover:bg-blue-50 hph-rounded-lg hph-transition-all hph-duration-200 hph-focus:outline-none hph-focus:ring-2 hph-focus:ring-blue-500 hph-focus:ring-offset-2" 
-                               title="<?php esc_attr_e('Email agent', 'happy-place-theme'); ?>"
-                               aria-label="<?php esc_attr_e('Email agent', 'happy-place-theme'); ?>">
-                                <i class="fas fa-envelope"></i>
-                            </a>
-                        <?php endif; ?>
-                        
-                    <?php endif; ?>
-                    
-                    <!-- Custom Actions -->
-                    <?php if (!empty($args['actions'])) : ?>
-                        <?php foreach ($args['actions'] as $action) : ?>
-                            <a href="<?php echo esc_url($action['url'] ?? '#'); ?>" 
-                               class="hph-action-btn hph-inline-flex hph-items-center hph-gap-sm hph-px-md hph-py-sm hph-text-sm hph-font-medium hph-rounded-lg hph-transition-all hph-duration-200 <?php echo esc_attr($action['class'] ?? 'hph-text-gray-600 hph-hover:text-primary-600 hph-hover:bg-primary-50'); ?>"
-                               <?php if (!empty($action['title'])) : ?>title="<?php echo esc_attr($action['title']); ?>"<?php endif; ?>
-                               <?php if (!empty($action['target'])) : ?>target="<?php echo esc_attr($action['target']); ?>"<?php endif; ?>>
-                                <?php if (!empty($action['icon'])) : ?>
-                                    <i class="fas <?php echo esc_attr($action['icon']); ?>"></i>
-                                <?php endif; ?>
-                                <?php if (!empty($action['text'])) : ?>
-                                    <span><?php echo esc_html($action['text']); ?></span>
-                                <?php endif; ?>
-                            </a>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                    
-                </div>
-                
+                <?php else: ?>
+                <span class="hph-meta-text"><?php echo esc_html($meta_item['text']); ?></span>
+                <?php endif; ?>
             </div>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+        
+        <?php if (!empty($buttons)): ?>
+        <!-- Card Actions -->
+        <div class="hph-card-buttons">
+            <?php foreach ($buttons as $button): 
+                $btn_defaults = array(
+                    'text' => 'Button',
+                    'url' => '#',
+                    'style' => 'primary',
+                    'size' => 'sm',
+                    'icon' => '',
+                    'icon_position' => 'left',
+                    'target' => '_self',
+                    'classes' => ''
+                );
+                $btn = wp_parse_args($button, $btn_defaults);
+                
+                $btn_classes = array(
+                    'hph-btn',
+                    'hph-btn-' . $btn['style'],
+                    'hph-btn-' . $btn['size'],
+                    'hph-card-btn'
+                );
+                
+                if ($btn['classes']) {
+                    $btn_classes[] = $btn['classes'];
+                }
+            ?>
+            <a 
+                href="<?php echo esc_url($btn['url']); ?>"
+                class="<?php echo esc_attr(implode(' ', $btn_classes)); ?>"
+                <?php if ($btn['target'] !== '_self'): ?>target="<?php echo esc_attr($btn['target']); ?>"<?php endif; ?>
+                <?php if ($link_url): ?>onclick="event.stopPropagation();"<?php endif; ?>
+            >
+                <?php if ($btn['icon'] && $btn['icon_position'] === 'left'): ?>
+                <i class="<?php echo esc_attr($btn['icon']); ?> hph-mr-xs"></i>
+                <?php endif; ?>
+                <span><?php echo esc_html($btn['text']); ?></span>
+                <?php if ($btn['icon'] && $btn['icon_position'] === 'right'): ?>
+                <i class="<?php echo esc_attr($btn['icon']); ?> hph-ml-xs"></i>
+                <?php endif; ?>
+            </a>
+            <?php endforeach; ?>
+        </div>
         <?php endif; ?>
         
     </div>
     
-</article>
+</<?php echo $wrapper_tag; ?>>
+
+
+<script>
+// Auto-play video on hover
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.hph-card');
+    
+    cards.forEach(card => {
+        const video = card.querySelector('.hph-card-video[data-autoplay="hover"]');
+        
+        if (video) {
+            card.addEventListener('mouseenter', () => {
+                video.play().catch(() => {
+                    // Autoplay might be blocked
+                });
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                video.pause();
+                video.currentTime = 0;
+            });
+        }
+        
+        // Handle favorite and compare buttons
+        const favoriteBtn = card.querySelector('.hph-action-favorite');
+        const compareBtn = card.querySelector('.hph-action-compare');
+        
+        if (favoriteBtn) {
+            favoriteBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.classList.toggle('active');
+                const icon = this.querySelector('i');
+                icon.classList.toggle('far');
+                icon.classList.toggle('fas');
+                
+                // Trigger custom event
+                const event = new CustomEvent('hph:favorite-toggle', {
+                    detail: { listingId: this.dataset.listingId }
+                });
+                document.dispatchEvent(event);
+            });
+        }
+        
+        if (compareBtn) {
+            compareBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.classList.toggle('active');
+                
+                // Trigger custom event
+                const event = new CustomEvent('hph:compare-toggle', {
+                    detail: { listingId: this.dataset.listingId }
+                });
+                document.dispatchEvent(event);
+            });
+        }
+    });
+});
+</script>

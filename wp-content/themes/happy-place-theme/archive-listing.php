@@ -1,9 +1,6 @@
 <?php
 /**
- * Listing Archive Template - Modular Section-Based Architecture
- * 
- * Following front-page.php structure using clean get_template_part() calls
- * with reusable sections for maximum flexibility and maintainability.
+ * Archive Template for Listings
  * 
  * @package HappyPlaceTheme
  * @since 3.0.0
@@ -11,332 +8,555 @@
 
 get_header();
 
-// Load our section helper functions
-require_once get_template_directory() . '/template-parts/sections/section-helper.php';
+// Get archive settings
+$archive_title = '';
+$archive_description = '';
+$hero_image = get_theme_mod('listing_archive_hero_image', '');
+$default_view = get_theme_mod('listing_archive_default_view', 'grid');
+$show_filters = get_theme_mod('listing_archive_show_filters', true);
+$show_map = get_theme_mod('listing_archive_show_map', true);
+$items_per_page = get_theme_mod('listing_archive_items_per_page', 12);
 
-// Get current query parameters
-$current_view = get_query_var('view', get_option('hph_default_listing_view', 'grid'));
-$current_sort = get_query_var('sort', 'date-desc');
-$per_page = get_query_var('per_page', get_option('posts_per_page', 12));
-$paged = get_query_var('paged', 1);
-
-// Sanitize view mode
-$allowed_views = ['grid', 'list', 'map'];
-if (!in_array($current_view, $allowed_views)) {
-    $current_view = 'grid';
-}
-
-// Get current WP Query for listings
-global $wp_query;
-$listings_query = $wp_query;
-
-// Extract posts for component system
-$listings = [];
-if ($listings_query->have_posts()) {
-    while ($listings_query->have_posts()) {
-        $listings_query->the_post();
-        $listings[] = get_post();
-    }
-    wp_reset_postdata();
-}
-
-/**
- * Get archive title with context
- */
-function hph_get_archive_title() {
-    if (is_tax('property_type')) {
-        return single_term_title('', false) . ' ' . __('Properties', 'happy-place-theme');
-    } elseif (is_tax('listing_status')) {
-        return single_term_title('', false) . ' ' . __('Listings', 'happy-place-theme');
-    } elseif (get_search_query()) {
-        return sprintf(__('Search Results for "%s"', 'happy-place-theme'), get_search_query());
-    } else {
-        return __('All Properties', 'happy-place-theme');
-    }
-}
-
-/**
- * Get archive description
- */
-function hph_get_archive_description() {
-    if (is_tax()) {
-        return term_description();
-    } elseif (get_search_query()) {
-        return sprintf(__('Properties matching your search for "%s"', 'happy-place-theme'), get_search_query());
-    }
-    return __('Discover your perfect home in our extensive collection of Delaware properties.', 'happy-place-theme');
-}
-
-// Hero Section - Property Search Hero
-get_template_part('template-parts/sections/hero', null, array(
-    'style' => 'image',
-    'height' => 'md',
-    'background_image' => get_template_directory_uri() . '/assets/images/listing-hero.jpg',
-    'overlay' => 'gradient',
-    'overlay_opacity' => '70',
-    'alignment' => 'center',
-    'content_width' => 'normal',
-    'badge' => 'Properties',
-    'headline' => hph_get_archive_title(),
-    'subheadline' => sprintf(__('Browse %d Available Properties', 'happy-place-theme'), $listings_query->found_posts),
-    'content' => hph_get_archive_description(),
-    'buttons' => array(
-        array(
-            'text' => 'Advanced Search',
-            'url' => '#search-filters',
-            'style' => 'white',
-            'size' => 'lg',
-            'icon' => 'fas fa-search'
-        ),
-        array(
-            'text' => 'Contact an Agent',
-            'url' => get_post_type_archive_link('agent'),
-            'style' => 'outline-white',
-            'size' => 'lg',
-            'icon' => 'fas fa-user-tie'
-        )
-    ),
-    'section_id' => 'property-hero'
-));
-
-// Archive Layout Section - Main listings grid with filters
-get_template_part('template-parts/layout/archive-layout', null, array(
-    'post_type' => 'listing',
-    'posts' => $listings,
-    'title' => hph_get_archive_title(),
-    'description' => hph_get_archive_description(),
-    'total_results' => $listings_query->found_posts,
-    'current_view' => $current_view,
-    'current_sort' => $current_sort,
-    'per_page' => $per_page,
-    'paged' => $paged,
-    'max_pages' => $listings_query->max_num_pages,
-    'view_modes' => ['grid', 'list', 'map'],
-    'sort_options' => [
-        'date-desc' => __('Newest First', 'happy-place-theme'),
-        'date-asc' => __('Oldest First', 'happy-place-theme'),
-        'price-desc' => __('Price: High to Low', 'happy-place-theme'),
-        'price-asc' => __('Price: Low to High', 'happy-place-theme'),
-        'featured' => __('Featured First', 'happy-place-theme')
-    ],
-    'show_search' => true,
-    'show_filters' => true,
-    'show_save_search' => is_user_logged_in(),
-    'ajax_enabled' => true,
-    'sidebar' => 'listing-archive'
-));
-
-// Market Stats Section - Using content section with stats
-if (!empty($listings)) {
-    // Calculate market stats
-    $total_active = 0;
-    $avg_price = 0;
-    $price_count = 0;
-    $total_sq_ft = 0;
-    $sq_ft_count = 0;
+// Determine archive context
+if (is_post_type_archive('listing')) {
+    $archive_title = post_type_archive_title('', false) ?: 'All Listings';
+    $archive_description = get_the_archive_description();
+} elseif (is_tax()) {
+    $term = get_queried_object();
+    $archive_title = single_term_title('', false);
+    $archive_description = term_description();
     
-    foreach ($listings as $listing) {
-        if (function_exists('hpt_get_listing')) {
-            $listing_data = hpt_get_listing($listing->ID);
-            if ($listing_data && $listing_data['status'] === 'active') {
-                $total_active++;
-            }
-            if ($listing_data && isset($listing_data['price']) && $listing_data['price'] > 0) {
-                $avg_price += $listing_data['price'];
-                $price_count++;
-            }
-            if ($listing_data && isset($listing_data['square_feet']) && $listing_data['square_feet'] > 0) {
-                $total_sq_ft += $listing_data['square_feet'];
-                $sq_ft_count++;
-            }
+    // Try to get term meta for hero image
+    if (function_exists('get_term_meta')) {
+        $term_hero = get_term_meta($term->term_id, 'hero_image', true);
+        if ($term_hero) {
+            $hero_image = $term_hero;
         }
     }
-    
-    $avg_price = $price_count > 0 ? $avg_price / $price_count : 0;
-    $avg_sq_ft = $sq_ft_count > 0 ? $total_sq_ft / $sq_ft_count : 0;
-    
-    get_template_part('template-parts/sections/content', null, array(
-        'layout' => 'full-width',
-        'background' => 'light',
-        'padding' => 'xl',
-        'badge' => 'Market Overview',
-        'headline' => 'Delaware Real Estate Market',
-        'content' => 'Current market statistics and trends for Delaware properties.',
-        'stats' => array(
-            array(
-                'value' => $total_active,
-                'label' => __('Active Listings', 'happy-place-theme'),
-                'icon' => 'fas fa-home',
-                'format' => 'number'
-            ),
-            array(
-                'value' => $avg_price,
-                'label' => __('Average Price', 'happy-place-theme'),
-                'icon' => 'fas fa-dollar-sign',
-                'format' => 'currency'
-            ),
-            array(
-                'value' => $avg_sq_ft,
-                'label' => __('Average Sq Ft', 'happy-place-theme'),
-                'icon' => 'fas fa-ruler-combined',
-                'format' => 'number'
-            ),
-            array(
-                'value' => $listings_query->found_posts,
-                'label' => __('Total Properties', 'happy-place-theme'),
-                'icon' => 'fas fa-building',
-                'format' => 'number'
-            )
-        ),
-        'section_id' => 'market-stats'
-    ));
+} elseif (is_author()) {
+    $author = get_queried_object();
+    $archive_title = 'Listings by ' . $author->display_name;
+    $archive_description = get_the_author_meta('description', $author->ID);
 }
 
-// Featured Properties Section - Only if we have listings
-if (!empty($listings)) {
-    $featured_args = [
-        'post_type' => 'listing',
-        'posts_per_page' => 3,
-        'post__not_in' => wp_list_pluck($listings, 'ID'),
-        'meta_query' => [
-            [
-                'key' => '_listing_featured',
-                'value' => '1',
-                'compare' => '='
-            ]
-        ]
-    ];
+// Get the query
+global $wp_query;
+$total_listings = $wp_query->found_posts;
+$current_page = max(1, get_query_var('paged'));
+
+// Build filter options dynamically based on available listings
+$filter_options = array();
+
+if ($show_filters) {
+    // Property Type Filter
+    $property_types = get_terms(array(
+        'taxonomy' => 'property_type',
+        'hide_empty' => true
+    ));
     
-    $featured_query = new WP_Query($featured_args);
+    if (!is_wp_error($property_types) && !empty($property_types)) {
+        $type_options = array();
+        foreach ($property_types as $type) {
+            $type_options[$type->slug] = $type->name . ' (' . $type->count . ')';
+        }
+        
+        $filter_options[] = array(
+            'type' => 'select',
+            'name' => 'property_type',
+            'label' => 'Property Type',
+            'options' => $type_options,
+            'placeholder' => 'All Types'
+        );
+    }
     
-    if ($featured_query->have_posts()) {
-        get_template_part('template-parts/sections/featured-properties', null, array(
-            'background' => 'white',
-            'padding' => 'xl',
-            'badge' => 'Featured',
-            'headline' => 'Premium Properties',
-            'subheadline' => 'Handpicked Selection',
-            'content' => 'Discover our curated collection of exceptional Delaware properties.',
-            'query' => $featured_query,
-            'columns' => 3,
-            'card_style' => 'featured',
-            'buttons' => array(
-                array(
-                    'text' => 'View All Featured',
-                    'url' => add_query_arg('featured', '1', get_post_type_archive_link('listing')),
-                    'style' => 'primary',
-                    'size' => 'md',
-                    'icon' => 'fas fa-star'
-                )
-            ),
-            'section_id' => 'featured-properties'
-        ));
+    // Status Filter
+    $statuses = get_terms(array(
+        'taxonomy' => 'listing_status',
+        'hide_empty' => true
+    ));
+    
+    if (!is_wp_error($statuses) && !empty($statuses)) {
+        $status_options = array();
+        foreach ($statuses as $status) {
+            $status_options[$status->slug] = $status->name;
+        }
+        
+        $filter_options[] = array(
+            'type' => 'checkbox',
+            'name' => 'listing_status',
+            'label' => 'Status',
+            'options' => $status_options
+        );
+    }
+    
+    // Bedrooms Filter
+    $filter_options[] = array(
+        'type' => 'select',
+        'name' => 'bedrooms',
+        'label' => 'Bedrooms',
+        'options' => array(
+            '1' => '1+',
+            '2' => '2+',
+            '3' => '3+',
+            '4' => '4+',
+            '5' => '5+'
+        ),
+        'placeholder' => 'Any'
+    );
+    
+    // Bathrooms Filter
+    $filter_options[] = array(
+        'type' => 'select',
+        'name' => 'bathrooms',
+        'label' => 'Bathrooms',
+        'options' => array(
+            '1' => '1+',
+            '2' => '2+',
+            '3' => '3+',
+            '4' => '4+'
+        ),
+        'placeholder' => 'Any'
+    );
+    
+    // Price Range Filter
+    // Get min and max prices from current query
+    $price_range = $wpdb->get_row("
+        SELECT MIN(CAST(meta_value AS UNSIGNED)) as min_price, 
+               MAX(CAST(meta_value AS UNSIGNED)) as max_price
+        FROM {$wpdb->postmeta}
+        WHERE meta_key = '_listing_price'
+        AND post_id IN (SELECT ID FROM {$wpdb->posts} WHERE post_type = 'listing' AND post_status = 'publish')
+    ");
+    
+    if ($price_range && $price_range->min_price && $price_range->max_price) {
+        $filter_options[] = array(
+            'type' => 'range',
+            'name' => 'price',
+            'label' => 'Price Range',
+            'min' => $price_range->min_price,
+            'max' => $price_range->max_price
+        );
     }
 }
 
-// Saved Searches Section - For logged in users
-if (is_user_logged_in()) {
-    get_template_part('template-parts/sections/content', null, array(
-        'layout' => 'centered',
-        'background' => 'white',
-        'padding' => 'lg',
-        'border' => 'top',
-        'badge' => 'Your Account',
-        'headline' => 'Saved Searches',
-        'content' => 'Manage and track your property search criteria for faster browsing.',
-        'custom_content' => '<div id="user-saved-searches" data-user-id="' . get_current_user_id() . '" class="hph-bg-gray-50 hph-rounded-lg hph-p-lg hph-min-h-32"></div>',
-        'buttons' => array(
-            array(
-                'text' => 'Manage All Searches',
-                'url' => home_url('/dashboard/saved-searches'),
-                'style' => 'primary',
-                'size' => 'md',
-                'icon' => 'fas fa-cog'
-            )
-        ),
-        'section_id' => 'saved-searches'
-    ));
+// Sort options
+$sort_options = array(
+    'date_desc' => 'Newest First',
+    'date_asc' => 'Oldest First',
+    'price_asc' => 'Price: Low to High',
+    'price_desc' => 'Price: High to Low',
+    'title_asc' => 'Title: A-Z',
+    'title_desc' => 'Title: Z-A'
+);
+
+// Add featured sort if applicable
+if (function_exists('hpt_has_featured_listings')) {
+    $sort_options = array('featured' => 'Featured First') + $sort_options;
 }
 
-// Contact CTA Section
-get_template_part('template-parts/sections/content', null, array(
-    'layout' => 'centered',
-    'background' => 'primary',
-    'padding' => 'xl',
-    'headline' => 'Need Help Finding Your Perfect Property?',
-    'content' => 'Our experienced Delaware real estate agents are ready to help you find exactly what you\'re looking for. From first-time buyers to seasoned investors, we guide you every step of the way.',
-    'buttons' => array(
-        array(
-            'text' => 'Contact an Agent',
-            'url' => home_url('/contact'),
-            'style' => 'white',
-            'size' => 'lg',
-            'icon' => 'fas fa-comments'
-        ),
-        array(
-            'text' => 'Meet Our Team',
-            'url' => get_post_type_archive_link('agent'),
-            'style' => 'outline-white',
-            'size' => 'lg',
-            'icon' => 'fas fa-users'
-        )
-    ),
-    'section_id' => 'contact-cta'
-));
+?>
 
-// Service Areas Section
-get_template_part('template-parts/sections/hero', null, array(
-    'style' => 'image',
-    'height' => 'sm',
-    'background_image' => get_template_directory_uri() . '/assets/images/delaware-map.jpg',
-    'overlay' => 'gradient',
+<!-- Hero Section -->
+<?php get_template_part('template-parts/sections/hero', null, array(
+    'style' => $hero_image ? 'image' : 'gradient',
+    'height' => 'md',
+    'background_image' => $hero_image,
+    'overlay' => 'gradient-reverse',
     'overlay_opacity' => '60',
     'alignment' => 'center',
-    'content_width' => 'normal',
-    'badge' => 'Service Areas',
-    'headline' => 'Serving All of Delaware',
-    'subheadline' => 'Georgetown • Milford • Middletown • Sussex • Kent • New Castle',
-    'content' => 'From coastal communities to growing suburban areas, we know Delaware inside and out.',
+    'headline' => $archive_title,
+    'subheadline' => $total_listings . ' ' . _n('Property Available', 'Properties Available', $total_listings, 'happy-place-theme'),
+    'content' => $archive_description,
+    'fade_in' => true,
     'buttons' => array(
         array(
-            'text' => 'View Service Areas',
-            'url' => '/areas/',
+            'text' => 'Save Search',
+            'url' => '#save-search',
             'style' => 'white',
-            'size' => 'lg',
-            'icon' => 'fas fa-map-marker-alt'
+            'size' => 'l',
+            'icon' => 'fas fa-heart',
+            'icon_position' => 'left'
+        ),
+        array(
+            'text' => 'Get Alerts',
+            'url' => '#alerts',
+            'style' => 'outline-white',
+            'size' => 'l',
+            'icon' => 'fas fa-bell',
+            'icon_position' => 'left'
         )
-    ),
-    'section_id' => 'service-areas'
-));
+    )
+)); ?>
 
-// Enqueue page-specific assets
-wp_enqueue_style('hph-archive-listing', get_template_directory_uri() . '/assets/css/pages/archive-listing.css', ['hph-framework'], get_theme_mod('theme_version', '3.0.0'));
-wp_enqueue_style('hph-archive-enhancements', get_template_directory_uri() . '/assets/css/archive-enhancements.css', ['hph-framework'], get_theme_mod('theme_version', '3.0.0'));
-wp_enqueue_script('hph-archive-listing', get_template_directory_uri() . '/assets/js/pages/archive-listing.js', ['hph-framework-core'], get_theme_mod('theme_version', '3.0.0'), true);
-wp_enqueue_script('hph-archive-functionality', get_template_directory_uri() . '/assets/js/archive-functionality.js', ['jquery'], get_theme_mod('theme_version', '3.0.0'), true);
+<!-- Main Content -->
+<div class="hph-archive-listing">
+    <div class="hph-container">
+        
+        <!-- Breadcrumb -->
+        <?php if (function_exists('hph_breadcrumb')): ?>
+        <div class="hph-breadcrumb-wrapper">
+            <?php hph_breadcrumb(); ?>
+        </div>
+        <?php endif; ?>
+        
+        <!-- Archive Header -->
+        <div class="hph-archive-header">
+            <div class="hph-archive-info">
+                <h2 class="hph-archive-results">
+                    <?php if ($wp_query->found_posts > 0): ?>
+                        Showing <?php echo (($current_page - 1) * $items_per_page) + 1; ?>-<?php echo min($current_page * $items_per_page, $total_listings); ?> 
+                        of <?php echo $total_listings; ?> results
+                    <?php else: ?>
+                        No results found
+                    <?php endif; ?>
+                </h2>
+                
+                <?php if (is_tax() && $term): ?>
+                <div class="hph-term-meta">
+                    <?php if (function_exists('get_term_meta')): ?>
+                        <?php $additional_info = get_term_meta($term->term_id, 'additional_info', true); ?>
+                        <?php if ($additional_info): ?>
+                        <p class="hph-term-info"><?php echo esc_html($additional_info); ?></p>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </div>
+                <?php endif; ?>
+            </div>
+            
+            <!-- Quick Stats -->
+            <div class="hph-archive-stats">
+                <?php
+                // Calculate average price
+                $avg_price_result = $wpdb->get_var("
+                    SELECT AVG(CAST(meta_value AS UNSIGNED))
+                    FROM {$wpdb->postmeta}
+                    WHERE meta_key = '_listing_price'
+                    AND post_id IN (SELECT ID FROM {$wpdb->posts} WHERE post_type = 'listing' AND post_status = 'publish')
+                ");
+                
+                if ($avg_price_result): ?>
+                <div class="hph-stat-item">
+                    <span class="hph-stat-label">Avg. Price</span>
+                    <span class="hph-stat-value">$<?php echo number_format($avg_price_result); ?></span>
+                </div>
+                <?php endif; ?>
+                
+                <div class="hph-stat-item">
+                    <span class="hph-stat-label">New This Week</span>
+                    <span class="hph-stat-value">
+                        <?php
+                        $new_this_week = $wpdb->get_var("
+                            SELECT COUNT(*)
+                            FROM {$wpdb->posts}
+                            WHERE post_type = 'listing'
+                            AND post_status = 'publish'
+                            AND post_date >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+                        ");
+                        echo $new_this_week ?: '0';
+                        ?>
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Listings Grid/List/Map -->
+        <?php get_template_part('template-parts/layout/card-layout', null, array(
+            'layout' => $default_view,
+            'columns' => array(
+                'mobile' => 1,
+                'tablet' => 2,
+                'desktop' => 3,
+                'wide' => 4
+            ),
+            'gap' => 'lg',
+            'items' => $wp_query,
+            'card_args' => array(
+                'style' => 'property',
+                'show_price' => true,
+                'show_status' => true,
+                'show_address' => true,
+                'show_details' => true,
+                'show_favorite' => true,
+                'hover_effect' => 'lift'
+            ),
+            'show_controls' => true,
+            'show_filters' => $show_filters,
+            'show_sort' => true,
+            'show_pagination' => true,
+            'items_per_page' => $items_per_page,
+            'filters' => $filter_options,
+            'sort_options' => $sort_options,
+            'empty_message' => 'No listings match your criteria. Try adjusting your filters or search terms.',
+            'container_id' => 'listing-archive',
+            'ajax_enabled' => true,
+            'animate_cards' => true,
+            'map_args' => array(
+                'enabled' => $show_map,
+                'center_lat' => get_theme_mod('map_center_lat', 38.7296),
+                'center_lng' => get_theme_mod('map_center_lng', -75.1327),
+                'zoom' => 12,
+                'cluster_markers' => true
+            )
+        )); ?>
+        
+    </div>
+</div>
 
-// Localize script with current context
-wp_localize_script('hph-archive-listing', 'hphArchive', [
-    'ajaxUrl' => admin_url('admin-ajax.php'),
-    'nonce' => wp_create_nonce('hph_archive_nonce'),
-    'postType' => 'listing',
-    'currentView' => $current_view,
-    'currentSort' => $current_sort,
-    'perPage' => $per_page,
-    'currentPage' => $paged,
-    'maxPages' => $listings_query->max_num_pages,
-    'totalResults' => $listings_query->found_posts,
-    'isLoggedIn' => is_user_logged_in(),
-    'userId' => get_current_user_id(),
-    'strings' => [
-        'loading' => __('Loading...', 'happy-place-theme'),
-        'loadingMore' => __('Loading more properties...', 'happy-place-theme'),
-        'noResults' => __('No properties found.', 'happy-place-theme'),
-        'error' => __('An error occurred. Please try again.', 'happy-place-theme'),
-        'searchSaved' => __('Search saved successfully!', 'happy-place-theme'),
-        'loginRequired' => __('Please log in to save searches.', 'happy-place-theme')
-    ]
-]);
+<!-- CTA Section -->
+<section class="hph-archive-cta">
+    <div class="hph-container">
+        <div class="hph-cta-content">
+            <h2 class="hph-cta-title">Can't find what you're looking for?</h2>
+            <p class="hph-cta-description">Our team can help you find the perfect property. Get in touch for personalized assistance.</p>
+            <div class="hph-cta-buttons">
+                <a href="/contact" class="hph-btn hph-btn-primary hph-btn-lg">
+                    <i class="fas fa-envelope"></i>
+                    Contact an Agent
+                </a>
+                <a href="/property-alerts" class="hph-btn hph-btn-outline hph-btn-lg">
+                    <i class="fas fa-bell"></i>
+                    Set up Property Alerts
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
 
-get_footer();
-?>
+<!-- Save Search Modal -->
+<div id="save-search" class="hph-modal" style="display: none;">
+    <div class="hph-modal-content">
+        <button class="hph-modal-close">&times;</button>
+        <h3>Save This Search</h3>
+        <form class="hph-save-search-form">
+            <input type="text" name="search_name" placeholder="Name your search" required>
+            <label>
+                <input type="checkbox" name="email_alerts" checked>
+                Send me email alerts for new matches
+            </label>
+            <button type="submit" class="hph-btn hph-btn-primary">Save Search</button>
+        </form>
+    </div>
+</div>
+
+<style>
+/* Archive Page Styles */
+.hph-archive-listing {
+    padding: var(--hph-space-3xl) 0;
+    background: var(--hph-gray-50);
+}
+
+.hph-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 var(--hph-space-xl);
+}
+
+.hph-breadcrumb-wrapper {
+    margin-bottom: var(--hph-space-2xl);
+}
+
+.hph-archive-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--hph-space-2xl);
+    padding-bottom: var(--hph-space-xl);
+    border-bottom: 1px solid var(--hph-gray-200);
+}
+
+.hph-archive-results {
+    font-size: var(--hph-text-2xl);
+    font-weight: var(--hph-font-bold);
+    color: var(--hph-text-primary);
+    margin: 0;
+}
+
+.hph-term-meta {
+    margin-top: var(--hph-space-md);
+}
+
+.hph-term-info {
+    color: var(--hph-text-secondary);
+    font-size: var(--hph-text-base);
+}
+
+.hph-archive-stats {
+    display: flex;
+    gap: var(--hph-space-xl);
+}
+
+.hph-stat-item {
+    text-align: center;
+}
+
+.hph-stat-label {
+    display: block;
+    font-size: var(--hph-text-sm);
+    color: var(--hph-text-secondary);
+    margin-bottom: var(--hph-space-xs);
+}
+
+.hph-stat-value {
+    display: block;
+    font-size: var(--hph-text-xl);
+    font-weight: var(--hph-font-bold);
+    color: var(--hph-primary);
+}
+
+/* CTA Section */
+.hph-archive-cta {
+    padding: var(--hph-space-4xl) 0;
+    background: linear-gradient(135deg, var(--hph-primary) 0%, var(--hph-primary-dark) 100%);
+    color: var(--hph-white);
+    text-align: center;
+}
+
+.hph-cta-title {
+    font-size: var(--hph-text-3xl);
+    margin-bottom: var(--hph-space-md);
+}
+
+.hph-cta-description {
+    font-size: var(--hph-text-lg);
+    margin-bottom: var(--hph-space-2xl);
+    opacity: 0.9;
+}
+
+.hph-cta-buttons {
+    display: flex;
+    gap: var(--hph-space-lg);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Modal */
+.hph-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.hph-modal-content {
+    background: var(--hph-white);
+    padding: var(--hph-space-2xl);
+    border-radius: var(--hph-radius-lg);
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+}
+
+.hph-modal-close {
+    position: absolute;
+    top: var(--hph-space-md);
+    right: var(--hph-space-md);
+    background: none;
+    border: none;
+    font-size: var(--hph-text-2xl);
+    cursor: pointer;
+    color: var(--hph-text-secondary);
+}
+
+.hph-save-search-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--hph-space-lg);
+    margin-top: var(--hph-space-xl);
+}
+
+.hph-save-search-form input[type="text"] {
+    padding: var(--hph-space-md);
+    border: 1px solid var(--hph-gray-300);
+    border-radius: var(--hph-radius-md);
+    font-size: var(--hph-text-base);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hph-archive-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--hph-space-lg);
+    }
+    
+    .hph-archive-stats {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .hph-container {
+        padding: 0 var(--hph-space-lg);
+    }
+}
+</style>
+
+<script>
+// Archive page specific scripts
+document.addEventListener('DOMContentLoaded', function() {
+    // Save search modal
+    const saveSearchLinks = document.querySelectorAll('[href="#save-search"]');
+    const modal = document.getElementById('save-search');
+    const modalClose = modal?.querySelector('.hph-modal-close');
+    
+    saveSearchLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (modal) modal.style.display = 'flex';
+        });
+    });
+    
+    modalClose?.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
+    
+    modal?.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+    
+    // Save search form
+    const saveSearchForm = document.querySelector('.hph-save-search-form');
+    saveSearchForm?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Collect current filters and search parameters
+        const searchData = {
+            name: this.search_name.value,
+            alerts: this.email_alerts.checked,
+            filters: {}, // Collect from active filters
+            sort: document.querySelector('.hph-sort-select')?.value,
+            query: window.location.search
+        };
+        
+        // Send via AJAX to save
+        fetch(hph_ajax.ajax_url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                action: 'hph_save_search',
+                nonce: hph_ajax.nonce,
+                search_data: JSON.stringify(searchData)
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                modal.style.display = 'none';
+                // Show success message
+                alert('Search saved successfully!');
+            }
+        });
+    });
+});
+</script>
+
+<?php get_footer(); ?>

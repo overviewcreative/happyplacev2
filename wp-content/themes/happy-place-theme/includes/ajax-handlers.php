@@ -705,3 +705,35 @@ function handle_hph_export_settings() {
     echo json_encode($settings, JSON_PRETTY_PRINT);
     exit;
 }
+// Handle AJAX requests for filtering and pagination
+add_action('wp_ajax_hph_filter_listings', 'hph_filter_listings');
+add_action('wp_ajax_nopriv_hph_filter_listings', 'hph_filter_listings');
+
+function hph_filter_listings() {
+    check_ajax_referer('hph_layout_nonce', 'nonce');
+    
+    $args = array(
+        'post_type' => 'listing',
+        'posts_per_page' => $_POST['per_page'] ?? 12,
+        'paged' => $_POST['page'] ?? 1
+    );
+    
+    // Apply filters
+    if (!empty($_POST['filters'])) {
+        // Add meta queries and tax queries based on filters
+    }
+    
+    // Apply sorting
+    if (!empty($_POST['sort'])) {
+        // Add orderby parameters
+    }
+    
+    $query = new WP_Query($args);
+    
+    // Return HTML or JSON
+    wp_send_json_success(array(
+        'html' => '', // Rendered cards HTML
+        'total' => $query->found_posts,
+        'pages' => $query->max_num_pages
+    ));
+}
