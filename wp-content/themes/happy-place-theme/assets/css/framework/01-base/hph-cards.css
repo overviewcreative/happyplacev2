@@ -1,0 +1,341 @@
+/**
+ * Base Card Components CSS
+ * Universal card styling for all post types
+ * 
+ * @package HappyPlaceTheme
+ */
+
+/* Base Card Styles */
+.hph-card {
+    background: var(--hph-white);
+    border: 1px solid var(--hph-gray-200);
+    border-radius: var(--hph-radius-lg);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: var(--hph-shadow-sm);
+}
+
+.hph-card:hover {
+    box-shadow: var(--hph-shadow-lg);
+    transform: translateY(-2px);
+}
+
+.hph-card--featured {
+    border: 2px solid var(--hph-primary);
+    position: relative;
+}
+
+.hph-card--featured::before {
+    content: "Featured";
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: var(--hph-primary);
+    color: var(--hph-white);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--hph-radius-sm);
+    font-size: var(--hph-text-xs);
+    font-weight: 600;
+    z-index: 10;
+}
+
+/* Card Image */
+.hph-card__image {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+}
+
+.hph-card__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.hph-card:hover .hph-card__image img {
+    transform: scale(1.05);
+}
+
+.hph-card__image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        180deg, 
+        transparent 0%, 
+        transparent 60%, 
+        rgba(0,0,0,0.7) 100%
+    );
+    pointer-events: none;
+}
+
+/* Card Content */
+.hph-card__content {
+    padding: 1.5rem;
+}
+
+.hph-card__title {
+    margin: 0 0 0.5rem 0;
+    font-size: var(--hph-text-lg);
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--hph-gray-900);
+}
+
+.hph-card__title a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.hph-card__title a:hover {
+    color: var(--hph-primary);
+}
+
+.hph-card__excerpt {
+    color: var(--hph-gray-600);
+    font-size: var(--hph-text-sm);
+    line-height: 1.6;
+    margin: 0 0 1rem 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Card Meta */
+.hph-card__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--hph-gray-200);
+    font-size: var(--hph-text-sm);
+    color: var(--hph-gray-500);
+}
+
+.hph-card__price {
+    font-size: var(--hph-text-xl);
+    font-weight: 700;
+    color: var(--hph-primary);
+}
+
+.hph-card__status {
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--hph-radius-full);
+    font-size: var(--hph-text-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.hph-card__status--active { 
+    background: var(--hph-success-50); 
+    color: var(--hph-success-700); 
+}
+
+.hph-card__status--sold { 
+    background: var(--hph-gray-100); 
+    color: var(--hph-gray-700); 
+}
+
+.hph-card__status--pending { 
+    background: var(--hph-warning-50); 
+    color: var(--hph-warning-700); 
+}
+
+/* Card Actions */
+.hph-card__actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.hph-card__action {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--hph-gray-300);
+    border-radius: var(--hph-radius-md);
+    background: var(--hph-white);
+    color: var(--hph-gray-700);
+    font-size: var(--hph-text-sm);
+    font-weight: 500;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.hph-card__action:hover {
+    background: var(--hph-primary);
+    border-color: var(--hph-primary);
+    color: var(--hph-white);
+}
+
+.hph-card__action--primary {
+    background: var(--hph-primary);
+    border-color: var(--hph-primary);
+    color: var(--hph-white);
+}
+
+.hph-card__action--primary:hover {
+    background: var(--hph-primary-dark);
+    border-color: var(--hph-primary-dark);
+}
+
+/* Card Grid Layout */
+.hph-card-grid {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.hph-card-grid--2-cols {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.hph-card-grid--3-cols {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.hph-card-grid--4-cols {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 768px) {
+    .hph-card-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .hph-card-grid--2-cols,
+    .hph-card-grid--3-cols,
+    .hph-card-grid--4-cols {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Card List Layout */
+.hph-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.hph-card-list .hph-card {
+    display: flex;
+    align-items: stretch;
+}
+
+.hph-card-list .hph-card__image {
+    flex: 0 0 300px;
+    aspect-ratio: 4/3;
+}
+
+.hph-card-list .hph-card__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 768px) {
+    .hph-card-list .hph-card {
+        flex-direction: column;
+    }
+    
+    .hph-card-list .hph-card__image {
+        flex: none;
+    }
+}
+
+/* Card Map Layout */
+.hph-card-map {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 2rem;
+    height: 600px;
+}
+
+.hph-card-map__listings {
+    overflow-y: auto;
+    padding-right: 1rem;
+}
+
+.hph-card-map__listings .hph-card {
+    margin-bottom: 1rem;
+}
+
+.hph-card-map__listings .hph-card:last-child {
+    margin-bottom: 0;
+}
+
+.hph-card-map__map {
+    border-radius: var(--hph-radius-lg);
+    overflow: hidden;
+    position: relative;
+}
+
+.hph-card-map__map .mapboxgl-canvas {
+    border-radius: var(--hph-radius-lg);
+}
+
+@media (max-width: 1024px) {
+    .hph-card-map {
+        grid-template-columns: 1fr;
+        grid-template-rows: 300px 1fr;
+    }
+    
+    .hph-card-map__map {
+        order: -1;
+    }
+    
+    .hph-card-map__listings {
+        max-height: 400px;
+    }
+}
+
+/* Compact Card Variant */
+.hph-card--compact {
+    padding: 1rem;
+}
+
+.hph-card--compact .hph-card__content {
+    padding: 0;
+}
+
+.hph-card--compact .hph-card__title {
+    font-size: var(--hph-text-base);
+    margin-bottom: 0.25rem;
+}
+
+.hph-card--compact .hph-card__meta {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+}
+
+/* Loading States */
+.hph-card--loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.hph-card--loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid var(--hph-primary);
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: hph-spin 1s linear infinite;
+}
+
+@keyframes hph-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

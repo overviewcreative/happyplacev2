@@ -62,7 +62,7 @@ class AdminMenu {
      */
     public function init(): void {
         // Add menu pages
-        add_action('AdminMenu', [$this, 'add_menu_pages']);
+        add_action('admin_menu', [$this, 'add_menu_pages']);
         
         // Add toolbar items
         add_action('admin_bar_menu', [$this, 'add_toolbar_items'], 100);
@@ -100,14 +100,7 @@ class AdminMenu {
                 'slug' => 'hp-analytics',
                 'callback' => [$this, 'render_analytics'],
             ],
-            'leads' => [
-                'parent' => 'happy-place',
-                'title' => __('Lead Management', 'happy-place'),
-                'menu_title' => __('Leads', 'happy-place'),
-                'capability' => 'edit_posts',
-                'slug' => 'hp-leads',
-                'callback' => [$this, 'render_leads'],
-            ],
+            // Leads menu moved to Lead Service class
             'import' => [
                 'parent' => 'happy-place',
                 'title' => __('Import/Export', 'happy-place'),
@@ -382,31 +375,7 @@ class AdminMenu {
         <?php
     }
     
-    /**
-     * Render leads page
-     * 
-     * @return void
-     */
-    public function render_leads(): void {
-        ?>
-        <div class="wrap hp-admin-leads">
-            <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
-            
-            <div class="hp-leads-filters">
-                <!-- Add filter controls here -->
-            </div>
-            
-            <div class="hp-leads-table">
-                <?php
-                // Use WP_List_Table for leads display
-                $leads_table = new \HappyPlace\Admin\Tables\Leads_Table();
-                $leads_table->prepare_items();
-                $leads_table->display();
-                ?>
-            </div>
-        </div>
-        <?php
-    }
+    // render_leads method removed - now handled by Lead Service
     
     /**
      * Render import/export page

@@ -15,10 +15,10 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Get all agent data
+ * Get all agent data with enhanced service integration
  * 
  * @param int|WP_Post $agent Agent ID or post object
- * @return array Complete agent data
+ * @return array Complete agent data with performance stats
  */
 function hpt_get_agent($agent = null) {
     $agent = get_post($agent);
@@ -27,7 +27,23 @@ function hpt_get_agent($agent = null) {
         return null;
     }
     
-    return array(
+    // Get enhanced data from Agent Service if available
+    $enhanced_data = null;
+    $service_stats = null;
+    
+    if (class_exists('HappyPlace\\Services\\AgentService')) {
+        $agent_service = new \HappyPlace\Services\AgentService();
+        $agent_service->init();
+        
+        // Get user ID associated with this agent post
+        $user_id = get_post_meta($agent->ID, 'agent_user_id', true);
+        if ($user_id) {
+            $enhanced_data = $agent_service->get_agent_by_user($user_id);
+            $service_stats = $enhanced_data['stats'] ?? null;
+        }
+    }
+    
+    $base_data = array(
         'id' => $agent->ID,
         'name' => get_the_title($agent),
         'slug' => $agent->post_name,
@@ -76,6 +92,26 @@ function hpt_get_agent($agent = null) {
         // Status
         'is_featured' => hpt_is_agent_featured($agent->ID),
     );
+    
+    // Merge with enhanced service data if available
+    if ($enhanced_data) {
+        $base_data['enhanced_stats'] = $service_stats;
+        $base_data['user_data'] = $enhanced_data['user'] ?? null;
+        $base_data['wordpress_user_id'] = $enhanced_data['user_id'] ?? null;
+        
+        // Override with more accurate service data if available
+        if (isset($service_stats['active_listings'])) {
+            $base_data['active_listings'] = $service_stats['active_listings'];
+        }
+        if (isset($service_stats['sold_listings'])) {
+            $base_data['sold_listings'] = $service_stats['sold_listings'];
+        }
+        if (isset($service_stats['total_volume'])) {
+            $base_data['total_sales'] = $service_stats['total_volume'];
+        }
+    }
+    
+    return $base_data;
 }
 
 /**

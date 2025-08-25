@@ -118,8 +118,11 @@ class HPH_Theme {
         // Load the template loader
         require_once HPH_INC_DIR . '/class-hph-template-loader.php';
         
+        // Load component loader
+        require_once HPH_INC_DIR . '/class-hph-component-loader.php';
+        
         // Load menu walker class
-        require_once HPH_THEME_DIR . '/inc/class-menu-walker.php';
+        require_once HPH_THEME_DIR . '/includes/class-menu-walker.php';
         
         // Load integrations
         $this->load_integrations();
@@ -252,6 +255,11 @@ class HPH_Theme {
                     $this->services[$id]->init();
                 }
             }
+        }
+        
+        // Initialize component loader
+        if (class_exists('HPH_Component_Loader')) {
+            HPH_Component_Loader::init();
         }
     }
     

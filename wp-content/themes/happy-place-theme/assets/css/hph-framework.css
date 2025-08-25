@@ -20,6 +20,9 @@
 @import url('framework/01-base/hph-reset.css');
 @import url('framework/01-base/hph-typography.css');
 @import url('framework/01-base/hph-wp-overrides.css');
+@import url('framework/01-base/hph-cards.css');
+@import url('framework/01-base/hph-stat-cards.css');
+@import url('framework/01-base/hph-data-tables.css');
 
 /* ================================================
    2. LAYOUT SYSTEM
@@ -74,10 +77,10 @@
    Page-specific styles
    ================================================ */
 @import url('framework/05-pages/hph-single-listing.css');
-@import url('framework/05-pages/hph-showcase.css');
-@import url('framework/05-pages/hph-homepage.css');
 @import url('framework/05-pages/hph-single-listing-layout.css');
 @import url('framework/05-pages/hph-archive-listing.css');
+@import url('framework/05-pages/hph-showcase.css');
+@import url('framework/05-pages/hph-homepage.css');
 
 /* Dashboard pages */
 @import url('framework/05-pages/dashboard/hph-dashboard.css');
@@ -104,29 +107,5 @@
 @import url('framework/06-utilities/hph-property-flyer.css');
 @import url('framework/06-utilities/hph-price-utilities.css');
 
-/* ================================================
-   CONSOLIDATION SUMMARY
-   
-   ✅ REMOVED (15 files):
-   - reset.css + reset-enhanced.css → hph-reset.css
-   - spacing.css + spacing-enhanced.css + margin.css + padding.css + gap.css → hph-spacing.css
-   - animations.css + animations-enhanced.css → hph-animations.css
-   - effects.css + effects-enhanced.css → hph-effects.css
-   - bootstrap-overrides.css (removed - no longer needed)
-   - colors.css (empty file)
-   
-   ✅ RENAMED (67 files):
-   - All framework files now use hph- prefix
-   - grid-modern.css → hph-grid.css
-   - variables.css → hph-variables.css
-   - buttons.css → hph-buttons.css
-   - etc.
-   
-   ✅ OPTIMIZED:
-   - 30% reduction in duplicate CSS rules
-   - Consistent variable usage throughout
-   - Modern CSS features (grid, flexbox, variables)
-   - Accessibility improvements
-   ================================================ */
 
 /* File Location: /wp-content/themes/happy-place-theme/assets/css/hph-framework.css */

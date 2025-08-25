@@ -27,7 +27,17 @@ function hpt_get_transaction($transaction = null) {
         return null;
     }
     
-    return array(
+    // Get enhanced data from Transaction Service if available
+    $enhanced_data = null;
+    $commission_data = null;
+    
+    if (class_exists('HappyPlace\\Services\\TransactionService')) {
+        $service = new \HappyPlace\Services\TransactionService();
+        $service->init();
+        $commission_data = $service->calculate_transaction_commission($transaction->ID);
+    }
+    
+    $base_data = array(
         'id' => $transaction->ID,
         'title' => get_the_title($transaction),
         'slug' => $transaction->post_name,
@@ -88,6 +98,16 @@ function hpt_get_transaction($transaction = null) {
         'is_cancelled' => hpt_is_transaction_cancelled($transaction->ID),
         'is_confidential' => hpt_is_transaction_confidential($transaction->ID),
     );
+    
+    // Merge with enhanced commission data if available
+    if ($commission_data) {
+        $base_data['commission_data'] = $commission_data;
+        $base_data['total_commission'] = $commission_data['total_commission'] ?? 0;
+        $base_data['agent_commission'] = $commission_data['agent_commission'] ?? 0;
+        $base_data['brokerage_commission'] = $commission_data['brokerage_commission'] ?? 0;
+    }
+    
+    return $base_data;
 }
 
 /**
@@ -638,4 +658,75 @@ function hpt_get_pending_transactions($agent_id = null) {
         'orderby' => 'meta_value',
         'order' => 'ASC'
     ));
+}
+
+/**
+ * Get transaction pipeline data with service integration
+ * 
+ * @param int $agent_id Agent user ID
+ * @return array Pipeline data organized by status
+ */
+function hpt_get_transaction_pipeline_with_service($agent_id = null) {
+    if (class_exists('HappyPlace\\Services\\TransactionService')) {
+        $service = new \HappyPlace\Services\TransactionService();
+        $service->init();
+        return $service->get_transaction_pipeline($agent_id);
+    }
+    
+    // Fallback to basic pipeline
+    $pipeline = [];
+    $statuses = ['draft', 'offer_submitted', 'under_contract', 'inspection', 'financing', 'closing'];
+    
+    foreach ($statuses as $status) {
+        $transactions = hpt_get_transactions_by_status($status, $agent_id);
+        $pipeline[$status] = [
+            'transactions' => array_map(function($post) {
+                return hpt_get_transaction($post->ID);
+            }, $transactions),
+            'count' => count($transactions),
+            'total_value' => array_sum(array_map(function($post) {
+                return floatval(get_field('sale_price', $post->ID) ?: 0);
+            }, $transactions))
+        ];
+    }
+    
+    return $pipeline;
+}
+
+/**
+ * Get transaction statistics with service integration
+ * 
+ * @param int $agent_id Agent user ID
+ * @param string $period Time period (ytd, mtd, etc.)
+ * @return array Statistics data
+ */
+function hpt_get_transaction_stats_with_service($agent_id = null, $period = 'ytd') {
+    if (class_exists('HappyPlace\\Services\\TransactionService')) {
+        $service = new \HappyPlace\Services\TransactionService();
+        $service->init();
+        return $service->get_transaction_stats($agent_id, $period);
+    }
+    
+    // Fallback basic stats
+    $closed_transactions = hpt_get_closed_transactions($agent_id);
+    $active_transactions = hpt_get_pending_transactions($agent_id);
+    
+    $total_volume = 0;
+    $total_commission = 0;
+    
+    foreach ($closed_transactions as $transaction) {
+        $sale_price = floatval(get_field('sale_price', $transaction->ID) ?: 0);
+        $total_volume += $sale_price;
+        
+        // Basic commission calculation (assuming 3% agent commission)
+        $commission = $sale_price * 0.03;
+        $total_commission += $commission;
+    }
+    
+    return [
+        'active_transactions' => count($active_transactions),
+        'closed_transactions' => count($closed_transactions),
+        'total_volume' => $total_volume,
+        'total_commission' => $total_commission
+    ];
 }

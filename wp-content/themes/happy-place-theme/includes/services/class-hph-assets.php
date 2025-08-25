@@ -69,7 +69,7 @@ class HPH_Assets implements HPH_Service {
         
         wp_enqueue_script(
             'hph-framework-core',
-            HPH_THEME_URI . '/assets/js/framework-core.js',
+            HPH_THEME_URI . '/assets/js/base/framework-core.js',
             array('jquery'),
             HPH_VERSION,
             true
@@ -86,12 +86,28 @@ class HPH_Assets implements HPH_Service {
             $this->load_dashboard_assets();
         }
         
-        // Load Chart.js for mortgage calculator
+        // Load Chart.js for data visualization
         wp_enqueue_script(
             'chartjs',
             'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js',
             array(),
             '4.4.0',
+            true
+        );
+        
+        // Load Mapbox GL JS for advanced mapping
+        wp_enqueue_style(
+            'mapbox-gl-css',
+            'https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css',
+            array(),
+            '3.0.1'
+        );
+        
+        wp_enqueue_script(
+            'mapbox-gl-js',
+            'https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js',
+            array(),
+            '3.0.1',
             true
         );
         
@@ -109,6 +125,9 @@ class HPH_Assets implements HPH_Service {
             }
         }
         
+        // Get API keys
+        $mapbox_api_key = get_option('hph_mapbox_access_token', '');
+        
         // Localize script with enhanced context
         wp_localize_script('hph-framework-core', 'hphContext', array(
             'ajaxUrl' => admin_url('admin-ajax.php'),
@@ -120,11 +139,17 @@ class HPH_Assets implements HPH_Service {
             'isListing' => is_singular('listing'),
             'listingId' => is_singular('listing') ? get_the_ID() : null,
             'hasGoogleMaps' => !empty($google_maps_api_key),
+            'hasMapbox' => !empty($mapbox_api_key),
+            'mapboxAccessToken' => $mapbox_api_key,
+            'googleMapsApiKey' => $google_maps_api_key,
             'strings' => array(
                 'loading' => __('Loading...', 'happy-place-theme'),
                 'error' => __('An error occurred. Please try again.', 'happy-place-theme'),
                 'success' => __('Success!', 'happy-place-theme'),
                 'confirm' => __('Are you sure?', 'happy-place-theme'),
+                'noData' => __('No data available', 'happy-place-theme'),
+                'loadingMap' => __('Loading map...', 'happy-place-theme'),
+                'mapError' => __('Failed to load map', 'happy-place-theme'),
             )
         ));
         
@@ -187,36 +212,63 @@ class HPH_Assets implements HPH_Service {
     }
     
     /**
-     * Load all JS files
+     * Load all JS files from new structure
      */
     private function load_all_js_files() {
+        // New JS directory structure matching template/CSS framework
         $js_directories = array(
-            '/assets/js/',
-            '/assets/js/components/',
-            '/assets/js/pages/',
+            '/assets/js/layout/',      # Layout-related JS
+            '/assets/js/components/',  # Component JS (subdirectories handled separately)
+            '/assets/js/sections/',    # Section JS
+            '/assets/js/pages/',       # Page-specific JS
+            '/assets/js/utilities/',   # Utility JS
         );
         
         $loaded_files = array();
         
+        // Load from main directories
         foreach ($js_directories as $dir) {
-            $full_path = HPH_THEME_DIR . $dir;
-            if (is_dir($full_path)) {
-                $files = glob($full_path . '*.js');
-                foreach ($files as $file) {
-                    $filename = basename($file, '.js');
-                    
-                    // Skip if already loaded or if it's framework-core (loaded separately)
-                    if (in_array($filename, $loaded_files) || $filename === 'framework-core') {
-                        continue;
-                    }
-                    
-                    $handle = 'hph-' . $filename;
-                    $url = HPH_THEME_URI . $dir . basename($file);
-                    
-                    wp_enqueue_script($handle, $url, array('hph-framework-core'), HPH_VERSION, true);
-                    $loaded_files[] = $filename;
-                }
+            $this->load_js_from_directory($dir, $loaded_files);
+        }
+        
+        // Load component subdirectories
+        $component_dirs = array(
+            '/assets/js/components/listing/',
+            '/assets/js/components/forms/',
+            '/assets/js/components/ui/',
+            '/assets/js/components/agent/',
+            '/assets/js/pages/dashboard/',  # Dashboard JS handled here too
+            '/assets/js/utilities/admin/',  # Admin utilities
+        );
+        
+        foreach ($component_dirs as $dir) {
+            $this->load_js_from_directory($dir, $loaded_files);
+        }
+    }
+    
+    /**
+     * Load JS files from a specific directory
+     */
+    private function load_js_from_directory($dir, &$loaded_files) {
+        $full_path = HPH_THEME_DIR . $dir;
+        if (!is_dir($full_path)) {
+            return;
+        }
+        
+        $files = glob($full_path . '*.js');
+        foreach ($files as $file) {
+            $filename = basename($file, '.js');
+            
+            // Skip if already loaded or if it's framework-core (loaded separately)
+            if (in_array($filename, $loaded_files) || $filename === 'framework-core') {
+                continue;
             }
+            
+            $handle = 'hph-' . $filename;
+            $url = HPH_THEME_URI . $dir . basename($file);
+            
+            wp_enqueue_script($handle, $url, array('hph-framework-core'), HPH_VERSION, true);
+            $loaded_files[] = $filename;
         }
     }
     
@@ -237,14 +289,14 @@ class HPH_Assets implements HPH_Service {
             }
         }
         
-        // Dashboard JS files
-        $dashboard_js_dir = HPH_THEME_DIR . '/assets/js/dashboard/';
+        // Dashboard JS files (updated path)
+        $dashboard_js_dir = HPH_THEME_DIR . '/assets/js/pages/dashboard/';
         if (is_dir($dashboard_js_dir)) {
             $js_files = glob($dashboard_js_dir . '*.js');
             foreach ($js_files as $file) {
                 $filename = basename($file, '.js');
                 $handle = 'hph-dashboard-' . $filename;
-                $url = HPH_THEME_URI . '/assets/js/dashboard/' . basename($file);
+                $url = HPH_THEME_URI . '/assets/js/pages/dashboard/' . basename($file);
                 
                 wp_enqueue_script($handle, $url, array('hph-framework-core'), HPH_VERSION, true);
             }

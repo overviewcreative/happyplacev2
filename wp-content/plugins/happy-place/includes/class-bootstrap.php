@@ -195,6 +195,34 @@ class Bootstrap {
             $import_service->init();
             error_log('Happy Place: Import service initialized');
         }
+        
+        // Initialize Lead Service
+        if (class_exists('HappyPlace\\Services\\LeadService')) {
+            $lead_service = new \HappyPlace\Services\LeadService();
+            $lead_service->init();
+            error_log('Happy Place: Lead service initialized');
+        }
+        
+        // Initialize Agent Service
+        if (class_exists('HappyPlace\\Services\\AgentService')) {
+            $agent_service = new \HappyPlace\Services\AgentService();
+            $agent_service->init();
+            error_log('Happy Place: Agent service initialized');
+        }
+        
+        // Initialize Open House Service
+        if (class_exists('HappyPlace\\Services\\OpenHouseService')) {
+            $open_house_service = new \HappyPlace\Services\OpenHouseService();
+            $open_house_service->init();
+            error_log('Happy Place: Open House service initialized');
+        }
+        
+        // Initialize Transaction Service
+        if (class_exists('HappyPlace\\Services\\TransactionService')) {
+            $transaction_service = new \HappyPlace\Services\TransactionService();
+            $transaction_service->init();
+            error_log('Happy Place: Transaction service initialized');
+        }
     }
     
     /**

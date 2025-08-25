@@ -1,215 +1,406 @@
 <?php
 /**
- * Archive Template for Agents
+ * Agent Archive Template - Modular Section-Based Architecture
  * 
- * Displays all agents with filtering capabilities
- *
+ * Following front-page.php structure using clean get_template_part() calls
+ * with reusable sections for maximum flexibility and maintainability.
+ * 
  * @package HappyPlaceTheme
+ * @since 3.0.0
  */
 
-get_header(); ?>
+get_header();
 
-<div class="archive-header bg-gray-50 py-12">
-    <div class="container">
-        <div class="archive-header-content text-center">
-            <h1 class="archive-title text-3xl font-bold mb-4">
-                <?php 
-                if (is_search()) {
-                    printf(esc_html__('Search Results for "%s"', 'happy-place-theme'), get_search_query());
-                } else {
-                    post_type_archive_title();
-                }
-                ?>
-            </h1>
-            
-            <?php if (have_posts()) : ?>
-                <p class="archive-count text-gray-600 mb-4">
-                    <?php
-                    global $wp_query;
-                    $total = $wp_query->found_posts;
-                    printf(
-                        _n('%d agent found', '%d agents found', $total, 'happy-place-theme'),
-                        $total
-                    );
-                    ?>
-                </p>
-            <?php endif; ?>
-            
-            <p class="archive-description text-gray-600 max-w-2xl mx-auto">
-                <?php esc_html_e('Meet our experienced real estate professionals dedicated to helping you find your perfect home.', 'happy-place-theme'); ?>
-            </p>
-        </div>
-    </div>
-</div>
+// Load our section helper functions
+require_once get_template_directory() . '/template-parts/sections/section-helper.php';
 
-<div class="agent-filters bg-white border-b border-gray-200 py-6">
-    <div class="container">
-        <form class="filter-form" method="GET" action="<?php echo esc_url(get_post_type_archive_link('agent')); ?>">
-            
-            <div class="filter-row grid grid-cols-1 md:grid-cols-4 gap-4">
-                <!-- Search -->
-                <div class="filter-group">
-                    <label for="agent-search" class="block text-sm font-medium text-gray-700 mb-2"><?php esc_html_e('Search Agents', 'happy-place-theme'); ?></label>
-                    <input type="text" id="agent-search" name="search" value="<?php echo esc_attr(get_query_var('search')); ?>" placeholder="<?php esc_attr_e('Enter agent name or specialty', 'happy-place-theme'); ?>" class="form-input w-full">
-                </div>
-                
-                <!-- Specialty -->
-                <div class="filter-group">
-                    <label for="specialty" class="block text-sm font-medium text-gray-700 mb-2"><?php esc_html_e('Specialty', 'happy-place-theme'); ?></label>
-                    <select id="specialty" name="specialty" class="form-select w-full">
-                        <option value=""><?php esc_html_e('All Specialties', 'happy-place-theme'); ?></option>
-                        <?php
-                        $specialties = array(
-                            'buyer_agent' => 'Buyer\'s Agent',
-                            'listing_agent' => 'Listing Agent',
-                            'luxury_homes' => 'Luxury Homes',
-                            'first_time_buyers' => 'First Time Buyers',
-                            'investment' => 'Investment Properties',
-                            'commercial' => 'Commercial Real Estate',
-                            'relocation' => 'Relocation Specialist'
-                        );
-                        $current_specialty = get_query_var('specialty');
-                        foreach ($specialties as $key => $specialty) :
-                        ?>
-                            <option value="<?php echo esc_attr($key); ?>" <?php selected($current_specialty, $key); ?>>
-                                <?php echo esc_html($specialty); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                
-                <!-- Languages -->
-                <div class="filter-group">
-                    <label for="languages" class="block text-sm font-medium text-gray-700 mb-2"><?php esc_html_e('Languages', 'happy-place-theme'); ?></label>
-                    <select id="languages" name="languages" class="form-select w-full">
-                        <option value=""><?php esc_html_e('All Languages', 'happy-place-theme'); ?></option>
-                        <?php
-                        $languages = array(
-                            'english' => 'English',
-                            'spanish' => 'Spanish',
-                            'french' => 'French',
-                            'chinese' => 'Chinese',
-                            'german' => 'German',
-                            'italian' => 'Italian'
-                        );
-                        $current_language = get_query_var('languages');
-                        foreach ($languages as $key => $language) :
-                        ?>
-                            <option value="<?php echo esc_attr($key); ?>" <?php selected($current_language, $key); ?>>
-                                <?php echo esc_html($language); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                
-                <div class="hp-filter-group">
-                    <button type="submit" class="hp-btn hp-btn-primary">
-                        <i class="fas fa-search"></i>
-                        <?php esc_html_e('Search Agents', 'happy-place-theme'); ?>
-                    </button>
-                </div>
-            </div>
-            
-        </form>
-    </div>
-</div>
+// Get current query parameters
+$current_view = get_query_var('view', 'grid');
+$current_sort = get_query_var('sort', 'name-asc');
+$per_page = get_query_var('per_page', get_option('posts_per_page', 12));
+$paged = get_query_var('paged', 1);
 
-<main id="primary" class="hp-main site-main">
-    <div class="hp-container">
-        
-        <?php if (have_posts()) : ?>
-            
-            <div class="hp-agents-grid">
-                <?php while (have_posts()) : the_post(); ?>
-                    <?php get_template_part('template-parts/agent-card'); ?>
-                <?php endwhile; ?>
-            </div>
-            
-            <?php
-            // Pagination
-            the_posts_pagination(array(
-                'mid_size'  => 2,
-                'prev_text' => '<i class="fas fa-chevron-left"></i> ' . esc_html__('Previous', 'happy-place-theme'),
-                'next_text' => esc_html__('Next', 'happy-place-theme') . ' <i class="fas fa-chevron-right"></i>',
-                'class'     => 'hp-pagination',
-            ));
-            ?>
-            
-        <?php else : ?>
-            
-            <div class="hp-no-agents">
-                <div class="hp-no-agents-content">
-                    <i class="fas fa-user-tie hp-no-agents-icon"></i>
-                    <h2><?php esc_html_e('No Agents Found', 'happy-place-theme'); ?></h2>
-                    <p><?php esc_html_e('Sorry, no agents match your search criteria. Try adjusting your filters or search terms.', 'happy-place-theme'); ?></p>
-                    
-                    <div class="hp-no-agents-actions">
-                        <a href="<?php echo esc_url(get_post_type_archive_link('agent')); ?>" class="hp-btn hp-btn-primary">
-                            <?php esc_html_e('View All Agents', 'happy-place-theme'); ?>
-                        </a>
-                        
-                        <a href="<?php echo esc_url(home_url('/contact')); ?>" class="hp-btn hp-btn-secondary">
-                            <?php esc_html_e('Contact Us', 'happy-place-theme'); ?>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-        <?php endif; ?>
-        
-    </div>
-</main>
-
-<style>
-.hp-agent-filters {
-    background: #f8fafc;
-    padding: 2rem 0;
-    margin-bottom: 2rem;
-    border: 1px solid #e2e8f0;
+// Sanitize view mode
+$allowed_views = ['grid', 'list'];
+if (!in_array($current_view, $allowed_views)) {
+    $current_view = 'grid';
 }
 
-.hp-agents-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-bottom: 3rem;
+// Get current WP Query for agents
+global $wp_query;
+$agents_query = $wp_query;
+
+// Extract posts for component system
+$agents = [];
+if ($agents_query->have_posts()) {
+    while ($agents_query->have_posts()) {
+        $agents_query->the_post();
+        $agents[] = get_post();
+    }
+    wp_reset_postdata();
 }
 
-.hp-no-agents {
-    text-align: center;
-    padding: 4rem 2rem;
-}
-
-.hp-no-agents-icon {
-    font-size: 4rem;
-    color: var(--hp-primary);
-    margin-bottom: 1rem;
-}
-
-.hp-no-agents h2 {
-    font-size: 1.875rem;
-    margin-bottom: 1rem;
-    color: var(--hp-text);
-}
-
-.hp-no-agents p {
-    font-size: 1.125rem;
-    color: #6b7280;
-    margin-bottom: 2rem;
-}
-
-.hp-no-agents-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-@media (max-width: 768px) {
-    .hp-agents-grid {
-        grid-template-columns: 1fr;
+/**
+ * Get agent archive title with context
+ */
+function hph_get_agent_archive_title() {
+    if (get_search_query()) {
+        return sprintf(__('Agent Search Results for "%s"', 'happy-place-theme'), get_search_query());
+    } else {
+        return __('Our Real Estate Agents', 'happy-place-theme');
     }
 }
-</style>
 
-<?php get_footer(); ?>
+/**
+ * Get agent archive description
+ */
+function hph_get_agent_archive_description() {
+    if (get_search_query()) {
+        return sprintf(__('Agents matching your search for "%s"', 'happy-place-theme'), get_search_query());
+    }
+    return __('Meet our experienced team of Delaware real estate professionals. Each agent brings local expertise, market knowledge, and a commitment to helping you achieve your real estate goals.', 'happy-place-theme');
+}
+
+// Helper function to calculate team stats
+function hph_calculate_team_stats($agents) {
+    if (empty($agents)) {
+        return null;
+    }
+    
+    $total_listings = 0;
+    $total_sales = 0;
+    $combined_experience = 0;
+    $total_rating = 0;
+    $agents_with_ratings = 0;
+    
+    foreach ($agents as $agent) {
+        if (function_exists('hpt_get_agent')) {
+            $agent_data = hpt_get_agent($agent->ID);
+            if ($agent_data) {
+                $total_listings += $agent_data['stats']['active_listings'] ?? 0;
+                $total_sales += $agent_data['stats']['total_sales'] ?? 0;
+                $combined_experience += $agent_data['experience_years'] ?? 0;
+                
+                if (isset($agent_data['stats']['average_rating']) && $agent_data['stats']['average_rating'] > 0) {
+                    $total_rating += $agent_data['stats']['average_rating'];
+                    $agents_with_ratings++;
+                }
+            }
+        }
+    }
+    
+    return [
+        'total_listings' => $total_listings,
+        'total_sales' => $total_sales,
+        'combined_experience' => $combined_experience,
+        'avg_rating' => $agents_with_ratings > 0 ? round($total_rating / $agents_with_ratings, 1) : 0
+    ];
+}
+
+// Helper function to get featured agent
+function hph_get_featured_agent($agents) {
+    if (empty($agents)) {
+        return null;
+    }
+    
+    $featured_agent = null;
+    $highest_score = 0;
+    
+    foreach ($agents as $agent) {
+        if (function_exists('hpt_get_agent')) {
+            $agent_data = hpt_get_agent($agent->ID);
+            if ($agent_data) {
+                // Calculate score based on listings, sales, and rating
+                $score = 0;
+                $score += ($agent_data['stats']['active_listings'] ?? 0) * 2;
+                $score += ($agent_data['stats']['total_sales'] ?? 0) * 1;
+                $score += ($agent_data['stats']['average_rating'] ?? 0) * 10;
+                
+                if ($score > $highest_score) {
+                    $highest_score = $score;
+                    $featured_agent = $agent->ID;
+                }
+            }
+        }
+    }
+    
+    return $featured_agent;
+}
+
+// Hero Section - Agent Team Hero
+get_template_part('template-parts/sections/hero', null, array(
+    'style' => 'image',
+    'height' => 'md',
+    'background_image' => get_template_directory_uri() . '/assets/images/agent-hero.jpg',
+    'overlay' => 'gradient',
+    'overlay_opacity' => '70',
+    'alignment' => 'center',
+    'content_width' => 'normal',
+    'badge' => 'Our Team',
+    'headline' => hph_get_agent_archive_title(),
+    'subheadline' => sprintf(__('Meet Our %d Professional Agents', 'happy-place-theme'), $agents_query->found_posts),
+    'content' => hph_get_agent_archive_description(),
+    'buttons' => array(
+        array(
+            'text' => 'Contact Our Team',
+            'url' => home_url('/contact'),
+            'style' => 'white',
+            'size' => 'lg',
+            'icon' => 'fas fa-phone'
+        ),
+        array(
+            'text' => 'View Properties',
+            'url' => get_post_type_archive_link('listing'),
+            'style' => 'outline-white',
+            'size' => 'lg',
+            'icon' => 'fas fa-home'
+        )
+    ),
+    'section_id' => 'agent-hero'
+));
+
+// Archive Layout Section - Main agent grid with filters
+get_template_part('template-parts/layout/archive-layout', null, array(
+    'post_type' => 'agent',
+    'posts' => $agents,
+    'title' => hph_get_agent_archive_title(),
+    'description' => hph_get_agent_archive_description(),
+    'total_results' => $agents_query->found_posts,
+    'current_view' => $current_view,
+    'current_sort' => $current_sort,
+    'per_page' => $per_page,
+    'paged' => $paged,
+    'max_pages' => $agents_query->max_num_pages,
+    'view_modes' => ['grid', 'list'],
+    'sort_options' => [
+        'name-asc' => __('Name: A to Z', 'happy-place-theme'),
+        'name-desc' => __('Name: Z to A', 'happy-place-theme'),
+        'listings-desc' => __('Most Listings', 'happy-place-theme'),
+        'experience-desc' => __('Most Experience', 'happy-place-theme'),
+        'rating-desc' => __('Highest Rated', 'happy-place-theme')
+    ],
+    'show_search' => true,
+    'show_filters' => true,
+    'show_save_search' => false,
+    'ajax_enabled' => true,
+    'sidebar' => false
+));
+
+// Team Performance Stats Section
+if (!empty($agents)) {
+    $team_stats = hph_calculate_team_stats($agents);
+    
+    if ($team_stats) {
+        get_template_part('template-parts/sections/content', null, array(
+            'layout' => 'full-width',
+            'background' => 'light',
+            'padding' => 'xl',
+            'badge' => 'Team Performance',
+            'headline' => 'Our Success in Numbers',
+            'content' => 'Our agents\' combined success in serving Delaware communities with dedication and expertise.',
+            'stats' => array(
+                array(
+                    'value' => $team_stats['total_listings'],
+                    'label' => __('Active Listings', 'happy-place-theme'),
+                    'icon' => 'fas fa-home',
+                    'format' => 'number'
+                ),
+                array(
+                    'value' => $team_stats['total_sales'],
+                    'label' => __('Properties Sold', 'happy-place-theme'),
+                    'icon' => 'fas fa-handshake',
+                    'format' => 'number'
+                ),
+                array(
+                    'value' => $team_stats['combined_experience'],
+                    'label' => __('Years Experience', 'happy-place-theme'),
+                    'icon' => 'fas fa-award',
+                    'format' => 'number'
+                ),
+                array(
+                    'value' => $team_stats['avg_rating'],
+                    'label' => __('Average Rating', 'happy-place-theme'),
+                    'icon' => 'fas fa-star',
+                    'format' => 'decimal'
+                )
+            ),
+            'section_id' => 'team-stats'
+        ));
+    }
+}
+
+// Featured Agent Spotlight
+$featured_agent_id = hph_get_featured_agent($agents);
+if ($featured_agent_id && function_exists('hpt_get_agent')) {
+    $featured_agent_data = hpt_get_agent($featured_agent_id);
+    $featured_agent_post = get_post($featured_agent_id);
+    
+    if ($featured_agent_post) {
+        get_template_part('template-parts/sections/content', null, array(
+            'layout' => 'centered',
+            'background' => 'white',
+            'padding' => 'xl',
+            'badge' => 'Agent Spotlight',
+            'headline' => 'Meet Our Top Performer',
+            'content' => 'Get to know the agent leading our team in client satisfaction and successful transactions.',
+            'featured_agent' => array(
+                'post_id' => $featured_agent_id,
+                'layout' => 'featured',
+                'size' => 'large',
+                'show_excerpt' => true,
+                'show_meta' => true,
+                'show_actions' => true
+            ),
+            'buttons' => array(
+                array(
+                    'text' => 'Contact ' . get_the_title($featured_agent_id),
+                    'url' => get_permalink($featured_agent_id),
+                    'style' => 'primary',
+                    'size' => 'lg',
+                    'icon' => 'fas fa-comments'
+                ),
+                array(
+                    'text' => 'View Their Listings',
+                    'url' => add_query_arg('agent', $featured_agent_id, get_post_type_archive_link('listing')),
+                    'style' => 'outline',
+                    'size' => 'lg',
+                    'icon' => 'fas fa-home'
+                )
+            ),
+            'section_id' => 'agent-spotlight'
+        ));
+    }
+}
+
+// Services Section
+get_template_part('template-parts/sections/content', null, array(
+    'layout' => 'left-image',
+    'background' => 'white',
+    'padding' => 'xl',
+    'image' => array(
+        'url' => get_template_directory_uri() . '/assets/images/agent-services.jpg',
+        'alt' => 'Delaware real estate services',
+        'width' => 600,
+        'height' => 400
+    ),
+    'badge' => 'Our Services',
+    'headline' => 'Full-Service Real Estate Solutions',
+    'subheadline' => 'Every Step of Your Journey',
+    'content' => 'From initial consultation to closing day, our agents provide comprehensive support throughout your real estate transaction. We handle negotiations, paperwork, inspections, and everything in between.',
+    'buttons' => array(
+        array(
+            'text' => 'Learn About Our Process',
+            'url' => home_url('/process'),
+            'style' => 'primary',
+            'size' => 'md',
+            'icon' => 'fas fa-list-ol'
+        ),
+        array(
+            'text' => 'Schedule Consultation',
+            'url' => home_url('/contact'),
+            'style' => 'outline',
+            'size' => 'md',
+            'icon' => 'fas fa-calendar'
+        )
+    ),
+    'section_id' => 'services'
+));
+
+// Contact CTA Section
+get_template_part('template-parts/sections/content', null, array(
+    'layout' => 'centered',
+    'background' => 'primary',
+    'padding' => 'xl',
+    'headline' => 'Ready to Work with Our Team?',
+    'content' => 'Whether you\'re buying your first home or selling a family property, our experienced Delaware agents are here to guide you every step of the way. Contact us today to get started.',
+    'buttons' => array(
+        array(
+            'text' => 'Contact Our Team',
+            'url' => home_url('/contact'),
+            'style' => 'white',
+            'size' => 'lg',
+            'icon' => 'fas fa-phone'
+        ),
+        array(
+            'text' => 'View Our Properties',
+            'url' => get_post_type_archive_link('listing'),
+            'style' => 'outline-white',
+            'size' => 'lg',
+            'icon' => 'fas fa-home'
+        )
+    ),
+    'section_id' => 'contact-cta'
+));
+
+// Testimonials Section
+get_template_part('template-parts/sections/content', null, array(
+    'layout' => 'full-width',
+    'background' => 'light',
+    'padding' => 'xl',
+    'badge' => 'Client Stories',
+    'headline' => 'What Our Clients Say',
+    'content' => 'Don\'t just take our word for it — hear from the Delaware families our agents have helped achieve their real estate dreams.',
+    'buttons' => array(
+        array(
+            'text' => 'Read More Reviews',
+            'url' => home_url('/testimonials'),
+            'style' => 'primary',
+            'size' => 'md',
+            'icon' => 'fas fa-heart'
+        )
+    ),
+    'section_id' => 'testimonials'
+));
+
+// Service Areas Section
+get_template_part('template-parts/sections/hero', null, array(
+    'style' => 'image',
+    'height' => 'sm',
+    'background_image' => get_template_directory_uri() . '/assets/images/delaware-communities.jpg',
+    'overlay' => 'gradient',
+    'overlay_opacity' => '60',
+    'alignment' => 'center',
+    'content_width' => 'normal',
+    'badge' => 'Service Areas',
+    'headline' => 'Serving Delaware Communities',
+    'subheadline' => 'Local Expertise • Community Knowledge • Neighborhood Insights',
+    'content' => 'Our agents know Delaware inside and out. From coastal towns to growing suburban communities, we provide local expertise that makes all the difference.',
+    'buttons' => array(
+        array(
+            'text' => 'View All Service Areas',
+            'url' => home_url('/areas'),
+            'style' => 'white',
+            'size' => 'lg',
+            'icon' => 'fas fa-map-marker-alt'
+        )
+    ),
+    'section_id' => 'service-areas'
+));
+
+// Enqueue page-specific assets
+wp_enqueue_style('hph-archive-agent', get_template_directory_uri() . '/assets/css/pages/archive-agent.css', ['hph-framework'], get_theme_mod('theme_version', '3.0.0'));
+wp_enqueue_style('hph-archive-enhancements', get_template_directory_uri() . '/assets/css/archive-enhancements.css', ['hph-framework'], get_theme_mod('theme_version', '3.0.0'));
+wp_enqueue_script('hph-archive-agent', get_template_directory_uri() . '/assets/js/pages/archive-agent.js', ['hph-framework-core'], get_theme_mod('theme_version', '3.0.0'), true);
+wp_enqueue_script('hph-archive-functionality', get_template_directory_uri() . '/assets/js/archive-functionality.js', ['jquery'], get_theme_mod('theme_version', '3.0.0'), true);
+
+// Localize script with current context
+wp_localize_script('hph-archive-agent', 'hphAgentArchive', [
+    'ajaxUrl' => admin_url('admin-ajax.php'),
+    'nonce' => wp_create_nonce('hph_agent_archive_nonce'),
+    'postType' => 'agent',
+    'currentView' => $current_view,
+    'currentSort' => $current_sort,
+    'perPage' => $per_page,
+    'currentPage' => $paged,
+    'maxPages' => $agents_query->max_num_pages,
+    'totalResults' => $agents_query->found_posts,
+    'strings' => [
+        'loading' => __('Loading...', 'happy-place-theme'),
+        'contactAgent' => __('Contact Agent', 'happy-place-theme'),
+        'viewListings' => __('View Listings', 'happy-place-theme'),
+        'error' => __('An error occurred. Please try again.', 'happy-place-theme')
+    ]
+]);
+
+get_footer();
+?>

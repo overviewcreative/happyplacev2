@@ -46,6 +46,57 @@ get_template_part('template-parts/sections/hero', null, array(
     'section_id' => 'hero'
 ));
 
+// Features Grid
+get_template_part('template-parts/content-types/features-grid.php', null, array(
+    'items' => array(
+        array(
+        'title' => 'Buy',
+        'description' => 'Looking to buy?',
+        'icon' => 'fas fa-home',
+        'color' => 'primary',
+    ),
+    array(
+        'title' => 'Buy',
+        'description' => 'Looking to buy?',
+        'icon' => 'fas fa-home',
+        'color' => 'primary',
+    ),
+    array(
+        'title' => 'Buy',
+        'description' => 'Looking to buy?',
+        'icon' => 'fas fa-home',
+        'color' => 'primary',
+    )
+       ),
+       'columns' => 3,
+       'card-style' => 'hover-lift',
+    ));
+
+    get_template_part('content-types/features-grid', null, array(
+    'items' => array(
+        array(
+            'title' => 'Fast Process',
+            'description' => 'Close in as little as 7 days.',
+            'icon' => 'fas fa-rocket',
+            'color' => 'primary'
+        ),
+        array(
+            'title' => 'No Hidden Fees',
+            'description' => 'Transparent pricing with no surprises.',
+            'icon' => 'fas fa-eye',
+            'color' => 'success'
+        ),
+        array(
+            'title' => 'Expert Agents',
+            'description' => 'Work with certified professionals.',
+            'icon' => 'fas fa-user-tie',
+            'color' => 'info'
+        )
+    ),
+    'columns' => 3,
+    'card_style' => 'border'
+));
+
 // About Section
 get_template_part('template-parts/sections/content', null, array(
     'layout' => 'right-image',

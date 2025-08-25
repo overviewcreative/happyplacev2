@@ -170,6 +170,23 @@ class PostTypes {
                 'show_in_rest' => true,
                 'rest_base' => 'leads',
             ],
+            'transaction' => [
+                'labels' => $this->get_transaction_labels(),
+                'public' => false,
+                'publicly_queryable' => false,
+                'show_ui' => true,
+                'show_in_menu' => true,
+                'query_var' => false,
+                'rewrite' => false,
+                'capability_type' => 'post',
+                'has_archive' => false,
+                'hierarchical' => false,
+                'menu_position' => 10,
+                'menu_icon' => 'dashicons-money-alt',
+                'supports' => ['title', 'editor', 'custom-fields'],
+                'show_in_rest' => true,
+                'rest_base' => 'transactions',
+            ],
         ];
     }
     
@@ -309,6 +326,28 @@ class PostTypes {
             'all_items' => __('All Leads', 'happy-place'),
             'menu_name' => __('Leads', 'happy-place'),
             'name_admin_bar' => __('Lead', 'happy-place'),
+        ];
+    }
+    
+    /**
+     * Get transaction labels
+     */
+    private function get_transaction_labels(): array {
+        return [
+            'name' => __('Transactions', 'happy-place'),
+            'singular_name' => __('Transaction', 'happy-place'),
+            'add_new' => __('Add New', 'happy-place'),
+            'add_new_item' => __('Add New Transaction', 'happy-place'),
+            'edit_item' => __('Edit Transaction', 'happy-place'),
+            'new_item' => __('New Transaction', 'happy-place'),
+            'view_item' => __('View Transaction', 'happy-place'),
+            'view_items' => __('View Transactions', 'happy-place'),
+            'search_items' => __('Search Transactions', 'happy-place'),
+            'not_found' => __('No transactions found', 'happy-place'),
+            'not_found_in_trash' => __('No transactions found in Trash', 'happy-place'),
+            'all_items' => __('All Transactions', 'happy-place'),
+            'menu_name' => __('Transactions', 'happy-place'),
+            'name_admin_bar' => __('Transaction', 'happy-place'),
         ];
     }
 }

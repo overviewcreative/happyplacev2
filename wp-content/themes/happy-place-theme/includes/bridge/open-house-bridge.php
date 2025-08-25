@@ -27,7 +27,17 @@ function hpt_get_open_house($open_house = null) {
         return null;
     }
     
-    return array(
+    // Get enhanced data from Open House Service if available
+    $enhanced_data = null;
+    $rsvp_count = 0;
+    
+    if (class_exists('HappyPlace\\Services\\OpenHouseService')) {
+        $service = new \HappyPlace\Services\OpenHouseService();
+        $service->init();
+        $rsvp_count = $service->get_rsvp_count($open_house->ID);
+    }
+    
+    $base_data = array(
         'id' => $open_house->ID,
         'title' => get_the_title($open_house),
         'slug' => $open_house->post_name,
@@ -58,6 +68,7 @@ function hpt_get_open_house($open_house = null) {
         'max_attendees' => hpt_get_open_house_max_attendees($open_house->ID),
         'current_registrations' => hpt_get_open_house_registration_count($open_house->ID),
         'available_spots' => hpt_get_open_house_available_spots($open_house->ID),
+        'rsvp_count' => $rsvp_count, // From service
         
         // Contact information
         'contact_phone' => hpt_get_open_house_contact_phone($open_house->ID),
@@ -574,4 +585,31 @@ function hpt_get_featured_open_houses($limit = 3) {
         'orderby' => 'meta_value',
         'order' => 'ASC'
     ));
+}
+
+/**
+ * Get upcoming open houses with service integration
+ * 
+ * @param int $limit Number of open houses to retrieve
+ * @return array Open house data with RSVP counts
+ */
+function hpt_get_upcoming_open_houses_with_service($limit = 5) {
+    $upcoming = [];
+    
+    if (class_exists('HappyPlace\\Services\\OpenHouseService')) {
+        $service = new \HappyPlace\Services\OpenHouseService();
+        $service->init();
+        $upcoming = $service->get_upcoming_open_houses($limit);
+    } else {
+        // Fallback to basic query
+        $posts = hpt_get_upcoming_open_houses($limit);
+        foreach ($posts as $post) {
+            $data = hpt_get_open_house($post->ID);
+            if ($data) {
+                $upcoming[] = $data;
+            }
+        }
+    }
+    
+    return $upcoming;
 }
