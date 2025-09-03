@@ -1,0 +1,655 @@
+/* Merged from: 01-base/hph-cards.css, 03-components/hph-stat-cards.css */
+/* Generated: 2025-08-27 15:04:59 */
+
+/* === 01-base/hph-cards.css === */
+/**
+ * Agent Card Component - Improved Styles
+ * 
+ * @package HappyPlaceTheme
+ * @version 3.1.0
+ */
+
+/* ================================================
+   BASE CARD STYLES - Modern Glass Morphism
+   ================================================ */
+.hph-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Card Variants */
+.hph-card-bordered,
+.hph-card--bordered {
+    border: 1px solid var(--hph-gray-200);
+}
+
+.hph-card--hover-lift {
+    transition: transform var(--hph-duration-fast);
+}
+
+.hph-card--hover-lift:hover {
+    transform: translateY(-2px);
+}
+
+.hph-card-bordered {
+    border: 1px solid #e8f4f8;
+    box-shadow: 0 2px 4px rgba(81, 186, 224, 0.06);
+}
+
+.hph-card-elevated {
+    box-shadow: 0 4px 12px rgba(81, 186, 224, 0.08);
+}
+
+/* Hover Effects - Enhanced */
+.hph-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border-color: rgba(81, 186, 224, 0.3);
+}
+
+.hph-card-hover-lift:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 25px 40px rgba(81, 186, 224, 0.2);
+}
+
+.hph-card-hover-shadow:hover {
+    box-shadow: 0 20px 40px rgba(81, 186, 224, 0.25);
+}
+
+/* ================================================
+   CARD MEDIA
+   ================================================ */
+.hph-card-media {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #c6e8f1 0%, #a8d8e8 100%);
+}
+
+.hph-card-media-square {
+    aspect-ratio: 1 / 1;
+}
+
+.hph-card-media-landscape {
+    aspect-ratio: 4 / 3;
+}
+
+.hph-card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.hph-card:hover .hph-card-image {
+    transform: scale(1.08);
+}
+
+/* Empty image state */
+.hph-card-media:not(:has(img)),
+.hph-card-media img[src=""] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #c6e8f1 0%, #a8d8e8 100%);
+}
+
+.hph-card-media:not(:has(img))::after {
+    content: "\f007";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 400;
+    font-size: 3rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* ================================================
+   CARD BADGES
+   ================================================ */
+.hph-card-badges {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 2;
+}
+
+.hph-card-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+    color: #0c4a6e;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.hph-badge-success {
+    background: #7c9b59;
+    color: white;
+}
+
+/* ================================================
+   CARD CONTENT
+   ================================================ */
+.hph-card-content {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Subtitle - Job Title */
+.hph-card-subtitle {
+    color: #5691b5;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0;
+}
+
+/* Main Title */
+.hph-card-title {
+    color: #0d2834;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.hph-card-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 200ms ease;
+}
+
+.hph-card-title a:hover {
+    color: #51bae0;
+}
+
+/* Description */
+.hph-card-description {
+    color: #5a6c75;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    flex: 1;
+    margin: 0;
+}
+
+/* ================================================
+   CARD META
+   ================================================ */
+.hph-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #f0f8fb;
+    margin-top: auto;
+}
+
+.hph-card-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #6b8a96;
+    font-size: 0.85rem;
+}
+
+.hph-card-meta-icon {
+    color: #7bc0dc;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hph-card-meta-icon i {
+    font-size: 14px;
+}
+
+/* ================================================
+   CARD ACTIONS
+   ================================================ */
+.hph-card-actions,
+.hph-card-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.hph-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border: 2px solid transparent;
+    cursor: pointer;
+}
+
+.hph-card-btn {
+    flex: 1;
+}
+
+/* Primary Button */
+.hph-btn-primary {
+    background: #51bae0;
+    color: white;
+    border-color: #51bae0;
+}
+
+.hph-btn-primary:hover {
+    background: #3fa8ce;
+    border-color: #3fa8ce;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(81, 186, 224, 0.3);
+}
+
+/* Outline Button */
+.hph-btn-outline {
+    background: transparent;
+    color: #326d89;
+    border-color: #d1ebf5;
+}
+
+.hph-btn-outline:hover {
+    background: #f8fcff;
+    border-color: #51bae0;
+    color: #51bae0;
+}
+
+/* Ghost Button */
+.hph-btn-ghost {
+    background: transparent;
+    color: #5a6c75;
+    border-color: transparent;
+}
+
+.hph-btn-ghost:hover {
+    background: #f0f8fb;
+    color: #0d2834;
+}
+
+/* Button Icons */
+.hph-btn i {
+    font-size: 0.875rem;
+}
+
+/* ================================================
+   GRID LAYOUT
+   ================================================ */
+.hph-grid {
+    display: grid;
+    gap: 24px;
+}
+
+.hph-grid-cols-1 { grid-template-columns: repeat(1, 1fr); }
+.hph-grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.hph-grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.hph-grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+@media (min-width: 640px) {
+    .sm\:hph-grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 768px) {
+    .md\:hph-grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+    .md\:hph-grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 1024px) {
+    .lg\:hph-grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .lg\:hph-grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ================================================
+   RESPONSIVE
+   ================================================ */
+@media (max-width: 768px) {
+    .hph-card-content {
+        padding: 16px;
+    }
+    
+    .hph-card-meta {
+        gap: 12px;
+    }
+    
+    .hph-card-buttons {
+        flex-direction: column;
+    }
+}
+
+/* ================================================
+   LOADING/SKELETON STATE
+   ================================================ */
+.hph-card.is-loading {
+    pointer-events: none;
+}
+
+.hph-card.is-loading .hph-card-media {
+    background: linear-gradient(90deg, #f0f8fb 25%, #e5f4fa 50%, #f0f8fb 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ================================================
+   UTILITY CLASSES
+   ================================================ */
+.hph-gap-xs { gap: 0.25rem; }
+.hph-gap-sm { gap: 0.5rem; }
+.hph-gap-md { gap: 1rem; }
+.hph-gap-lg { gap: 1.5rem; }
+.hph-gap-xl { gap: 2rem; }
+
+/* ================================================
+   PRINT STYLES
+   ================================================ */
+@media print {
+    .hph-card {
+        break-inside: avoid;
+        box-shadow: none !important;
+        border: 1px solid #ddd;
+    }
+    
+    .hph-card-actions {
+        display: none;
+    }
+}
+
+/* === 03-components/hph-stat-cards.css === */
+/**
+ * Stat Card Components CSS
+ * Statistics display cards for dashboards and analytics
+ * 
+ * @package HappyPlaceTheme
+ */
+
+/* Base Stat Card */
+.hph-stat-card {
+    background: var(--hph-white);
+    border: 1px solid var(--hph-gray-200);
+    border-radius: var(--hph-radius-lg);
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: var(--hph-shadow-sm);
+}
+
+.hph-stat-card:hover {
+    box-shadow: var(--hph-shadow-md);
+    transform: translateY(-1px);
+}
+
+/* Stat Card Header */
+.hph-stat-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.hph-stat-card__title {
+    font-size: var(--hph-text-sm);
+    font-weight: 500;
+    color: var(--hph-gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    margin: 0;
+}
+
+.hph-stat-card__icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--hph-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    background: var(--hph-gray-100);
+    color: var(--hph-gray-600);
+}
+
+/* Stat Card Value */
+.hph-stat-card__value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--hph-gray-900);
+    line-height: 1;
+    margin: 0 0 0.5rem 0;
+}
+
+.hph-stat-card__label {
+    font-size: var(--hph-text-xs);
+    color: var(--hph-gray-500);
+    margin: 0;
+}
+
+/* Stat Card Trend */
+.hph-stat-card__trend {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 0.75rem;
+    font-size: var(--hph-text-sm);
+    font-weight: 500;
+}
+
+.hph-stat-card__trend--up {
+    color: var(--hph-success-600);
+}
+
+.hph-stat-card__trend--down {
+    color: var(--hph-error-600);
+}
+
+.hph-stat-card__trend--neutral {
+    color: var(--hph-gray-500);
+}
+
+.hph-stat-card__trend-icon {
+    font-size: 0.875rem;
+}
+
+.hph-stat-card__trend-value {
+    font-weight: 600;
+}
+
+.hph-stat-card__trend-label {
+    color: var(--hph-gray-500);
+    font-weight: 400;
+}
+
+/* Stat Card Variants */
+.hph-stat-card--primary {
+    background: linear-gradient(135deg, var(--hph-primary) 0%, var(--hph-primary-dark) 100%);
+    border-color: var(--hph-primary);
+    color: var(--hph-white);
+}
+
+.hph-stat-card--primary .hph-stat-card__title,
+.hph-stat-card--primary .hph-stat-card__value,
+.hph-stat-card--primary .hph-stat-card__label {
+    color: var(--hph-white);
+}
+
+.hph-stat-card--primary .hph-stat-card__icon {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--hph-white);
+}
+
+.hph-stat-card--success {
+    border-left: 4px solid var(--hph-success-500);
+}
+
+.hph-stat-card--success .hph-stat-card__icon {
+    background: var(--hph-success-100);
+    color: var(--hph-success-600);
+}
+
+.hph-stat-card--warning {
+    border-left: 4px solid var(--hph-warning-500);
+}
+
+.hph-stat-card--warning .hph-stat-card__icon {
+    background: var(--hph-warning-100);
+    color: var(--hph-warning-600);
+}
+
+.hph-stat-card--error {
+    border-left: 4px solid var(--hph-error-500);
+}
+
+.hph-stat-card--error .hph-stat-card__icon {
+    background: var(--hph-error-100);
+    color: var(--hph-error-600);
+}
+
+.hph-stat-card--info {
+    border-left: 4px solid var(--hph-info-500);
+}
+
+.hph-stat-card--info .hph-stat-card__icon {
+    background: var(--hph-info-100);
+    color: var(--hph-info-600);
+}
+
+/* Stat Card with Chart */
+.hph-stat-card--with-chart {
+    padding-bottom: 0;
+}
+
+.hph-stat-card__chart {
+    margin-top: 1rem;
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+    height: 80px;
+    position: relative;
+}
+
+.hph-stat-card__chart canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Stat Card Grid */
+.hph-stat-cards {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.hph-stat-cards--2-cols {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.hph-stat-cards--3-cols {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.hph-stat-cards--4-cols {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 768px) {
+    .hph-stat-cards,
+    .hph-stat-cards--2-cols,
+    .hph-stat-cards--3-cols,
+    .hph-stat-cards--4-cols {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+/* Compact Stat Card */
+.hph-stat-card--compact {
+    padding: 1rem;
+}
+
+.hph-stat-card--compact .hph-stat-card__value {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.hph-stat-card--compact .hph-stat-card__icon {
+    width: 2rem;
+    height: 2rem;
+    font-size: 1rem;
+}
+
+.hph-stat-card--compact .hph-stat-card__trend {
+    margin-top: 0.5rem;
+}
+
+/* Loading State */
+.hph-stat-card--loading .hph-stat-card__value {
+    background: var(--hph-gray-200);
+    border-radius: var(--hph-radius-md);
+    height: 2rem;
+    animation: hph-pulse 1.5s ease-in-out infinite;
+}
+
+.hph-stat-card--loading .hph-stat-card__trend {
+    background: var(--hph-gray-200);
+    border-radius: var(--hph-radius-sm);
+    height: 1rem;
+    width: 60%;
+    animation: hph-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes hph-pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 640px) {
+    .hph-stat-card {
+        padding: 1rem;
+    }
+    
+    .hph-stat-card__value {
+        font-size: 1.75rem;
+    }
+    
+    .hph-stat-card__header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .hph-stat-card__icon {
+        width: 2rem;
+        height: 2rem;
+        font-size: 1rem;
+    }
+}

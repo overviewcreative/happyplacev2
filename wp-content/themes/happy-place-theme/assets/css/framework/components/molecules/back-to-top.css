@@ -1,0 +1,80 @@
+/**
+ * Back to Top Button Component
+ * 
+ * @package HappyPlaceTheme
+ */
+
+.back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 999;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: none;
+    cursor: pointer;
+}
+
+.back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.back-to-top:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.back-to-top i {
+    font-size: 1rem;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .back-to-top {
+        bottom: 1.5rem;
+        right: 1.5rem;
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+    
+    .back-to-top i {
+        font-size: 0.875rem;
+    }
+}
+
+/* Dark theme support */
+.hph-theme-dark .back-to-top,
+[data-theme="dark"] .back-to-top {
+    background: var(--hph-gray-700);
+    color: var(--hph-gray-100);
+}
+
+.hph-theme-dark .back-to-top:hover,
+[data-theme="dark"] .back-to-top:hover {
+    background: var(--hph-gray-600);
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .back-to-top {
+        border: 2px solid var(--hph-primary);
+    }
+}
+
+/* Print styles */
+@media print {
+    .back-to-top {
+        display: none !important;
+    }
+}

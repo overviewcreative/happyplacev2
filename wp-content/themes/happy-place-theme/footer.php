@@ -11,8 +11,8 @@
     <!-- Footer Section -->
     <footer id="colophon" class="site-footer section-dark" role="contentinfo">
         <div class="footer-main section section-lg" 
-             style="background: var(--hph-gray-900); color: var(--hph-white); padding: var(--hph-section-padding) 0;">
-            <div class="section-container">
+             style="background: var(--hph-gray-900); color: var(--hph-white); padding: var(--hph-space-3xl) 0;">
+            <div class="section-container" style="max-width: var(--hph-container-xl); margin: 0 auto; padding: 0 var(--hph-space-lg);">
                 
                 <!-- Footer Content Grid -->
                 <div class="footer-grid content-grid content-grid-4" 
@@ -94,7 +94,7 @@
                                        style="font-size: var(--hph-text-sm); color: var(--hph-gray-300); text-decoration: none; transition: var(--hph-transition-fast);"
                                        onmouseover="this.style.color='var(--hph-white)'"
                                        onmouseout="this.style.color='var(--hph-gray-300)'">
-                                       <?php esc_html_e('Properties', 'happy-place-theme'); ?>
+                                       <?php esc_html_e('Listings', 'happy-place-theme'); ?>
                                     </a>
                                 </li>
                             <?php endif; ?>
@@ -131,22 +131,63 @@
                     
                     <!-- Services -->
                     <div class="footer-section">
-                        <h3 class="footer-title text-lg font-semibold mb-4 text-white"><?php esc_html_e('Services', 'happy-place-theme'); ?></h3>
-                        <ul class="footer-links space-y-2">
-                            <li><a href="#" class="text-sm text-gray-300 hover:text-white transition-colors"><?php esc_html_e('Buy a Home', 'happy-place-theme'); ?></a></li>
-                            <li><a href="#" class="text-sm text-gray-300 hover:text-white transition-colors"><?php esc_html_e('Sell a Home', 'happy-place-theme'); ?></a></li>
-                            <li><a href="#" class="text-sm text-gray-300 hover:text-white transition-colors"><?php esc_html_e('Property Valuation', 'happy-place-theme'); ?></a></li>
-                            <li><a href="#" class="text-sm text-gray-300 hover:text-white transition-colors"><?php esc_html_e('Market Analysis', 'happy-place-theme'); ?></a></li>
-                            
+                        <h3 class="footer-title" 
+                            style="font-size: var(--hph-text-lg); font-weight: 600; margin-bottom: var(--hph-space-lg); color: var(--hph-white);">
+                            <?php esc_html_e('Services', 'happy-place-theme'); ?>
+                        </h3>
+                        <ul class="footer-nav" 
+                            style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--hph-space-sm);">
+                            <li>
+                                <a href="#" 
+                                   style="font-size: var(--hph-text-sm); color: var(--hph-gray-300); text-decoration: none; transition: var(--hph-transition-fast);"
+                                   onmouseover="this.style.color='var(--hph-white)'"
+                                   onmouseout="this.style.color='var(--hph-gray-300)'">
+                                   <?php esc_html_e('Buy a Home', 'happy-place-theme'); ?>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" 
+                                   style="font-size: var(--hph-text-sm); color: var(--hph-gray-300); text-decoration: none; transition: var(--hph-transition-fast);"
+                                   onmouseover="this.style.color='var(--hph-white)'"
+                                   onmouseout="this.style.color='var(--hph-gray-300)'">
+                                   <?php esc_html_e('Sell a Home', 'happy-place-theme'); ?>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" 
+                                   style="font-size: var(--hph-text-sm); color: var(--hph-gray-300); text-decoration: none; transition: var(--hph-transition-fast);"
+                                   onmouseover="this.style.color='var(--hph-white)'"
+                                   onmouseout="this.style.color='var(--hph-gray-300)'">
+                                   <?php esc_html_e('Property Valuation', 'happy-place-theme'); ?>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" 
+                                   style="font-size: var(--hph-text-sm); color: var(--hph-gray-300); text-decoration: none; transition: var(--hph-transition-fast);"
+                                   onmouseover="this.style.color='var(--hph-white)'"
+                                   onmouseout="this.style.color='var(--hph-gray-300)'">
+                                   <?php esc_html_e('Market Analysis', 'happy-place-theme'); ?>
+                                </a>
+                            </li>
                             <?php if (post_type_exists('open-house')) : ?>
-                                <li><a href="<?php echo esc_url(get_post_type_archive_link('open-house')); ?>" class="text-sm text-gray-300 hover:text-white transition-colors"><?php esc_html_e('Open Houses', 'happy-place-theme'); ?></a></li>
+                                <li>
+                                    <a href="<?php echo esc_url(get_post_type_archive_link('open-house')); ?>" 
+                                       style="font-size: var(--hph-text-sm); color: var(--hph-gray-300); text-decoration: none; transition: var(--hph-transition-fast);"
+                                       onmouseover="this.style.color='var(--hph-white)'"
+                                       onmouseout="this.style.color='var(--hph-gray-300)'">
+                                       <?php esc_html_e('Open Houses', 'happy-place-theme'); ?>
+                                    </a>
+                                </li>
                             <?php endif; ?>
                         </ul>
                     </div>
                     
                     <!-- Recent Listings -->
                     <div class="footer-section">
-                        <h3 class="footer-title text-lg font-semibold mb-4 text-white"><?php esc_html_e('Recent Listings', 'happy-place-theme'); ?></h3>
+                        <h3 class="footer-title" 
+                            style="font-size: var(--hph-text-lg); font-weight: 600; margin-bottom: var(--hph-space-lg); color: var(--hph-white);">
+                            <?php esc_html_e('Recent Listings', 'happy-place-theme'); ?>
+                        </h3>
                         
                         <?php if (function_exists('hpt_get_recent_listings')) : ?>
                             <?php 
@@ -196,8 +237,9 @@
             
             <!-- Footer Bottom -->
             <div class="footer-bottom" 
-                 style="border-top: 1px solid var(--hph-gray-600); padding-top: var(--hph-space-xl); margin-top: var(--hph-space-2xl);">
-                <div style="display: flex; flex-direction: column; gap: var(--hph-space-lg); align-items: center; @media (min-width: 768px) { flex-direction: row; justify-content: space-between; }">
+                 style="border-top: 1px solid var(--hph-gray-600); padding: var(--hph-space-md) 0; margin-top: var(--hph-space-lg);">
+                <div class="section-container" style="max-width: var(--hph-container-xl); margin: 0 auto; padding: 0 var(--hph-space-lg);">
+                    <div style="display: flex; flex-direction: column; gap: var(--hph-space-md); align-items: center; @media (min-width: 768px) { flex-direction: row; justify-content: space-between; }">
                     <div class="footer-copyright">
                         <p style="font-size: var(--hph-text-sm); color: var(--hph-gray-400); margin: 0;">
                             &copy; <?php echo date('Y'); ?> <?php bloginfo('name'); ?>. <?php esc_html_e('All rights reserved.', 'happy-place-theme'); ?>
@@ -218,11 +260,16 @@
                         ));
                         ?>
                     </div>
+                    </div>
                 </div>
             </div>
             
         </div>
     </footer><!-- #colophon -->
+
+            </div><!-- .hph-content-container -->
+        </div><!-- .hph-main-wrapper -->
+    </div><!-- #main -->
 
 </div><!-- #page -->
 

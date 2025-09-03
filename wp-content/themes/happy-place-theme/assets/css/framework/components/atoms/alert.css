@@ -1,0 +1,145 @@
+/**
+ * HPH Alert Component Styles
+ * 
+ * Base styles for alert/notification components
+ * Corresponds to: template-parts/base/alert.php
+ * 
+ * @package HappyPlaceTheme
+ * @since 3.0.0
+ */
+
+/* Alert Base */
+.hph-alert {
+    @apply hph-p-md hph-rounded-lg hph-border hph-flex hph-items-start hph-gap-sm;
+    @apply hph-text-sm hph-leading-relaxed;
+}
+
+/* Alert Variants */
+.hph-alert--default {
+    @apply hph-bg-gray-50 hph-border-gray-200 hph-text-gray-800;
+}
+
+.hph-alert--primary {
+    @apply hph-bg-primary-50 hph-border-primary-200 hph-text-primary-800;
+}
+
+.hph-alert--success {
+    @apply hph-bg-green-50 hph-border-green-200 hph-text-green-800;
+}
+
+.hph-alert--warning {
+    @apply hph-bg-yellow-50 hph-border-yellow-200 hph-text-yellow-800;
+}
+
+.hph-alert--error,
+.hph-alert--danger {
+    @apply hph-bg-red-50 hph-border-red-200 hph-text-red-800;
+}
+
+.hph-alert--info {
+    @apply hph-bg-blue-50 hph-border-blue-200 hph-text-blue-800;
+}
+
+/* Alert Sizes */
+.hph-alert--sm {
+    @apply hph-p-sm hph-text-xs;
+}
+
+.hph-alert--lg {
+    @apply hph-p-lg hph-text-base;
+}
+
+/* Alert Icons */
+.hph-alert__icon {
+    @apply hph-flex-shrink-0 hph-w-5 hph-h-5 hph-mt-0.5;
+}
+
+.hph-alert--success .hph-alert__icon {
+    @apply hph-text-green-600;
+}
+
+.hph-alert--warning .hph-alert__icon {
+    @apply hph-text-yellow-600;
+}
+
+.hph-alert--error .hph-alert__icon,
+.hph-alert--danger .hph-alert__icon {
+    @apply hph-text-red-600;
+}
+
+.hph-alert--info .hph-alert__icon {
+    @apply hph-text-blue-600;
+}
+
+.hph-alert--primary .hph-alert__icon {
+    @apply hph-text-primary-600;
+}
+
+/* Alert Content */
+.hph-alert__content {
+    @apply hph-flex-1;
+}
+
+.hph-alert__title {
+    @apply hph-font-semibold hph-mb-xs;
+}
+
+.hph-alert__message {
+    @apply hph-leading-relaxed;
+}
+
+/* Alert Actions */
+.hph-alert__actions {
+    @apply hph-flex hph-gap-xs hph-mt-sm;
+}
+
+/* Dismissible Alerts */
+.hph-alert--dismissible {
+    @apply hph-pr-lg hph-relative;
+}
+
+.hph-alert__close {
+    @apply hph-absolute hph-top-md hph-right-md;
+    @apply hph-p-xs hph-rounded hph-hover:hph-bg-black/10;
+    @apply hph-text-current hph-opacity-60 hph-hover:hph-opacity-100;
+    @apply hph-transition-opacity hph-duration-200;
+}
+
+.hph-alert__close:hover {
+    @apply hph-cursor-pointer;
+}
+
+/* Alert Animations */
+.hph-alert--fade-in {
+    @apply hph-animate-fadeIn;
+}
+
+.hph-alert--slide-down {
+    @apply hph-animate-slideDown;
+}
+
+/* Bordered Variant */
+.hph-alert--bordered {
+    @apply hph-border-l-4;
+}
+
+.hph-alert--bordered.hph-alert--success {
+    @apply hph-border-l-green-500;
+}
+
+.hph-alert--bordered.hph-alert--warning {
+    @apply hph-border-l-yellow-500;
+}
+
+.hph-alert--bordered.hph-alert--error,
+.hph-alert--bordered.hph-alert--danger {
+    @apply hph-border-l-red-500;
+}
+
+.hph-alert--bordered.hph-alert--info {
+    @apply hph-border-l-blue-500;
+}
+
+.hph-alert--bordered.hph-alert--primary {
+    @apply hph-border-l-primary-500;
+}

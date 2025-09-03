@@ -2,57 +2,50 @@
 /**
  * HPH Hero Section Template
  * 
- * A specialized hero section template for fullwidth, impactful headers:
- * - Fullwidth background images with overlay options
- * - Gradient backgrounds and combinations
- * - Multiple height variations (sm, md, lg, xl, full)
- * - Advanced typography and CTA positioning
- * - Video background support
+ * Hero section template using base CSS variables and // Set background styles
+if ($background_image) {
+    $hero_styles[] = "background-color: transparent";
+    $hero_styles[] = "background-image: url('" . esc_url($background_image) . "')";
+    $hero_styles[] = "background-size: cover";
+    $hero_styles[] = "background-position: center";
+    $hero_styles[] = "background-repeat: no-repeat";
+    if ($parallax) {
+        $hero_styles[] = "background-attachment: fixed";
+    }
+} elseif ($style === 'gradient') {
+    $hero_styles[] = "background: var(--hph-gradient-primary)";
+}ses
  * 
  * @package HappyPlaceTheme
  * @since 3.0.0
- * 
- * Args:
- * - style: 'minimal' | 'gradient' | 'image' | 'video' | 'split' | 'property'
- * - height: 'sm' | 'md' | 'lg' | 'xl' | 'full'
- * - background_image: string (URL)
- * - background_video: string (URL for MP4)
- * - overlay: 'none' | 'light' | 'dark' | 'gradient' | 'gradient-reverse' | 'gradient-radial' | 'primary' | 'primary-gradient'
- * - overlay_opacity: string ('20', '40', '60', '80')
- * - alignment: 'left' | 'center' | 'right'
- * - content_width: 'narrow' | 'normal' | 'wide' | 'full'
- * - badge: string (optional)
- * - badge_icon: string (optional icon class)
- * - headline: string
- * - subheadline: string (optional)
- * - content: string
- * - buttons: array of button configurations
- * - scroll_indicator: boolean
- * - section_id: string (optional)
- * - parallax: boolean (optional) - adds parallax effect to background image
- * - fade_in: boolean (optional) - adds fade in animation to content
- * 
- * Property-specific args:
- * - listing_id: int (for property hero)
- * - show_gallery: boolean
- * - show_status: boolean
- * - show_price: boolean
- * - show_stats: boolean
  */
+
+// Register this template part for asset loading
+if (function_exists('hph_register_template_part')) {
+    hph_register_template_part('sections/hero');
+}
 
 // Default arguments
 $defaults = array(
     'style' => 'gradient',
+    'theme' => '', // Color theme: 'primary', 'secondary', 'accent', 'success', 'info', 'warning', 'danger', 'ocean', 'sunset', 'forest', 'dark', 'light'
     'height' => 'lg',
     'background_image' => '',
     'background_video' => '',
     'overlay' => 'dark',
     'overlay_opacity' => '40',
+    'gradient_overlay' => '', // CSS variable name for gradient overlay
     'alignment' => 'center',
     'content_width' => 'normal',
     'badge' => '',
     'badge_icon' => '',
     'headline' => 'Hero Section',
+    'headline_prefix' => '', // Text before rotating part
+    'headline_suffix' => '', // Text after rotating part
+    'rotating_words' => array(), // Array of words/phrases to rotate
+    'rotation_type' => 'typing', // Options: 'typing', 'fade', 'slide', 'flip'
+    'rotation_speed' => 3000, // Milliseconds between rotations
+    'typing_speed' => 100, // Milliseconds per character (for typing effect)
     'subheadline' => '',
     'content' => '',
     'buttons' => array(),
@@ -60,7 +53,6 @@ $defaults = array(
     'section_id' => '',
     'parallax' => false,
     'fade_in' => false,
-    // Property-specific defaults
     'listing_id' => 0,
     'show_gallery' => false,
     'show_status' => false,
@@ -70,41 +62,152 @@ $defaults = array(
 
 // Merge with provided args
 $config = wp_parse_args($args ?? array(), $defaults);
+extract($config);
 
-// Extract configuration
-$style = $config['style'];
-$height = $config['height'];
-$background_image = $config['background_image'];
-$background_video = $config['background_video'];
-$overlay = $config['overlay'];
-$overlay_opacity = $config['overlay_opacity'];
-$alignment = $config['alignment'];
-$content_width = $config['content_width'];
-$badge = $config['badge'];
-$badge_icon = $config['badge_icon'];
-$headline = $config['headline'];
-$subheadline = $config['subheadline'];
-$content = $config['content'];
-$buttons = $config['buttons'];
-$scroll_indicator = $config['scroll_indicator'];
-$section_id = $config['section_id'];
-$parallax = $config['parallax'];
-$fade_in = $config['fade_in'];
-// Property-specific configuration
-$listing_id = $config['listing_id'];
-$show_gallery = $config['show_gallery'];
-$show_status = $config['show_status'];
-$show_price = $config['show_price'];
-$show_stats = $config['show_stats'];
-
-// AUTO-FIX: Switch to image style if background_image is provided but style is default gradient
+// Auto-fix: Switch to image style if background_image is provided
 if (!empty($background_image) && $style === 'gradient') {
     $style = 'image';
 }
 
+// Theme configuration - sets colors for all components
+$theme_config = array();
+if (!empty($theme)) {
+    switch($theme) {
+        case 'primary':
+            $theme_config = array(
+                'gradient_bg' => 'var(--hph-gradient-primary)',
+                'solid_bg' => 'var(--hph-primary)',
+                'text_color' => 'var(--hph-white)',
+                'badge_bg' => 'rgba(255, 255, 255, 0.2)',
+                'badge_color' => 'var(--hph-white)',
+                'button_primary' => 'white',
+                'button_secondary' => 'outline-white',
+                'overlay_gradient' => 'primary-overlay'
+            );
+            break;
+        case 'secondary':
+            $theme_config = array(
+                'gradient_bg' => 'var(--hph-gradient-secondary)',
+                'solid_bg' => 'var(--hph-secondary)',
+                'text_color' => 'var(--hph-white)',
+                'badge_bg' => 'rgba(255, 255, 255, 0.2)',
+                'badge_color' => 'var(--hph-white)',
+                'button_primary' => 'white',
+                'button_secondary' => 'outline-white',
+                'overlay_gradient' => 'secondary-overlay'
+            );
+            break;
+        case 'accent':
+            $theme_config = array(
+                'gradient_bg' => 'var(--hph-gradient-accent)',
+                'solid_bg' => 'var(--hph-accent)',
+                'text_color' => 'var(--hph-white)',
+                'badge_bg' => 'rgba(255, 255, 255, 0.2)',
+                'badge_color' => 'var(--hph-white)',
+                'button_primary' => 'white',
+                'button_secondary' => 'outline-white',
+                'overlay_gradient' => 'accent-overlay'
+            );
+            break;
+        case 'ocean':
+            $theme_config = array(
+                'gradient_bg' => 'var(--hph-gradient-ocean)',
+                'solid_bg' => '#1e3a8a',
+                'text_color' => 'var(--hph-white)',
+                'badge_bg' => 'rgba(255, 255, 255, 0.15)',
+                'badge_color' => 'var(--hph-white)',
+                'button_primary' => 'white',
+                'button_secondary' => 'outline-white',
+                'overlay_gradient' => 'overlay-dark'
+            );
+            break;
+        case 'sunset':
+            $theme_config = array(
+                'gradient_bg' => 'var(--hph-gradient-sunset)',
+                'solid_bg' => 'var(--hph-secondary)',
+                'text_color' => 'var(--hph-white)',
+                'badge_bg' => 'rgba(255, 255, 255, 0.2)',
+                'badge_color' => 'var(--hph-white)',
+                'button_primary' => 'white',
+                'button_secondary' => 'outline-white',
+                'overlay_gradient' => 'overlay-dark'
+            );
+            break;
+        case 'forest':
+            $theme_config = array(
+                'gradient_bg' => 'var(--hph-gradient-forest)',
+                'solid_bg' => '#14532d',
+                'text_color' => 'var(--hph-white)',
+                'badge_bg' => 'rgba(255, 255, 255, 0.15)',
+                'badge_color' => 'var(--hph-white)',
+                'button_primary' => 'white',
+                'button_secondary' => 'outline-white',
+                'overlay_gradient' => 'overlay-dark'
+            );
+            break;
+        case 'success':
+            $theme_config = array(
+                'gradient_bg' => 'linear-gradient(135deg, var(--hph-success) 0%, var(--hph-success-dark) 100%)',
+                'solid_bg' => 'var(--hph-success)',
+                'text_color' => 'var(--hph-white)',
+                'badge_bg' => 'rgba(255, 255, 255, 0.2)',
+                'badge_color' => 'var(--hph-white)',
+                'button_primary' => 'white',
+                'button_secondary' => 'outline-white',
+                'overlay_gradient' => 'success-overlay'
+            );
+            break;
+        case 'info':
+            $theme_config = array(
+                'gradient_bg' => 'linear-gradient(135deg, var(--hph-info) 0%, var(--hph-info-dark) 100%)',
+                'solid_bg' => 'var(--hph-info)',
+                'text_color' => 'var(--hph-white)',
+                'badge_bg' => 'rgba(255, 255, 255, 0.2)',
+                'badge_color' => 'var(--hph-white)',
+                'button_primary' => 'white',
+                'button_secondary' => 'outline-white',
+                'overlay_gradient' => 'info-overlay'
+            );
+            break;
+        case 'dark':
+            $theme_config = array(
+                'gradient_bg' => 'linear-gradient(135deg, var(--hph-gray-900) 0%, var(--hph-black) 100%)',
+                'solid_bg' => 'var(--hph-gray-900)',
+                'text_color' => 'var(--hph-white)',
+                'badge_bg' => 'rgba(255, 255, 255, 0.1)',
+                'badge_color' => 'var(--hph-white)',
+                'button_primary' => 'primary',
+                'button_secondary' => 'outline-white',
+                'overlay_gradient' => 'overlay-dark'
+            );
+            break;
+        case 'light':
+            $theme_config = array(
+                'gradient_bg' => 'linear-gradient(135deg, var(--hph-white) 0%, var(--hph-gray-100) 100%)',
+                'solid_bg' => 'var(--hph-white)',
+                'text_color' => 'var(--hph-gray-900)',
+                'badge_bg' => 'var(--hph-primary-100)',
+                'badge_color' => 'var(--hph-primary-700)',
+                'button_primary' => 'primary',
+                'button_secondary' => 'outline-primary',
+                'overlay_gradient' => 'overlay-light-subtle'
+            );
+            break;
+    }
+    
+    // Apply theme to style if gradient
+    if (!empty($theme_config) && $style === 'gradient' && empty($background_image)) {
+        // Will be applied in background styles section
+    }
+    
+    // Override gradient overlay if theme specifies
+    if (!empty($theme_config['overlay_gradient']) && empty($gradient_overlay)) {
+        $gradient_overlay = $theme_config['overlay_gradient'];
+    }
+}
+
 // Property-specific auto-configuration
 if ($style === 'property' && $listing_id) {
-    // Get property data using bridge functions
     if (function_exists('hpt_get_listing_title') && empty($headline)) {
         $headline = hpt_get_listing_title($listing_id);
     }
@@ -114,107 +217,164 @@ if ($style === 'property' && $listing_id) {
     if (function_exists('hpt_get_listing_featured_image') && empty($background_image)) {
         $background_image = hpt_get_listing_featured_image($listing_id);
     }
-    
-    // Auto-switch to image style if we have a background image
     if (!empty($background_image)) {
         $style = 'image';
     }
 }
 
-// Build hero classes
-$hero_classes = array(
-    'hph-hero',
-    'hph-hero-' . $style,
-    'hph-hero-' . $height,
-    'hph-relative',
-    'hph-flex',
-    'hph-items-center',
-    'hph-w-full',
-    'hph-overflow-hidden'
-);
+// Build inline styles for hero section
+$hero_styles = array();
 
-// Add class if background image exists
-if ($background_image) {
-    $hero_classes[] = 'has-bg-image';
-    if ($parallax) {
-        $hero_classes[] = 'hph-hero-parallax';
-    }
-}
+// Essential layout styles
+$hero_styles[] = 'position: relative';
+$hero_styles[] = 'display: flex';
+$hero_styles[] = 'align-items: center';
+$hero_styles[] = 'justify-content: center';
+$hero_styles[] = 'width: 100%';
+$hero_styles[] = 'overflow: hidden';
 
-// Add overlay classes
-if ($overlay !== 'none') {
-    $hero_classes[] = 'hph-hero-overlay-' . $overlay;
-    $hero_classes[] = 'hph-hero-opacity-' . $overlay_opacity;
-}
-
-// Build content container classes
-$container_classes = array(
-    'hph-hero-content',
-    'hph-relative',
-    'hph-z-10',
-    'hph-w-full'
-);
-
-// Add fade in animation if enabled
-if ($fade_in) {
-    $container_classes[] = 'hph-fade-in';
-}
-
-// Add text color based on style
-if ($style === 'minimal') {
-    $container_classes[] = 'hph-text-primary';
-} else {
-    $container_classes[] = 'hph-text-white';
-}
-
-// Content width classes - Made wider for better hero presence
-switch ($content_width) {
-    case 'narrow':
-        $container_classes[] = 'hph-max-w-4xl';
+// Height styles using CSS variables
+switch ($height) {
+    case 'sm':
+        $hero_styles[] = 'min-height: 50vh';
         break;
-    case 'wide':
-        $container_classes[] = 'hph-max-w-7xl';
+    case 'md':
+        $hero_styles[] = 'min-height: 60vh';
+        break;
+    case 'lg':
+        $hero_styles[] = 'min-height: 75vh';
+        break;
+    case 'xl':
+        $hero_styles[] = 'min-height: 85vh';
         break;
     case 'full':
-        $container_classes[] = 'hph-max-w-none';
+        $hero_styles[] = 'min-height: 100vh';
+        break;
+}
+
+// Background styles
+if ($background_image) {
+    $hero_styles[] = "background-image: url('" . esc_url($background_image) . "')";
+    $hero_styles[] = "background-size: cover";
+    $hero_styles[] = "background-position: center";
+    $hero_styles[] = "background-repeat: no-repeat";
+    if ($parallax) {
+        $hero_styles[] = "background-attachment: fixed";
+    }
+} elseif ($style === 'gradient') {
+    // Use theme gradient if available, otherwise default
+    if (!empty($theme_config['gradient_bg'])) {
+        $hero_styles[] = "background: " . $theme_config['gradient_bg'];
+    } else {
+        $hero_styles[] = "background: var(--hph-gradient-primary)";
+    }
+} elseif ($style === 'solid' && !empty($theme_config['solid_bg'])) {
+    $hero_styles[] = "background: " . $theme_config['solid_bg'];
+}
+
+// Apply theme text color if set
+if (!empty($theme_config['text_color'])) {
+    $hero_styles[] = "color: " . $theme_config['text_color'];
+}
+
+$hero_style_attr = !empty($hero_styles) ? 'style="' . implode('; ', $hero_styles) . '"' : '';
+
+// Build overlay styles
+$overlay_styles = array();
+
+// If a gradient_overlay CSS variable is specified, use it directly
+if (!empty($gradient_overlay)) {
+    $overlay_styles[] = 'background: var(--hph-gradient-' . $gradient_overlay . ')';
+} else {
+    // Fallback to overlay type with opacity
+    switch ($overlay) {
+        case 'dark':
+            $overlay_styles[] = 'background: var(--hph-gradient-overlay-dark)';
+            break;
+        case 'dark-subtle':
+            $overlay_styles[] = 'background: var(--hph-gradient-overlay-dark-subtle)';
+            break;
+        case 'dark-heavy':
+            $overlay_styles[] = 'background: var(--hph-gradient-overlay-dark-heavy)';
+            break;
+        case 'light':
+            $overlay_styles[] = 'background: var(--hph-gradient-overlay-light)';
+            break;
+        case 'light-subtle':
+            $overlay_styles[] = 'background: var(--hph-gradient-overlay-light-subtle)';
+            break;
+        case 'gradient':
+            $overlay_styles[] = 'background: var(--hph-gradient-primary-overlay)';
+            break;
+        case 'gradient-reverse':
+            $overlay_styles[] = 'background: var(--hph-gradient-overlay-dark-reverse)';
+            break;
+        case 'gradient-radial':
+            $overlay_styles[] = 'background: var(--hph-gradient-overlay-radial-dark)';
+            break;
+        case 'primary':
+            $overlay_styles[] = 'background: var(--hph-gradient-primary-overlay)';
+            break;
+        case 'primary-gradient':
+            $overlay_styles[] = 'background: var(--hph-gradient-primary-overlay)';
+            break;
+        case 'hero':
+            $overlay_styles[] = 'background: var(--hph-gradient-hero-overlay)';
+            break;
+        case 'scrim-top':
+            $overlay_styles[] = 'background: var(--hph-gradient-scrim-top)';
+            break;
+        case 'scrim-bottom':
+            $overlay_styles[] = 'background: var(--hph-gradient-scrim-bottom)';
+            break;
+        case 'diagonal':
+            $overlay_styles[] = 'background: var(--hph-gradient-diagonal-dark)';
+            break;
+        case 'custom':
+            // For backward compatibility with opacity parameter
+            $opacity_value = intval($overlay_opacity) / 100;
+            $overlay_styles[] = 'background: rgba(0, 0, 0, ' . $opacity_value . ')';
+            break;
+    }
+}
+$overlay_style_attr = !empty($overlay_styles) ? 'style="' . implode('; ', $overlay_styles) . '"' : '';
+
+// Content container width
+$container_max_width = '';
+switch ($content_width) {
+    case 'narrow':
+        $container_max_width = 'max-width: var(--hph-container-sm);';
+        break;
+    case 'wide':
+        $container_max_width = 'max-width: var(--hph-container-2xl);';
+        break;
+    case 'full':
+        $container_max_width = 'max-width: 100%; padding-left: 0; padding-right: 0;';
         break;
     case 'normal':
     default:
-        $container_classes[] = 'hph-max-w-6xl';
+        $container_max_width = 'max-width: var(--hph-container-xl);';
         break;
 }
 
-// Alignment classes
+// Text alignment styles
+$text_align_style = '';
+$content_justify = '';
 switch ($alignment) {
     case 'left':
-        $container_classes[] = 'hph-text-left';
-        $container_classes[] = 'hph-mr-auto';  // This pushes container to the left
+        $text_align_style = 'text-align: left;';
+        $content_justify = 'align-items: flex-start;';
         break;
     case 'right':
-        $container_classes[] = 'hph-text-right';
-        $container_classes[] = 'hph-ml-auto';  // This pushes container to the right
+        $text_align_style = 'text-align: right;';
+        $content_justify = 'align-items: flex-end;';
         break;
     case 'center':
     default:
-        $container_classes[] = 'hph-text-center';
-        $container_classes[] = 'hph-mx-auto';
+        $text_align_style = 'text-align: center;';
+        $content_justify = 'align-items: center;';
         break;
 }
-
-// Build inline styles
-$inline_styles = array();
-
-if ($background_image) {
-    $inline_styles[] = "background-image: url('" . esc_url($background_image) . "')";
-    $inline_styles[] = "background-size: cover";
-    $inline_styles[] = "background-position: center";
-    $inline_styles[] = "background-repeat: no-repeat";
-    if ($parallax) {
-        $inline_styles[] = "background-attachment: fixed";
-    }
-}
-
-$style_attr = !empty($inline_styles) ? 'style="' . implode('; ', $inline_styles) . '"' : '';
 
 // Ensure Font Awesome is loaded for icons
 if (!wp_script_is('font-awesome', 'enqueued')) {
@@ -223,15 +383,18 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
 ?>
 
 <section 
-    class="<?php echo esc_attr(implode(' ', $hero_classes)); ?>"
+    class="hph-hero hph-hero-<?php echo esc_attr($style); ?> <?php echo $background_image ? 'has-bg-image' : ''; ?> <?php echo $parallax ? 'hph-hero-parallax' : ''; ?>"
     <?php if ($section_id): ?>id="<?php echo esc_attr($section_id); ?>"<?php endif; ?>
-    <?php echo $style_attr; ?>
+    data-bg="<?php echo esc_attr($style === 'gradient' ? 'gradient' : ($style === 'minimal' ? 'light' : 'dark')); ?>"
+    <?php echo $hero_style_attr; ?>
+    data-hero-style="<?php echo esc_attr($style); ?>"
 >
     
     <?php if ($background_video): ?>
     <!-- Video Background -->
     <video 
-        class="hph-hero-video hph-absolute hph-inset-0 hph-w-full hph-h-full hph-object-cover hph-z-0"
+        class="hph-hero-video"
+        style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;"
         autoplay 
         muted 
         loop 
@@ -240,176 +403,287 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
     >
         <source src="<?php echo esc_url($background_video); ?>" type="video/mp4">
         <?php if ($background_image): ?>
-        <!-- Fallback image for browsers that don't support video -->
-        <img src="<?php echo esc_url($background_image); ?>" alt="Hero background" class="hph-w-full hph-h-full hph-object-cover">
+        <img src="<?php echo esc_url($background_image); ?>" alt="Hero background" style="width: 100%; height: 100%; object-fit: cover;">
         <?php endif; ?>
     </video>
     <?php endif; ?>
     
     <?php if ($overlay !== 'none'): ?>
     <!-- Overlay -->
-    <div class="hph-hero-overlay hph-absolute hph-inset-0 hph-z-5"></div>
+    <div class="hph-hero-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 1; pointer-events: none; <?php echo implode('; ', $overlay_styles); ?>"></div>
     <?php endif; ?>
     
     <!-- Content Container -->
-    <div class="hph-hero-container hph-relative hph-z-10 hph-w-full hph-px-xl hph-md:px-2xl hph-lg:px-3xl hph-flex <?php echo $alignment === 'right' ? 'hph-justify-end' : ($alignment === 'left' ? 'hph-justify-start' : ''); ?>">
-        <div class="<?php echo esc_attr(implode(' ', $container_classes)); ?>">
-            
-            <?php if ($badge): ?>
-            <!-- Badge -->
-            <div class="hph-mb-lg hph-animate-slide-down">
-                <span class="hph-hero-badge hph-inline-flex hph-items-center hph-px-lg hph-py-md hph-rounded-full hph-bg-white hph-bg-opacity-20 hph-text-white hph-text-sm hph-font-semibold hph-backdrop-blur hph-shadow-lg">
-                    <?php if ($badge_icon): ?>
-                    <i class="<?php echo esc_attr($badge_icon); ?> hph-mr-sm"></i>
-                    <?php endif; ?>
-                    <?php echo esc_html($badge); ?>
-                </span>
-            </div>
-            <?php endif; ?>
-            
-            <?php if ($headline): ?>
-            <!-- Hero Headline -->
-            <h1 class="hph-hero-headline hph-mb-xl hph-text-3xl hph-md:text-4xl hph-lg:text-5xl hph-font-bold hph-leading-tight <?php echo $fade_in ? 'hph-animate-fade-in-up' : ''; ?>">
-                <?php echo esc_html($headline); ?>
-            </h1>
-            <?php endif; ?>
-            
-            <?php if ($subheadline): ?>
-            <!-- Hero Subheadline -->
-            <h2 class="hph-hero-subheadline hph-mb-xl hph-text-lg hph-md:text-xl hph-font-medium hph-leading-snug hph-opacity-90 <?php echo $fade_in ? 'hph-animate-fade-in-up hph-delay-100' : ''; ?>">
-                <?php echo esc_html($subheadline); ?>
-            </h2>
-            <?php endif; ?>
-            
-            <?php if ($content): ?>
-            <!-- Hero Content -->
-            <div class="hph-hero-content-text hph-mb-2xl hph-text-base hph-md:text-lg hph-leading-normal hph-opacity-85 <?php echo $fade_in ? 'hph-animate-fade-in-up hph-delay-200' : ''; ?>">
-                <?php echo wp_kses_post($content); ?>
-            </div>
-            <?php endif; ?>
-            
-            <?php if ($style === 'property' && $listing_id): ?>
-            <!-- Property-specific content -->
-            <div class="hph-property-hero-details hph-mb-2xl <?php echo $fade_in ? 'hph-animate-fade-in-up hph-delay-250' : ''; ?>">
+    <div class="hph-hero-container" style="position: relative; z-index: 2; width: 100%; padding: var(--hph-padding-xl) var(--hph-padding-lg);">
+        <div class="hph-hero-inner" style="<?php echo $container_max_width; ?> margin-left: auto; margin-right: auto;">
+            <div class="hph-hero-content" style="display: flex; flex-direction: column; <?php echo $content_justify; ?> gap: var(--hph-gap-lg); <?php echo $text_align_style; ?>">
                 
-                <?php if ($show_price || $show_status): ?>
-                <div class="hph-property-meta hph-flex hph-flex-wrap hph-items-center hph-gap-md hph-mb-lg">
-                    <?php if ($show_price && function_exists('hpt_get_listing_price_formatted')): ?>
-                        <?php $price = hpt_get_listing_price_formatted($listing_id); ?>
-                        <?php if ($price): ?>
-                        <div class="hph-property-price hph-text-2xl hph-md:text-3xl hph-font-bold hph-text-white">
-                            <?php echo esc_html($price); ?>
+                <?php if ($badge): ?>
+                <!-- Badge -->
+                <div style="margin-bottom: var(--hph-margin-sm);">
+                    <?php 
+                    $badge_bg = !empty($theme_config['badge_bg']) ? $theme_config['badge_bg'] : 'rgba(255, 255, 255, 0.2)';
+                    $badge_color = !empty($theme_config['badge_color']) ? $theme_config['badge_color'] : 'currentColor';
+                    ?>
+                    <span style="display: inline-flex; align-items: center; gap: var(--hph-gap-sm); padding: var(--hph-padding-sm) var(--hph-padding-md); background: <?php echo $badge_bg; ?>; color: <?php echo $badge_color; ?>; backdrop-filter: blur(10px); border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
+                        <?php if ($badge_icon): ?>
+                        <i class="<?php echo esc_attr($badge_icon); ?>"></i>
+                        <?php endif; ?>
+                        <?php echo esc_html($badge); ?>
+                    </span>
+                </div>
+                <?php endif; ?>
+                
+                <?php if ($headline || (!empty($rotating_words) && ($headline_prefix || $headline_suffix))): ?>
+                <!-- Hero Headline -->
+                <?php if (!empty($rotating_words) && ($headline_prefix || $headline_suffix)): ?>
+                    <!-- Rotating Headline -->
+                    <h1 class="hph-hero-headline hph-rotating-headline <?php echo $fade_in ? 'hph-animate-fade-in-up' : ''; ?>" 
+                        style="margin: 0 0 var(--hph-margin-md) 0; font-size: var(--hph-text-5xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight); <?php echo $fade_in ? 'animation-delay: 0s;' : ''; ?>"
+                        data-rotation-type="<?php echo esc_attr($rotation_type); ?>"
+                        data-rotation-speed="<?php echo esc_attr($rotation_speed); ?>"
+                        data-typing-speed="<?php echo esc_attr($typing_speed); ?>">
+                        <?php if ($headline_prefix): ?>
+                            <span class="hph-headline-prefix"><?php echo esc_html($headline_prefix); ?></span>
+                        <?php endif; ?>
+                        <span class="hph-rotating-text-container" style="position: relative; display: inline-block; min-width: 200px; text-align: left;">
+                            <span class="hph-rotating-text" 
+                                  data-words="<?php echo esc_attr(json_encode($rotating_words)); ?>"
+                                  style="display: inline-block;">
+                                <?php echo esc_html($rotating_words[0] ?? ''); ?>
+                            </span>
+                            <?php if ($rotation_type === 'typing'): ?>
+                            <span class="hph-typing-cursor" style="display: inline-block; width: 3px; height: 1.2em; background-color: currentColor; animation: blink 1s infinite; margin-left: 2px; vertical-align: text-bottom;"></span>
+                            <?php endif; ?>
+                        </span>
+                        <?php if ($headline_suffix): ?>
+                            <span class="hph-headline-suffix"><?php echo esc_html($headline_suffix); ?></span>
+                        <?php endif; ?>
+                    </h1>
+                <?php elseif ($headline): ?>
+                    <!-- Static Headline -->
+                    <h1 class="hph-hero-headline <?php echo $fade_in ? 'hph-animate-fade-in-up' : ''; ?>" 
+                        style="margin: 0 0 var(--hph-margin-md) 0; font-size: var(--hph-text-5xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight); <?php echo $fade_in ? 'animation-delay: 0s;' : ''; ?>">
+                        <?php echo esc_html($headline); ?>
+                    </h1>
+                <?php endif; ?>
+                <?php endif; ?>
+                
+                <?php if ($subheadline): ?>
+                <!-- Hero Subheadline -->
+                <h2 class="hph-hero-subheadline <?php echo $fade_in ? 'hph-animate-fade-in-up' : ''; ?>" 
+                    style="margin: 0 0 var(--hph-margin-md) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); line-height: var(--hph-leading-snug); opacity: 0.9; <?php echo $fade_in ? 'animation-delay: 0.1s;' : ''; ?>">
+                    <?php echo esc_html($subheadline); ?>
+                </h2>
+                <?php endif; ?>
+                
+                <?php if ($content): ?>
+                <!-- Hero Content -->
+                <div class="hph-hero-content-text <?php echo $fade_in ? 'hph-animate-fade-in-up' : ''; ?>" 
+                     style="margin: 0 0 var(--hph-margin-xl) 0; font-size: var(--hph-text-lg); line-height: var(--hph-leading-normal); opacity: 0.85; <?php echo $fade_in ? 'animation-delay: 0.2s;' : ''; ?>">
+                    <?php echo wp_kses_post($content); ?>
+                </div>
+                <?php endif; ?>
+                
+                <?php if ($style === 'property' && $listing_id): ?>
+                <!-- Property-specific content -->
+                <div class="hph-property-hero-details <?php echo $fade_in ? 'hph-animate-fade-in-up' : ''; ?>" 
+                     style="margin: 0 0 var(--hph-margin-xl) 0; <?php echo $fade_in ? 'animation-delay: 0.25s;' : ''; ?>">
+                    
+                    <?php if ($show_price || $show_status): ?>
+                    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: var(--hph-gap-md); margin-bottom: var(--hph-margin-lg); <?php echo $alignment === 'center' ? 'justify-content: center;' : ($alignment === 'right' ? 'justify-content: flex-end;' : ''); ?>">
+                        <?php if ($show_price && function_exists('hpt_get_listing_price_formatted')): ?>
+                            <?php $price = hpt_get_listing_price_formatted($listing_id); ?>
+                            <?php if ($price): ?>
+                            <div style="font-size: var(--hph-text-3xl); font-weight: var(--hph-font-bold);">
+                                <?php echo esc_html($price); ?>
+                            </div>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                        
+                        <?php if ($show_status && function_exists('hpt_get_listing_status')): ?>
+                            <?php $status = hpt_get_listing_status($listing_id); ?>
+                            <?php if ($status): ?>
+                            <span style="padding: var(--hph-padding-sm) var(--hph-padding-lg); background: rgba(255, 255, 255, 0.9); color: var(--hph-primary); border-radius: var(--hph-radius-full); font-size: var(--hph-text-base); font-weight: var(--hph-font-semibold);">
+                                <?php echo esc_html($status); ?>
+                            </span>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if ($show_stats): ?>
+                    <div style="display: flex; flex-wrap: wrap; gap: var(--hph-gap-lg); opacity: 0.9; <?php echo $alignment === 'center' ? 'justify-content: center;' : ($alignment === 'right' ? 'justify-content: flex-end;' : ''); ?>">
+                        <?php
+                        $bedrooms = function_exists('hpt_get_listing_bedrooms') ? hpt_get_listing_bedrooms($listing_id) : '';
+                        $bathrooms = function_exists('hpt_get_listing_bathrooms') ? hpt_get_listing_bathrooms($listing_id) : '';
+                        $sqft = function_exists('hpt_get_listing_square_footage') ? hpt_get_listing_square_footage($listing_id) : '';
+                        
+                        if ($bedrooms): ?>
+                        <div style="display: flex; align-items: center; gap: var(--hph-gap-sm);">
+                            <svg style="width: 1.25rem; height: 1.25rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                            </svg>
+                            <span style="font-weight: var(--hph-font-semibold);"><?php echo esc_html($bedrooms); ?></span>
+                            <span><?php echo _n('Bed', 'Beds', intval($bedrooms), 'happy-place-theme'); ?></span>
                         </div>
                         <?php endif; ?>
-                    <?php endif; ?>
-                    
-                    <?php if ($show_status && function_exists('hpt_get_listing_status')): ?>
-                        <?php $status = hpt_get_listing_status($listing_id); ?>
-                        <?php if ($status): ?>
-                        <span class="hph-property-status hph-badge hph-badge-lg hph-badge-white hph-opacity-90">
-                            <?php echo esc_html($status); ?>
-                        </span>
+                        
+                        <?php if ($bathrooms): ?>
+                        <div style="display: flex; align-items: center; gap: var(--hph-gap-sm);">
+                            <svg style="width: 1.25rem; height: 1.25rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h8m-8 5h8m-4.5 5.5l.5.5m-1-1v-4a1 1 0 011-1h0a1 1 0 011 1v4m-2 0h2"></path>
+                            </svg>
+                            <span style="font-weight: var(--hph-font-semibold);"><?php echo esc_html($bathrooms); ?></span>
+                            <span><?php echo _n('Bath', 'Baths', floatval($bathrooms), 'happy-place-theme'); ?></span>
+                        </div>
                         <?php endif; ?>
+                        
+                        <?php if ($sqft): ?>
+                        <div style="display: flex; align-items: center; gap: var(--hph-gap-sm);">
+                            <svg style="width: 1.25rem; height: 1.25rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
+                            </svg>
+                            <span style="font-weight: var(--hph-font-semibold);"><?php echo esc_html($sqft); ?></span>
+                            <span><?php _e('Sq Ft', 'happy-place-theme'); ?></span>
+                        </div>
+                        <?php endif; ?>
+                    </div>
                     <?php endif; ?>
+                    
                 </div>
                 <?php endif; ?>
                 
-                <?php if ($show_stats): ?>
-                <div class="hph-property-stats hph-flex hph-flex-wrap hph-gap-lg hph-text-white hph-opacity-90">
-                    <?php
-                    // Get property stats with null safety
-                    $bedrooms = function_exists('hpt_get_listing_bedrooms') ? hpt_get_listing_bedrooms($listing_id) : '';
-                    $bathrooms = function_exists('hpt_get_listing_bathrooms') ? hpt_get_listing_bathrooms($listing_id) : '';
-                    $sqft = function_exists('hpt_get_listing_square_footage') ? hpt_get_listing_square_footage($listing_id) : '';
-                    
-                    if ($bedrooms): ?>
-                    <div class="hph-stat-item hph-flex hph-items-center hph-gap-sm">
-                        <svg class="hph-w-5 hph-h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10v11M20 10v11"></path>
-                        </svg>
-                        <span class="hph-font-semibold"><?php echo esc_html($bedrooms); ?></span>
-                        <span><?php echo _n('Bed', 'Beds', intval($bedrooms), 'happy-place-theme'); ?></span>
-                    </div>
-                    <?php endif; ?>
-                    
-                    <?php if ($bathrooms): ?>
-                    <div class="hph-stat-item hph-flex hph-items-center hph-gap-sm">
-                        <svg class="hph-w-5 hph-h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10v11M20 10v11"></path>
-                        </svg>
-                        <span class="hph-font-semibold"><?php echo esc_html($bathrooms); ?></span>
-                        <span><?php echo _n('Bath', 'Baths', floatval($bathrooms), 'happy-place-theme'); ?></span>
-                    </div>
-                    <?php endif; ?>
-                    
-                    <?php if ($sqft): ?>
-                    <div class="hph-stat-item hph-flex hph-items-center hph-gap-sm">
-                        <svg class="hph-w-5 hph-h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM7 3V1M7 7v1M7 11v1M15 21a4 4 0 004-4V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4zM15 3V1M15 7v1M15 11v1"></path>
-                        </svg>
-                        <span class="hph-font-semibold"><?php echo esc_html($sqft); ?></span>
-                        <span><?php _e('Sq Ft', 'happy-place-theme'); ?></span>
-                    </div>
-                    <?php endif; ?>
+                <?php if (!empty($buttons)): ?>
+                <!-- Hero Buttons -->
+                <div class="hph-hero-buttons <?php echo $fade_in ? 'hph-animate-fade-in-up' : ''; ?>" 
+                     style="display: flex; flex-wrap: wrap; gap: var(--hph-gap-lg); align-items: center; <?php echo $alignment === 'center' ? 'justify-content: center;' : ($alignment === 'right' ? 'justify-content: flex-end;' : 'justify-content: flex-start;'); ?> <?php echo $fade_in ? 'animation-delay: 0.3s;' : ''; ?>">
+                    <?php foreach ($buttons as $index => $button): 
+                        $btn_defaults = array(
+                            'text' => 'Button',
+                            'url' => '#',
+                            'style' => 'white',
+                            'size' => 'xl',
+                            'icon' => '',
+                            'icon_position' => 'left',
+                            'target' => '_self'
+                        );
+                        $btn = wp_parse_args($button, $btn_defaults);
+                        
+                        // Apply theme button styles if set
+                        if (!empty($theme_config)) {
+                            if ($index === 0 && !empty($theme_config['button_primary'])) {
+                                $btn['style'] = $theme_config['button_primary'];
+                            } elseif ($index === 1 && !empty($theme_config['button_secondary'])) {
+                                $btn['style'] = $theme_config['button_secondary'];
+                            }
+                        }
+                        
+                        // Button styles based on style parameter
+                        $btn_styles = array(
+                            'display: inline-flex',
+                            'align-items: center',
+                            'justify-content: center',
+                            'text-decoration: none',
+                            'font-weight: var(--hph-font-semibold)',
+                            'border-radius: var(--hph-radius-lg)',
+                            'transition: all 300ms ease',
+                            'position: relative',
+                            'overflow: hidden',
+                            'box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
+                        );
+                        
+                        // Size-based padding
+                        switch($btn['size']) {
+                            case 's':
+                                $btn_styles[] = 'padding: var(--hph-padding-sm) var(--hph-padding-md)';
+                                $btn_styles[] = 'font-size: var(--hph-text-sm)';
+                                break;
+                            case 'm':
+                                $btn_styles[] = 'padding: var(--hph-padding-md) var(--hph-padding-lg)';
+                                $btn_styles[] = 'font-size: var(--hph-text-base)';
+                                break;
+                            case 'l':
+                                $btn_styles[] = 'padding: var(--hph-padding-md) var(--hph-padding-xl)';
+                                $btn_styles[] = 'font-size: var(--hph-text-base)';
+                                break;
+                            case 'xl':
+                                $btn_styles[] = 'padding: var(--hph-padding-lg) var(--hph-padding-2xl)';
+                                $btn_styles[] = 'font-size: var(--hph-text-lg)';
+                                break;
+                        }
+                        
+                        // Style-based colors
+                        switch($btn['style']) {
+                            case 'white':
+                                $btn_styles[] = 'background-color: var(--hph-white)';
+                                $btn_styles[] = 'color: var(--hph-primary)';
+                                $btn_styles[] = 'border: 2px solid var(--hph-white)';
+                                break;
+                            case 'outline-white':
+                                $btn_styles[] = 'background-color: transparent';
+                                $btn_styles[] = 'color: var(--hph-white)';
+                                $btn_styles[] = 'border: 2px solid var(--hph-white)';
+                                break;
+                            case 'primary':
+                                $btn_styles[] = 'background-color: var(--hph-primary)';
+                                $btn_styles[] = 'color: var(--hph-white)';
+                                $btn_styles[] = 'border: 2px solid var(--hph-primary)';
+                                break;
+                            case 'outline-primary':
+                                $btn_styles[] = 'background-color: transparent';
+                                $btn_styles[] = 'color: var(--hph-primary)';
+                                $btn_styles[] = 'border: 2px solid var(--hph-primary)';
+                                break;
+                            case 'secondary':
+                                $btn_styles[] = 'background-color: var(--hph-secondary)';
+                                $btn_styles[] = 'color: var(--hph-white)';
+                                $btn_styles[] = 'border: 2px solid var(--hph-secondary)';
+                                break;
+                            case 'outline-secondary':
+                                $btn_styles[] = 'background-color: transparent';
+                                $btn_styles[] = 'color: var(--hph-secondary)';
+                                $btn_styles[] = 'border: 2px solid var(--hph-secondary)';
+                                break;
+                            default:
+                                $btn_styles[] = 'background-color: var(--hph-primary)';
+                                $btn_styles[] = 'color: var(--hph-white)';
+                                $btn_styles[] = 'border: 2px solid var(--hph-primary)';
+                        }
+                        
+                        $btn_style_attr = 'style="' . implode('; ', $btn_styles) . '"';
+                    ?>
+                    <a 
+                        href="<?php echo esc_url($btn['url']); ?>"
+                        class="hph-hero-btn hph-hero-btn-<?php echo esc_attr($btn['style']); ?>"
+                        <?php echo $btn_style_attr; ?>
+                        <?php if ($btn['target'] !== '_self'): ?>target="<?php echo esc_attr($btn['target']); ?>"<?php endif; ?>
+                        onmouseover="this.style.transform='translateY(-2px)'"
+                        onmouseout="this.style.transform='translateY(0)'"
+                    >
+                        <?php if ($btn['icon'] && $btn['icon_position'] === 'left'): ?>
+                        <i class="<?php echo esc_attr($btn['icon']); ?>" style="margin-right: var(--hph-margin-sm);"></i>
+                        <?php endif; ?>
+                        <span><?php echo esc_html($btn['text']); ?></span>
+                        <?php if ($btn['icon'] && $btn['icon_position'] === 'right'): ?>
+                        <i class="<?php echo esc_attr($btn['icon']); ?>" style="margin-left: var(--hph-margin-sm);"></i>
+                        <?php endif; ?>
+                    </a>
+                    <?php endforeach; ?>
                 </div>
                 <?php endif; ?>
                 
             </div>
-            <?php endif; ?>
-            
-            <?php if (!empty($buttons)): ?>
-            <!-- Hero Buttons -->
-            <div class="hph-hero-buttons hph-flex hph-flex-wrap hph-gap-lg hph-items-center <?php echo $alignment === 'center' ? 'hph-justify-center' : ($alignment === 'right' ? 'hph-justify-end' : 'hph-justify-start'); ?> <?php echo $fade_in ? 'hph-animate-fade-in-up hph-delay-300' : ''; ?>">
-                <?php foreach ($buttons as $index => $button): 
-                    $btn_defaults = array(
-                        'text' => 'Button',
-                        'url' => '#',
-                        'style' => 'white',
-                        'size' => 'xl',
-                        'icon' => '',
-                        'icon_position' => 'left',
-                        'target' => '_self'
-                    );
-                    $btn = wp_parse_args($button, $btn_defaults);
-                    
-                    $btn_classes = array(
-                        'hph-btn',
-                        'hph-btn-' . $btn['style'],
-                        'hph-btn-' . $btn['size'],
-                        'hph-transition-all',
-                        'hph-duration-300',
-                        'hph-hero-btn',
-                        'hph-shadow-lg',
-                        'hph-hover-lift'
-                    );
-                ?>
-                <a 
-                    href="<?php echo esc_url($btn['url']); ?>"
-                    class="<?php echo esc_attr(implode(' ', $btn_classes)); ?>"
-                    <?php if ($btn['target'] !== '_self'): ?>target="<?php echo esc_attr($btn['target']); ?>"<?php endif; ?>
-                >
-                    <?php if ($btn['icon'] && $btn['icon_position'] === 'left'): ?>
-                    <i class="<?php echo esc_attr($btn['icon']); ?> hph-mr-sm"></i>
-                    <?php endif; ?>
-                    <span><?php echo esc_html($btn['text']); ?></span>
-                    <?php if ($btn['icon'] && $btn['icon_position'] === 'right'): ?>
-                    <i class="<?php echo esc_attr($btn['icon']); ?> hph-ml-sm"></i>
-                    <?php endif; ?>
-                </a>
-                <?php endforeach; ?>
-            </div>
-            <?php endif; ?>
-            
         </div>
     </div>
     
     <?php if ($scroll_indicator): ?>
     <!-- Scroll Indicator -->
-    <div class="hph-hero-scroll hph-absolute hph-bottom-lg hph-left-1/2 hph-transform hph--translate-x-1/2 hph-z-10">
-        <div class="hph-scroll-indicator hph-flex hph-flex-col hph-items-center hph-text-white hph-opacity-75 hph-transition-opacity hph-hover-opacity-100">
-            <span class="hph-text-sm hph-mb-sm hph-font-medium">Scroll</span>
-            <div class="hph-scroll-arrow hph-w-6 hph-h-10 hph-border-2 hph-border-white hph-rounded-full hph-relative">
-                <div class="hph-scroll-dot hph-absolute hph-top-2 hph-left-1/2 hph-w-1 hph-h-2 hph-bg-white hph-rounded-full hph-transform hph--translate-x-1/2 hph-animate-bounce"></div>
+    <div class="hph-hero-scroll" style="position: absolute; bottom: var(--hph-margin-lg); left: 50%; transform: translateX(-50%); cursor: pointer; transition: opacity 0.3s ease;">
+        <div class="hph-scroll-indicator" style="display: flex; flex-direction: column; align-items: center; color: var(--hph-white); opacity: 0.75;">
+            <span style="font-size: var(--hph-text-sm); margin-bottom: var(--hph-margin-sm); font-weight: var(--hph-font-medium);">Scroll</span>
+            <div style="width: 2rem; height: 2.5rem; border: 2px solid currentColor; border-radius: var(--hph-radius-full); position: relative;">
+                <div class="hph-scroll-dot" style="position: absolute; top: 0.5rem; left: 50%; width: 0.25rem; height: 0.5rem; background: currentColor; border-radius: var(--hph-radius-full); transform: translateX(-50%); animation: bounce 1.5s infinite;"></div>
             </div>
         </div>
     </div>
@@ -417,524 +691,182 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
     
 </section>
 
+<?php if (!empty($rotating_words)): ?>
 <style>
-/* Hero Section Styles */
-.hph-hero {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    overflow: hidden;
-}
-
-/* Hero Heights */
-.hph-hero-sm { min-height: 50vh; }
-.hph-hero-md { min-height: 60vh; }
-.hph-hero-lg { min-height: 75vh; }
-.hph-hero-xl { min-height: 85vh; }
-.hph-hero-full { min-height: 100vh; }
-
-/* Hero Styles - REMOVED !important declarations */
-.hph-hero-minimal {
-    background-color: var(--hph-white);
-    color: var(--hph-text-primary);
-}
-
-/* Gradient style - only applies if no background image */
-.hph-hero-gradient:not(.has-bg-image) {
-    background: linear-gradient(135deg, var(--hph-primary) 0%, var(--hph-primary-dark) 100%);
-}
-
-/* When gradient style has background image, create gradient overlay with pseudo-element */
-.hph-hero-gradient.has-bg-image::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(81, 186, 224, 0.7) 0%, rgba(81, 186, 224, 0.9) 100%);
-    z-index: 1;
-}
-
-.hph-hero-image {
-    background-color: var(--hph-gray-800);
-}
-
-.hph-hero-video {
-    background-color: var(--hph-gray-900);
-}
-
-.hph-hero-split:not(.has-bg-image) {
-    background: linear-gradient(90deg, var(--hph-primary) 0%, var(--hph-primary) 50%, var(--hph-gray-50) 50%, var(--hph-gray-50) 100%);
-}
-
-/* Parallax Effect */
-.hph-hero-parallax {
-    background-attachment: fixed;
-}
-
-@media (max-width: 768px) {
-    .hph-hero-parallax {
-        background-attachment: scroll; /* Disable parallax on mobile for performance */
-    }
-}
-
-/* Overlay Styles - Extended variations */
-.hph-hero-overlay {
-    pointer-events: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 5;
-}
-
-.hph-hero-overlay-dark .hph-hero-overlay {
-    background-color: rgba(0, 0, 0, var(--overlay-opacity, 0.4));
-}
-
-.hph-hero-overlay-light .hph-hero-overlay {
-    background-color: rgba(255, 255, 255, var(--overlay-opacity, 0.4));
-}
-
-.hph-hero-overlay-gradient .hph-hero-overlay {
-    background: linear-gradient(to bottom, 
-        rgba(0, 0, 0, 0.8) 0%, 
-        rgba(0, 0, 0, 0.2) 50%, 
-        rgba(0, 0, 0, 0.8) 100%);
-}
-
-.hph-hero-overlay-gradient-reverse .hph-hero-overlay {
-    background: linear-gradient(to top, 
-        rgba(0, 0, 0, 0.9) 0%, 
-        rgba(0, 0, 0, 0.3) 40%, 
-        rgba(0, 0, 0, 0.1) 100%);
-}
-
-.hph-hero-overlay-gradient-radial .hph-hero-overlay {
-    background: radial-gradient(ellipse at center, 
-        rgba(0, 0, 0, 0.2) 0%, 
-        rgba(0, 0, 0, 0.7) 100%);
-}
-
-.hph-hero-overlay-primary .hph-hero-overlay {
-    background-color: rgba(81, 186, 224, var(--overlay-opacity, 0.4));
-}
-
-.hph-hero-overlay-primary-gradient .hph-hero-overlay {
-    background: linear-gradient(135deg, 
-        rgba(81, 186, 224, 0.8) 0%, 
-        rgba(81, 186, 224, 0.3) 50%, 
-        rgba(81, 186, 224, 0.6) 100%);
-}
-
-/* Overlay Opacity Variations */
-.hph-hero-opacity-20 { --overlay-opacity: 0.2; }
-.hph-hero-opacity-40 { --overlay-opacity: 0.4; }
-.hph-hero-opacity-60 { --overlay-opacity: 0.6; }
-.hph-hero-opacity-80 { --overlay-opacity: 0.8; }
-
-/* Hero Typography */
-.hph-hero-headline {
-    font-size: var(--hph-text-3xl);
-    line-height: var(--hph-leading-tight);
-    font-weight: var(--hph-font-bold);
-    margin-bottom: var(--hph-space-xl);
-    color: inherit;
-}
-
-.hph-hero-subheadline {
-    font-size: var(--hph-text-lg);
-    line-height: var(--hph-leading-snug);
-    font-weight: var(--hph-font-medium);
-    margin-bottom: var(--hph-space-xl);
-    opacity: 0.9;
-    color: inherit;
-}
-
-.hph-hero-content-text {
-    font-size: var(--hph-text-base);
-    line-height: var(--hph-leading-normal);
-    margin-bottom: var(--hph-space-2xl);
-    opacity: 0.85;
-    color: inherit;
-}
-
-/* Specific color overrides for different hero styles */
-.hph-hero-minimal .hph-hero-headline,
-.hph-hero-minimal .hph-hero-subheadline,
-.hph-hero-minimal .hph-hero-content-text {
-    color: var(--hph-primary);
-}
-
-.hph-hero-split .hph-hero-headline,
-.hph-hero-split .hph-hero-subheadline,
-.hph-hero-split .hph-hero-content-text {
-    color: var(--hph-white);
-}
-
-/* Ensure white text for image heroes with overlays */
-.hph-hero-image .hph-hero-headline,
-.hph-hero-image .hph-hero-subheadline,
-.hph-hero-image .hph-hero-content-text,
-.hph-hero-gradient .hph-hero-headline,
-.hph-hero-gradient .hph-hero-subheadline,
-.hph-hero-gradient .hph-hero-content-text {
-    color: var(--hph-white);
-}
-
-/* Special handling for light overlays */
-.hph-hero-overlay-light + .hph-hero-container .hph-hero-headline,
-.hph-hero-overlay-light + .hph-hero-container .hph-hero-subheadline,
-.hph-hero-overlay-light + .hph-hero-container .hph-hero-content-text {
-    color: var(--hph-primary);
-}
-
-/* Hero Badge - Enhanced */
-.hph-hero-badge {
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    transition: all 300ms ease;
-}
-
-.hph-hero-badge:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-    transform: translateY(-2px);
-}
-
-/* Hero Buttons - Enhanced */
-.hph-hero-btn {
-    font-weight: var(--hph-font-semibold);
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--hph-radius-lg);
-    transition: all 300ms ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.hph-btn-white {
-    background-color: var(--hph-white);
-    color: var(--hph-primary);
-    border: 2px solid var(--hph-white);
-}
-
-.hph-btn-white:hover {
-    background-color: transparent;
-    color: var(--hph-white);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-.hph-btn-outline-white {
-    background-color: transparent;
-    color: var(--hph-white);
-    border: 2px solid var(--hph-white);
-}
-
-.hph-btn-outline-white:hover {
-    background-color: var(--hph-white);
-    color: var(--hph-primary);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(255, 255, 255, 0.2);
-}
-
-.hph-btn-primary {
-    background-color: var(--hph-primary);
-    color: var(--hph-white);
-    border: 2px solid var(--hph-primary);
-}
-
-.hph-btn-primary:hover {
-    background-color: var(--hph-primary-dark);
-    border-color: var(--hph-primary-dark);
-    transform: translateY(-2px);
-}
-
-/* Button sizes */
-.hph-btn-s {
-    padding: var(--hph-space-sm) var(--hph-space-md);
-    font-size: var(--hph-text-sm);
-}
-
-.hph-btn-m {
-    padding: var(--hph-space-md) var(--hph-space-lg);
-    font-size: var(--hph-text-base);
-}
-
-.hph-btn-l {
-    padding: var(--hph-space-md) var(--hph-space-xl);
-    font-size: var(--hph-text-base);
-}
-
-.hph-btn-xl {
-    padding: var(--hph-space-lg) var(--hph-space-2xl);
-    font-size: var(--hph-text-lg);
-}
-
-/* Animations */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-.hph-animate-fade-in-up {
-    animation: fadeInUp 0.8s ease-out forwards;
+@keyframes slideDown {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
-.hph-animate-slide-down {
-    animation: slideDown 0.6s ease-out forwards;
+@keyframes slideUp {
+    from { transform: translateY(0); opacity: 1; }
+    to { transform: translateY(-100%); opacity: 0; }
 }
 
-.hph-fade-in {
-    animation: fadeIn 1s ease-out forwards;
+@keyframes flipIn {
+    from { transform: rotateX(-90deg); opacity: 0; }
+    to { transform: rotateX(0); opacity: 1; }
 }
 
-/* Animation delays */
-.hph-delay-100 {
-    animation-delay: 0.1s;
+.hph-rotating-text-container {
+    vertical-align: baseline;
+}
+
+.hph-rotating-text {
+    transition: all 0.3s ease;
+}
+
+.hph-rotating-text.fade-out {
     opacity: 0;
+    transform: translateY(-10px);
 }
 
-.hph-delay-200 {
-    animation-delay: 0.2s;
+.hph-rotating-text.fade-in {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.hph-rotating-text.slide-out {
+    animation: slideUp 0.4s ease forwards;
+}
+
+.hph-rotating-text.slide-in {
+    animation: slideDown 0.4s ease forwards;
+}
+
+.hph-rotating-text.flip-out {
+    transform: rotateX(90deg);
     opacity: 0;
+    transition: all 0.3s ease;
 }
 
-.hph-delay-300 {
-    animation-delay: 0.3s;
-    opacity: 0;
-}
-
-/* Hover lift effect */
-.hph-hover-lift {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.hph-hover-lift:hover {
-    transform: translateY(-2px);
-}
-
-/* Scroll Indicator Animation */
-@keyframes scroll-bounce {
-    0%, 20%, 50%, 80%, 100% {
-        transform: translateY(0) translateX(-50%);
-    }
-    40% {
-        transform: translateY(-10px) translateX(-50%);
-    }
-    60% {
-        transform: translateY(-5px) translateX(-50%);
-    }
-}
-
-.hph-scroll-dot {
-    animation: scroll-bounce 2s infinite;
-}
-
-/* Responsive Typography */
-@media (min-width: 768px) {
-    .hph-hero-headline {
-        font-size: var(--hph-text-4xl);
-    }
-    
-    .hph-hero-subheadline {
-        font-size: var(--hph-text-xl);
-    }
-    
-    .hph-hero-content-text {
-        font-size: var(--hph-text-lg);
-    }
-}
-
-@media (min-width: 1024px) {
-    .hph-hero-headline {
-        font-size: var(--hph-text-5xl);
-    }
-}
-
-/* Utility Classes */
-.hph-relative { position: relative; }
-.hph-absolute { position: absolute; }
-.hph-inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
-.hph-z-0 { z-index: 0; }
-.hph-z-5 { z-index: 5; }
-.hph-z-10 { z-index: 10; }
-.hph-w-full { width: 100%; }
-.hph-h-full { height: 100%; }
-.hph-flex { display: flex; }
-.hph-inline-flex { display: inline-flex; }
-.hph-items-center { align-items: center; }
-.hph-justify-center { justify-content: center; }
-.hph-justify-start { justify-content: flex-start; }
-.hph-justify-end { justify-content: flex-end; }
-.hph-flex-col { flex-direction: column; }
-.hph-flex-wrap { flex-wrap: wrap; }
-.hph-object-cover { object-fit: cover; }
-.hph-overflow-hidden { overflow: hidden; }
-.hph-text-white { color: var(--hph-white); }
-.hph-text-primary { color: var(--hph-primary); }
-.hph-bg-white { background-color: var(--hph-white); }
-.hph-bg-opacity-20 { background-color: rgba(255, 255, 255, 0.2); }
-.hph-opacity-75 { opacity: 0.75; }
-.hph-opacity-85 { opacity: 0.85; }
-.hph-opacity-90 { opacity: 0.9; }
-.hph-backdrop-blur { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
-.hph-animate-bounce { animation: bounce 1s infinite; }
-.hph-transition-all { transition: all 300ms ease; }
-.hph-transition-opacity { transition: opacity 300ms ease; }
-.hph-hover-opacity-100:hover { opacity: 1; }
-.hph-duration-300 { transition-duration: 300ms; }
-.hph-transform { transform: translateZ(0); }
-.hph--translate-x-1/2 { transform: translateX(-50%); }
-.hph-rounded-full { border-radius: 9999px; }
-.hph-border-2 { border-width: 2px; }
-.hph-border-white { border-color: var(--hph-white); }
-.hph-shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
-
-/* Max Width Classes */
-.hph-max-w-4xl { max-width: 56rem; }
-.hph-max-w-6xl { max-width: 72rem; }
-.hph-max-w-7xl { max-width: 80rem; }
-.hph-max-w-none { max-width: none; }
-
-/* Positioning Classes */
-.hph-bottom-lg { bottom: var(--hph-space-lg); }
-.hph-left-1/2 { left: 50%; }
-.hph-top-2 { top: 0.5rem; }
-.hph-w-1 { width: 0.25rem; }
-.hph-w-6 { width: 1.5rem; }
-.hph-h-2 { height: 0.5rem; }
-.hph-h-10 { height: 2.5rem; }
-
-/* Padding Classes */
-.hph-px-xl { padding-left: var(--hph-space-xl); padding-right: var(--hph-space-xl); }
-.hph-px-2xl { padding-left: var(--hph-space-2xl); padding-right: var(--hph-space-2xl); }
-.hph-px-3xl { padding-left: var(--hph-space-3xl); padding-right: var(--hph-space-3xl); }
-.hph-px-lg { padding-left: var(--hph-space-lg); padding-right: var(--hph-space-lg); }
-.hph-py-md { padding-top: var(--hph-space-md); padding-bottom: var(--hph-space-md); }
-
-/* Responsive Padding Classes */
-@media (min-width: 768px) {
-    .hph-md\:px-2xl { padding-left: var(--hph-space-2xl); padding-right: var(--hph-space-2xl); }
-    .hph-md\:text-lg { font-size: var(--hph-text-lg); }
-    .hph-md\:text-xl { font-size: var(--hph-text-xl); }
-    .hph-md\:text-4xl { font-size: var(--hph-text-4xl); }
-}
-
-@media (min-width: 1024px) {
-    .hph-lg\:px-3xl { padding-left: var(--hph-space-3xl); padding-right: var(--hph-space-3xl); }
-    .hph-lg\:text-5xl { font-size: var(--hph-text-5xl); }
-}
-
-/* Line Height Utilities */
-.hph-leading-tight { line-height: var(--hph-leading-tight); }
-.hph-leading-snug { line-height: var(--hph-leading-snug); }
-.hph-leading-normal { line-height: var(--hph-leading-normal); }
-
-/* Spacing Utilities */
-.hph-mb-sm { margin-bottom: var(--hph-space-sm); }
-.hph-mb-lg { margin-bottom: var(--hph-space-lg); }
-.hph-mb-xl { margin-bottom: var(--hph-space-xl); }
-.hph-mb-2xl { margin-bottom: var(--hph-space-2xl); }
-.hph-mr-sm { margin-right: var(--hph-space-sm); }
-.hph-ml-sm { margin-left: var(--hph-space-sm); }
-.hph-gap-lg { gap: var(--hph-space-lg); }
-
-/* Margin Utilities for Alignment */
-.hph-mx-0 { margin-left: 0; margin-right: 0; }
-.hph-mx-auto { margin-left: auto; margin-right: auto; }
-.hph-ml-auto { margin-left: auto; }
-.hph-mr-auto { margin-right: auto; }
-
-/* Text Alignment */
-.hph-text-left { text-align: left; }
-.hph-text-center { text-align: center; }
-.hph-text-right { text-align: right; }
-
-/* Font Utilities */
-.hph-text-sm { font-size: var(--hph-text-sm); }
-.hph-text-base { font-size: var(--hph-text-base); }
-.hph-text-lg { font-size: var(--hph-text-lg); }
-.hph-text-xl { font-size: var(--hph-text-xl); }
-.hph-text-3xl { font-size: var(--hph-text-3xl); }
-.hph-text-4xl { font-size: var(--hph-text-4xl); }
-.hph-text-5xl { font-size: var(--hph-text-5xl); }
-.hph-font-medium { font-weight: var(--hph-font-medium); }
-.hph-font-semibold { font-weight: var(--hph-font-semibold); }
-.hph-font-bold { font-weight: var(--hph-font-bold); }
-
-/* Ensure content appears above gradient overlay */
-.hph-hero-gradient.has-bg-image .hph-hero-container {
-    position: relative;
-    z-index: 10;
-}
-
-/* Smooth scrolling for anchor links */
-html {
-    scroll-behavior: smooth;
-}
-
-/* Performance optimizations */
-.hph-hero-video {
-    will-change: transform;
-}
-
-.hph-hero-parallax {
-    will-change: transform;
-}
-
-/* Accessibility improvements */
-.hph-hero-btn:focus {
-    outline: 2px solid var(--hph-primary);
-    outline-offset: 2px;
-}
-
-.hph-hero-btn:focus:not(:focus-visible) {
-    outline: none;
-}
-
-/* Print styles */
-@media print {
-    .hph-hero {
-        min-height: auto;
-        padding: 2rem 0;
-    }
-    
-    .hph-hero-video,
-    .hph-scroll-indicator {
-        display: none;
-    }
+.hph-rotating-text.flip-in {
+    animation: flipIn 0.5s ease forwards;
 }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const rotatingHeadline = document.querySelector('.hph-rotating-headline');
+    if (!rotatingHeadline) return;
+    
+    const rotatingText = rotatingHeadline.querySelector('.hph-rotating-text');
+    if (!rotatingText) return;
+    
+    const words = JSON.parse(rotatingText.dataset.words || '[]');
+    if (words.length <= 1) return;
+    
+    const rotationType = rotatingHeadline.dataset.rotationType || 'typing';
+    const rotationSpeed = parseInt(rotatingHeadline.dataset.rotationSpeed) || 3000;
+    const typingSpeed = parseInt(rotatingHeadline.dataset.typingSpeed) || 100;
+    const cursor = rotatingHeadline.querySelector('.hph-typing-cursor');
+    
+    let currentIndex = 0;
+    
+    function typeWriter(text, element, callback) {
+        let i = 0;
+        element.textContent = '';
+        
+        function type() {
+            if (i < text.length) {
+                element.textContent += text.charAt(i);
+                i++;
+                setTimeout(type, typingSpeed);
+            } else if (callback) {
+                setTimeout(callback, rotationSpeed);
+            }
+        }
+        type();
+    }
+    
+    function deleteWriter(element, callback) {
+        let text = element.textContent;
+        let i = text.length;
+        
+        function deleteChar() {
+            if (i > 0) {
+                element.textContent = text.substring(0, i - 1);
+                i--;
+                setTimeout(deleteChar, typingSpeed / 2);
+            } else if (callback) {
+                callback();
+            }
+        }
+        deleteChar();
+    }
+    
+    function rotateWord() {
+        currentIndex = (currentIndex + 1) % words.length;
+        const nextWord = words[currentIndex];
+        
+        switch(rotationType) {
+            case 'typing':
+                if (cursor) cursor.style.display = 'inline-block';
+                deleteWriter(rotatingText, function() {
+                    typeWriter(nextWord, rotatingText, rotateWord);
+                });
+                break;
+                
+            case 'fade':
+                rotatingText.classList.add('fade-out');
+                setTimeout(() => {
+                    rotatingText.textContent = nextWord;
+                    rotatingText.classList.remove('fade-out');
+                    rotatingText.classList.add('fade-in');
+                    setTimeout(() => {
+                        rotatingText.classList.remove('fade-in');
+                        setTimeout(rotateWord, rotationSpeed);
+                    }, 500);
+                }, 300);
+                break;
+                
+            case 'slide':
+                rotatingText.classList.add('slide-out');
+                setTimeout(() => {
+                    rotatingText.textContent = nextWord;
+                    rotatingText.classList.remove('slide-out');
+                    rotatingText.classList.add('slide-in');
+                    setTimeout(() => {
+                        rotatingText.classList.remove('slide-in');
+                        setTimeout(rotateWord, rotationSpeed);
+                    }, 400);
+                }, 400);
+                break;
+                
+            case 'flip':
+                rotatingText.classList.add('flip-out');
+                setTimeout(() => {
+                    rotatingText.textContent = nextWord;
+                    rotatingText.classList.remove('flip-out');
+                    rotatingText.classList.add('flip-in');
+                    setTimeout(() => {
+                        rotatingText.classList.remove('flip-in');
+                        setTimeout(rotateWord, rotationSpeed);
+                    }, 500);
+                }, 300);
+                break;
+                
+            default:
+                rotatingText.textContent = nextWord;
+                setTimeout(rotateWord, rotationSpeed);
+        }
+    }
+    
+    // Start rotation
+    if (rotationType === 'typing') {
+        setTimeout(rotateWord, rotationSpeed);
+    } else {
+        setTimeout(rotateWord, rotationSpeed);
+    }
+});
+</script>
+<?php endif; ?>

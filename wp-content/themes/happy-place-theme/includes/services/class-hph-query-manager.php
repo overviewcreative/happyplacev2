@@ -101,9 +101,22 @@ class HPH_Query_Manager {
             $query->set('meta_query', $meta_query);
         }
         
-        // Set posts per page
-        $config = HPH_Theme::instance()->get_service('config');
-        $per_page = $config->get('listings_per_page', 12);
+        // Set posts per page with safe fallbacks
+        $per_page = 12; // Default fallback
+        
+        try {
+            $config = HPH_Theme::instance()->get_service('config');
+            if ($config && method_exists($config, 'get')) {
+                $per_page = $config->get('listings_per_page', 12);
+            }
+        } catch (Exception $e) {
+            // Fallback if config service fails
+            $per_page = 12;
+        }
+        
+        // Ensure we never set it to less than 1
+        $per_page = max(1, intval($per_page));
+        
         $query->set('posts_per_page', apply_filters('hph_listings_per_page', $per_page));
         
         // Handle sorting
@@ -164,12 +177,24 @@ class HPH_Query_Manager {
             );
         }
         
-        // Status filter
+        // Status filter - include active listings and those without status set
         if (!get_query_var('show_all_status')) {
             $meta_query[] = array(
-                'key'     => 'listing_status',
-                'value'   => 'active',
-                'compare' => '='
+                'relation' => 'OR',
+                array(
+                    'key'     => 'listing_status',
+                    'value'   => 'active',
+                    'compare' => '='
+                ),
+                array(
+                    'key'     => 'listing_status',
+                    'value'   => '',
+                    'compare' => '='
+                ),
+                array(
+                    'key'     => 'listing_status',
+                    'compare' => 'NOT EXISTS'
+                )
             );
         }
         

@@ -1,0 +1,56 @@
+/* Chip/Tag Component */
+.hph-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hph-space-1);
+  padding: var(--hph-space-1) var(--hph-space-3);
+  font-size: var(--hph-text-sm);
+  font-weight: 500;
+  background: var(--hph-gray-100);
+  color: var(--hph-gray-700);
+  border-radius: var(--hph-radius-full);
+  transition: all var(--hph-duration-fast);
+}
+
+.hph-chip--removable {
+  padding-right: var(--hph-space-2);
+}
+
+.hph-chip--primary {
+  background: var(--hph-primary-100);
+  color: var(--hph-primary-800);
+}
+
+.hph-chip--success {
+  background: var(--hph-success-100);
+  color: var(--hph-success-800);
+}
+
+.hph-chip--warning {
+  background: var(--hph-warning-100);
+  color: var(--hph-warning-800);
+}
+
+.hph-chip--error {
+  background: var(--hph-error-100);
+  color: var(--hph-error-800);
+}
+
+.hph-chip__remove {
+  width: var(--hph-space-4);
+  height: var(--hph-space-4);
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+  opacity: 0.6;
+  transition: opacity var(--hph-duration-fast);
+}
+
+.hph-chip__remove:hover {
+  opacity: 1;
+}

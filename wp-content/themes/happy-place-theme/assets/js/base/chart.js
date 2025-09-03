@@ -8,6 +8,11 @@
 (function($) {
     'use strict';
     
+    // Ensure HPH global exists
+    if (typeof window.HPH === 'undefined') {
+        window.HPH = {};
+    }
+    
     // Chart namespace
     HPH.Chart = {
         

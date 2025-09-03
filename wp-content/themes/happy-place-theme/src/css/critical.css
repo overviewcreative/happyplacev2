@@ -1,0 +1,476 @@
+/**
+ * Critical CSS - Above the fold styles
+ * This file will be inlined in the <head> for optimal performance
+ */
+
+/* CSS Custom Properties (always critical) */
+:root {
+    --hph-primary: #007cba;
+    --hph-white: #ffffff;
+    --hph-gray-100: #f8f9fa;
+    --hph-gray-200: #e9ecef;
+    --hph-gray-700: #495057;
+    --hph-gray-800: #343a40;
+}
+
+/* Essential reset styles */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+    color: var(--hph-gray-800);
+    background-color: var(--hph-white);
+}
+
+/* Critical layout */
+.site-header {
+    background: var(--hph-white);
+    border-bottom: 1px solid var(--hph-gray-200);
+}
+
+.hph-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Essential reset styles */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Base typography (critical for text rendering) */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--hph-text-primary, #333);
+  background-color: var(--hph-background, #fff);
+}
+
+/* Container system (critical for layout) */
+.container,
+.hph-container {
+  max-width: var(--hph-container-xl, 1200px);
+  margin: 0 auto;
+  padding: 0 var(--hph-space-lg, 1rem);
+}
+
+/* Critical header styles to prevent layout shift */
+.hph-topbar {
+  background: var(--hph-gray-900, #111827);
+  color: var(--hph-white, #ffffff);
+  padding: var(--hph-space-sm, 0.5rem) 0;
+  font-size: var(--hph-text-sm, 14px);
+  position: relative;
+  z-index: 1001;
+}
+
+/* FIXED: Ensure header always has proper background and contrast */
+.hph-header {
+  background: #ffffff !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+  position: relative !important;
+  z-index: 1000 !important;
+  isolation: isolate; /* Creates new stacking context */
+}
+
+/* Ensure header content maintains proper layering */
+.hph-header-content,
+.hph-navigation {
+  background: transparent;
+  position: relative;
+  z-index: 1001;
+}
+
+/* Fix logo visibility */
+.hph-logo,
+.hph-logo-text {
+  color: var(--hph-primary, #2563eb) !important;
+  position: relative;
+  z-index: 1002;
+}
+
+.hph-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--hph-space-lg, 1rem) 0;
+  min-height: 60px; /* Prevent layout shift */
+}
+
+/* Logo area */
+.hph-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--hph-space-sm, 0.5rem);
+}
+
+.hph-logo img {
+  max-height: 40px;
+  width: auto;
+}
+
+/* Critical navigation styles with contrast fix */
+.hph-nav-menu {
+  display: none; /* Hidden by default, shown via JS */
+}
+
+@media (min-width: 768px) {
+  .hph-nav-menu {
+    display: flex;
+    align-items: center;
+    gap: var(--hph-space-lg, 1rem);
+    list-style: none;
+    position: relative;
+    z-index: 1002;
+  }
+  
+  .hph-nav-menu a,
+  .hph-nav-link {
+    color: #374151 !important;
+    text-decoration: none;
+    padding: var(--hph-space-sm, 0.5rem);
+    border-radius: var(--hph-radius-sm, 4px);
+    transition: all 0.2s ease;
+    position: relative;
+    z-index: 1002;
+  }
+  
+  .hph-nav-menu a:hover,
+  .hph-nav-link:hover {
+    color: #2563eb !important;
+    background-color: rgba(37, 99, 235, 0.1) !important;
+  }
+}
+
+/* Mobile menu trigger */
+.hph-mobile-toggle {
+  display: flex;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--hph-space-sm, 0.5rem);
+}
+
+@media (min-width: 768px) {
+  .hph-mobile-toggle {
+    display: none;
+  }
+}
+
+/* Skip link for accessibility */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  background: var(--hph-primary, #2563eb);
+  color: white;
+  padding: var(--hph-space-sm, 0.5rem) var(--hph-space-lg, 1rem);
+  text-decoration: none;
+  border-radius: var(--hph-radius-sm, 4px);
+}
+
+.skip-link:focus {
+  position: absolute;
+  left: var(--hph-space-sm, 0.5rem);
+  top: var(--hph-space-sm, 0.5rem);
+  z-index: 999999;
+}
+
+/* Critical search form (header) with contrast fix */
+.hph-header-search {
+  display: none; /* Hidden on mobile */
+}
+
+@media (min-width: 1024px) {
+  .hph-header-search {
+    display: flex;
+    align-items: center;
+    gap: var(--hph-space-sm, 0.5rem);
+    position: relative;
+    z-index: 1002;
+  }
+  
+  .hph-search-form {
+    display: flex;
+    gap: var(--hph-space-xs, 0.25rem);
+    align-items: center;
+    position: relative;
+    z-index: 1002;
+  }
+  
+  .hph-search-form select,
+  .hph-search-form input {
+    padding: var(--hph-space-xs, 0.25rem) var(--hph-space-sm, 0.5rem);
+    border: 1px solid #d1d5db !important;
+    border-radius: var(--hph-radius-sm, 4px);
+    font-size: var(--hph-text-sm, 14px);
+    background: #ffffff !important;
+    color: #374151 !important;
+  }
+  
+  .hph-search-form button {
+    padding: var(--hph-space-xs, 0.25rem) var(--hph-space-sm, 0.5rem);
+    background: #2563eb !important;
+    color: #ffffff !important;
+    border: none;
+    border-radius: var(--hph-radius-sm, 4px);
+    cursor: pointer;
+    font-size: var(--hph-text-sm, 14px);
+  }
+  
+  /* Fix header actions and user account */
+  .hph-header-actions,
+  .hph-user-account {
+    position: relative;
+    z-index: 1002;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  /* CRITICAL: Fix header button inheritance issues */
+  .hph-header .hph-action-btn,
+  .hph-header-actions .hph-action-btn,
+  #masthead .hph-action-btn {
+    width: 40px !important;
+    height: 40px !important;
+    background: var(--hph-gray-50, #f9fafb) !important;
+    border: none !important;
+    border-radius: 50% !important;
+    color: var(--hph-gray-700, #374151) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    text-decoration: none !important;
+    transform: none !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+    font-size: 16px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    z-index: 1002;
+  }
+  
+  .hph-header .hph-action-btn:hover,
+  .hph-header-actions .hph-action-btn:hover,
+  #masthead .hph-action-btn:hover {
+    background: var(--hph-primary, #2563eb) !important;
+    color: var(--hph-white, #ffffff) !important;
+    transform: none !important;
+  }
+  
+  /* User toggle button - same as other action buttons */
+  .hph-header .hph-user-toggle,
+  .hph-header-actions .hph-user-toggle {
+    width: 40px !important;
+    height: 40px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    background: var(--hph-gray-50, #f9fafb) !important;
+    color: var(--hph-gray-700, #374151) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 16px !important;
+  }
+  
+  .hph-header .hph-user-toggle:hover,
+  .hph-header-actions .hph-user-toggle:hover {
+    background: var(--hph-primary, #2563eb) !important;
+    color: var(--hph-white, #ffffff) !important;
+  }
+  
+  /* Hide any text content in user toggle (only show icon) */
+  .hph-header .hph-user-toggle .hph-user-name,
+  .hph-header-actions .hph-user-toggle .hph-user-name {
+    display: none !important;
+  }
+  
+  /* Ensure proper alignment of header actions */
+  .hph-header-actions,
+  .hph-user-account {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    height: auto !important;
+  }
+  
+  /* Badge styling for header buttons */
+  .hph-header .hph-badge,
+  .hph-header-actions .hph-badge {
+    position: absolute !important;
+    top: -4px !important;
+    right: -4px !important;
+    background: var(--hph-danger, #ef4444) !important;
+    color: var(--hph-white, #ffffff) !important;
+    font-size: 0.625rem !important;
+    font-weight: 600 !important;
+    padding: 0.125rem 0.375rem !important;
+    border-radius: 1rem !important;
+    min-width: 18px !important;
+    text-align: center !important;
+  }
+  
+  /* Mobile toggle button specific styling */
+  .hph-header .hph-mobile-toggle,
+  .hph-header-actions .hph-mobile-toggle {
+    width: 40px !important;
+    height: 40px !important;
+    background: transparent !important;
+    border: none !important;
+    color: var(--hph-gray-700, #374151) !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 4px !important;
+    transition: all 0.3s ease !important;
+  }
+  
+  .hph-header .hph-mobile-toggle:hover {
+    background: var(--hph-gray-100, #f3f4f6) !important;
+    color: var(--hph-primary, #2563eb) !important;
+  }
+  
+  /* High specificity to override theme conflicts */
+  html body .site #masthead.hph-header .hph-header-actions .hph-action-btn {
+    width: 40px !important;
+    height: 40px !important;
+    background: var(--hph-gray-50, #f9fafb) !important;
+    border-radius: 50% !important;
+    color: var(--hph-gray-700, #374151) !important;
+    transform: none !important;
+  }
+  
+  html body .site #masthead.hph-header .hph-header-actions .hph-action-btn:hover {
+    background: var(--hph-primary, #2563eb) !important;
+    color: var(--hph-white, #ffffff) !important;
+  }
+  
+  /* Prevent all theme utility classes from affecting header buttons */
+  body .hph-header .hph-action-btn,
+  body.home .hph-header .hph-action-btn,
+  body.single .hph-header .hph-action-btn,
+  body.page .hph-header .hph-action-btn,
+  body.archive .hph-header .hph-action-btn,
+  .hph-bg-primary-10 .hph-header .hph-action-btn,
+  .hph-bg-primary-20 .hph-header .hph-action-btn,
+  .hph-bg-primary-50 .hph-header .hph-action-btn,
+  .hph-shadow-primary .hph-header .hph-action-btn,
+  .hph-shadow-glow .hph-header .hph-action-btn {
+    width: 40px !important;
+    height: 40px !important;
+    background: #f9fafb !important;
+    border-radius: 50% !important;
+    color: #374151 !important;
+    transform: none !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+  
+  /* Force homepage header buttons to maintain correct styling */
+  body.home .hph-header .hph-action-btn,
+  body.front-page .hph-header .hph-action-btn {
+    background: #f9fafb !important;
+    color: #374151 !important;
+  }
+  
+  body.home .hph-header .hph-action-btn:hover,
+  body.front-page .hph-header .hph-action-btn:hover {
+    background: #2563eb !important;
+    color: #ffffff !important;
+  }
+}
+
+/* Cookie consent critical positioning */
+.cookie-consent {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background: var(--hph-gray-900, #111827);
+  color: var(--hph-white, #ffffff);
+  padding: var(--hph-space-lg, 1rem);
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.cookie-consent.show {
+  transform: translateY(0);
+}
+
+/* Critical loading states */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Prevent content from interfering with header */
+.hph-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #ffffff;
+  z-index: -1;
+}
+
+/* Ensure page content stays below header */
+.hph-main-content,
+.site-main,
+.site-content,
+.hph-site-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Additional stacking context isolation */
+.entry-content,
+.post-content,
+.page-content {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+}
+
+/* Ensure sticky header maintains styling */
+.hph-sticky-header {
+  background: #ffffff !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  z-index: 1000 !important;
+}
+
+/* Mobile toggle fix */
+.hph-mobile-toggle {
+  color: #374151 !important;
+  position: relative;
+  z-index: 1002;
+}

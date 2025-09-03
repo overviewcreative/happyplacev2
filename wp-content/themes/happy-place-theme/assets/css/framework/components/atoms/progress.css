@@ -1,0 +1,407 @@
+/**
+ * Happy Place House - Progress Component Styles
+ * Visual progress indicators with animations and variants
+ * 
+ * @package HappyPlaceTheme
+ * @since 3.0.0
+ */
+
+/* ===== PROGRESS BASE ===== */
+.hph-progress-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hph-space-2);
+  width: 100%;
+}
+
+.hph-progress__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--hph-space-2);
+}
+
+.hph-progress__label {
+  font-size: var(--hph-text-sm);
+  font-weight: var(--hph-font-medium);
+  color: var(--hph-text-primary);
+  flex: 1;
+}
+
+.hph-progress__value {
+  font-size: var(--hph-text-sm);
+  font-weight: var(--hph-font-medium);
+  color: var(--hph-text-secondary);
+  white-space: nowrap;
+}
+
+.hph-progress__value--standalone {
+  text-align: center;
+  margin-top: var(--hph-space-1);
+}
+
+/* ===== PROGRESS BAR ===== */
+.hph-progress {
+  position: relative;
+  display: flex;
+  width: 100%;
+  background-color: var(--hph-gray-100);
+  border-radius: var(--hph-radius-full);
+  overflow: hidden;
+}
+
+.hph-progress__fill {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: var(--hph-color-primary);
+  transition: width var(--hph-transition-normal) ease-in-out;
+  overflow: hidden;
+}
+
+/* ===== SIZE VARIANTS ===== */
+.hph-progress-container--xs .hph-progress {
+  height: 2px;
+}
+
+.hph-progress-container--xs .hph-progress__label,
+.hph-progress-container--xs .hph-progress__value {
+  font-size: var(--hph-text-xs);
+}
+
+.hph-progress-container--sm .hph-progress {
+  height: 4px;
+}
+
+.hph-progress-container--sm .hph-progress__label,
+.hph-progress-container--sm .hph-progress__value {
+  font-size: var(--hph-text-xs);
+}
+
+.hph-progress-container--md .hph-progress {
+  height: 8px;
+}
+
+.hph-progress-container--lg .hph-progress {
+  height: 12px;
+}
+
+.hph-progress-container--lg .hph-progress__label,
+.hph-progress-container--lg .hph-progress__value {
+  font-size: var(--hph-text-base);
+}
+
+.hph-progress-container--xl .hph-progress {
+  height: 16px;
+}
+
+.hph-progress-container--xl .hph-progress__label,
+.hph-progress-container--xl .hph-progress__value {
+  font-size: var(--hph-text-base);
+}
+
+/* ===== SHAPE VARIANTS ===== */
+.hph-progress--rounded {
+  border-radius: var(--hph-radius-md);
+}
+
+.hph-progress--square {
+  border-radius: 0;
+}
+
+.hph-progress--pill {
+  border-radius: var(--hph-radius-full);
+}
+
+/* ===== COLOR VARIANTS ===== */
+.hph-progress--default .hph-progress__fill {
+  background-color: var(--hph-gray-500);
+}
+
+.hph-progress--primary .hph-progress__fill {
+  background-color: var(--hph-color-primary);
+}
+
+.hph-progress--success .hph-progress__fill {
+  background-color: var(--hph-green-500);
+}
+
+.hph-progress--warning .hph-progress__fill {
+  background-color: var(--hph-yellow-500);
+}
+
+.hph-progress--error .hph-progress__fill {
+  background-color: var(--hph-red-500);
+}
+
+.hph-progress--info .hph-progress__fill {
+  background-color: var(--hph-blue-500);
+}
+
+/* ===== GRADIENT VARIANTS ===== */
+.hph-progress--gradient.hph-progress--default .hph-progress__fill {
+  background: linear-gradient(90deg, var(--hph-gray-400), var(--hph-gray-600));
+}
+
+.hph-progress--gradient.hph-progress--primary .hph-progress__fill {
+  background: linear-gradient(90deg, var(--hph-primary-400), var(--hph-primary-600));
+}
+
+.hph-progress--gradient.hph-progress--success .hph-progress__fill {
+  background: linear-gradient(90deg, var(--hph-green-400), var(--hph-green-600));
+}
+
+.hph-progress--gradient.hph-progress--warning .hph-progress__fill {
+  background: linear-gradient(90deg, var(--hph-yellow-400), var(--hph-yellow-600));
+}
+
+.hph-progress--gradient.hph-progress--error .hph-progress__fill {
+  background: linear-gradient(90deg, var(--hph-red-400), var(--hph-red-600));
+}
+
+.hph-progress--gradient.hph-progress--info .hph-progress__fill {
+  background: linear-gradient(90deg, var(--hph-blue-400), var(--hph-blue-600));
+}
+
+/* ===== STRIPED PATTERN ===== */
+.hph-progress--striped .hph-progress__stripes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.15) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.15) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 1rem 1rem;
+}
+
+.hph-progress--animated .hph-progress__stripes {
+  animation: hph-progress-stripes 1s linear infinite;
+}
+
+@keyframes hph-progress-stripes {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 1rem 0;
+  }
+}
+
+/* ===== PULSE ANIMATION ===== */
+.hph-progress--pulse .hph-progress__fill {
+  animation: hph-progress-pulse 2s ease-in-out infinite;
+}
+
+@keyframes hph-progress-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* ===== INDETERMINATE PROGRESS ===== */
+.hph-progress--indeterminate .hph-progress__fill {
+  width: 100% !important;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    currentColor 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: hph-progress-indeterminate 1.5s ease-in-out infinite;
+}
+
+@keyframes hph-progress-indeterminate {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ===== STACKED PROGRESS ===== */
+.hph-progress--stacked {
+  display: flex;
+  flex-direction: row;
+}
+
+.hph-progress--stacked .hph-progress__fill {
+  flex-shrink: 0;
+  transition: width var(--hph-transition-normal) ease-in-out;
+}
+
+.hph-progress--stacked .hph-progress__fill:first-child {
+  border-top-left-radius: inherit;
+  border-bottom-left-radius: inherit;
+}
+
+.hph-progress--stacked .hph-progress__fill:last-child {
+  border-top-right-radius: inherit;
+  border-bottom-right-radius: inherit;
+}
+
+/* Stacked segment colors */
+.hph-progress__fill--default {
+  background-color: var(--hph-gray-500);
+}
+
+.hph-progress__fill--primary {
+  background-color: var(--hph-color-primary);
+}
+
+.hph-progress__fill--success {
+  background-color: var(--hph-green-500);
+}
+
+.hph-progress__fill--warning {
+  background-color: var(--hph-yellow-500);
+}
+
+.hph-progress__fill--error {
+  background-color: var(--hph-red-500);
+}
+
+.hph-progress__fill--info {
+  background-color: var(--hph-blue-500);
+}
+
+/* ===== HOVER EFFECTS ===== */
+.hph-progress__fill {
+  position: relative;
+}
+
+.hph-progress__fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0);
+  transition: background var(--hph-transition-fast);
+}
+
+.hph-progress:hover .hph-progress__fill::after {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ===== ACCESSIBILITY ===== */
+.hph-progress[aria-valuenow] {
+  position: relative;
+}
+
+/* Screen reader only text for progress updates */
+.hph-progress__sr-update {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ===== THEME VARIATIONS ===== */
+/* Dark theme adjustments */
+@media (prefers-color-scheme: dark) {
+  .hph-progress {
+    background-color: var(--hph-gray-800);
+  }
+  
+  .hph-progress--striped .hph-progress__stripes {
+    background-image: linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.1) 25%,
+      transparent 25%,
+      transparent 50%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.1) 75%,
+      transparent 75%,
+      transparent
+    );
+  }
+}
+
+/* ===== HIGH CONTRAST MODE ===== */
+@media (prefers-contrast: high) {
+  .hph-progress {
+    border: 1px solid var(--hph-text-primary);
+  }
+  
+  .hph-progress__fill {
+    background-color: var(--hph-text-primary) !important;
+  }
+  
+  .hph-progress--striped .hph-progress__stripes {
+    background-image: linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.5) 25%,
+      transparent 25%,
+      transparent 50%,
+      rgba(255, 255, 255, 0.5) 50%,
+      rgba(255, 255, 255, 0.5) 75%,
+      transparent 75%,
+      transparent
+    );
+  }
+}
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  .hph-progress__fill {
+    transition: none;
+  }
+  
+  .hph-progress--animated .hph-progress__stripes,
+  .hph-progress--pulse .hph-progress__fill,
+  .hph-progress--indeterminate .hph-progress__fill {
+    animation: none;
+  }
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  .hph-progress {
+    background: #f0f0f0 !important;
+    border: 1px solid #000;
+  }
+  
+  .hph-progress__fill {
+    background: #000 !important;
+  }
+  
+  .hph-progress--animated .hph-progress__stripes,
+  .hph-progress--pulse .hph-progress__fill,
+  .hph-progress--indeterminate .hph-progress__fill {
+    animation: none;
+  }
+}
+
+/* ===== UTILITY CLASSES ===== */
+.hph-progress--no-transition .hph-progress__fill {
+  transition: none;
+}
+
+.hph-progress--fast-transition .hph-progress__fill {
+  transition: width var(--hph-transition-fast) ease-in-out;
+}
+
+.hph-progress--slow-transition .hph-progress__fill {
+  transition: width var(--hph-transition-slow) ease-in-out;
+}

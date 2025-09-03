@@ -11,9 +11,9 @@ $agents_args = wp_parse_args($args ?? [], [
     'query_args' => [],
     'columns' => 3,
     'show_search' => true,
-    'show_filters' => false,
+    'show_filters' => true,
     'show_sort' => true,
-    'card_layout' => 'default',
+    'card_layout' => 'compact',
     'show_stats' => true,
     'show_contact' => true
 ]);
@@ -28,7 +28,7 @@ $grid_args = array_merge($agents_args, [
     'card_args' => [
         'layout' => $agents_args['card_layout'],
         'show_price' => false,
-        'show_meta' => true,
+        'show_meta' => false,
         'show_actions' => $agents_args['show_contact'],
         'actions' => [
             [

@@ -218,6 +218,75 @@
       },
       "readonly": 1,
       "step": "any"
+    },
+    {
+      "key": "field_school_district",
+      "label": "School District",
+      "name": "school_district",
+      "type": "text",
+      "instructions": "Local school district name",
+      "wrapper": {
+        "width": "33"
+      },
+      "maxlength": 100,
+      "placeholder": "Example School District"
+    },
+    {
+      "key": "field_zoning",
+      "label": "Zoning",
+      "name": "zoning",
+      "type": "text",
+      "instructions": "Property zoning classification",
+      "wrapper": {
+        "width": "33"
+      },
+      "maxlength": 20,
+      "placeholder": "R-1, C-1, etc."
+    },
+    {
+      "key": "field_subdivision",
+      "label": "Subdivision/Neighborhood",
+      "name": "subdivision",
+      "type": "text",
+      "instructions": "Neighborhood or subdivision name",
+      "wrapper": {
+        "width": "34"
+      },
+      "maxlength": 100,
+      "placeholder": "Neighborhood name"
+    },
+    {
+      "key": "field_flood_zone",
+      "label": "Flood Zone",
+      "name": "flood_zone",
+      "type": "select",
+      "instructions": "FEMA flood zone designation",
+      "wrapper": {
+        "width": "50"
+      },
+      "choices": {
+        "no": "No Flood Zone",
+        "ae": "AE Zone",
+        "a": "A Zone", 
+        "x": "X Zone",
+        "ve": "VE Zone",
+        "other": "Other"
+      },
+      "default_value": "no",
+      "allow_null": 0,
+      "ui": 1
+    },
+    {
+      "key": "field_county",
+      "label": "County",
+      "name": "county",
+      "type": "text",
+      "instructions": "County name",
+      "wrapper": {
+        "width": "50"
+      },
+      "maxlength": 50,
+      "placeholder": "County name"
     }
   ],
   "location": [

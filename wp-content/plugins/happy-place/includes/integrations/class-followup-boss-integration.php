@@ -46,8 +46,19 @@ class FollowUp_Boss_Integration {
      * Constructor
      */
     private function __construct() {
-        $this->api_key = get_option($this->option_prefix . 'api_key', '');
+        $this->init_config();
         $this->init_hooks();
+    }
+    
+    /**
+     * Initialize configuration
+     */
+    private function init_config() {
+        $settings = get_option('hp_integration_settings', []);
+        $fub_settings = $settings['followup_boss'] ?? [];
+        
+        // Use new configuration structure or fallback to old settings
+        $this->api_key = $fub_settings['api_key'] ?? get_option($this->option_prefix . 'api_key', '');
     }
     
     /**
@@ -467,7 +478,7 @@ class FollowUp_Boss_Integration {
             } else {
                 wp_send_json_error($result);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             wp_send_json_error(['message' => $e->getMessage()]);
         }
     }
@@ -525,8 +536,13 @@ class FollowUp_Boss_Integration {
      * Sync lead to FollowUp Boss
      */
     public function sync_lead_to_followup_boss($lead_data, $listing_id = null) {
+        // Get current configuration
+        $settings = get_option('hp_integration_settings', []);
+        $fub_settings = $settings['followup_boss'] ?? [];
+        
         // Check if integration is enabled
-        if (!get_option($this->option_prefix . 'enabled', false)) {
+        $enabled = $fub_settings['enabled'] ?? get_option($this->option_prefix . 'enabled', false);
+        if (!$enabled) {
             return false;
         }
         
@@ -552,7 +568,7 @@ class FollowUp_Boss_Integration {
                 hp_log('Failed to sync lead to FollowUp Boss: ' . $result['message'], 'error', 'followup-boss');
                 return false;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             hp_log('FollowUp Boss sync error: ' . $e->getMessage(), 'error', 'followup-boss');
             return false;
         }
@@ -562,8 +578,12 @@ class FollowUp_Boss_Integration {
      * Prepare person data for FollowUp Boss API
      */
     private function prepare_person_data($lead_data, $listing_id = null) {
-        $default_source = get_option($this->option_prefix . 'default_source', 'Website');
-        $default_status = get_option($this->option_prefix . 'default_status', 'New');
+        // Get configuration settings
+        $settings = get_option('hp_integration_settings', []);
+        $fub_settings = $settings['followup_boss'] ?? [];
+        
+        $default_source = $fub_settings['lead_source'] ?? get_option($this->option_prefix . 'default_source', 'Website');
+        $default_status = $fub_settings['default_status'] ?? get_option($this->option_prefix . 'default_status', 'New');
         
         $person_data = [
             'firstName' => $lead_data['first_name'] ?? '',

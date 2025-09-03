@@ -1,6 +1,7 @@
 <?php
 /**
  * Component Loader Class - Organized component loading system
+ * Updated with all new base components and sections
  *
  * @package HappyPlaceTheme
  * @since 3.0.0
@@ -32,7 +33,7 @@ class HPH_Component_Loader {
      * Initialize the component loader
      */
     public static function init() {
-        self::$base_dir = HPH_TEMPLATE_DIR . '/';
+        self::$base_dir = get_template_directory() . '/template-parts/';
         self::register_components();
         
         // Add WordPress hooks
@@ -41,427 +42,486 @@ class HPH_Component_Loader {
     
     /**
      * Register all available components
+     * Updated to match actual file structure - November 2024
      */
     private static function register_components() {
         self::$components = array(
-            // Base Components
-            'stat-card' => array(
-                'path' => 'base/stat-card',
-                'name' => 'Stat Card',
-                'description' => 'Statistics display card with customizable styling',
+            
+            // =====================================
+            // BASE UI COMPONENTS (Actual Files)
+            // =====================================
+            
+            'accordion' => array(
+                'path' => 'base/accordion',
+                'name' => 'Accordion',
+                'description' => 'Collapsible content sections',
                 'category' => 'base',
-                'args' => array('title', 'value', 'subtitle', 'icon', 'color', 'format')
+                'args' => array('items', 'variant', 'multiple', 'default_open')
             ),
-            'data-table' => array(
-                'path' => 'base/data-table',
-                'name' => 'Data Table',
-                'description' => 'Responsive data table with search and sorting',
+            
+            'alert' => array(
+                'path' => 'base/alert',
+                'name' => 'Alert',
+                'description' => 'Alert and notification component',
                 'category' => 'base',
-                'args' => array('title', 'columns', 'data', 'pagination', 'search')
+                'args' => array('title', 'message', 'variant', 'dismissible', 'icon')
             ),
-            'dashboard-form' => array(
-                'path' => 'base/dashboard-form',
-                'name' => 'Dashboard Form',
-                'description' => 'Reusable form container with AJAX support',
+            
+            'avatar' => array(
+                'path' => 'base/avatar',
+                'name' => 'Avatar',
+                'description' => 'User profile image component',
                 'category' => 'base',
-                'args' => array('title', 'fields', 'action', 'method')
+                'args' => array('src', 'name', 'size', 'variant', 'status')
             ),
-            'dashboard-layout' => array(
-                'path' => 'base/dashboard-layout',
-                'name' => 'Dashboard Layout',
-                'description' => 'Flexible layout container for dashboard content',
+            
+            'badge' => array(
+                'path' => 'base/badge',
+                'name' => 'Badge',
+                'description' => 'Status indicators and labels',
                 'category' => 'base',
-                'args' => array('title', 'layout', 'breadcrumbs', 'actions')
+                'args' => array('text', 'variant', 'size', 'icon')
             ),
-            'dashboard-widget' => array(
-                'path' => 'base/dashboard-widget',
-                'name' => 'Dashboard Widget',
-                'description' => 'Widget container with header and controls',
+            
+            'breadcrumbs' => array(
+                'path' => 'base/breadcrumbs',
+                'name' => 'Breadcrumbs',
+                'description' => 'Navigation trail component',
                 'category' => 'base',
-                'args' => array('title', 'icon', 'collapsible', 'actions')
+                'args' => array('items', 'separator', 'show_home')
             ),
-            'dashboard-chart' => array(
-                'path' => 'base/dashboard-chart',
-                'name' => 'Dashboard Chart',
-                'description' => 'Chart.js wrapper for data visualization',
+            
+            'button' => array(
+                'path' => 'base/button',
+                'name' => 'Button',
+                'description' => 'Button component with variations',
                 'category' => 'base',
-                'args' => array('type', 'data', 'labels', 'title')
+                'args' => array('text', 'variant', 'size', 'icon', 'href')
             ),
-            'dashboard-map' => array(
-                'path' => 'base/dashboard-map',
-                'name' => 'Dashboard Map',
-                'description' => 'Mapbox GL wrapper for interactive maps',
-                'category' => 'base',
-                'args' => array('center', 'zoom', 'markers', 'style')
-            ),
+            
             'card' => array(
                 'path' => 'base/card',
-                'name' => 'Base Card',
-                'description' => 'Flexible card layout for any post type',
+                'name' => 'Card',
+                'description' => 'Flexible card component',
                 'category' => 'base',
-                'args' => array('post_id', 'post_type', 'layout', 'show_image', 'show_actions')
+                'args' => array('variant', 'layout', 'image', 'title', 'description')
             ),
+            
             'card-grid' => array(
                 'path' => 'base/card-grid',
                 'name' => 'Card Grid',
-                'description' => 'Grid layout for displaying multiple cards',
+                'description' => 'Grid layout for cards',
                 'category' => 'base',
-                'args' => array('posts', 'columns', 'card_args', 'search_form', 'filter_controls')
+                'args' => array('columns', 'gap', 'items')
             ),
-            'card-list' => array(
-                'path' => 'base/card-list',
-                'name' => 'Card List',
-                'description' => 'List layout for displaying cards vertically',
+            
+            'carousel' => array(
+                'path' => 'base/carousel',
+                'name' => 'Carousel',
+                'description' => 'Image and content slider',
                 'category' => 'base',
-                'args' => array('posts', 'card_args', 'spacing', 'dividers', 'search_form')
+                'args' => array('items', 'type', 'navigation', 'pagination')
             ),
-            'card-map' => array(
-                'path' => 'base/card-map',
-                'name' => 'Card Map',
-                'description' => 'Map layout with cards as popups or sidebar',
+            
+            'checkbox' => array(
+                'path' => 'base/checkbox',
+                'name' => 'Checkbox',
+                'description' => 'Checkbox input component',
                 'category' => 'base',
-                'args' => array('posts', 'layout', 'sidebar_position', 'map_height', 'clustering')
+                'args' => array('name', 'label', 'checked', 'disabled')
             ),
             
-            // Listing Components
-            'listing-card' => array(
-                'path' => 'components/listing/listing-card',
-                'name' => 'Listing Card',
-                'description' => 'Property listing card display',
-                'category' => 'listing',
-                'args' => array('listing_id', 'layout', 'show_agent')
-            ),
-            'listings-grid' => array(
-                'path' => 'components/listing/listings-grid',
-                'name' => 'Listings Grid',
-                'description' => 'Grid display of property listings with search and filters',
-                'category' => 'listing',
-                'args' => array('posts', 'columns', 'show_search', 'show_filters', 'card_layout')
-            ),
-            'listings-list' => array(
-                'path' => 'components/listing/listings-list',
-                'name' => 'Listings List',
-                'description' => 'List display of property listings',
-                'category' => 'listing',
-                'args' => array('posts', 'show_search', 'show_filters', 'show_excerpts')
-            ),
-            'listings-map' => array(
-                'path' => 'components/listing/listings-map',
-                'name' => 'Listings Map',
-                'description' => 'Map display of property listings with interactive markers',
-                'category' => 'listing',
-                'args' => array('posts', 'layout', 'sidebar_position', 'clustering')
-            ),
-            'listing-hero' => array(
-                'path' => 'components/listing/listing-hero',
-                'name' => 'Listing Hero',
-                'description' => 'Property hero section with images',
-                'category' => 'listing',
-                'args' => array('listing_id', 'show_gallery')
-            ),
-            'listing-details' => array(
-                'path' => 'components/listing/listing-details',
-                'name' => 'Listing Details',
-                'description' => 'Property details and specifications',
-                'category' => 'listing',
-                'args' => array('listing_id', 'sections')
-            ),
-            'listing-map' => array(
-                'path' => 'components/listing/listing-map',
-                'name' => 'Listing Map',
-                'description' => 'Property location map',
-                'category' => 'listing',
-                'args' => array('listing_id', 'height', 'zoom')
-            ),
-            'listing-contact-form' => array(
-                'path' => 'components/listing/listing-contact-form',
-                'name' => 'Listing Contact Form',
-                'description' => 'Contact form for property inquiries',
-                'category' => 'listing',
-                'args' => array('listing_id', 'agent_id')
-            ),
-            'listing-gallery' => array(
-                'path' => 'components/listing/listing-photo-gallery',
-                'name' => 'Listing Gallery',
-                'description' => 'Property photo gallery with lightbox',
-                'category' => 'listing',
-                'args' => array('images', 'listing_id', 'style', 'show_thumbnails', 'lightbox')
-            ),
-            'listing-features' => array(
-                'path' => 'components/listing/listing-features',
-                'name' => 'Listing Features',
-                'description' => 'Property features and amenities display',
-                'category' => 'listing',
-                'args' => array('features', 'listing_id', 'style')
-            ),
-            'listing-floor-plans' => array(
-                'path' => 'components/listing/listing-floor-plans',
-                'name' => 'Listing Floor Plans',
-                'description' => 'Property floor plans display',
-                'category' => 'listing',
-                'args' => array('floor_plans', 'listing_id')
-            ),
-            'listing-virtual-tour' => array(
-                'path' => 'components/listing/listing-virtual-tour',
-                'name' => 'Listing Virtual Tour',
-                'description' => 'Virtual tour integration',
-                'category' => 'listing',
-                'args' => array('virtual_tour', 'listing_id')
-            ),
-            'mortgage-calculator' => array(
-                'path' => 'components/listing/listing-mortgage-calculator',
-                'name' => 'Mortgage Calculator',
-                'description' => 'Property mortgage calculator',
-                'category' => 'listing',
-                'args' => array('listing_price', 'listing_id', 'style')
-            ),
-            'neighborhood-info' => array(
-                'path' => 'components/listing/listing-neighborhood-info',
-                'name' => 'Neighborhood Info',
-                'description' => 'Neighborhood information display',
-                'category' => 'listing',
-                'args' => array('neighborhood', 'listing_location')
-            ),
-            'property-actions' => array(
-                'path' => 'components/listing/listing-property-actions',
-                'name' => 'Property Actions',
-                'description' => 'Property action buttons (favorite, share, etc)',
-                'category' => 'listing',
-                'args' => array('listing_id', 'listing_data', 'actions')
-            ),
-            'schedule-showing-form' => array(
-                'path' => 'components/listing/listing-schedule-showing',
-                'name' => 'Schedule Showing Form',
-                'description' => 'Form to schedule property showing',
-                'category' => 'listing',
-                'args' => array('listing_id', 'agent_data')
-            ),
-            'listing-header' => array(
-                'path' => 'components/listing/listing-header',
-                'name' => 'Listing Header',
-                'description' => 'Property header with title, price, and basic info',
-                'category' => 'listing',
-                'args' => array('listing_data', 'show_price', 'show_status', 'show_address', 'show_mls', 'show_actions')
+            'chip' => array(
+                'path' => 'base/chip',
+                'name' => 'Chip',
+                'description' => 'Chip/tag component',
+                'category' => 'base',
+                'args' => array('text', 'variant', 'removable', 'icon')
             ),
             
-            // Agent Components
-            'agent-card' => array(
-                'path' => 'components/agent/agent-card',
-                'name' => 'Agent Card',
-                'description' => 'Agent profile card with contact info',
-                'category' => 'agent',
-                'args' => array('agent_id', 'layout', 'show_stats')
-            ),
-            'agents-grid' => array(
-                'path' => 'components/agent/agents-grid',
-                'name' => 'Agents Grid',
-                'description' => 'Grid display of agent profiles with search and contact options',
-                'category' => 'agent',
-                'args' => array('posts', 'columns', 'show_search', 'show_stats', 'show_contact')
-            ),
-            'agent-contact-form' => array(
-                'path' => 'components/agent/agent-contact-form',
-                'name' => 'Agent Contact Form',
-                'description' => 'Contact form for agent inquiries',
-                'category' => 'agent',
-                'args' => array('agent_data', 'form_style', 'background')
+            'content-none' => array(
+                'path' => 'base/content-none',
+                'name' => 'Content None',
+                'description' => 'No content found component',
+                'category' => 'base',
+                'args' => array('context', 'title', 'message', 'show_search')
             ),
             
-            // Open House Components
-            'open-house-card' => array(
-                'path' => 'components/open-house/open-house-card',
-                'name' => 'Open House Card',
-                'description' => 'Open house event card',
-                'category' => 'open-house',
-                'args' => array('open_house_id', 'show_rsvp')
-            ),
-            'open-house-widget' => array(
-                'path' => 'components/open-house/open-house-widget',
-                'name' => 'Open House Widget',
-                'description' => 'Upcoming open houses widget',
-                'category' => 'open-house',
-                'args' => array('limit', 'show_rsvp')
-            ),
-            'open-houses-grid' => array(
-                'path' => 'components/open-house/open-houses-grid',
-                'name' => 'Open Houses Grid',
-                'description' => 'Grid display of open house events with RSVP options',
-                'category' => 'open-house',
-                'args' => array('posts', 'columns', 'show_filters', 'show_rsvp')
-            ),
-            'transactions-list' => array(
-                'path' => 'components/transaction/transactions-list',
-                'name' => 'Transactions List',
-                'description' => 'List display of transaction cards with commission visibility controls',
-                'category' => 'transaction',
-                'args' => array('posts', 'agent_id', 'show_search', 'show_filters', 'show_commission')
+            'dropdown' => array(
+                'path' => 'base/dropdown',
+                'name' => 'Dropdown',
+                'description' => 'Dropdown menu component',
+                'category' => 'base',
+                'args' => array('trigger', 'items', 'placement')
             ),
             
-            // Transaction Components
-            'transaction-dashboard' => array(
-                'path' => 'components/transaction/transaction-dashboard',
-                'name' => 'Transaction Dashboard',
-                'description' => 'Agent deal pipeline dashboard',
-                'category' => 'transaction',
-                'args' => array('agent_id', 'show_stats')
-            ),
-            'transaction-status' => array(
-                'path' => 'components/transaction/transaction-status',
-                'name' => 'Transaction Status',
-                'description' => 'Transaction progress tracker',
-                'category' => 'transaction',
-                'args' => array('transaction_id', 'show_timeline')
+            'empty-state' => array(
+                'path' => 'base/empty-state',
+                'name' => 'Empty State',
+                'description' => 'Empty state component',
+                'category' => 'base',
+                'args' => array('title', 'description', 'action', 'icon')
             ),
             
-            // Analytics Components
-            'real-estate-charts' => array(
-                'path' => 'components/analytics/real-estate-charts',
-                'name' => 'Real Estate Charts',
-                'description' => 'Pre-configured real estate data charts',
-                'category' => 'analytics',
-                'args' => array('chart_type', 'agent_id', 'timeframe')
+            'form-input' => array(
+                'path' => 'base/form-input',
+                'name' => 'Form Input',
+                'description' => 'Form input component',
+                'category' => 'base',
+                'args' => array('type', 'name', 'label', 'placeholder')
             ),
             
-            // Form Components
-            'advanced-search-form' => array(
-                'path' => 'components/forms/advanced-search-form',
-                'name' => 'Advanced Search Form',
-                'description' => 'Advanced property search form',
-                'category' => 'forms',
-                'args' => array('layout', 'fields', 'action')
+            'grid' => array(
+                'path' => 'base/grid',
+                'name' => 'Grid',
+                'description' => 'Grid layout component',
+                'category' => 'base',
+                'args' => array('columns', 'gap', 'items')
             ),
             
-            // UI Components
-            'faq-accordion' => array(
-                'path' => 'components/ui/faq-accordion',
-                'name' => 'FAQ Accordion',
-                'description' => 'Interactive FAQ accordion with search functionality',
-                'category' => 'ui',
-                'args' => array('faqs', 'allow_multiple_open', 'search_enabled', 'headline')
-            ),
-            'features-grid' => array(
-                'path' => 'components/ui/features-grid',
-                'name' => 'Features Grid',
-                'description' => 'Grid display of features with icons',
-                'category' => 'ui',
-                'args' => array('features', 'columns', 'show_icons')
-            ),
-            'stats-counter' => array(
-                'path' => 'components/ui/stats-counter',
-                'name' => 'Stats Counter',
-                'description' => 'Animated statistics counter',
-                'category' => 'ui',
-                'args' => array('stats', 'animate', 'columns')
-            ),
-            'testimonials-carousel' => array(
-                'path' => 'components/ui/testimonials-carousel',
-                'name' => 'Testimonials Carousel',
-                'description' => 'Sliding testimonials carousel',
-                'category' => 'ui',
-                'args' => array('testimonials', 'autoplay', 'show_navigation')
+            'icon' => array(
+                'path' => 'base/icon',
+                'name' => 'Icon',
+                'description' => 'Icon component',
+                'category' => 'base',
+                'args' => array('name', 'size', 'color')
             ),
             
-            // Layout Templates
-            'archive-layout' => array(
-                'path' => 'layout/archive-layout',
-                'name' => 'Archive Layout',
-                'description' => 'Main archive template structure with header, controls, and content',
-                'category' => 'layout',
-                'args' => array('post_type', 'title', 'view_modes', 'show_sidebar', 'layout')
+            'modal' => array(
+                'path' => 'base/modal',
+                'name' => 'Modal',
+                'description' => 'Modal dialog component',
+                'category' => 'base',
+                'args' => array('title', 'content', 'size', 'closable')
             ),
+            
+            'navigation' => array(
+                'path' => 'base/navigation',
+                'name' => 'Navigation',
+                'description' => 'Navigation component',
+                'category' => 'base',
+                'args' => array('items', 'type', 'layout')
+            ),
+            
+            'pagination' => array(
+                'path' => 'base/pagination',
+                'name' => 'Pagination',
+                'description' => 'Pagination component',
+                'category' => 'base',
+                'args' => array('current_page', 'total_pages', 'variant')
+            ),
+            
+            'progress' => array(
+                'path' => 'base/progress',
+                'name' => 'Progress',
+                'description' => 'Progress indicator component',
+                'category' => 'base',
+                'args' => array('value', 'max', 'type', 'variant')
+            ),
+            
+            'radio' => array(
+                'path' => 'base/radio',
+                'name' => 'Radio',
+                'description' => 'Radio button component',
+                'category' => 'base',
+                'args' => array('name', 'options', 'selected')
+            ),
+            
+            'rating' => array(
+                'path' => 'base/rating',
+                'name' => 'Rating',
+                'description' => 'Star rating component',
+                'category' => 'base',
+                'args' => array('value', 'max', 'interactive')
+            ),
+            
+            'search' => array(
+                'path' => 'base/search',
+                'name' => 'Search',
+                'description' => 'Search input component',
+                'category' => 'base',
+                'args' => array('placeholder', 'suggestions', 'instant')
+            ),
+            
+            'select' => array(
+                'path' => 'base/select',
+                'name' => 'Select',
+                'description' => 'Select dropdown component',
+                'category' => 'base',
+                'args' => array('name', 'options', 'placeholder', 'multiple')
+            ),
+            
+            'skeleton' => array(
+                'path' => 'base/skeleton',
+                'name' => 'Skeleton',
+                'description' => 'Loading skeleton component',
+                'category' => 'base',
+                'args' => array('type', 'width', 'height', 'lines')
+            ),
+            
+            'slider' => array(
+                'path' => 'base/slider',
+                'name' => 'Slider',
+                'description' => 'Range slider component',
+                'category' => 'base',
+                'args' => array('min', 'max', 'value', 'step')
+            ),
+            
+            'stepper' => array(
+                'path' => 'base/stepper',
+                'name' => 'Stepper',
+                'description' => 'Step indicator component',
+                'category' => 'base',
+                'args' => array('steps', 'current', 'variant')
+            ),
+            
+            'table' => array(
+                'path' => 'base/table',
+                'name' => 'Table',
+                'description' => 'Data table component',
+                'category' => 'base',
+                'args' => array('columns', 'rows', 'sortable', 'responsive')
+            ),
+            
+            'tabs' => array(
+                'path' => 'base/tabs',
+                'name' => 'Tabs',
+                'description' => 'Tab panel component',
+                'category' => 'base',
+                'args' => array('tabs', 'active', 'variant')
+            ),
+            
+            'textarea' => array(
+                'path' => 'base/textarea',
+                'name' => 'Textarea',
+                'description' => 'Textarea input component',
+                'category' => 'base',
+                'args' => array('name', 'placeholder', 'rows', 'label')
+            ),
+            
+            'toggle' => array(
+                'path' => 'base/toggle',
+                'name' => 'Toggle',
+                'description' => 'Toggle switch component',
+                'category' => 'base',
+                'args' => array('name', 'label', 'checked', 'disabled')
+            ),
+            
+            'tooltip' => array(
+                'path' => 'base/tooltip',
+                'name' => 'Tooltip',
+                'description' => 'Tooltip component',
+                'category' => 'base',
+                'args' => array('content', 'trigger', 'placement')
+            ),
+            
+            // =====================================
+            // SECTION COMPONENTS (Actual Files)
+            // =====================================
+            
+            'hero' => array(
+                'path' => 'sections/hero',
+                'name' => 'Hero Section',
+                'description' => 'Hero section with multiple styles',
+                'category' => 'sections',
+                'args' => array('style', 'height', 'background_image', 'headline', 'subheadline')
+            ),
+            
+            'content' => array(
+                'path' => 'sections/content',
+                'name' => 'Content Section',
+                'description' => 'Flexible content section',
+                'category' => 'sections',
+                'args' => array('layout', 'title', 'content', 'alignment')
+            ),
+            
+            'cta' => array(
+                'path' => 'sections/cta',
+                'name' => 'CTA Section',
+                'description' => 'Call-to-action section',
+                'category' => 'sections',
+                'args' => array('title', 'description', 'buttons', 'layout')
+            ),
+            
+            'features' => array(
+                'path' => 'sections/features',
+                'name' => 'Features Section',
+                'description' => 'Features showcase section',
+                'category' => 'sections',
+                'args' => array('features', 'layout', 'columns')
+            ),
+            
+            'agents-loop' => array(
+                'path' => 'sections/agents-loop',
+                'name' => 'Agents Loop',
+                'description' => 'Agent listings loop section',
+                'category' => 'sections',
+                'args' => array('query', 'layout', 'columns')
+            ),
+            
+            'listings-loop' => array(
+                'path' => 'sections/listings-loop',
+                'name' => 'Listings Loop',
+                'description' => 'Property listings loop section',
+                'category' => 'sections',
+                'args' => array('query', 'layout', 'columns')
+            ),
+            
+            'section' => array(
+                'path' => 'sections/section',
+                'name' => 'Generic Section',
+                'description' => 'Generic section wrapper',
+                'category' => 'sections',
+                'args' => array('content', 'background', 'spacing')
+            ),
+            
+            // =====================================
+            // LAYOUT COMPONENTS (Actual Files)
+            // =====================================
+            
             'archive-header' => array(
                 'path' => 'layout/archive-header',
                 'name' => 'Archive Header',
-                'description' => 'Archive title, description, counts, and breadcrumbs',
+                'description' => 'Archive page header layout',
                 'category' => 'layout',
-                'args' => array('title', 'description', 'total_results', 'show_breadcrumbs', 'background')
-            ),
-            'archive-controls' => array(
-                'path' => 'layout/archive-controls',
-                'name' => 'Archive Controls',
-                'description' => 'Search, filters, view switcher, and sort options',
-                'category' => 'layout',
-                'args' => array('view_modes', 'current_view', 'show_search_toggle', 'sort_options')
-            ),
-            'archive-filters' => array(
-                'path' => 'layout/archive-filters',
-                'name' => 'Archive Filters',
-                'description' => 'Active filters display with remove functionality',
-                'category' => 'layout',
-                'args' => array('show_active_filters', 'show_clear_all', 'filter_labels')
-            ),
-            'archive-no-results' => array(
-                'path' => 'layout/archive-no-results',
-                'name' => 'Archive No Results',
-                'description' => 'No results state with contextual CTAs',
-                'category' => 'layout',
-                'args' => array('post_type', 'icon', 'title', 'message', 'custom_actions')
-            ),
-            'pagination' => array(
-                'path' => 'layout/pagination',
-                'name' => 'Pagination',
-                'description' => 'Consistent pagination across all archives',
-                'category' => 'layout',
-                'args' => array('query', 'current_page', 'prev_text', 'next_text', 'class')
-            ),
-            'single-layout' => array(
-                'path' => 'layout/single-layout',
-                'name' => 'Single Layout',
-                'description' => 'Main single post template structure',
-                'category' => 'layout',
-                'args' => array('post_id', 'show_hero', 'show_sidebar', 'show_related', 'layout')
-            ),
-            'single-hero' => array(
-                'path' => 'layout/single-hero',
-                'name' => 'Single Hero',
-                'description' => 'Hero section with images, gallery, or minimal display',
-                'category' => 'layout',
-                'args' => array('post_id', 'style', 'height', 'show_gallery', 'overlay')
-            ),
-            'single-content' => array(
-                'path' => 'layout/single-content',
-                'name' => 'Single Content',
-                'description' => 'Main content sections wrapper with post-type specific sections',
-                'category' => 'layout',
-                'args' => array('post_id', 'sections', 'show_content', 'show_meta', 'show_sharing')
-            ),
-            'single-sidebar' => array(
-                'path' => 'layout/single-sidebar',
-                'name' => 'Single Sidebar',
-                'description' => 'Sidebar with related info, CTAs, and widgets',
-                'category' => 'layout',
-                'args' => array('post_id', 'widgets', 'show_related_posts', 'show_contact_cta')
-            ),
-            'single-cta' => array(
-                'path' => 'layout/single-cta',
-                'name' => 'Single CTA',
-                'description' => 'Call-to-action sections with post-type specific content',
-                'category' => 'layout',
-                'args' => array('post_id', 'style', 'layout', 'headline', 'buttons')
-            ),
-            'single-related' => array(
-                'path' => 'layout/single-related',
-                'name' => 'Single Related',
-                'description' => 'Related items section with grid, list, or carousel layouts',
-                'category' => 'layout',
-                'args' => array('post_id', 'count', 'columns', 'layout', 'card_style')
-            ),
-            'breadcrumbs' => array(
-                'path' => 'layout/breadcrumbs',
-                'name' => 'Breadcrumbs',
-                'description' => 'Site navigation breadcrumbs with contextual hierarchy',
-                'category' => 'layout',
-                'args' => array('post_id', 'separator', 'home_text', 'show_current')
+                'args' => array('title', 'description', 'breadcrumbs')
             ),
             
-            // Content Components
-            'content-none' => array(
-                'path' => 'content-none',
-                'name' => 'No Content',
-                'description' => 'No content found message',
-                'category' => 'content',
-                'args' => array('message', 'show_search')
-            )
+            'archive-layout' => array(
+                'path' => 'layout/archive-layout',
+                'name' => 'Archive Layout',
+                'description' => 'Archive page layout manager',
+                'category' => 'layout',
+                'args' => array('layout', 'show_sidebar', 'show_filters')
+            ),
+            
+            'card-layout' => array(
+                'path' => 'layout/card-layout',
+                'name' => 'Card Layout',
+                'description' => 'Card grid/list layout manager',
+                'category' => 'layout',
+                'args' => array('layout', 'items', 'columns')
+            ),
+            
+            // =====================================
+            // COMPONENT ADAPTERS (Actual Files)
+            // =====================================
+            
+            // Listing Components
+            'listing-card' => array(
+                'path' => 'components/listing/card',
+                'name' => 'Listing Card',
+                'description' => 'Property listing card adapter',
+                'category' => 'listing',
+                'args' => array('listing_id', 'variant', 'layout')
+            ),
+            
+            'listing-grid' => array(
+                'path' => 'components/listing/grid',
+                'name' => 'Listing Grid',
+                'description' => 'Property listings grid layout',
+                'category' => 'listing',
+                'args' => array('query', 'columns', 'show_filters')
+            ),
+            
+            'listing-hero' => array(
+                'path' => 'components/listing/hero',
+                'name' => 'Listing Hero',
+                'description' => 'Property hero section',
+                'category' => 'listing',
+                'args' => array('listing_id', 'show_gallery', 'show_price')
+            ),
+            
+            'listing-details' => array(
+                'path' => 'components/listing/details',
+                'name' => 'Listing Details',
+                'description' => 'Property details section',
+                'category' => 'listing',
+                'args' => array('listing_id', 'sections')
+            ),
+            
+            'listing-features' => array(
+                'path' => 'components/listing/features',
+                'name' => 'Listing Features',
+                'description' => 'Property features section',
+                'category' => 'listing',
+                'args' => array('listing_id', 'layout')
+            ),
+            
+            'listing-gallery' => array(
+                'path' => 'components/listing/gallery',
+                'name' => 'Listing Gallery',
+                'description' => 'Property photo gallery',
+                'category' => 'listing',
+                'args' => array('listing_id', 'lightbox')
+            ),
+            
+            'listing-contact-form' => array(
+                'path' => 'components/listing/contact-form',
+                'name' => 'Listing Contact Form',
+                'description' => 'Property inquiry form',
+                'category' => 'listing',
+                'args' => array('listing_id', 'agent_id')
+            ),
+            
+            // Agent Components  
+            'agent-card' => array(
+                'path' => 'components/agent/card',
+                'name' => 'Agent Card',
+                'description' => 'Agent profile card',
+                'category' => 'agent',
+                'args' => array('agent_id', 'layout', 'show_stats')
+            ),
+            
+            'agents-grid' => array(
+                'path' => 'components/agent/agents-grid',
+                'name' => 'Agents Grid',
+                'description' => 'Agent listings grid',
+                'category' => 'agent',
+                'args' => array('query', 'columns')
+            ),
+            
+            // Search Components
+            'search-form' => array(
+                'path' => 'components/search/search-form',
+                'name' => 'Search Form',
+                'description' => 'Advanced search form',
+                'category' => 'search',
+                'args' => array('post_types', 'fields')
+            ),
+            
+            'search-results' => array(
+                'path' => 'components/search/search-results',
+                'name' => 'Search Results',
+                'description' => 'Search results display',
+                'category' => 'search',
+                'args' => array('query', 'layout')
+            ),
+            
+            'search-filters' => array(
+                'path' => 'components/search/search-filters',
+                'name' => 'Search Filters',
+                'description' => 'Advanced search filters',
+                'category' => 'search',
+                'args' => array('current_post_type', 'form_id')
+            ),
+            
+            // Utility Components
+            'advanced-filters' => array(
+                'path' => 'components/advanced-filters',
+                'name' => 'Advanced Filters',
+                'description' => 'Advanced filtering interface',
+                'category' => 'utility',
+                'args' => array('post_type', 'fields')
+            ),
+            
+            'archive-controls' => array(
+                'path' => 'components/archive-controls',
+                'name' => 'Archive Controls',
+                'description' => 'Archive view controls',
+                'category' => 'utility',
+                'args' => array('layout_options', 'sort_options')
+            ),
         );
     }
     
@@ -475,7 +535,7 @@ class HPH_Component_Loader {
      */
     public static function load_component($component, $args = array(), $echo = true) {
         if (!isset(self::$components[$component])) {
-            if (HPH_DEV_MODE) {
+            if (defined('WP_DEBUG') && WP_DEBUG) {
                 error_log("HPH Component Loader: Component '{$component}' not found");
             }
             return $echo ? '' : false;
@@ -485,22 +545,26 @@ class HPH_Component_Loader {
         $component_path = self::$base_dir . $component_data['path'] . '.php';
         
         if (!file_exists($component_path)) {
-            if (HPH_DEV_MODE) {
+            if (defined('WP_DEBUG') && WP_DEBUG) {
                 error_log("HPH Component Loader: Component file not found: {$component_path}");
             }
             return $echo ? '' : false;
         }
         
-        // Set args for the component
-        set_query_var('args', $args);
+        // Set args for the component (using global for compatibility with hph_get_arg)
+        $GLOBALS['hph_component_args'] = $args;
         
         if ($echo) {
             include $component_path;
         } else {
             ob_start();
             include $component_path;
-            return ob_get_clean();
+            $output = ob_get_clean();
+            unset($GLOBALS['hph_component_args']);
+            return $output;
         }
+        
+        unset($GLOBALS['hph_component_args']);
     }
     
     /**
@@ -535,7 +599,14 @@ class HPH_Component_Loader {
      * @return array
      */
     public static function get_components_by_category() {
-        $categorized = array();
+        $categorized = array(
+            'base' => array(),
+            'sections' => array(),
+            'layout' => array(),
+            'listing' => array(),
+            'agent' => array(),
+            'templates' => array()
+        );
         
         foreach (self::$components as $name => $component) {
             $category = $component['category'];
@@ -545,65 +616,126 @@ class HPH_Component_Loader {
             $categorized[$category][$name] = $component;
         }
         
-        return $categorized;
+        // Sort categories by priority
+        $priority = array('base', 'sections', 'layout', 'listing', 'agent', 'templates');
+        $sorted = array();
+        foreach ($priority as $cat) {
+            if (isset($categorized[$cat]) && !empty($categorized[$cat])) {
+                $sorted[$cat] = $categorized[$cat];
+            }
+        }
+        
+        return $sorted;
     }
     
     /**
-     * Register component shortcodes
+     * Register component shortcodes (Only for public-facing components)
+     * Updated to match actual components that exist and should be user-accessible
      */
     public static function register_shortcodes() {
-        foreach (self::$components as $name => $component) {
-            $shortcode_name = 'hph_' . str_replace('-', '_', $name);
-            add_shortcode($shortcode_name, function($atts) use ($name) {
-                return self::load_component($name, (array) $atts, false);
-            });
+        // Only register shortcodes for user-facing components that exist
+        $public_components = array(
+            // Base UI components
+            'button', 'card', 'alert', 'accordion', 'carousel', 'modal', 'tabs',
+            
+            // Section components  
+            'hero', 'content', 'cta', 'features', 
+            
+            // Listing components
+            'listing-card', 'listing-grid', 'listing-hero',
+            
+            // Agent components
+            'agent-card', 'agents-grid',
+            
+            // Search components
+            'search-form', 'search-results'
+        );
+        
+        foreach ($public_components as $name) {
+            if (isset(self::$components[$name])) {
+                $shortcode_name = 'hph_' . str_replace('-', '_', $name);
+                add_shortcode($shortcode_name, function($atts, $content = '') use ($name) {
+                    $args = (array) $atts;
+                    // Pass content as an argument for nested shortcodes
+                    if ($content) {
+                        $args['content'] = do_shortcode($content);
+                    }
+                    return self::load_component($name, $args, false);
+                });
+            }
         }
     }
     
     /**
-     * Magic method to load components as static methods
+     * Check if component exists
      * 
-     * @param string $name
-     * @param array $arguments
-     * @return string|void
+     * @param string $component Component name
+     * @return bool
      */
-    public static function __callStatic($name, $arguments) {
-        $component_name = str_replace('_', '-', $name);
-        $args = isset($arguments[0]) ? (array) $arguments[0] : array();
-        $echo = isset($arguments[1]) ? (bool) $arguments[1] : true;
-        
-        return self::load_component($component_name, $args, $echo);
+    public static function component_exists($component) {
+        return isset(self::$components[$component]);
     }
 }
 
 /**
  * Helper function to load components
  * 
- * @param string $component Component name
+ * @param string $component Component name or path
  * @param array $args Component arguments
  * @param bool $echo Whether to echo output or return it
  * @return string|void
  */
 function hph_component($component, $args = array(), $echo = true) {
+    // Support path-style component names (e.g., 'sections/hero')
+    if (strpos($component, '/') !== false) {
+        $parts = explode('/', $component);
+        $component = end($parts);
+    }
+    
     return HPH_Component_Loader::load_component($component, $args, $echo);
 }
 
 /**
- * Helper function to get component info
+ * Helper function to get component argument
+ * Compatible with both the new pure components and existing components
  * 
- * @param string $component Component name
- * @return array|false
+ * @param string $key Optional key to get specific arg
+ * @param mixed $default Default value
+ * @return mixed
  */
-function hph_component_info($component) {
-    return HPH_Component_Loader::get_component_info($component);
+function hph_get_arg($key = null, $default = null) {
+    // Check for component args in global (new system)
+    $args = $GLOBALS['hph_component_args'] ?? array();
+    
+    // Fallback to query var (existing system)
+    if (empty($args)) {
+        $args = get_query_var('args', array());
+    }
+    
+    if ($key === null) {
+        return $args;
+    }
+    
+    return isset($args[$key]) ? $args[$key] : $default;
 }
 
 /**
- * Helper function to get all components
- * 
- * @param string $category Optional category filter
- * @return array
+ * Helper function to render HTML attributes
+ * Used by base components
  */
-function hph_components($category = '') {
-    return HPH_Component_Loader::get_components($category);
+if (!function_exists('hph_render_attributes')) {
+    function hph_render_attributes($attributes) {
+        foreach ($attributes as $key => $value) {
+            if ($value === false || $value === null) continue;
+            
+            if ($value === true) {
+                echo esc_attr($key) . ' ';
+            } else {
+                echo esc_attr($key) . '="' . esc_attr($value) . '" ';
+            }
+        }
+    }
 }
+
+// Initialize the component loader
+add_action('init', array('HPH_Component_Loader', 'init'));

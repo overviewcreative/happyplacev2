@@ -52,6 +52,19 @@
             
             // Filter toggles
             $(document).on('click', '[data-filter-toggle]', this.handleFilterToggle.bind(this));
+            
+            // Advanced filters toggle
+            $(document).on('click', '.advanced-toggle', this.handleAdvancedToggle.bind(this));
+            
+            // Search form submission
+            $(document).on('submit', '.hero-search-form', this.handleSearchSubmit.bind(this));
+            
+            // Filter form changes
+            $(document).on('change', '.hero-search-form select', this.handleFilterChange.bind(this));
+            $(document).on('change', '.hero-search-form input[type="checkbox"]', this.handleFilterChange.bind(this));
+            
+            // Clear filters
+            $(document).on('click', '.clear-filters', this.handleClearFilters.bind(this));
         }
 
         /**
@@ -191,6 +204,146 @@
         }
 
         /**
+         * Handle advanced filters toggle
+         */
+        handleAdvancedToggle(e) {
+            e.preventDefault();
+            
+            const $toggle = $(e.currentTarget);
+            const $advanced = $('.hero-advanced-filters');
+            const $chevron = $toggle.find('.hph-icon');
+            
+            // Toggle visibility
+            $advanced.slideToggle(300);
+            
+            // Toggle button state
+            $toggle.toggleClass('active');
+            
+            // Rotate chevron
+            if ($toggle.hasClass('active')) {
+                $chevron.addClass('rotate-180');
+            } else {
+                $chevron.removeClass('rotate-180');
+            }
+        }
+
+        /**
+         * Handle search form submission
+         */
+        handleSearchSubmit(e) {
+            e.preventDefault();
+            
+            const $form = $(e.currentTarget);
+            const formData = this.getFormData($form);
+            
+            if (this.config.ajaxEnabled) {
+                this.loadResults(formData);
+            } else {
+                // Build URL with parameters
+                const url = this.buildSearchUrl(formData);
+                window.location.href = url;
+            }
+        }
+
+        /**
+         * Handle filter changes (auto-submit)
+         */
+        handleFilterChange(e) {
+            if (this.config.autoFilter !== false) {
+                // Debounce the filter change
+                clearTimeout(this.filterTimeout);
+                this.filterTimeout = setTimeout(() => {
+                    const $form = $('.hero-search-form');
+                    this.handleSearchSubmit({ currentTarget: $form, preventDefault: () => {} });
+                }, 300);
+            }
+        }
+
+        /**
+         * Handle clear filters
+         */
+        handleClearFilters(e) {
+            e.preventDefault();
+            
+            const $form = $('.hero-search-form');
+            
+            // Clear all form fields
+            $form[0].reset();
+            $form.find('select').prop('selectedIndex', 0);
+            $form.find('input[type="checkbox"]').prop('checked', false);
+            
+            // Trigger search with cleared filters
+            this.handleSearchSubmit({ currentTarget: $form, preventDefault: () => {} });
+        }
+
+        /**
+         * Get form data as object
+         */
+        getFormData($form) {
+            const formData = {};
+            const serialized = $form.serializeArray();
+            
+            // Convert to object
+            serialized.forEach(item => {
+                if (formData[item.name]) {
+                    // Handle arrays (multiple values)
+                    if (!Array.isArray(formData[item.name])) {
+                        formData[item.name] = [formData[item.name]];
+                    }
+                    formData[item.name].push(item.value);
+                } else {
+                    formData[item.name] = item.value;
+                }
+            });
+            
+            // Handle checkboxes that might not be in serialized data
+            $form.find('input[type="checkbox"]').each(function() {
+                const $checkbox = $(this);
+                const name = $checkbox.attr('name');
+                
+                if ($checkbox.is(':checked')) {
+                    if (!formData[name]) {
+                        formData[name] = [];
+                    }
+                    if (!Array.isArray(formData[name])) {
+                        formData[name] = [formData[name]];
+                    }
+                    if (formData[name].indexOf($checkbox.val()) === -1) {
+                        formData[name].push($checkbox.val());
+                    }
+                }
+            });
+            
+            return formData;
+        }
+
+        /**
+         * Build search URL from form data
+         */
+        buildSearchUrl(formData) {
+            const url = new URL(window.location.href);
+            
+            // Clear existing search params
+            ['keyword', 'specialty', 'language', 'office', 'experience', 'sort', 'view'].forEach(param => {
+                url.searchParams.delete(param);
+            });
+            
+            // Add new params
+            Object.keys(formData).forEach(key => {
+                const value = formData[key];
+                if (value && value !== '') {
+                    if (Array.isArray(value)) {
+                        value.forEach(v => url.searchParams.append(key + '[]', v));
+                    } else {
+                        url.searchParams.set(key, value);
+                    }
+                }
+            });
+            
+            return url.toString();
+        }
+
+        /**
          * Initialize AJAX functionality
          */
         initializeAjax() {
@@ -221,15 +374,15 @@
             this.showLoading();
             
             const data = {
-                action: 'load_agent_archive',
+                action: 'hph_filter_agents',
                 nonce: this.config.nonce,
-                post_type: this.config.postType,
+                post_type: 'agent',
                 ...this.config,
                 ...params
             };
             
             $.ajax({
-                url: this.config.ajaxUrl,
+                url: this.config.ajaxUrl || window.ajaxurl,
                 type: 'POST',
                 data: data,
                 success: this.handleLoadSuccess.bind(this),

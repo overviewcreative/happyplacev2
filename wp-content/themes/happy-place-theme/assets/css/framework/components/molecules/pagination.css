@@ -1,0 +1,371 @@
+/**
+ * Base Pagination Component CSS
+ * Page navigation with comprehensive styling options
+ * 
+ * @package HappyPlaceTheme
+ */
+
+/* ================================================
+   Base Pagination Styles
+   ================================================ */
+
+.hph-pagination {
+    --hph-pagination-gap: var(--hph-spacing-xs);
+    --hph-pagination-border-radius: var(--hph-radius-md);
+    --hph-pagination-transition: all 0.2s ease;
+    
+    display: flex;
+    flex-direction: column;
+    gap: var(--hph-spacing-md);
+    align-items: center;
+}
+
+/* ================================================
+   Pagination Info
+   ================================================ */
+
+.hph-pagination__info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--hph-spacing-md);
+    align-items: center;
+    justify-content: center;
+    font-size: var(--hph-font-size-sm);
+    color: var(--hph-text-secondary);
+}
+
+.hph-pagination__page-info,
+.hph-pagination__total-items {
+    white-space: nowrap;
+}
+
+/* ================================================
+   Pagination List
+   ================================================ */
+
+.hph-pagination__list {
+    display: flex;
+    align-items: center;
+    gap: var(--hph-pagination-gap);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* ================================================
+   Pagination Items
+   ================================================ */
+
+.hph-pagination__item {
+    display: flex;
+    align-items: center;
+}
+
+/* ================================================
+   Pagination Links
+   ================================================ */
+
+.hph-pagination__link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    padding: 0 var(--hph-spacing-sm);
+    background: var(--hph-white);
+    border: 1px solid var(--hph-border-color);
+    border-radius: var(--hph-pagination-border-radius);
+    color: var(--hph-text-primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--hph-pagination-transition);
+    cursor: pointer;
+}
+
+.hph-pagination__link:hover {
+    background: var(--hph-gray-50);
+    border-color: var(--hph-border-color-hover);
+    color: var(--hph-primary);
+    text-decoration: none;
+}
+
+.hph-pagination__link:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--hph-primary-alpha-20);
+    border-color: var(--hph-primary);
+}
+
+/* Current Page Link */
+.hph-pagination__link--current {
+    background: var(--hph-primary);
+    border-color: var(--hph-primary);
+    color: var(--hph-white);
+    cursor: default;
+}
+
+.hph-pagination__link--current:hover {
+    background: var(--hph-primary);
+    border-color: var(--hph-primary);
+    color: var(--hph-white);
+}
+
+/* ================================================
+   Text Labels
+   ================================================ */
+
+.hph-pagination__text {
+    margin: 0 var(--hph-spacing-xs);
+}
+
+/* Hide text on mobile for first/last/prev/next */
+@media (max-width: 640px) {
+    .hph-pagination__item--first .hph-pagination__text,
+    .hph-pagination__item--last .hph-pagination__text,
+    .hph-pagination__item--prev .hph-pagination__text,
+    .hph-pagination__item--next .hph-pagination__text {
+        display: none;
+    }
+}
+
+/* ================================================
+   Ellipsis
+   ================================================ */
+
+.hph-pagination__ellipsis {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    color: var(--hph-text-secondary);
+    font-weight: 500;
+}
+
+/* ================================================
+   Pagination Variants
+   ================================================ */
+
+/* Minimal Variant */
+.hph-pagination--minimal .hph-pagination__link {
+    background: transparent;
+    border: none;
+    color: var(--hph-text-secondary);
+}
+
+.hph-pagination--minimal .hph-pagination__link:hover {
+    background: var(--hph-gray-100);
+    color: var(--hph-primary);
+}
+
+.hph-pagination--minimal .hph-pagination__link--current {
+    background: transparent;
+    color: var(--hph-primary);
+    border-bottom: 2px solid var(--hph-primary);
+    border-radius: 0;
+}
+
+/* Compact Variant */
+.hph-pagination--compact .hph-pagination__list {
+    gap: 0;
+}
+
+.hph-pagination--compact .hph-pagination__link {
+    border-radius: 0;
+    border-right: none;
+}
+
+.hph-pagination--compact .hph-pagination__item:first-child .hph-pagination__link {
+    border-top-left-radius: var(--hph-pagination-border-radius);
+    border-bottom-left-radius: var(--hph-pagination-border-radius);
+}
+
+.hph-pagination--compact .hph-pagination__item:last-child .hph-pagination__link {
+    border-top-right-radius: var(--hph-pagination-border-radius);
+    border-bottom-right-radius: var(--hph-pagination-border-radius);
+    border-right: 1px solid var(--hph-border-color);
+}
+
+.hph-pagination--compact .hph-pagination__link:hover {
+    z-index: 1;
+    position: relative;
+}
+
+/* Numbered Variant */
+.hph-pagination--numbered .hph-pagination__item--first,
+.hph-pagination--numbered .hph-pagination__item--last,
+.hph-pagination--numbered .hph-pagination__item--prev,
+.hph-pagination--numbered .hph-pagination__item--next {
+    display: none;
+}
+
+/* ================================================
+   Size Variations
+   ================================================ */
+
+.hph-pagination--sm {
+    --hph-pagination-gap: var(--hph-spacing-xs);
+}
+
+.hph-pagination--sm .hph-pagination__link {
+    min-width: 2rem;
+    height: 2rem;
+    font-size: var(--hph-font-size-sm);
+}
+
+.hph-pagination--sm .hph-pagination__info {
+    font-size: var(--hph-font-size-xs);
+}
+
+.hph-pagination--lg {
+    --hph-pagination-gap: var(--hph-spacing-sm);
+}
+
+.hph-pagination--lg .hph-pagination__link {
+    min-width: 3rem;
+    height: 3rem;
+    font-size: var(--hph-font-size-lg);
+}
+
+.hph-pagination--lg .hph-pagination__info {
+    font-size: var(--hph-font-size-base);
+}
+
+/* ================================================
+   Alignment Variations
+   ================================================ */
+
+.hph-pagination--left {
+    align-items: flex-start;
+}
+
+.hph-pagination--left .hph-pagination__info {
+    justify-content: flex-start;
+}
+
+.hph-pagination--right {
+    align-items: flex-end;
+}
+
+.hph-pagination--right .hph-pagination__info {
+    justify-content: flex-end;
+}
+
+.hph-pagination--center {
+    align-items: center;
+}
+
+.hph-pagination--center .hph-pagination__info {
+    justify-content: center;
+}
+
+/* ================================================
+   Ajax & Infinite Scroll States
+   ================================================ */
+
+.hph-pagination--ajax .hph-pagination__link {
+    cursor: pointer;
+}
+
+.hph-pagination--ajax .hph-pagination__link[data-loading="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.hph-pagination--infinite {
+    display: none;
+}
+
+.hph-pagination--infinite.show-more {
+    display: flex;
+}
+
+.hph-pagination--infinite .hph-pagination__list {
+    width: 100%;
+    justify-content: center;
+}
+
+.hph-pagination--infinite .hph-pagination__item {
+    width: 100%;
+    max-width: 200px;
+}
+
+.hph-pagination--infinite .hph-pagination__link {
+    width: 100%;
+    justify-content: center;
+    padding: var(--hph-spacing-md);
+}
+
+/* ================================================
+   Loading States
+   ================================================ */
+
+.hph-pagination__link--loading {
+    position: relative;
+    color: transparent;
+}
+
+.hph-pagination__link--loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid currentColor;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ================================================
+   Accessibility
+   ================================================ */
+
+.hph-pagination__link:focus-visible {
+    box-shadow: 0 0 0 2px var(--hph-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hph-pagination__link,
+    .hph-pagination__link--loading::after {
+        transition: none;
+        animation: none;
+    }
+}
+
+/* ================================================
+   Mobile Responsive
+   ================================================ */
+
+@media (max-width: 480px) {
+    .hph-pagination {
+        gap: var(--hph-spacing-sm);
+    }
+    
+    .hph-pagination__info {
+        order: 2;
+        font-size: var(--hph-font-size-xs);
+    }
+    
+    .hph-pagination__list {
+        order: 1;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    /* Show only current page and immediate neighbors on very small screens */
+    .hph-pagination__item--number:not(.hph-pagination__item--current) {
+        display: none;
+    }
+    
+    .hph-pagination__item--current + .hph-pagination__item--number,
+    .hph-pagination__item--number + .hph-pagination__item--current {
+        display: flex;
+    }
+}

@@ -1,434 +1,245 @@
 <?php
 /**
- * HPH Card Component Template
+ * Base Card Component
  * 
- * A versatile card component for displaying content in various layouts:
- * - Multiple card styles (default, elevated, bordered, gradient, overlay, minimal)
- * - Flexible layouts (vertical, horizontal, compact)
- * - Support for images, videos, badges, and metadata
- * - Hover effects and animations
- * - Responsive design with mobile-first approach
+ * Pure UI component with no data dependencies
+ * Accepts standardized props and renders card markup
  * 
  * @package HappyPlaceTheme
+ * @subpackage Components/Base
  * @since 3.0.0
- * 
- * Args:
- * - style: 'default' | 'elevated' | 'bordered' | 'gradient' | 'overlay' | 'minimal' | 'property'
- * - layout: 'vertical' | 'horizontal' | 'compact'
- * - size: 'sm' | 'md' | 'lg' | 'xl'
- * - image: string (URL)
- * - image_position: 'top' | 'left' | 'right' | 'background'
- * - image_ratio: 'square' | 'landscape' | 'portrait' | 'wide' | 'cinema'
- * - video: string (URL for video preview)
- * - badge: string
- * - badge_style: 'default' | 'primary' | 'success' | 'warning' | 'danger'
- * - badge_position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
- * - title: string
- * - subtitle: string
- * - content: string
- * - content_limit: int (character limit for content)
- * - meta: array of meta items
- * - buttons: array of button configurations
- * - link_url: string (makes entire card clickable)
- * - link_target: '_self' | '_blank'
- * - hover_effect: 'none' | 'lift' | 'scale' | 'shadow' | 'overlay'
- * - animate: boolean
- * - animation_delay: string (ms)
- * - classes: string (additional custom classes)
- * - attributes: array (additional HTML attributes)
- * 
- * Property-specific args:
- * - listing_id: int
- * - show_price: boolean
- * - show_status: boolean
- * - show_address: boolean
- * - show_details: boolean (beds, baths, sqft)
- * - show_mls: boolean
- * - show_favorite: boolean
- * - show_compare: boolean
  */
 
-// Default arguments
-$defaults = array(
-    'style' => 'default',
-    'layout' => 'vertical',
-    'size' => 'md',
-    'image' => '',
-    'image_position' => 'top',
-    'image_ratio' => 'landscape',
-    'video' => '',
-    'badge' => '',
-    'badge_style' => 'default',
-    'badge_position' => 'top-left',
-    'title' => '',
-    'subtitle' => '',
-    'content' => '',
-    'content_limit' => 150,
-    'meta' => array(),
-    'buttons' => array(),
-    'link_url' => '',
-    'link_target' => '_self',
-    'hover_effect' => 'lift',
-    'animate' => false,
-    'animation_delay' => '0',
-    'classes' => '',
-    'attributes' => array(),
-    // Property-specific defaults
-    'listing_id' => 0,
-    'show_price' => true,
-    'show_status' => true,
-    'show_address' => true,
-    'show_details' => true,
-    'show_mls' => false,
-    'show_favorite' => true,
-    'show_compare' => false
-);
+// Get component args - compatible with both component loader and get_template_part
+$args = $args ?? get_query_var('args', array());
 
-// Merge with provided args
-$config = wp_parse_args($args ?? array(), $defaults);
+// Debug card rendering
+error_log('CARD DEBUG: Card template called');
+error_log('CARD DEBUG: Args received: ' . wp_json_encode(array_keys($args)));
+error_log('CARD DEBUG: Args type: ' . gettype($args));
 
-// Extract configuration
-$style = $config['style'];
-$layout = $config['layout'];
-$size = $config['size'];
-$image = $config['image'];
-$image_position = $config['image_position'];
-$image_ratio = $config['image_ratio'];
-$video = $config['video'];
-$badge = $config['badge'];
-$badge_style = $config['badge_style'];
-$badge_position = $config['badge_position'];
-$title = $config['title'];
-$subtitle = $config['subtitle'];
-$content = $config['content'];
-$content_limit = $config['content_limit'];
-$meta = $config['meta'];
-$buttons = $config['buttons'];
-$link_url = $config['link_url'];
-$link_target = $config['link_target'];
-$hover_effect = $config['hover_effect'];
-$animate = $config['animate'];
-$animation_delay = $config['animation_delay'];
-$custom_classes = $config['classes'];
-$custom_attributes = $config['attributes'];
-
-// Property-specific configuration
-$listing_id = $config['listing_id'];
-$show_price = $config['show_price'];
-$show_status = $config['show_status'];
-$show_address = $config['show_address'];
-$show_details = $config['show_details'];
-$show_mls = $config['show_mls'];
-$show_favorite = $config['show_favorite'];
-$show_compare = $config['show_compare'];
-
-// Property mode auto-configuration
-if ($style === 'property' && $listing_id) {
-    // Get property data using bridge functions
-    if (function_exists('hpt_get_listing_title') && empty($title)) {
-        $title = hpt_get_listing_title($listing_id);
-    }
-    if (function_exists('hpt_get_listing_address') && empty($subtitle) && $show_address) {
-        $subtitle = hpt_get_listing_address($listing_id);
-    }
-    if (function_exists('hpt_get_listing_featured_image') && empty($image)) {
-        $image = hpt_get_listing_featured_image($listing_id);
-    }
-    if (function_exists('hpt_get_listing_permalink') && empty($link_url)) {
-        $link_url = hpt_get_listing_permalink($listing_id);
-    }
-    if (function_exists('hpt_get_listing_excerpt') && empty($content)) {
-        $content = hpt_get_listing_excerpt($listing_id);
-    }
-    
-    // Build property meta array
-    $property_meta = array();
-    
-    if ($show_details) {
-        if (function_exists('hpt_get_listing_bedrooms')) {
-            $beds = hpt_get_listing_bedrooms($listing_id);
-            if ($beds) {
-                $property_meta[] = array(
-                    'icon' => 'fas fa-bed',
-                    'text' => $beds . ' ' . _n('Bed', 'Beds', intval($beds), 'happy-place-theme')
-                );
-            }
-        }
-        if (function_exists('hpt_get_listing_bathrooms')) {
-            $baths = hpt_get_listing_bathrooms($listing_id);
-            if ($baths) {
-                $property_meta[] = array(
-                    'icon' => 'fas fa-bath',
-                    'text' => $baths . ' ' . _n('Bath', 'Baths', floatval($baths), 'happy-place-theme')
-                );
-            }
-        }
-        if (function_exists('hpt_get_listing_square_footage')) {
-            $sqft = hpt_get_listing_square_footage($listing_id);
-            if ($sqft) {
-                $property_meta[] = array(
-                    'icon' => 'fas fa-ruler-combined',
-                    'text' => number_format($sqft) . ' Sq Ft'
-                );
-            }
-        }
-    }
-    
-    if ($show_mls && function_exists('hpt_get_listing_mls_number')) {
-        $mls = hpt_get_listing_mls_number($listing_id);
-        if ($mls) {
-            $property_meta[] = array(
-                'icon' => 'fas fa-hashtag',
-                'text' => 'MLS #' . $mls
-            );
-        }
-    }
-    
-    // Merge property meta with any provided meta
-    $meta = array_merge($property_meta, $meta);
-    
-    // Set up price badge if enabled
-    if ($show_price && function_exists('hpt_get_listing_price_formatted')) {
-        $price = hpt_get_listing_price_formatted($listing_id);
-        if ($price && empty($badge)) {
-            $badge = $price;
-            $badge_style = 'primary';
-            $badge_position = 'bottom-left';
-        }
-    }
-    
-    // Set up status badge if enabled
-    if ($show_status && function_exists('hpt_get_listing_status')) {
-        $status = hpt_get_listing_status($listing_id);
-        if ($status && $status !== 'Active') {
-            // Override price badge if status is not active
-            $badge = $status;
-            $badge_style = $status === 'Sold' ? 'success' : 'warning';
-            $badge_position = 'top-right';
-        }
-    }
+if (empty($args)) {
+    error_log('CARD DEBUG: NO ARGS - this is the problem!');
+} else {
+    error_log('CARD DEBUG: Args count: ' . count($args));
 }
 
-// Build card classes
+// Extract with defaults - pure UI props only
+$props = wp_parse_args($args, array(
+    // Display props
+    'variant' => 'default', // default, elevated, bordered, minimal, overlay, property
+    'layout' => 'vertical', // vertical, horizontal, compact
+    'size' => 'md', // sm, md, lg, xl
+    
+    // Content props
+    'image' => array(
+        'src' => '',
+        'alt' => '',
+        'ratio' => 'landscape', // square, landscape, portrait, wide
+        'position' => 'top' // top, left, right, background
+    ),
+    'title' => array(
+        'text' => '',
+        'tag' => 'h3',
+        'link' => ''
+    ),
+    'subtitle' => '',
+    'description' => '',
+    'description_limit' => 150,
+    
+    // Meta props
+    'badges' => array(), // Array of badge configs
+    'meta_items' => array(), // Array of meta items
+    'actions' => array(), // Array of button/link configs
+    
+    // Behavior props
+    'link_wrapper' => '', // Makes entire card clickable
+    'hover_effect' => 'lift', // none, lift, scale, shadow
+    'animate' => false,
+    'animation_delay' => 0,
+    
+    // HTML props
+    'id' => '',
+    'class' => '',
+    'attributes' => array()
+));
+
+// Debug parsed props
+error_log('CARD DEBUG: Props parsed, variant: ' . $props['variant'] . ', has title: ' . (!empty($props['title']['text']) ? 'yes' : 'no'));
+error_log('CARD DEBUG: Title text: "' . ($props['title']['text'] ?? 'NONE') . '"');
+error_log('CARD DEBUG: Image src: "' . ($props['image']['src'] ?? 'NONE') . '"');
+
+// Build card classes - matching CSS file naming
 $card_classes = array(
     'hph-card',
-    'hph-card-' . $style,
-    'hph-card-' . $layout,
-    'hph-card-' . $size
+    'hph-card-' . $props['variant'],
+    'hph-card-' . $props['size']
 );
 
-// Add hover effect class
-if ($hover_effect !== 'none') {
-    $card_classes[] = 'hph-card-hover-' . $hover_effect;
+// Add layout class
+if ($props['layout'] !== 'vertical') {
+    $card_classes[] = 'hph-card-' . $props['layout'];
 }
 
-// Add animation classes
-if ($animate) {
+// Add hover effect class
+if ($props['hover_effect'] !== 'none') {
+    $card_classes[] = 'hph-card-hover-' . $props['hover_effect'];
+}
+
+// Add animation class
+if ($props['animate']) {
     $card_classes[] = 'hph-card-animate';
     $card_classes[] = 'hph-fade-in-up';
 }
 
 // Add image position class
-if ($image && $image_position !== 'top') {
-    $card_classes[] = 'hph-card-image-' . $image_position;
+if ($props['image']['position'] !== 'top' && $props['image']['src']) {
+    $card_classes[] = 'hph-card-image-' . $props['image']['position'];
 }
 
 // Add custom classes
-if ($custom_classes) {
-    $card_classes[] = $custom_classes;
+if ($props['class']) {
+    $card_classes[] = $props['class'];
 }
 
 // Build wrapper element
-$wrapper_tag = $link_url ? 'a' : 'article';
-$wrapper_attrs = array(
-    'class' => implode(' ', $card_classes)
-);
+$wrapper_tag = $props['link_wrapper'] ? 'a' : 'article';
+$wrapper_attrs = '';
 
-if ($link_url) {
-    $wrapper_attrs['href'] = esc_url($link_url);
-    if ($link_target !== '_self') {
-        $wrapper_attrs['target'] = esc_attr($link_target);
-    }
+// Build attributes string
+$attrs_array = array();
+$attrs_array[] = 'class="' . esc_attr(implode(' ', $card_classes)) . '"';
+
+if ($props['id']) {
+    $attrs_array[] = 'id="' . esc_attr($props['id']) . '"';
 }
 
-if ($animate && $animation_delay !== '0') {
-    $wrapper_attrs['style'] = 'animation-delay: ' . esc_attr($animation_delay) . 'ms';
+if ($props['link_wrapper']) {
+    $attrs_array[] = 'href="' . esc_url($props['link_wrapper']) . '"';
 }
 
-// Add custom attributes
-foreach ($custom_attributes as $key => $value) {
-    $wrapper_attrs[$key] = esc_attr($value);
+if ($props['animate'] && $props['animation_delay']) {
+    $attrs_array[] = 'style="--animation-delay: ' . (int)$props['animation_delay'] . 'ms;"';
 }
 
-// Limit content if specified
-if ($content && $content_limit > 0) {
-    $content = wp_trim_words($content, $content_limit, '...');
+foreach ($props['attributes'] as $key => $value) {
+    $attrs_array[] = esc_attr($key) . '="' . esc_attr($value) . '"';
 }
 
-// Build image ratio class
-$image_ratio_class = 'hph-card-media-' . $image_ratio;
+$wrapper_attrs = implode(' ', $attrs_array);
 
-// Ensure Font Awesome is loaded
-if (!wp_script_is('font-awesome', 'enqueued')) {
-    wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css', array(), '6.5.1');
+// Process description
+$description = $props['description'];
+if ($description && $props['description_limit'] > 0) {
+    $description = wp_trim_words($description, $props['description_limit'], '...');
 }
+
 ?>
 
-<<?php echo $wrapper_tag; ?> <?php foreach ($wrapper_attrs as $attr => $value): ?>
-    <?php echo $attr; ?>="<?php echo $value; ?>"
-<?php endforeach; ?>>
+<!-- CARD DEBUG: Starting card render -->
+<<?php echo $wrapper_tag; ?> <?php echo $wrapper_attrs; ?> style="border: 1px solid #ccc; margin: 10px; padding: 15px; background: #fff;">
     
-    <?php if ($image && in_array($image_position, array('top', 'left', 'right', 'background'))): ?>
-    <!-- Card Media -->
-    <div class="hph-card-media <?php echo esc_attr($image_ratio_class); ?>">
-        <?php if ($video): ?>
-        <!-- Video Preview -->
-        <video 
-            class="hph-card-video"
-            muted 
-            loop 
-            playsinline
-            data-autoplay="hover"
-            poster="<?php echo esc_url($image); ?>"
+    <!-- DEBUG: Show card is rendering -->
+    <div style="background: #e3f2fd; padding: 5px; margin-bottom: 10px; font-size: 12px; color: #1565c0;">
+        🐛 CARD DEBUG: variant=<?php echo esc_html($props['variant']); ?>, title=<?php echo esc_html($props['title']['text'] ?? 'NONE'); ?>
+    </div>
+    
+    <?php if ($props['image']['src']): ?>
+    <div class="hph-card-media hph-card-media-<?php echo esc_attr($props['image']['ratio']); ?>">
+        <img 
+            src="<?php echo esc_url($props['image']['src']); ?>" 
+            alt="<?php echo esc_attr($props['image']['alt'] ?: $props['title']['text']); ?>"
+            class="hph-card-image"
+            loading="lazy"
         >
-            <source src="<?php echo esc_url($video); ?>" type="video/mp4">
-            <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="hph-card-image">
-        </video>
-        <?php else: ?>
-        <!-- Image -->
-        <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="hph-card-image" loading="lazy">
-        <?php endif; ?>
         
-        <?php if ($style === 'overlay'): ?>
-        <!-- Overlay Gradient -->
-        <div class="hph-card-overlay"></div>
-        <?php endif; ?>
-        
-        <?php if ($badge && in_array($image_position, array('top', 'background'))): ?>
-        <!-- Badge -->
-        <div class="hph-card-badge hph-badge-<?php echo esc_attr($badge_position); ?> hph-badge-<?php echo esc_attr($badge_style); ?>">
-            <span><?php echo esc_html($badge); ?></span>
-        </div>
-        <?php endif; ?>
-        
-        <?php if ($style === 'property' && ($show_favorite || $show_compare)): ?>
-        <!-- Property Actions -->
-        <div class="hph-card-actions">
-            <?php if ($show_favorite): ?>
-            <button class="hph-card-action hph-action-favorite" data-listing-id="<?php echo esc_attr($listing_id); ?>" aria-label="Add to favorites">
-                <i class="far fa-heart"></i>
-            </button>
-            <?php endif; ?>
-            <?php if ($show_compare): ?>
-            <button class="hph-card-action hph-action-compare" data-listing-id="<?php echo esc_attr($listing_id); ?>" aria-label="Add to compare">
-                <i class="fas fa-exchange-alt"></i>
-            </button>
-            <?php endif; ?>
+        <?php if (!empty($props['badges'])): ?>
+        <div class="hph-card-badges">
+            <?php foreach ($props['badges'] as $badge): ?>
+                <span class="hph-card-badge hph-badge-<?php echo esc_attr($badge['variant'] ?? 'default'); ?>">
+                    <?php echo esc_html($badge['text']); ?>
+                </span>
+            <?php endforeach; ?>
         </div>
         <?php endif; ?>
     </div>
     <?php endif; ?>
     
-    <!-- Card Content -->
     <div class="hph-card-content">
         
-        <?php if ($badge && !in_array($image_position, array('top', 'background'))): ?>
-        <!-- Badge (for non-image cards) -->
-        <div class="hph-card-badge-inline hph-badge-<?php echo esc_attr($badge_style); ?>">
-            <span><?php echo esc_html($badge); ?></span>
-        </div>
-        <?php endif; ?>
-        
-        <?php if ($subtitle): ?>
-        <!-- Card Subtitle -->
+        <?php if ($props['subtitle']): ?>
         <div class="hph-card-subtitle">
-            <?php echo esc_html($subtitle); ?>
+            <?php echo esc_html($props['subtitle']); ?>
         </div>
         <?php endif; ?>
         
-        <?php if ($title): ?>
-        <!-- Card Title -->
-        <h3 class="hph-card-title">
-            <?php echo esc_html($title); ?>
-        </h3>
-        <?php endif; ?>
-        
-        <?php if ($content): ?>
-        <!-- Card Description -->
-        <div class="hph-card-description">
-            <?php echo wp_kses_post($content); ?>
-        </div>
-        <?php endif; ?>
-        
-        <?php if (!empty($meta)): ?>
-        <!-- Card Meta -->
-        <div class="hph-card-meta">
-            <?php foreach ($meta as $meta_item): 
-                $meta_defaults = array(
-                    'icon' => '',
-                    'text' => '',
-                    'url' => '',
-                    'tooltip' => ''
-                );
-                $meta_item = wp_parse_args($meta_item, $meta_defaults);
-            ?>
-            <div class="hph-card-meta-item" <?php if ($meta_item['tooltip']): ?>title="<?php echo esc_attr($meta_item['tooltip']); ?>"<?php endif; ?>>
-                <?php if ($meta_item['icon']): ?>
-                <i class="<?php echo esc_attr($meta_item['icon']); ?> hph-meta-icon"></i>
-                <?php endif; ?>
-                <?php if ($meta_item['url']): ?>
-                <a href="<?php echo esc_url($meta_item['url']); ?>" class="hph-meta-link">
-                    <?php echo esc_html($meta_item['text']); ?>
+        <?php if ($props['title']['text']): ?>
+        <<?php echo $props['title']['tag']; ?> class="hph-card-title">
+            <?php if ($props['title']['link'] && !$props['link_wrapper']): ?>
+                <a href="<?php echo esc_url($props['title']['link']); ?>">
+                    <?php echo esc_html($props['title']['text']); ?>
                 </a>
-                <?php else: ?>
-                <span class="hph-meta-text"><?php echo esc_html($meta_item['text']); ?></span>
+            <?php else: ?>
+                <?php echo esc_html($props['title']['text']); ?>
+            <?php endif; ?>
+        </<?php echo $props['title']['tag']; ?>>
+        <?php endif; ?>
+        
+        <?php if ($description): ?>
+        <div class="hph-card-description">
+            <?php echo wp_kses_post($description); ?>
+        </div>
+        <?php endif; ?>
+        
+        <?php if (!empty($props['meta_items'])): ?>
+        <div class="hph-card-meta">
+            <?php foreach ($props['meta_items'] as $meta): ?>
+            <div class="hph-card-meta-item">
+                <?php if (!empty($meta['icon'])): ?>
+                    <i class="hph-card-meta-icon fas fa-<?php echo esc_attr($meta['icon']); ?>"></i>
+                <?php endif; ?>
+                <?php if (!empty($meta['text'])): ?>
+                    <span><?php echo esc_html($meta['text']); ?></span>
+                <?php elseif (!empty($meta['value'])): ?>
+                    <span><?php echo esc_html($meta['value']); ?></span>
                 <?php endif; ?>
             </div>
             <?php endforeach; ?>
         </div>
         <?php endif; ?>
         
-        <?php if (!empty($buttons)): ?>
-        <!-- Card Actions -->
-        <div class="hph-card-buttons">
-            <?php foreach ($buttons as $button): 
-                $btn_defaults = array(
-                    'text' => 'Button',
-                    'url' => '#',
-                    'style' => 'primary',
-                    'size' => 'sm',
-                    'icon' => '',
-                    'icon_position' => 'left',
-                    'target' => '_self',
-                    'classes' => ''
-                );
-                $btn = wp_parse_args($button, $btn_defaults);
-                
-                $btn_classes = array(
-                    'hph-btn',
-                    'hph-btn-' . $btn['style'],
-                    'hph-btn-' . $btn['size'],
-                    'hph-card-btn'
-                );
-                
-                if ($btn['classes']) {
-                    $btn_classes[] = $btn['classes'];
-                }
-            ?>
-            <a 
-                href="<?php echo esc_url($btn['url']); ?>"
-                class="<?php echo esc_attr(implode(' ', $btn_classes)); ?>"
-                <?php if ($btn['target'] !== '_self'): ?>target="<?php echo esc_attr($btn['target']); ?>"<?php endif; ?>
-                <?php if ($link_url): ?>onclick="event.stopPropagation();"<?php endif; ?>
-            >
-                <?php if ($btn['icon'] && $btn['icon_position'] === 'left'): ?>
-                <i class="<?php echo esc_attr($btn['icon']); ?> hph-mr-xs"></i>
+        <?php if (!empty($props['actions'])): ?>
+        <div class="hph-card-actions hph-card-buttons">
+            <?php foreach ($props['actions'] as $action): ?>
+                <?php
+                // Build button classes
+                $btn_classes = array('hph-btn', 'hph-card-btn');
+                $btn_classes[] = 'hph-btn-' . ($action['variant'] ?? 'primary');
+                $btn_classes[] = 'hph-btn-' . ($action['size'] ?? 'sm');
+                ?>
+                <?php if (!empty($action['href'])): ?>
+                    <a href="<?php echo esc_url($action['href']); ?>" 
+                       class="<?php echo esc_attr(implode(' ', $btn_classes)); ?>"
+                       <?php if (!empty($action['target'])): ?>target="<?php echo esc_attr($action['target']); ?>"<?php endif; ?>>
+                        <?php if (!empty($action['icon'])): ?>
+                            <i class="fas fa-<?php echo esc_attr($action['icon']); ?> hph-mr-xs"></i>
+                        <?php endif; ?>
+                        <?php echo esc_html($action['text']); ?>
+                    </a>
+                <?php else: ?>
+                    <button type="button" 
+                            class="<?php echo esc_attr(implode(' ', $btn_classes)); ?>"
+                            <?php if (!empty($action['data'])): ?>
+                                <?php foreach ($action['data'] as $data_key => $data_value): ?>
+                                    data-<?php echo esc_attr($data_key); ?>="<?php echo esc_attr($data_value); ?>"
+                                <?php endforeach; ?>
+                            <?php endif; ?>>
+                        <?php if (!empty($action['icon'])): ?>
+                            <i class="fas fa-<?php echo esc_attr($action['icon']); ?> hph-mr-xs"></i>
+                        <?php endif; ?>
+                        <?php echo esc_html($action['text']); ?>
+                    </button>
                 <?php endif; ?>
-                <span><?php echo esc_html($btn['text']); ?></span>
-                <?php if ($btn['icon'] && $btn['icon_position'] === 'right'): ?>
-                <i class="<?php echo esc_attr($btn['icon']); ?> hph-ml-xs"></i>
-                <?php endif; ?>
-            </a>
             <?php endforeach; ?>
         </div>
         <?php endif; ?>
@@ -436,63 +247,3 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
     </div>
     
 </<?php echo $wrapper_tag; ?>>
-
-
-<script>
-// Auto-play video on hover
-document.addEventListener('DOMContentLoaded', function() {
-    const cards = document.querySelectorAll('.hph-card');
-    
-    cards.forEach(card => {
-        const video = card.querySelector('.hph-card-video[data-autoplay="hover"]');
-        
-        if (video) {
-            card.addEventListener('mouseenter', () => {
-                video.play().catch(() => {
-                    // Autoplay might be blocked
-                });
-            });
-            
-            card.addEventListener('mouseleave', () => {
-                video.pause();
-                video.currentTime = 0;
-            });
-        }
-        
-        // Handle favorite and compare buttons
-        const favoriteBtn = card.querySelector('.hph-action-favorite');
-        const compareBtn = card.querySelector('.hph-action-compare');
-        
-        if (favoriteBtn) {
-            favoriteBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                this.classList.toggle('active');
-                const icon = this.querySelector('i');
-                icon.classList.toggle('far');
-                icon.classList.toggle('fas');
-                
-                // Trigger custom event
-                const event = new CustomEvent('hph:favorite-toggle', {
-                    detail: { listingId: this.dataset.listingId }
-                });
-                document.dispatchEvent(event);
-            });
-        }
-        
-        if (compareBtn) {
-            compareBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                this.classList.toggle('active');
-                
-                // Trigger custom event
-                const event = new CustomEvent('hph:compare-toggle', {
-                    detail: { listingId: this.dataset.listingId }
-                });
-                document.dispatchEvent(event);
-            });
-        }
-    });
-});
-</script>

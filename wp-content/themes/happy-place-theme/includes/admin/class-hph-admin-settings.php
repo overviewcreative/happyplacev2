@@ -35,8 +35,12 @@ class HPH_Admin_Settings {
     
     /**
      * Add the admin menu page
+     * NOTE: Menu registration moved to plugin AdminMenu class - Theme Settings section
      */
     public static function add_admin_menu() {
+        // Menu registration moved to AdminMenu class - Theme Settings section
+        // This keeps the functionality but consolidates the menu structure
+        /*
         add_theme_page(
             __('Happy Place Theme Settings', 'happy-place-theme'),
             __('Theme Settings', 'happy-place-theme'),
@@ -44,6 +48,7 @@ class HPH_Admin_Settings {
             self::PAGE_SLUG,
             array(__CLASS__, 'render_settings_page')
         );
+        */
     }
     
     /**
@@ -1061,5 +1066,5 @@ class HPH_Admin_Settings {
     }
 }
 
-// Initialize the admin settings
-HPH_Admin_Settings::init();
+// Initialize the admin settings - DISABLED: Moved to unified AdminMenu
+// HPH_Admin_Settings::init();

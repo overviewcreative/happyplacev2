@@ -1,0 +1,407 @@
+/**
+ * Accordion Component CSS - Production Styles
+ * Consolidated from mature listing-details.css accordion styles
+ * 
+ * @package HappyPlaceTheme
+ */
+
+/* ================================================
+   ACCORDION CONTAINER
+   ================================================ */
+
+.hph-accordion {
+    background: var(--hph-white);
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--hph-gray-100);
+}
+
+/* Accordion variants */
+.hph-accordion--flush {
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+}
+
+.hph-accordion--bordered {
+    border: 1px solid var(--hph-gray-200);
+}
+
+/* ================================================
+   ACCORDION ITEMS
+   ================================================ */
+
+.hph-accordion-item {
+    border-bottom: 1px solid var(--hph-gray-100);
+    position: relative;
+}
+
+.hph-accordion-item:last-child {
+    border-bottom: none;
+}
+
+/* ================================================
+   ACCORDION HEADER
+   ================================================ */
+
+.hph-accordion-header {
+    width: 100%;
+    padding: 1.25rem 1.5rem;
+    background: var(--hph-white);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    text-align: left;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+.hph-accordion-header:hover {
+    background: var(--hph-gray-50);
+}
+
+.hph-accordion-header:focus {
+    outline: none;
+    background: var(--hph-gray-50);
+    box-shadow: inset 0 0 0 2px var(--hph-primary);
+}
+
+.hph-accordion-header[aria-expanded="true"] {
+    background: var(--hph-gray-50);
+}
+
+/* ================================================
+   ACCORDION HEADER CONTENT
+   ================================================ */
+
+.hph-accordion-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+    min-width: 0; /* Allow text to truncate if needed */
+}
+
+.hph-accordion-title i {
+    color: var(--hph-primary);
+    font-size: 1.25rem;
+    width: 24px;
+    flex-shrink: 0;
+}
+
+.hph-accordion-title span {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: var(--hph-gray-900);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ================================================
+   ACCORDION COUNT/BADGE
+   ================================================ */
+
+.hph-accordion-count {
+    padding: 0.25rem 0.625rem;
+    background: var(--hph-primary);
+    color: var(--hph-white);
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.hph-accordion-count--secondary {
+    background: var(--hph-gray-400);
+}
+
+.hph-accordion-count--success {
+    background: var(--hph-success);
+}
+
+.hph-accordion-count--warning {
+    background: var(--hph-warning);
+}
+
+.hph-accordion-count--danger {
+    background: var(--hph-danger);
+}
+
+/* ================================================
+   ACCORDION ARROW
+   ================================================ */
+
+.hph-accordion-arrow {
+    color: var(--hph-gray-400);
+    transition: transform 0.3s ease;
+    font-size: 1.25rem;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.hph-accordion-header[aria-expanded="true"] .hph-accordion-arrow {
+    transform: rotate(180deg);
+    color: var(--hph-primary);
+}
+
+/* ================================================
+   ACCORDION CONTENT
+   ================================================ */
+
+.hph-accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background: var(--hph-white);
+}
+
+.hph-accordion-content.active {
+    max-height: 1000px; /* Adjust based on your content needs */
+}
+
+.hph-accordion-body {
+    padding: 0 1.5rem 1.5rem;
+    color: var(--hph-gray-700);
+    line-height: 1.6;
+}
+
+/* ================================================
+   ACCORDION VARIANTS
+   ================================================ */
+
+/* Compact accordion */
+.hph-accordion--compact .hph-accordion-header {
+    padding: 1rem 1.25rem;
+}
+
+.hph-accordion--compact .hph-accordion-body {
+    padding: 0 1.25rem 1.25rem;
+}
+
+.hph-accordion--compact .hph-accordion-title span {
+    font-size: 1rem;
+}
+
+/* Large accordion */
+.hph-accordion--large .hph-accordion-header {
+    padding: 1.5rem 2rem;
+}
+
+.hph-accordion--large .hph-accordion-body {
+    padding: 0 2rem 2rem;
+}
+
+.hph-accordion--large .hph-accordion-title span {
+    font-size: 1.25rem;
+}
+
+/* Ghost accordion - no background */
+.hph-accordion--ghost {
+    background: transparent;
+    box-shadow: none;
+    border: none;
+}
+
+.hph-accordion--ghost .hph-accordion-header {
+    background: transparent;
+}
+
+.hph-accordion--ghost .hph-accordion-header:hover,
+.hph-accordion--ghost .hph-accordion-header[aria-expanded="true"] {
+    background: var(--hph-gray-25);
+}
+
+/* ================================================
+   FEATURE TAGS (Related accordion content)
+   ================================================ */
+
+.hph-feature-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.hph-feature-tag {
+    padding: 0.5rem 0.875rem;
+    background: var(--hph-gray-100);
+    color: var(--hph-gray-700);
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    text-decoration: none;
+}
+
+.hph-feature-tag:hover {
+    background: var(--hph-primary-light);
+    color: var(--hph-primary);
+    transform: translateY(-1px);
+}
+
+.hph-feature-tag.hph-tag-premium {
+    background: var(--hph-warning-light);
+    color: var(--hph-warning-dark);
+    font-weight: 600;
+}
+
+.hph-feature-tag.hph-tag-premium i {
+    font-size: 0.75rem;
+}
+
+/* ================================================
+   RESPONSIVE DESIGN
+   ================================================ */
+
+@media (max-width: 768px) {
+    .hph-accordion-header {
+        padding: 1rem 1.25rem;
+    }
+    
+    .hph-accordion-body {
+        padding: 0 1.25rem 1.25rem;
+    }
+    
+    .hph-accordion-title span {
+        font-size: 1rem;
+    }
+    
+    .hph-accordion-title i {
+        font-size: 1.125rem;
+        width: 20px;
+    }
+    
+    .hph-accordion-arrow {
+        font-size: 1.125rem;
+        width: 20px;
+        height: 20px;
+    }
+    
+    .hph-feature-tags {
+        gap: 0.375rem;
+    }
+    
+    .hph-feature-tag {
+        font-size: 0.8125rem;
+        padding: 0.375rem 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hph-accordion-header {
+        padding: 0.875rem 1rem;
+    }
+    
+    .hph-accordion-body {
+        padding: 0 1rem 1rem;
+    }
+    
+    .hph-accordion-title {
+        gap: 0.5rem;
+    }
+    
+    .hph-accordion-count {
+        font-size: 0.6875rem;
+        padding: 0.1875rem 0.5rem;
+    }
+}
+
+/* ================================================
+   ACCESSIBILITY
+   ================================================ */
+
+.hph-accordion-header:focus-visible {
+    outline: 2px solid var(--hph-primary);
+    outline-offset: -2px;
+}
+
+/* Hide content from screen readers when collapsed */
+.hph-accordion-content[aria-hidden="true"] {
+    visibility: hidden;
+}
+
+.hph-accordion-content[aria-hidden="false"] {
+    visibility: visible;
+}
+
+/* ================================================
+   ANIMATIONS & REDUCED MOTION
+   ================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    .hph-accordion-header,
+    .hph-accordion-content,
+    .hph-accordion-arrow,
+    .hph-feature-tag {
+        transition: none;
+    }
+    
+    .hph-accordion-content {
+        max-height: none;
+    }
+    
+    .hph-accordion-content:not(.active) {
+        display: none;
+    }
+    
+    .hph-accordion-content.active {
+        display: block;
+    }
+}
+
+/* ================================================
+   DARK MODE SUPPORT
+   ================================================ */
+
+@media (prefers-color-scheme: dark) {
+    .hph-accordion {
+        background: var(--hph-gray-800);
+        border-color: var(--hph-gray-700);
+    }
+    
+    .hph-accordion-header {
+        background: var(--hph-gray-800);
+        color: var(--hph-gray-100);
+    }
+    
+    .hph-accordion-header:hover,
+    .hph-accordion-header[aria-expanded="true"] {
+        background: var(--hph-gray-700);
+    }
+    
+    .hph-accordion-title span {
+        color: var(--hph-gray-100);
+    }
+    
+    .hph-accordion-content {
+        background: var(--hph-gray-800);
+    }
+    
+    .hph-accordion-body {
+        color: var(--hph-gray-300);
+    }
+    
+    .hph-feature-tag {
+        background: var(--hph-gray-700);
+        color: var(--hph-gray-200);
+    }
+    
+    .hph-feature-tag:hover {
+        background: var(--hph-gray-600);
+        color: var(--hph-primary);
+    }
+}

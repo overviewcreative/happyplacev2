@@ -1,0 +1,500 @@
+/**
+ * Base Avatar Component CSS
+ * User avatar display with comprehensive styling options
+ * 
+ * @package HappyPlaceTheme
+ */
+
+/* ================================================
+   Base Avatar Styles
+   ================================================ */
+
+.hph-avatar {
+    --hph-avatar-transition: all 0.2s ease;
+    
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    user-select: none;
+}
+
+.hph-avatar--clickable {
+    cursor: pointer;
+    transition: var(--hph-avatar-transition);
+}
+
+.hph-avatar--clickable:hover {
+    transform: scale(1.05);
+}
+
+.hph-avatar--clickable:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--hph-primary-alpha-20);
+}
+
+/* ================================================
+   Avatar Container
+   ================================================ */
+
+.hph-avatar__container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--hph-gray-100);
+    color: var(--hph-text-secondary);
+}
+
+/* ================================================
+   Size Variations
+   ================================================ */
+
+.hph-avatar--xs {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.hph-avatar--sm {
+    width: 2rem;
+    height: 2rem;
+}
+
+.hph-avatar--md {
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.hph-avatar--lg {
+    width: 3rem;
+    height: 3rem;
+}
+
+.hph-avatar--xl {
+    width: 4rem;
+    height: 4rem;
+}
+
+.hph-avatar--2xl {
+    width: 5rem;
+    height: 5rem;
+}
+
+/* ================================================
+   Shape Variations
+   ================================================ */
+
+.hph-avatar--circle .hph-avatar__container {
+    border-radius: 50%;
+}
+
+.hph-avatar--square .hph-avatar__container {
+    border-radius: 0;
+}
+
+.hph-avatar--rounded .hph-avatar__container {
+    border-radius: var(--hph-radius-md);
+}
+
+/* ================================================
+   Variant Styles
+   ================================================ */
+
+.hph-avatar--default .hph-avatar__container {
+    border: 2px solid var(--hph-white);
+}
+
+.hph-avatar--outlined .hph-avatar__container {
+    border: 2px solid var(--hph-border-color);
+}
+
+.hph-avatar--shadow .hph-avatar__container {
+    border: 2px solid var(--hph-white);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* ================================================
+   Avatar Image
+   ================================================ */
+
+.hph-avatar__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+/* ================================================
+   Avatar Initials
+   ================================================ */
+
+.hph-avatar__initials {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--hph-primary);
+    color: var(--hph-white);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.hph-avatar__initials-text {
+    line-height: 1;
+    font-size: 0.75em;
+}
+
+.hph-avatar--xs .hph-avatar__initials-text {
+    font-size: 0.5em;
+}
+
+.hph-avatar--sm .hph-avatar__initials-text {
+    font-size: 0.6em;
+}
+
+.hph-avatar--lg .hph-avatar__initials-text {
+    font-size: 0.8em;
+}
+
+.hph-avatar--xl .hph-avatar__initials-text {
+    font-size: 1em;
+}
+
+.hph-avatar--2xl .hph-avatar__initials-text {
+    font-size: 1.2em;
+}
+
+/* ================================================
+   Avatar Icon
+   ================================================ */
+
+.hph-avatar__icon {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--hph-gray-100);
+    color: var(--hph-text-muted);
+}
+
+/* ================================================
+   Badge & Status
+   ================================================ */
+
+.hph-avatar__badge {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.hph-avatar__badge--top-left {
+    top: -2px;
+    left: -2px;
+}
+
+.hph-avatar__badge--top-right {
+    top: -2px;
+    right: -2px;
+}
+
+.hph-avatar__badge--bottom-left {
+    bottom: -2px;
+    left: -2px;
+}
+
+.hph-avatar__badge--bottom-right {
+    bottom: -2px;
+    right: -2px;
+}
+
+/* ================================================
+   Status Indicator
+   ================================================ */
+
+.hph-avatar__status {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    border: 2px solid var(--hph-white);
+    background: var(--hph-gray-400);
+}
+
+.hph-avatar--xs .hph-avatar__status {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-width: 1px;
+}
+
+.hph-avatar--sm .hph-avatar__status {
+    width: 0.625rem;
+    height: 0.625rem;
+    border-width: 1px;
+}
+
+.hph-avatar--lg .hph-avatar__status,
+.hph-avatar--xl .hph-avatar__status,
+.hph-avatar--2xl .hph-avatar__status {
+    width: 1rem;
+    height: 1rem;
+    border-width: 3px;
+}
+
+.hph-avatar__status--online {
+    background: var(--hph-success);
+}
+
+.hph-avatar__status--offline {
+    background: var(--hph-gray-400);
+}
+
+.hph-avatar__status--away {
+    background: var(--hph-warning);
+}
+
+.hph-avatar__status--busy {
+    background: var(--hph-error);
+}
+
+/* ================================================
+   Badge Content
+   ================================================ */
+
+.hph-avatar__badge-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 0.25rem;
+    background: var(--hph-error);
+    color: var(--hph-white);
+    border-radius: var(--hph-radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
+    border: 2px solid var(--hph-white);
+}
+
+.hph-avatar--xs .hph-avatar__badge-content {
+    min-width: 1rem;
+    height: 1rem;
+    font-size: 0.625rem;
+    border-width: 1px;
+}
+
+.hph-avatar--sm .hph-avatar__badge-content {
+    min-width: 1.125rem;
+    height: 1.125rem;
+    font-size: 0.625rem;
+    border-width: 1px;
+}
+
+.hph-avatar--lg .hph-avatar__badge-content,
+.hph-avatar--xl .hph-avatar__badge-content,
+.hph-avatar--2xl .hph-avatar__badge-content {
+    min-width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.875rem;
+    border-width: 3px;
+}
+
+/* ================================================
+   Group Avatar
+   ================================================ */
+
+.hph-avatar--group {
+    /* Group avatar container - manages multiple avatar display */
+    position: relative;
+}
+
+.hph-avatar__group-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.hph-avatar__group-member {
+    position: relative;
+    margin-left: var(--avatar-offset, 0);
+    border: 2px solid var(--hph-white);
+    z-index: 1;
+}
+
+.hph-avatar__group-member:first-child {
+    margin-left: 0;
+    z-index: 3;
+}
+
+.hph-avatar__group-member:nth-child(2) {
+    z-index: 2;
+}
+
+.hph-avatar__group-member:nth-child(3) {
+    z-index: 1;
+}
+
+.hph-avatar__group-count {
+    position: relative;
+    margin-left: var(--avatar-offset, 0.75rem);
+    background: var(--hph-gray-200);
+    border: 2px solid var(--hph-white);
+    color: var(--hph-text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    z-index: 0;
+}
+
+.hph-avatar__count-text {
+    font-size: 0.75em;
+    line-height: 1;
+}
+
+/* ================================================
+   Hover Effects
+   ================================================ */
+
+.hph-avatar--clickable:hover .hph-avatar__container {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.hph-avatar--shadow.hph-avatar--clickable:hover .hph-avatar__container {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* ================================================
+   Loading State
+   ================================================ */
+
+.hph-avatar--loading .hph-avatar__container {
+    background: var(--hph-gray-200);
+    animation: avatarPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes avatarPulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.hph-avatar--loading .hph-avatar__image,
+.hph-avatar--loading .hph-avatar__initials,
+.hph-avatar--loading .hph-avatar__icon {
+    opacity: 0;
+}
+
+/* ================================================
+   Error State
+   ================================================ */
+
+.hph-avatar--error .hph-avatar__container {
+    background: var(--hph-error-alpha-10);
+    color: var(--hph-error);
+    border-color: var(--hph-error-alpha-30);
+}
+
+/* ================================================
+   Accessibility
+   ================================================ */
+
+.hph-avatar--clickable:focus-visible {
+    outline: 2px solid var(--hph-primary);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hph-avatar--clickable,
+    .hph-avatar--loading .hph-avatar__container {
+        transition: none;
+        animation: none;
+    }
+    
+    .hph-avatar--clickable:hover {
+        transform: none;
+    }
+}
+
+/* ================================================
+   High Contrast Mode
+   ================================================ */
+
+@media (prefers-contrast: high) {
+    .hph-avatar__container {
+        border-width: 3px;
+        border-color: currentColor;
+    }
+    
+    .hph-avatar__status {
+        border-width: 3px;
+    }
+    
+    .hph-avatar__badge-content {
+        border-width: 3px;
+    }
+}
+
+/* ================================================
+   Dark Mode Support
+   ================================================ */
+
+@media (prefers-color-scheme: dark) {
+    .hph-avatar__container {
+        background: var(--hph-gray-700);
+        border-color: var(--hph-gray-600);
+    }
+    
+    .hph-avatar__icon {
+        background: var(--hph-gray-700);
+        color: var(--hph-gray-400);
+    }
+    
+    .hph-avatar__status,
+    .hph-avatar__badge-content {
+        border-color: var(--hph-gray-800);
+    }
+    
+    .hph-avatar__group-count {
+        background: var(--hph-gray-600);
+        border-color: var(--hph-gray-800);
+        color: var(--hph-gray-300);
+    }
+}
+
+/* ================================================
+   Print Styles
+   ================================================ */
+
+@media print {
+    .hph-avatar {
+        background: white;
+        color: black;
+    }
+    
+    .hph-avatar__status,
+    .hph-avatar__badge-content {
+        display: none;
+    }
+    
+    .hph-avatar__container {
+        border: 1px solid black;
+        background: white;
+    }
+    
+    .hph-avatar__initials {
+        background: black;
+        color: white;
+    }
+}

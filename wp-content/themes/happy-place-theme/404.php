@@ -48,7 +48,7 @@ get_header(); ?>
                     <?php if (post_type_exists('listing')) : ?>
                         <a href="<?php echo esc_url(get_post_type_archive_link('listing')); ?>" class="btn btn-outline">
                             <i class="fas fa-building mr-2"></i>
-                            <?php esc_html_e('Browse Properties', 'happy-place-theme'); ?>
+                            <?php esc_html_e('Browse Listings', 'happy-place-theme'); ?>
                         </a>
                     <?php endif; ?>
                 </div>
@@ -97,7 +97,7 @@ get_header(); ?>
                 <?php if (post_type_exists('listing')) : ?>
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title"><?php esc_html_e('Recent Properties', 'happy-place-theme'); ?></h4>
+                            <h4 class="card-title"><?php esc_html_e('Recent Listings', 'happy-place-theme'); ?></h4>
                         </div>
                         <div class="card-body">
                             <?php

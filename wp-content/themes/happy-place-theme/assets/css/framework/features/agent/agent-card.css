@@ -1,0 +1,217 @@
+/**
+ * Agent Carousel Flexible Content Styles
+ * 
+ * Specific styles for the agent carousel flexible content component
+ * 
+ * @package HappyPlaceTheme
+ */
+
+/* ================================================
+   Agent Carousel Section
+   ================================================ */
+
+.hph-agent-carousel-section {
+    position: relative;
+    overflow: hidden;
+}
+
+.hph-agent-carousel__header {
+    text-align: center;
+    margin-bottom: var(--hph-spacing-lg);
+}
+
+.hph-agent-carousel__heading {
+    font-size: var(--hph-font-size-2xl);
+    font-weight: var(--hph-font-weight-bold);
+    color: var(--hph-primary-900);
+    margin-bottom: var(--hph-spacing-sm);
+    line-height: var(--hph-line-height-tight);
+}
+
+.hph-agent-carousel__subheading {
+    font-size: var(--hph-font-size-lg);
+    color: var(--hph-gray-600);
+    margin: 0;
+    max-width: 60ch;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ================================================
+   Agent Carousel Wrapper
+   ================================================ */
+
+.hph-agent-carousel__wrapper {
+    position: relative;
+}
+
+.hph-agent-carousel {
+    /* Override base carousel for agent-specific needs */
+    background: transparent;
+}
+
+.hph-agent-carousel .hph-carousel__slide {
+    padding: 0 var(--hph-spacing-xs);
+    background: transparent;
+    display: flex;
+    align-items: stretch;
+}
+
+.hph-agent-carousel__slide {
+    height: 100%;
+}
+
+/* Ensure agent cards fill the slide height */
+.hph-agent-carousel__slide .hph-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.hph-agent-carousel__slide .hph-card__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.hph-agent-carousel__slide .hph-card__footer {
+    margin-top: auto;
+}
+
+/* ================================================
+   Carousel Navigation Customization
+   ================================================ */
+
+.hph-agent-carousel .hph-carousel__arrow {
+    background: var(--hph-white);
+    border: 2px solid var(--hph-primary-200);
+    color: var(--hph-primary-600);
+    box-shadow: var(--hph-shadow-md);
+}
+
+.hph-agent-carousel .hph-carousel__arrow:hover {
+    background: var(--hph-primary-50);
+    border-color: var(--hph-primary-300);
+    color: var(--hph-primary-700);
+}
+
+.hph-agent-carousel .hph-carousel__arrow:active {
+    transform: translateY(1px);
+}
+
+.hph-agent-carousel .hph-carousel__dots {
+    margin-top: var(--hph-spacing-md);
+}
+
+.hph-agent-carousel .hph-carousel__dot {
+    background: var(--hph-primary-200);
+}
+
+.hph-agent-carousel .hph-carousel__dot--active {
+    background: var(--hph-primary-600);
+}
+
+/* ================================================
+   Agent Carousel Footer
+   ================================================ */
+
+.hph-agent-carousel__footer {
+    text-align: center;
+    margin-top: var(--hph-spacing-xl);
+}
+
+/* View all button inherits base button styles */
+
+/* ================================================
+   Responsive Adjustments
+   ================================================ */
+
+@media (max-width: 768px) {
+    .hph-agent-carousel__heading {
+        font-size: var(--hph-font-size-xl);
+    }
+    
+    .hph-agent-carousel__subheading {
+        font-size: var(--hph-font-size-base);
+    }
+    
+    .hph-agent-carousel .hph-carousel__slide {
+        padding: 0 var(--hph-spacing-xxs);
+    }
+    
+    .hph-agent-carousel .hph-carousel__arrow {
+        width: 2rem;
+        height: 2rem;
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hph-agent-carousel__header {
+        margin-bottom: var(--hph-spacing-md);
+    }
+    
+    .hph-agent-carousel__footer {
+        margin-top: var(--hph-spacing-lg);
+    }
+}
+
+/* ================================================
+   Background Color Variations
+   ================================================ */
+
+.hph-agent-carousel-section.has-background {
+    padding: var(--hph-spacing-xl) 0;
+}
+
+.hph-agent-carousel-section.has-light-gray-background-color {
+    background-color: var(--hph-gray-50);
+}
+
+.hph-agent-carousel-section.has-primary-background-color {
+    background-color: var(--hph-primary-50);
+}
+
+.hph-agent-carousel-section.has-primary-background-color .hph-agent-carousel__heading {
+    color: var(--hph-primary-900);
+}
+
+.hph-agent-carousel-section.has-primary-background-color .hph-agent-carousel__subheading {
+    color: var(--hph-primary-700);
+}
+
+/* ================================================
+   Padding Utilities
+   ================================================ */
+
+.hph-agent-carousel-section.has-sm-padding-top {
+    padding-top: var(--hph-spacing-md);
+}
+
+.hph-agent-carousel-section.has-md-padding-top {
+    padding-top: var(--hph-spacing-lg);
+}
+
+.hph-agent-carousel-section.has-lg-padding-top {
+    padding-top: var(--hph-spacing-xl);
+}
+
+.hph-agent-carousel-section.has-xl-padding-top {
+    padding-top: var(--hph-spacing-2xl);
+}
+
+.hph-agent-carousel-section.has-sm-padding-bottom {
+    padding-bottom: var(--hph-spacing-md);
+}
+
+.hph-agent-carousel-section.has-md-padding-bottom {
+    padding-bottom: var(--hph-spacing-lg);
+}
+
+.hph-agent-carousel-section.has-lg-padding-bottom {
+    padding-bottom: var(--hph-spacing-xl);
+}
+
+.hph-agent-carousel-section.has-xl-padding-bottom {
+    padding-bottom: var(--hph-spacing-2xl);
+}

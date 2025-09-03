@@ -61,7 +61,7 @@ class HPH_Mega_Menu_Walker extends Walker_Nav_Menu {
 function hph_default_menu() {
     echo '<ul class="hph-nav-menu">';
     echo '<li><a href="' . home_url('/') . '">Home</a></li>';
-    echo '<li><a href="' . home_url('/properties') . '">Properties</a></li>';
+    echo '<li><a href="' . home_url('/listings') . '">Listings</a></li>';
     echo '<li><a href="' . home_url('/agents') . '">Agents</a></li>';
     echo '<li><a href="' . home_url('/about') . '">About</a></li>';
     echo '<li><a href="' . home_url('/contact') . '">Contact</a></li>';
@@ -74,7 +74,7 @@ function hph_default_menu() {
 function hph_default_mobile_menu() {
     echo '<ul class="hph-mobile-menu-list">';
     echo '<li><a href="' . home_url('/') . '">Home</a></li>';
-    echo '<li><a href="' . home_url('/properties') . '">Properties</a></li>';
+    echo '<li><a href="' . home_url('/listings') . '">Listings</a></li>';
     echo '<li><a href="' . home_url('/agents') . '">Agents</a></li>';
     echo '<li><a href="' . home_url('/about') . '">About</a></li>';
     echo '<li><a href="' . home_url('/contact') . '">Contact</a></li>';

@@ -1,0 +1,598 @@
+/**
+ * Slider Component CSS - Production Styles
+ * Consolidated from mature listing-gallery.css slider styles
+ * 
+ * @package HappyPlaceTheme
+ */
+
+/* ================================================
+   SLIDER CONTAINER
+   ================================================ */
+
+.hph-slider-container {
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.hph-slider-main {
+    position: relative;
+    background: var(--hph-gray-900);
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Slider variants */
+.hph-slider-container--no-radius .hph-slider-main {
+    border-radius: 0;
+}
+
+.hph-slider-container--small .hph-slider-main {
+    border-radius: 0.5rem;
+}
+
+/* ================================================
+   SLIDER TRACK & SLIDES
+   ================================================ */
+
+.hph-slider-track {
+    position: relative;
+    height: 600px;
+    overflow: hidden;
+}
+
+.hph-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hph-slide.active {
+    opacity: 1;
+}
+
+.hph-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: var(--hph-gray-900);
+    transition: transform 0.3s ease;
+}
+
+.hph-slide:hover img {
+    transform: scale(1.02);
+}
+
+/* ================================================
+   SLIDE CONTENT/INFO
+   ================================================ */
+
+.hph-slide-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.6) 50%, transparent 100%);
+    color: var(--hph-white);
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.hph-slide:hover .hph-slide-info,
+.hph-slide.active .hph-slide-info {
+    transform: translateY(0);
+}
+
+.hph-slide-info h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+    color: var(--hph-white);
+}
+
+.hph-slide-info p {
+    margin: 0;
+    opacity: 0.9;
+    line-height: 1.5;
+}
+
+.hph-slide-info--always-visible {
+    transform: translateY(0);
+}
+
+/* ================================================
+   SLIDER NAVIGATION
+   ================================================ */
+
+.hph-slider-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    color: var(--hph-gray-800);
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hph-slider-prev {
+    left: 1rem;
+}
+
+.hph-slider-next {
+    right: 1rem;
+}
+
+.hph-slider-nav:hover {
+    background: var(--hph-white);
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.hph-slider-nav:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--hph-primary);
+}
+
+.hph-slider-nav:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: translateY(-50%);
+}
+
+/* Navigation variants */
+.hph-slider-nav--dark {
+    background: rgba(0, 0, 0, 0.5);
+    color: var(--hph-white);
+}
+
+.hph-slider-nav--dark:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+/* ================================================
+   SLIDER INDICATORS/DOTS
+   ================================================ */
+
+.hph-slider-indicators {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.5rem;
+    z-index: 3;
+}
+
+.hph-slider-dot {
+    width: 12px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.5);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.hph-slider-dot.active {
+    background: var(--hph-white);
+    transform: scale(1.2);
+}
+
+.hph-slider-dot:hover {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+/* ================================================
+   SLIDER THUMBNAILS
+   ================================================ */
+
+.hph-slider-thumbs {
+    margin-top: 1rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--hph-primary) var(--hph-gray-200);
+}
+
+.hph-slider-thumbs::-webkit-scrollbar {
+    height: 4px;
+}
+
+.hph-slider-thumbs::-webkit-scrollbar-track {
+    background: var(--hph-gray-200);
+    border-radius: 2px;
+}
+
+.hph-slider-thumbs::-webkit-scrollbar-thumb {
+    background: var(--hph-primary);
+    border-radius: 2px;
+}
+
+.hph-thumbs-track {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    min-width: min-content;
+}
+
+.hph-thumb {
+    width: 100px;
+    height: 75px;
+    border: 2px solid transparent;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    cursor: pointer;
+    flex-shrink: 0;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+    background: var(--hph-gray-100);
+}
+
+.hph-thumb:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.hph-thumb.active {
+    border-color: var(--hph-primary);
+    opacity: 1;
+    box-shadow: 0 0 0 1px var(--hph-primary-light);
+}
+
+.hph-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.hph-thumb:hover img {
+    transform: scale(1.05);
+}
+
+/* Thumbnail variants */
+.hph-slider-thumbs--small .hph-thumb {
+    width: 75px;
+    height: 56px;
+}
+
+.hph-slider-thumbs--large .hph-thumb {
+    width: 125px;
+    height: 94px;
+}
+
+/* ================================================
+   SLIDER AUTOPLAY CONTROLS
+   ================================================ */
+
+.hph-slider-controls {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 3;
+}
+
+.hph-slider-play,
+.hph-slider-pause {
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    border-radius: 50%;
+    color: var(--hph-white);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.hph-slider-play:hover,
+.hph-slider-pause:hover {
+    background: rgba(0, 0, 0, 0.7);
+    transform: scale(1.1);
+}
+
+/* ================================================
+   SLIDER HEIGHT VARIANTS
+   ================================================ */
+
+.hph-slider-container--small .hph-slider-track {
+    height: 300px;
+}
+
+.hph-slider-container--medium .hph-slider-track {
+    height: 450px;
+}
+
+.hph-slider-container--large .hph-slider-track {
+    height: 700px;
+}
+
+.hph-slider-container--auto .hph-slider-track {
+    height: auto;
+    min-height: 300px;
+}
+
+/* ================================================
+   SLIDER LOADING STATE
+   ================================================ */
+
+.hph-slider-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--hph-gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.hph-slider-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--hph-gray-300);
+    border-top: 3px solid var(--hph-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* ================================================
+   RESPONSIVE DESIGN
+   ================================================ */
+
+@media (max-width: 768px) {
+    .hph-slider-track {
+        height: 400px;
+    }
+    
+    .hph-slider-container--small .hph-slider-track {
+        height: 250px;
+    }
+    
+    .hph-slider-container--medium .hph-slider-track {
+        height: 350px;
+    }
+    
+    .hph-slider-container--large .hph-slider-track {
+        height: 500px;
+    }
+    
+    .hph-slider-nav {
+        width: 44px;
+        height: 44px;
+        font-size: 1.125rem;
+    }
+    
+    .hph-slider-prev {
+        left: 0.75rem;
+    }
+    
+    .hph-slider-next {
+        right: 0.75rem;
+    }
+    
+    .hph-slide-info {
+        padding: 1.5rem;
+    }
+    
+    .hph-slide-info h4 {
+        font-size: 1.125rem;
+    }
+    
+    .hph-thumb {
+        width: 80px;
+        height: 60px;
+    }
+    
+    .hph-slider-thumbs--small .hph-thumb {
+        width: 60px;
+        height: 45px;
+    }
+    
+    .hph-slider-thumbs--large .hph-thumb {
+        width: 100px;
+        height: 75px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hph-slider-track {
+        height: 300px;
+    }
+    
+    .hph-slider-container--small .hph-slider-track {
+        height: 200px;
+    }
+    
+    .hph-slider-nav {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    
+    .hph-slider-prev {
+        left: 0.5rem;
+    }
+    
+    .hph-slider-next {
+        right: 0.5rem;
+    }
+    
+    .hph-slide-info {
+        padding: 1rem;
+        font-size: 0.875rem;
+    }
+    
+    .hph-slide-info h4 {
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .hph-thumb {
+        width: 70px;
+        height: 53px;
+    }
+    
+    .hph-slider-controls {
+        top: 0.5rem;
+        right: 0.5rem;
+    }
+    
+    .hph-slider-play,
+    .hph-slider-pause {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .hph-slider-dot {
+        width: 10px;
+        height: 10px;
+    }
+}
+
+/* ================================================
+   ANIMATIONS & KEYFRAMES
+   ================================================ */
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Fade transition */
+.hph-slider-container--fade .hph-slide {
+    transition: opacity 0.8s ease;
+}
+
+/* Slide transition */
+.hph-slider-container--slide .hph-slide {
+    transition: transform 0.5s ease;
+    transform: translateX(100%);
+}
+
+.hph-slider-container--slide .hph-slide.active {
+    transform: translateX(0);
+}
+
+.hph-slider-container--slide .hph-slide.prev {
+    transform: translateX(-100%);
+}
+
+/* ================================================
+   ACCESSIBILITY
+   ================================================ */
+
+.hph-slider-nav:focus-visible,
+.hph-thumb:focus-visible,
+.hph-slider-dot:focus-visible {
+    outline: 2px solid var(--hph-primary);
+    outline-offset: 2px;
+}
+
+.hph-slide[aria-hidden="true"] {
+    visibility: hidden;
+}
+
+.hph-slide[aria-hidden="false"] {
+    visibility: visible;
+}
+
+/* ================================================
+   REDUCED MOTION
+   ================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    .hph-slide,
+    .hph-slide-info,
+    .hph-slider-nav,
+    .hph-thumb,
+    .hph-slider-dot {
+        transition: none;
+    }
+    
+    .hph-slider-spinner {
+        animation: none;
+    }
+    
+    .hph-slide:hover img,
+    .hph-thumb:hover img {
+        transform: none;
+    }
+    
+    .hph-slider-nav:hover,
+    .hph-thumb:hover {
+        transform: none;
+    }
+}
+
+/* ================================================
+   DARK MODE SUPPORT
+   ================================================ */
+
+@media (prefers-color-scheme: dark) {
+    .hph-slider-main {
+        background: var(--hph-gray-800);
+    }
+    
+    .hph-slider-nav {
+        background: rgba(255, 255, 255, 0.9);
+        color: var(--hph-gray-800);
+    }
+    
+    .hph-slider-nav:hover {
+        background: var(--hph-white);
+    }
+    
+    .hph-slider-loading {
+        background: var(--hph-gray-800);
+    }
+    
+    .hph-thumb {
+        background: var(--hph-gray-700);
+        border-color: var(--hph-gray-600);
+    }
+    
+    .hph-thumb.active {
+        border-color: var(--hph-primary);
+    }
+}

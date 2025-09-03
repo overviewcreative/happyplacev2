@@ -1,418 +1,173 @@
 <?php
 /**
- * Single Listing Template - Component-Based Architecture
+ * Single Listing Template
  * 
- * Uses the new component system with listing bridge functions for data access.
- * Features complete property details, gallery, agent info, and contact functionality.
+ * Template for displaying individual property listings
+ * Uses HPH framework utilities and component system
  * 
  * @package HappyPlaceTheme
  * @since 3.0.0
  */
 
-// Security check
-if (!defined('ABSPATH')) {
-    exit;
-}
-
 get_header();
 
-// Get listing ID and verify it exists
+// Get the listing ID
 $listing_id = get_the_ID();
-if (!$listing_id || get_post_type($listing_id) !== 'listing') {
-    hph_component('content-none');
-    get_footer();
-    return;
+
+// Only get minimal data needed for gallery strip - let template parts handle their own data
+$gallery_images = [];
+if (function_exists('hpt_get_listing_gallery_data')) {
+    try {
+        $gallery_data = hpt_get_listing_gallery_data($listing_id);
+        $gallery_images = $gallery_data['images'] ?? [];
+    } catch (Exception $e) {
+        error_log('Gallery bridge function failed: ' . $e->getMessage());
+        // Fallback to direct field access
+        $gallery_images = get_field('photo_gallery', $listing_id) ?: get_field('property_gallery', $listing_id) ?: [];
+    }
+} else {
+    // Direct fallback if bridge not available
+    $gallery_images = get_field('photo_gallery', $listing_id) ?: get_field('property_gallery', $listing_id) ?: [];
 }
 
-// Get listing data using bridge functions
-$listing_data = hpt_get_listing($listing_id);
-if (!$listing_data) {
-    hph_component('content-none');
-    get_footer();
-    return;
-}
-
-// Check if listing is viewable
-if (!current_user_can('read_post', $listing_id)) {
-    hph_component('content-none');
-    get_footer();
-    return;
-}
-
-// Get related data
-$agent_data = null;
-if (!empty($listing_data['agent_id'])) {
-    $agent_data = hpt_get_agent($listing_data['agent_id']);
-}
-
-// Prepare single layout arguments
-$single_args = [
-    'post_type' => 'listing',
-    'post_id' => $listing_id,
-    'title' => $listing_data['title'],
-    'data' => $listing_data,
-    'agent' => $agent_data,
-    'show_sidebar' => true,
-    'sidebar_id' => 'listing-single',
-    'layout' => 'full-width'
+// Get basic status for gallery display only
+$listing_status = get_field('listing_status', $listing_id) ?: 'active';
+$status_colors = [
+    'active' => 'success',
+    'pending' => 'warning', 
+    'sold' => 'danger',
+    'coming_soon' => 'primary'
 ];
+$status_color = $status_colors[$listing_status] ?? 'gray';
+
 ?>
 
-<div class="hph-page hph-single-page" data-post-type="listing" data-post-id="<?php echo esc_attr($listing_id); ?>">
+<main id="main" class="hph-site-main">
     
-    <?php
-    // Load the main single layout component
-    hph_component('single-layout', $single_args);
-    ?>
+    <?php while (have_posts()) : the_post(); ?>
     
-    <!-- Listing Details Sections -->
-    <div class="hph-listing-sections">
-        
-        <!-- Photo Gallery Section -->
-        <?php if (!empty($listing_data['gallery'])): ?>
-        <section class="hph-listing-gallery hph-py-0">
-            <div class="hph-container-fluid">
-                <?php
-                hph_component('listing-gallery', [
-                    'images' => $listing_data['gallery'],
-                    'listing_id' => $listing_id,
-                    'style' => 'hero',
-                    'show_thumbnails' => true,
-                    'lightbox' => true
-                ]);
-                ?>
-            </div>
-        </section>
-        <?php endif; ?>
-        
-        <!-- Main Content Area -->
-        <section class="hph-listing-content hph-py-12">
-            <div class="hph-container">
-                <div class="hph-grid hph-grid-cols-12 hph-gap-8">
-                    
-                    <!-- Primary Content -->
-                    <div class="hph-col-span-12 lg:hph-col-span-8">
-                        
-                        <!-- Property Header -->
-                        <div class="hph-listing-header hph-mb-8">
-                            <?php
-                            hph_component('listing-header', [
-                                'listing_data' => $listing_data,
-                                'show_price' => true,
-                                'show_status' => true,
-                                'show_address' => true,
-                                'show_mls' => true,
-                                'show_actions' => true
-                            ]);
-                            ?>
-                        </div>
-                        
-                        <!-- Property Details -->
-                        <div class="hph-listing-details hph-mb-8">
-                            <?php
-                            hph_component('listing-details', [
-                                'listing_data' => $listing_data,
-                                'style' => 'detailed',
-                                'show_all' => true
-                            ]);
-                            ?>
-                        </div>
-                        
-                        <!-- Property Description -->
-                        <?php if (!empty($listing_data['description'])): ?>
-                        <div class="hph-listing-description hph-mb-8">
-                            <div class="hph-card">
-                                <div class="hph-card__header">
-                                    <h3 class="hph-card__title">
-                                        <?php _e('Property Description', 'happy-place-theme'); ?>
-                                    </h3>
-                                </div>
-                                <div class="hph-card__content">
-                                    <div class="hph-prose">
-                                        <?php echo wp_kses_post($listing_data['description']); ?>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <?php endif; ?>
-                        
-                        <!-- Property Features -->
-                        <?php if (!empty($listing_data['features'])): ?>
-                        <div class="hph-listing-features hph-mb-8">
-                            <?php
-                            hph_component('listing-features', [
-                                'features' => $listing_data['features'],
-                                'listing_id' => $listing_id,
-                                'style' => 'grid'
-                            ]);
-                            ?>
-                        </div>
-                        <?php endif; ?>
-                        
-                        <!-- Floor Plans -->
-                        <?php if (!empty($listing_data['floor_plans'])): ?>
-                        <div class="hph-listing-floor-plans hph-mb-8">
-                            <?php
-                            hph_component('listing-floor-plans', [
-                                'floor_plans' => $listing_data['floor_plans'],
-                                'listing_id' => $listing_id
-                            ]);
-                            ?>
-                        </div>
-                        <?php endif; ?>
-                        
-                        <!-- Virtual Tour -->
-                        <?php if (!empty($listing_data['virtual_tour'])): ?>
-                        <div class="hph-listing-virtual-tour hph-mb-8">
-                            <?php
-                            hph_component('listing-virtual-tour', [
-                                'virtual_tour' => $listing_data['virtual_tour'],
-                                'listing_id' => $listing_id
-                            ]);
-                            ?>
-                        </div>
-                        <?php endif; ?>
-                        
-                        <!-- Mortgage Calculator -->
-                        <div class="hph-mortgage-calculator hph-mb-8">
-                            <?php
-                            hph_component('mortgage-calculator', [
-                                'listing_price' => $listing_data['price'],
-                                'listing_id' => $listing_id,
-                                'style' => 'embedded'
-                            ]);
-                            ?>
-                        </div>
-                        
-                        <!-- Neighborhood Info -->
-                        <?php if (!empty($listing_data['neighborhood'])): ?>
-                        <div class="hph-neighborhood-info hph-mb-8">
-                            <?php
-                            hph_component('neighborhood-info', [
-                                'neighborhood' => $listing_data['neighborhood'],
-                                'listing_location' => $listing_data['location'] ?? null
-                            ]);
-                            ?>
-                        </div>
-                        <?php endif; ?>
-                        
+    <!-- Breadcrumb Navigation -->
+    <?php get_template_part('template-parts/listing/breadcrumb', null, ['listing_id' => $listing_id]); ?>
+    
+    <!-- Hero Section -->
+    <?php get_template_part('template-parts/listing/hero', null, [
+        'listing_id' => $listing_id,
+        'layout' => 'full-width',
+        'show_gallery' => true,
+        'show_price' => true,
+        'show_stats' => true,
+        'show_share' => true,
+        'show_save' => true
+    ]); ?>
+    
+    <!-- Gallery Strip -->
+    <section class="hph-gallery-strip hph-bg-white hph-py-lg hph-border-b hph-border-gray-200">
+        <div class="hph-container">
+            <div class="hph-gallery-thumbnails hph-flex hph-gap-md hph-overflow-x-auto">
+                <?php 
+                $max_thumbnails = 5;
+                
+                foreach (array_slice($gallery_images, 0, $max_thumbnails) as $index => $image) : ?>
+                    <div class="hph-gallery-thumb hph-flex-shrink-0 hph-w-32 hph-h-20 hph-rounded-lg hph-overflow-hidden hph-cursor-pointer hover:hph-scale-105 hph-transition-transform"
+                         data-index="<?php echo esc_attr($index); ?>">
+                        <img src="<?php echo esc_url($image['sizes']['thumbnail'] ?? $image['url']); ?>" 
+                             alt="<?php echo esc_attr($image['alt'] ?? 'Property photo'); ?>"
+                             class="hph-w-full hph-h-full hph-object-cover">
                     </div>
-                    
-                    <!-- Sidebar -->
-                    <div class="hph-col-span-12 lg:hph-col-span-4">
-                        
-                        <!-- Agent Information -->
-                        <?php if ($agent_data): ?>
-                        <div class="hph-agent-card hph-mb-8">
-                            <?php
-                            hph_component('agent-card', [
-                                'agent_data' => $agent_data,
-                                'style' => 'detailed',
-                                'show_contact' => true,
-                                'show_stats' => true,
-                                'context' => 'listing'
-                            ]);
-                            ?>
-                        </div>
-                        <?php endif; ?>
-                        
-                        <!-- Contact Form -->
-                        <div class="hph-contact-form hph-mb-8">
-                            <?php
-                            hph_component('listing-contact-form', [
-                                'listing_data' => $listing_data,
-                                'agent_data' => $agent_data,
-                                'form_type' => 'inquiry'
-                            ]);
-                            ?>
-                        </div>
-                        
-                        <!-- Property Actions -->
-                        <div class="hph-property-actions hph-mb-8">
-                            <?php
-                            hph_component('property-actions', [
-                                'listing_id' => $listing_id,
-                                'listing_data' => $listing_data,
-                                'actions' => ['favorite', 'share', 'print', 'schedule']
-                            ]);
-                            ?>
-                        </div>
-                        
-                        <!-- Similar Listings -->
-                        <?php
-                        // Get similar listings
-                        $similar_listings = hph_get_similar_listings($listing_id, 3);
-                        if (!empty($similar_listings)):
-                        ?>
-                        <div class="hph-similar-listings hph-mb-8">
-                            <div class="hph-card">
-                                <div class="hph-card__header">
-                                    <h3 class="hph-card__title">
-                                        <?php _e('Similar Properties', 'happy-place-theme'); ?>
-                                    </h3>
-                                </div>
-                                <div class="hph-card__content">
-                                    <?php
-                                    hph_component('card-list', [
-                                        'posts' => $similar_listings,
-                                        'style' => 'compact',
-                                        'show_excerpt' => false,
-                                        'show_price' => true
-                                    ]);
-                                    ?>
-                                </div>
-                            </div>
-                        </div>
-                        <?php endif; ?>
-                        
-                    </div>
-                    
-                </div>
+                <?php endforeach; ?>
+                
+                <?php if (count($gallery_images) > $max_thumbnails) : ?>
+                    <button class="hph-view-all-photos hph-flex hph-items-center hph-justify-center hph-min-w-32 hph-px-md hph-bg-primary hph-text-white hph-rounded-lg hph-font-semibold hph-cursor-pointer hover:hph-bg-primary-dark hph-transition-colors"
+                            onclick="openGalleryLightbox()">
+                        <i class="fas fa-images hph-mr-sm"></i>
+                        +<?php echo count($gallery_images) - $max_thumbnails; ?> Photos
+                    </button>
+                <?php endif; ?>
             </div>
-        </section>
-        
-        <!-- Property Location/Map -->
-        <?php if (!empty($listing_data['location'])): ?>
-        <section class="hph-listing-map hph-py-12 hph-bg-gray-50">
-            <div class="hph-container">
-                <div class="hph-section-header hph-mb-8">
-                    <h2 class="hph-section-title"><?php _e('Location & Neighborhood', 'happy-place-theme'); ?></h2>
+        </div>
+    </section>
+    
+    <!-- Main Content Area -->
+    <section class="hph-listing-content hph-py-3xl">
+        <div class="hph-container">
+            <div class="hph-content-grid hph-grid hph-grid-cols-1 hph-lg:hph-grid-cols-[1fr_380px] hph-gap-3xl">
+                
+                <!-- Main Body Content -->
+                <div class="hph-main-body">
+                    
+                    <!-- Include main body template part for all property details -->
+                    <?php get_template_part('template-parts/listing/main-body', null, ['listing_id' => $listing_id]); ?>
+                    
                 </div>
                 
-                <?php
-                hph_component('listing-map', [
-                    'listing_data' => $listing_data,
-                    'show_address' => false, // Don't show exact address for privacy
-                    'show_nearby' => true,
-                    'height' => '400px'
-                ]);
-                ?>
-            </div>
-        </section>
-        <?php endif; ?>
-        
-        <!-- Schedule Showing -->
-        <section class="hph-schedule-showing hph-py-12">
-            <div class="hph-container">
-                <div class="hph-text-center hph-mb-8">
-                    <h2 class="hph-section-title"><?php _e('Schedule a Showing', 'happy-place-theme'); ?></h2>
-                    <p class="hph-section-subtitle">
-                        <?php _e('Ready to see this property in person? Schedule a showing today.', 'happy-place-theme'); ?>
-                    </p>
-                </div>
+                <!-- Sidebar -->
+                <aside class="hph-listing-sidebar hph-lg:hph-sticky hph-lg:hph-top-24">
+                    
+                    <!-- Agent Sidebar -->
+                    <?php get_template_part('template-parts/listing/sidebar-agent', null, ['listing_id' => $listing_id]); ?>
+                    
+                    <!-- Open Houses Widget -->
+                    <?php get_template_part('template-parts/listing/sidebar-open-houses', null, ['listing_id' => $listing_id]); ?>
+                    
+                    <!-- Mortgage Calculator Widget -->
+                    <?php get_template_part('template-parts/listing/sidebar-mortgage-calculator', null, ['listing_id' => $listing_id]); ?>
+                    
+                </aside>
                 
-                <div class="hph-max-w-lg hph-mx-auto">
-                    <?php
-                    hph_component('schedule-showing-form', [
-                        'listing_id' => $listing_id,
-                        'agent_data' => $agent_data
-                    ]);
-                    ?>
-                </div>
             </div>
-        </section>
-        
-    </div>
+        </div>
+    </section>
     
-</div>
-
-<?php
-// Helper function to get similar listings
-function hph_get_similar_listings($listing_id, $limit = 3) {
-    $current_listing = hpt_get_listing($listing_id);
-    if (!$current_listing) {
-        return [];
-    }
+    <!-- Full Width Gallery (Hidden by default, shown via JavaScript) -->
+    <?php get_template_part('template-parts/listing/gallery', null, [
+        'listing_id' => $listing_id,
+        'style' => 'grid',
+        'columns' => 3,
+        'show_thumbnails' => true,
+        'lightbox' => true,
+        'show_count' => true
+    ]); ?>
     
-    // Build query for similar listings
-    $args = [
-        'post_type' => 'listing',
-        'posts_per_page' => $limit,
-        'post__not_in' => [$listing_id],
-        'post_status' => 'publish',
-        'meta_query' => ['relation' => 'AND']
-    ];
-    
-    // Similar price range (±20%)
-    if (!empty($current_listing['price'])) {
-        $price_min = $current_listing['price'] * 0.8;
-        $price_max = $current_listing['price'] * 1.2;
-        
-        $args['meta_query'][] = [
-            'key' => '_listing_price',
-            'value' => [$price_min, $price_max],
-            'compare' => 'BETWEEN',
-            'type' => 'NUMERIC'
-        ];
-    }
-    
-    // Similar bedrooms
-    if (!empty($current_listing['bedrooms'])) {
-        $args['meta_query'][] = [
-            'key' => '_listing_bedrooms',
-            'value' => [$current_listing['bedrooms'] - 1, $current_listing['bedrooms'] + 1],
-            'compare' => 'BETWEEN',
-            'type' => 'NUMERIC'
-        ];
-    }
-    
-    // Same property type
-    if (!empty($current_listing['property_type'])) {
-        $args['tax_query'] = [
-            [
-                'taxonomy' => 'property_type',
-                'field' => 'slug',
-                'terms' => $current_listing['property_type']['slug']
-            ]
-        ];
-    }
-    
-    $similar_query = new WP_Query($args);
-    $similar_listings = [];
-    
-    if ($similar_query->have_posts()) {
-        while ($similar_query->have_posts()) {
-            $similar_query->the_post();
-            $similar_listings[] = get_post();
+    <!-- Map Section -->
+    <?php 
+    $coordinates = null;
+    if (function_exists('hpt_get_listing_coordinates')) {
+        try {
+            $coordinates = hpt_get_listing_coordinates($listing_id);
+        } catch (Exception $e) {
+            $lat = get_field('latitude', $listing_id);
+            $lng = get_field('longitude', $listing_id);
+            $coordinates = ($lat && $lng) ? ['lat' => $lat, 'lng' => $lng] : null;
         }
-        wp_reset_postdata();
+    } else {
+        $lat = get_field('latitude', $listing_id);
+        $lng = get_field('longitude', $listing_id);
+        $coordinates = ($lat && $lng) ? ['lat' => $lat, 'lng' => $lng] : null;
     }
     
-    return $similar_listings;
-}
+    if ($coordinates && $coordinates['lat'] && $coordinates['lng']) : ?>
+        <?php get_template_part('template-parts/listing/map-section', null, ['listing_id' => $listing_id]); ?>
+    <?php endif; ?>
+    
+    <!-- Neighborhood Section -->
+    <?php get_template_part('template-parts/listing/neighborhood-section', null, ['listing_id' => $listing_id]); ?>
+    
+    <!-- Virtual Tour Section -->
+    <?php 
+    $virtual_tour_url = get_field('virtual_tour_url', $listing_id);
+    $video_tour_url = get_field('video_tour_url', $listing_id);
+    
+    if ($virtual_tour_url || $video_tour_url) : ?>
+        <?php get_template_part('template-parts/listing/virtual-tour', null, ['listing_id' => $listing_id]); ?>
+    <?php endif; ?>
+    
+    <!-- Similar Listings -->
+    <?php get_template_part('template-parts/listing/similar-listings', null, [
+        'listing_id' => $listing_id
+    ]); ?>
+    
+    <?php endwhile; ?>
+    
+</main>
 
-// Enqueue page-specific assets
-wp_enqueue_style('hph-single-listing', HPH_THEME_URI . '/assets/css/framework/05-pages/hph-single-listing.css', ['hph-framework'], HPH_VERSION);
-wp_enqueue_script('hph-single-listing', HPH_THEME_URI . '/assets/js/pages/single-listing.js', ['hph-framework-core'], HPH_VERSION, true);
-
-// Enqueue gallery and lightbox assets
-wp_enqueue_script('hph-listing-gallery', HPH_THEME_URI . '/assets/js/components/listing/listing-gallery.js', ['hph-framework-core'], HPH_VERSION, true);
-
-// Localize script with listing context
-wp_localize_script('hph-single-listing', 'hphListing', [
-    'ajaxUrl' => admin_url('admin-ajax.php'),
-    'nonce' => wp_create_nonce('hph_listing_nonce'),
-    'listingId' => $listing_id,
-    'listingPrice' => $listing_data['price'] ?? 0,
-    'listingAddress' => $listing_data['address'] ?? '',
-    'agentId' => $agent_data['id'] ?? null,
-    'isLoggedIn' => is_user_logged_in(),
-    'userId' => get_current_user_id(),
-    'hasVirtualTour' => !empty($listing_data['virtual_tour']),
-    'hasFloorPlans' => !empty($listing_data['floor_plans']),
-    'strings' => [
-        'loading' => __('Loading...', 'happy-place-theme'),
-        'contactAgent' => __('Contact Agent', 'happy-place-theme'),
-        'scheduleShowing' => __('Schedule Showing', 'happy-place-theme'),
-        'addToFavorites' => __('Add to Favorites', 'happy-place-theme'),
-        'removeFromFavorites' => __('Remove from Favorites', 'happy-place-theme'),
-        'shareProperty' => __('Share Property', 'happy-place-theme'),
-        'printProperty' => __('Print Details', 'happy-place-theme'),
-        'error' => __('An error occurred. Please try again.', 'happy-place-theme'),
-        'showingRequested' => __('Showing request sent successfully!', 'happy-place-theme'),
-        'loginRequired' => __('Please log in to save favorites.', 'happy-place-theme')
-    ]
-]);
-
-get_footer();
-?>
+<?php get_footer(); ?>

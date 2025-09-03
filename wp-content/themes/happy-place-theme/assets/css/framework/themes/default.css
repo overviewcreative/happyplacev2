@@ -1,0 +1,7 @@
+/* Default Theme */
+:root {
+  /* Theme-specific overrides can go here */
+  --hph-theme: 'default';
+}
+
+/* Light theme is the default, defined in core/variables.css */

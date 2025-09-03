@@ -92,7 +92,7 @@ class PostTypes {
                 'show_ui' => true,
                 'show_in_menu' => true,
                 'query_var' => true,
-                'rewrite' => ['slug' => 'properties', 'with_front' => false],
+                'rewrite' => ['slug' => 'listings', 'with_front' => false],
                 'capability_type' => 'post',
                 'has_archive' => true,
                 'hierarchical' => false,
@@ -119,6 +119,23 @@ class PostTypes {
                 'show_in_rest' => true,
                 'rest_base' => 'agents',
             ],
+            'staff' => [
+                'labels' => $this->get_staff_labels(),
+                'public' => true,
+                'publicly_queryable' => true,
+                'show_ui' => true,
+                'show_in_menu' => true,
+                'query_var' => true,
+                'rewrite' => ['slug' => 'staff', 'with_front' => false],
+                'capability_type' => 'post',
+                'has_archive' => true,
+                'hierarchical' => false,
+                'menu_position' => 7,
+                'menu_icon' => 'dashicons-admin-users',
+                'supports' => ['title', 'editor', 'thumbnail'],
+                'show_in_rest' => true,
+                'rest_base' => 'staff',
+            ],
             'open_house' => [
                 'labels' => $this->get_open_house_labels(),
                 'public' => true,
@@ -130,7 +147,7 @@ class PostTypes {
                 'capability_type' => 'post',
                 'has_archive' => true,
                 'hierarchical' => false,
-                'menu_position' => 7,
+                'menu_position' => 8,
                 'menu_icon' => 'dashicons-calendar-alt',
                 'supports' => ['title', 'editor', 'thumbnail', 'custom-fields'],
                 'show_in_rest' => true,
@@ -147,7 +164,7 @@ class PostTypes {
                 'capability_type' => 'post',
                 'has_archive' => true,
                 'hierarchical' => false,
-                'menu_position' => 8,
+                'menu_position' => 9,
                 'menu_icon' => 'dashicons-admin-multisite',
                 'supports' => ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'],
                 'show_in_rest' => true,
@@ -164,7 +181,7 @@ class PostTypes {
                 'capability_type' => 'post',
                 'has_archive' => false,
                 'hierarchical' => false,
-                'menu_position' => 9,
+                'menu_position' => 10,
                 'menu_icon' => 'dashicons-groups',
                 'supports' => ['title', 'custom-fields'],
                 'show_in_rest' => true,
@@ -181,7 +198,7 @@ class PostTypes {
                 'capability_type' => 'post',
                 'has_archive' => false,
                 'hierarchical' => false,
-                'menu_position' => 10,
+                'menu_position' => 11,
                 'menu_icon' => 'dashicons-money-alt',
                 'supports' => ['title', 'editor', 'custom-fields'],
                 'show_in_rest' => true,
@@ -260,6 +277,28 @@ class PostTypes {
             'all_items' => __('All Agents', 'happy-place'),
             'menu_name' => __('Agents', 'happy-place'),
             'name_admin_bar' => __('Agent', 'happy-place'),
+        ];
+    }
+    
+    /**
+     * Get staff labels
+     */
+    private function get_staff_labels(): array {
+        return [
+            'name' => __('Staff', 'happy-place'),
+            'singular_name' => __('Staff Member', 'happy-place'),
+            'add_new' => __('Add New', 'happy-place'),
+            'add_new_item' => __('Add New Staff Member', 'happy-place'),
+            'edit_item' => __('Edit Staff Member', 'happy-place'),
+            'new_item' => __('New Staff Member', 'happy-place'),
+            'view_item' => __('View Staff Member', 'happy-place'),
+            'view_items' => __('View Staff', 'happy-place'),
+            'search_items' => __('Search Staff', 'happy-place'),
+            'not_found' => __('No staff found', 'happy-place'),
+            'not_found_in_trash' => __('No staff found in Trash', 'happy-place'),
+            'all_items' => __('All Staff', 'happy-place'),
+            'menu_name' => __('Staff', 'happy-place'),
+            'name_admin_bar' => __('Staff', 'happy-place'),
         ];
     }
     

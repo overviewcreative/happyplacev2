@@ -1,0 +1,732 @@
+/* ================================================
+   BUTTON COMPONENTS
+   Modern Button Styles and Variants
+   ================================================ */
+
+/* ================================================
+   BASE BUTTON
+   ================================================ */
+.hph-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--hph-gap-lg);
+  padding: var(--hph-btn-padding-y) var(--hph-btn-padding-x);
+  font-size: var(--hph-text-base);
+  font-weight: var(--hph-btn-font-weight);
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid transparent;
+  border-radius: var(--hph-btn-radius);
+  transition: var(--hph-transition);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.hph-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(81, 186, 224, 0.25);
+}
+
+.hph-btn:disabled,
+.hph-btn.is-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Button Icon */
+.hph-btn-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+}
+
+/* Icon Only Button */
+.hph-btn-icon-only {
+  padding: var(--hph-btn-padding-y);
+  aspect-ratio: 1;
+}
+
+/* ================================================
+   BUTTON VARIANTS
+   ================================================ */
+
+/* Primary Button - Modern Glass Morphism */
+.hph-btn-primary {
+  background: linear-gradient(135deg, var(--hph-primary-400) 0%, var(--hph-primary-600) 100%);
+  border-color: transparent;
+  color: var(--hph-white);
+  box-shadow: 0 4px 15px rgba(81, 186, 224, 0.3);
+  font-weight: 600;
+  letter-spacing: 0.025em;
+}
+
+.hph-btn-primary:hover {
+  background: linear-gradient(135deg, var(--hph-primary-500) 0%, var(--hph-primary-700) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(81, 186, 224, 0.4);
+}
+
+.hph-btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(81, 186, 224, 0.3);
+}
+
+/* Secondary Button */
+.hph-btn-secondary {
+  background: var(--hph-primary-600);
+  border-color: var(--hph-primary-600);
+  color: var(--hph-white);
+}
+
+.hph-btn-secondary:hover {
+  background: var(--hph-primary-700);
+  border-color: var(--hph-primary-700);
+  transform: translateY(-2px);
+  box-shadow: var(--hph-shadow-lg);
+}
+
+/* Light Button */
+.hph-btn-light {
+  background: var(--hph-white);
+  border-color: var(--hph-border-color);
+  color: var(--hph-gray-700);
+}
+
+.hph-btn-light:hover {
+  background: var(--hph-gray-50);
+  border-color: var(--hph-gray-300);
+  transform: translateY(-1px);
+  box-shadow: var(--hph-shadow-md);
+}
+
+/* Dark Button */
+.hph-btn-dark {
+  background: var(--hph-gray-900);
+  border-color: var(--hph-gray-900);
+  color: var(--hph-white);
+}
+
+.hph-btn-dark:hover {
+  background: var(--hph-gray-800);
+  border-color: var(--hph-gray-800);
+  transform: translateY(-2px);
+  box-shadow: var(--hph-shadow-lg);
+}
+
+/* Ghost Button */
+.hph-btn-ghost {
+  background: transparent;
+  border-color: var(--hph-border-color);
+  color: var(--hph-gray-700);
+}
+
+.hph-btn-ghost:hover {
+  background: var(--hph-gray-50);
+  border-color: var(--hph-gray-400);
+}
+
+/* Outline Buttons */
+.hph-btn-outline-primary {
+  background: transparent;
+  border-color: var(--hph-primary);
+  color: var(--hph-primary);
+}
+
+.hph-btn-outline-primary:hover {
+  background: var(--hph-primary);
+  border-color: var(--hph-primary);
+  color: var(--hph-white);
+}
+
+.hph-btn-outline-secondary {
+  background: transparent;
+  border-color: var(--hph-primary-600);
+  color: var(--hph-primary-600);
+}
+
+.hph-btn-outline-secondary:hover {
+  background: var(--hph-primary-600);
+  border-color: var(--hph-primary-600);
+  color: var(--hph-white);
+}
+
+.hph-btn-outline-light {
+  background: transparent;
+  border-color: var(--hph-white);
+  color: var(--hph-white);
+}
+
+.hph-btn-outline-light:hover {
+  background: var(--hph-white);
+  border-color: var(--hph-white);
+  color: var(--hph-gray-900);
+}
+
+/* Text Button (No Border) */
+.hph-btn-text {
+  background: transparent;
+  border-color: transparent;
+  color: var(--hph-primary);
+  padding: var(--hph-padding-xs) var(--hph-padding-sm);
+}
+
+.hph-btn-text:hover {
+  background: var(--hph-primary-50);
+  color: var(--hph-primary-dark);
+}
+
+/* ================================================
+   SEMANTIC BUTTONS
+   ================================================ */
+.hph-btn-success {
+  background: var(--hph-success);
+  border-color: var(--hph-success);
+  color: var(--hph-white);
+}
+
+.hph-btn-success:hover {
+  background: var(--hph-success-dark);
+  border-color: var(--hph-success-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--hph-shadow-lg);
+}
+
+.hph-btn-warning {
+  background: var(--hph-warning);
+  border-color: var(--hph-warning);
+  color: var(--hph-white);
+}
+
+.hph-btn-warning:hover {
+  background: var(--hph-warning-dark);
+  border-color: var(--hph-warning-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--hph-shadow-lg);
+}
+
+.hph-btn-danger {
+  background: var(--hph-danger);
+  border-color: var(--hph-danger);
+  color: var(--hph-white);
+}
+
+.hph-btn-danger:hover {
+  background: var(--hph-danger-dark);
+  border-color: var(--hph-danger-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--hph-shadow-lg);
+}
+
+.hph-btn-info {
+  background: var(--hph-info);
+  border-color: var(--hph-info);
+  color: var(--hph-white);
+}
+
+.hph-btn-info:hover {
+  background: var(--hph-info-dark);
+  border-color: var(--hph-info-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--hph-shadow-lg);
+}
+
+/* ================================================
+   BUTTON SIZES
+   ================================================ */
+.hph-btn-xs {
+  padding: var(--hph-padding-xs) var(--hph-padding-sm);
+  font-size: var(--hph-text-xs);
+  border-radius: var(--hph-radius-sm);
+}
+
+.hph-btn-sm {
+  padding: var(--hph-padding-xs) var(--hph-padding-md);
+  font-size: var(--hph-text-sm);
+}
+
+.hph-btn-lg {
+  padding: var(--hph-padding-sm) var(--hph-padding-lg);
+  font-size: var(--hph-text-lg);
+  border-radius: var(--hph-radius-lg);
+}
+
+.hph-btn-xl {
+  padding: var(--hph-padding-md) var(--hph-padding-xl);
+  font-size: var(--hph-text-xl);
+  border-radius: var(--hph-radius-lg);
+}
+
+/* ================================================
+   BUTTON SHAPES
+   ================================================ */
+.hph-btn-rounded {
+  border-radius: var(--hph-radius-full);
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.hph-btn-square {
+  border-radius: 0;
+}
+
+.hph-btn-pill {
+  border-radius: 50rem;
+  padding-left: 1.75rem;
+  padding-right: 1.75rem;
+}
+
+/* ================================================
+   BUTTON STATES
+   ================================================ */
+.hph-btn-loading {
+  color: transparent;
+  pointer-events: none;
+}
+
+.hph-btn-loading::after {
+  content: "";
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  margin: auto;
+  inset: 0;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  color: var(--hph-white);
+}
+
+.hph-btn-loading.hph-btn-light::after,
+.hph-btn-loading.hph-btn-outline-primary::after,
+.hph-btn-loading.hph-btn-outline-secondary::after,
+.hph-btn-loading.hph-btn-ghost::after,
+.hph-btn-loading.hph-btn-text::after {
+  color: var(--hph-primary);
+}
+
+/* Pulse Animation for CTAs */
+.hph-btn-pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(81, 186, 224, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(81, 186, 224, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(81, 186, 224, 0);
+  }
+}
+
+/* ================================================
+   BUTTON GROUPS
+   ================================================ */
+.hph-btn-group {
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.hph-btn-group > .hph-btn {
+  position: relative;
+  flex: 0 1 auto;
+  margin: 0;
+}
+
+.hph-btn-group > .hph-btn:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  margin-left: -1px;
+}
+
+.hph-btn-group > .hph-btn:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.hph-btn-group > .hph-btn:hover,
+.hph-btn-group > .hph-btn:focus,
+.hph-btn-group > .hph-btn:active,
+.hph-btn-group > .hph-btn.is-active {
+  z-index: 1;
+}
+
+/* Vertical Button Group */
+.hph-btn-group-vertical {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.hph-btn-group-vertical > .hph-btn {
+  width: 100%;
+}
+
+.hph-btn-group-vertical > .hph-btn:not(:first-child) {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  margin-top: -1px;
+  margin-left: 0;
+}
+
+.hph-btn-group-vertical > .hph-btn:not(:last-child) {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* ================================================
+   BUTTON BLOCK
+   ================================================ */
+.hph-btn-block {
+  display: flex;
+  width: 100%;
+}
+
+/* ================================================
+   SPECIAL BUTTONS
+   ================================================ */
+
+/* Floating Action Button */
+.hph-btn-fab {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  padding: 0;
+  border-radius: var(--hph-radius-full);
+  box-shadow: var(--hph-shadow-xl);
+  z-index: var(--hph-z-fixed);
+}
+
+.hph-btn-fab:hover {
+  transform: scale(1.1);
+  box-shadow: var(--hph-shadow-2xl);
+}
+
+.hph-btn-fab .hph-btn-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Social Buttons */
+.hph-btn-facebook {
+  background: #1877f2;
+  border-color: #1877f2;
+  color: var(--hph-white);
+}
+
+.hph-btn-facebook:hover {
+  background: #166fe5;
+  border-color: #166fe5;
+}
+
+.hph-btn-twitter {
+  background: #1da1f2;
+  border-color: #1da1f2;
+  color: var(--hph-white);
+}
+
+.hph-btn-twitter:hover {
+  background: #1a91da;
+  border-color: #1a91da;
+}
+
+.hph-btn-google {
+  background: #ea4335;
+  border-color: #ea4335;
+  color: var(--hph-white);
+}
+
+.hph-btn-google:hover {
+  background: #d33b2c;
+  border-color: #d33b2c;
+}
+
+.hph-btn-linkedin {
+  background: #0077b5;
+  border-color: #0077b5;
+  color: var(--hph-white);
+}
+
+.hph-btn-linkedin:hover {
+  background: #006097;
+  border-color: #006097;
+}
+
+/* Call to Action Buttons */
+.hph-btn-cta {
+  background: linear-gradient(135deg, var(--hph-primary) 0%, var(--hph-primary-dark) 100%);
+  border: none;
+  color: var(--hph-white);
+  font-weight: 600;
+  padding: var(--hph-padding-sm) var(--hph-padding-xl);
+  box-shadow: var(--hph-shadow-lg);
+}
+
+.hph-btn-cta:hover {
+  background: linear-gradient(135deg, var(--hph-primary-dark) 0%, var(--hph-primary-800) 100%);
+  transform: translateY(-3px);
+  box-shadow: var(--hph-shadow-xl);
+}
+
+/* Real Estate Specific Buttons */
+.hph-btn-schedule-showing {
+  background: var(--hph-success);
+  border-color: var(--hph-success);
+  color: var(--hph-white);
+}
+
+.hph-btn-schedule-showing:hover {
+  background: var(--hph-success-dark);
+  border-color: var(--hph-success-dark);
+}
+
+.hph-btn-virtual-tour {
+  background: var(--hph-primary);
+  border-color: var(--hph-primary);
+  color: var(--hph-white);
+}
+
+.hph-btn-contact-agent {
+  background: var(--hph-primary);
+  border-color: var(--hph-primary);
+  color: var(--hph-white);
+}
+
+.hph-btn-save-listing {
+  background: transparent;
+  border-color: var(--hph-border-color);
+  color: var(--hph-gray-700);
+}
+
+.hph-btn-save-listing:hover {
+  background: var(--hph-danger-light);
+  border-color: var(--hph-danger-light);
+  color: var(--hph-white);
+}
+
+.hph-btn-save-listing.is-saved {
+  background: var(--hph-danger);
+  border-color: var(--hph-danger);
+  color: var(--hph-white);
+}
+
+/* ================================================
+   RESPONSIVE
+   ================================================ */
+@media (max-width: 640px) {
+  .hph-btn-group {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .hph-btn-group > .hph-btn {
+    width: 100%;
+    border-radius: var(--hph-btn-radius);
+    margin-left: 0;
+    margin-top: -1px;
+  }
+  
+  .hph-btn-group > .hph-btn:first-child {
+    margin-top: 0;
+  }
+}
+
+/* ================================================
+   HERO BUTTON VARIATIONS FROM FEATURES
+   ================================================ */
+
+/* Hero Button Base Class */
+.hph-hero-btn {
+    font-weight: var(--hph-btn-font-weight);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--hph-radius-lg);
+    transition: all 300ms ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* White Button */
+.hph-btn-white {
+    background-color: var(--hph-white);
+    color: var(--hph-primary);
+    border: 2px solid var(--hph-white);
+}
+
+.hph-btn-white:hover {
+    background-color: transparent;
+    color: var(--hph-white);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Outline White Button */
+.hph-btn-outline-white {
+    background-color: transparent;
+    color: var(--hph-white);
+    border: 2px solid var(--hph-white);
+}
+
+.hph-btn-outline-white:hover {
+    background-color: var(--hph-white);
+    color: var(--hph-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(255, 255, 255, 0.2);
+}
+
+/* Enhanced Primary Button */
+.hph-btn-primary-enhanced {
+    background-color: var(--hph-primary);
+    color: var(--hph-white);
+    border: 2px solid var(--hph-primary);
+}
+
+.hph-btn-primary-enhanced:hover {
+    background-color: var(--hph-primary-dark);
+    border-color: var(--hph-primary-dark);
+    transform: translateY(-2px);
+}
+
+/* Enhanced Button Sizes */
+.hph-btn-s {
+    padding: var(--hph-space-sm) var(--hph-space-md);
+    font-size: var(--hph-text-sm);
+}
+
+.hph-btn-m {
+    padding: var(--hph-space-md) var(--hph-space-lg);
+    font-size: var(--hph-text-base);
+}
+
+.hph-btn-l {
+    padding: var(--hph-space-md) var(--hph-space-xl);
+    font-size: var(--hph-text-base);
+}
+
+.hph-btn-xl {
+    padding: var(--hph-space-lg) var(--hph-space-2xl);
+    font-size: var(--hph-text-lg);
+}
+
+/* ================================================
+   HERO BUTTON VARIANTS FROM LISTING-HERO.CSS
+   Enhanced button styles with backdrop filters
+   ================================================ */
+.hph-hero__btn {
+  padding: 0.75rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  backdrop-filter: blur(12px);
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  white-space: nowrap;
+  color: var(--hph-white);
+}
+
+.hph-hero__btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.hph-hero__btn:active {
+  transform: translateY(0);
+}
+
+.hph-hero__btn:focus {
+  outline: 2px solid var(--hph-primary);
+  outline-offset: 2px;
+}
+
+.hph-hero__btn:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.hph-hero__btn i {
+  font-size: 0.875rem;
+}
+
+/* Hero Primary Button */
+.hph-hero__btn--primary {
+  background: linear-gradient(135deg, var(--hph-primary), var(--hph-primary-dark));
+  color: var(--hph-white);
+  box-shadow: 0 4px 14px rgba(81, 186, 224, 0.3);
+}
+
+.hph-hero__btn--primary:hover {
+  background: linear-gradient(135deg, var(--hph-primary-dark), var(--hph-primary));
+  box-shadow: 0 8px 25px rgba(81, 186, 224, 0.4);
+}
+
+/* Hero Secondary Button */
+.hph-hero__btn--secondary {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--hph-white);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.hph-hero__btn--secondary:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Hero Icon Button */
+.hph-hero__btn--icon {
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--hph-white);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.hph-hero__btn--icon:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.hph-hero__btn--icon.is-favorite {
+  background: linear-gradient(135deg, var(--hph-danger), rgba(220, 38, 38, 0.8));
+}
+
+.hph-hero__btn--icon.is-favorite:hover {
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.9), var(--hph-danger));
+}
+
+/* Responsive Hero Button Styles */
+@media (max-width: 768px) {
+  .hph-hero__btn {
+    padding: 0.75rem 1rem;
+    width: 100%;
+  }
+  
+  .hph-hero__btn--icon {
+    width: 100%;
+    height: auto;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+  }
+}
+
+/* File Location: /wp-content/themes/happy-place/assets/css/framework/components/buttons.css */

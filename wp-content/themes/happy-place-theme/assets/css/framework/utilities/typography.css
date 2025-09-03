@@ -1,0 +1,40 @@
+/* Typography Utilities */
+
+/* Font Weight */
+.hph-font-bold { font-weight: 700; }
+.hph-font-semibold { font-weight: 600; }
+.hph-font-medium { font-weight: 500; }
+.hph-font-normal { font-weight: 400; }
+.hph-font-light { font-weight: 300; }
+
+/* Font Size */
+.hph-text-xs { font-size: var(--hph-text-xs); }
+.hph-text-sm { font-size: var(--hph-text-sm); }
+.hph-text-base { font-size: var(--hph-text-base); }
+.hph-text-lg { font-size: var(--hph-text-lg); }
+.hph-text-xl { font-size: var(--hph-text-xl); }
+.hph-text-2xl { font-size: var(--hph-text-2xl); }
+.hph-text-3xl { font-size: var(--hph-text-3xl); }
+.hph-text-4xl { font-size: var(--hph-text-4xl); }
+.hph-text-5xl { font-size: var(--hph-text-5xl); }
+.hph-text-6xl { font-size: var(--hph-text-6xl, 3.75rem); }
+
+/* Text Alignment */
+.hph-text-left { text-align: left; }
+.hph-text-center { text-align: center; }
+.hph-text-right { text-align: right; }
+.hph-text-justify { text-align: justify; }
+
+/* Text Transform */
+.hph-uppercase { text-transform: uppercase; }
+.hph-lowercase { text-transform: lowercase; }
+.hph-capitalize { text-transform: capitalize; }
+.hph-normal-case { text-transform: none; }
+
+/* Line Height */
+.hph-leading-none { line-height: 1; }
+.hph-leading-tight { line-height: 1.25; }
+.hph-leading-snug { line-height: 1.375; }
+.hph-leading-normal { line-height: 1.5; }
+.hph-leading-relaxed { line-height: 1.625; }
+.hph-leading-loose { line-height: 2; }

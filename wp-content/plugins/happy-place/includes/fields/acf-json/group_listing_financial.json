@@ -105,7 +105,7 @@
             "required": false,
             "conditional_logic": false,
             "wrapper": {
-                "width": "50",
+                "width": "33",
                 "class": "",
                 "id": ""
             },
@@ -113,6 +113,48 @@
             "append": "\/month",
             "min": 0,
             "step": 25,
+            "default_value": "",
+            "max": "",
+            "placeholder": ""
+        },
+        {
+            "key": "field_tax_id",
+            "label": "Tax ID / Parcel Number",
+            "name": "tax_id",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Property tax identification number",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "maxlength": 50,
+            "placeholder": "123-45.67-89.10",
+            "default_value": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_price_per_sqft",
+            "label": "Price per Sq Ft",
+            "name": "price_per_sqft",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Calculated price per square foot",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "34",
+                "class": "",
+                "id": ""
+            },
+            "prepend": "$",
+            "append": "\/sq ft",
+            "min": 0,
+            "step": 0.01,
             "default_value": "",
             "max": "",
             "placeholder": ""

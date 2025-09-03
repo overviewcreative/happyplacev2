@@ -1,0 +1,31 @@
+/* HPH CSS Framework v2.0 - Atomic Design Architecture */
+/* Load order: Core → Base → Components → Layout → Features → Utilities */
+
+/* 1. Core Foundation */
+@import url('core/index.css');
+
+/* 2. Base HTML Elements */  
+@import url('base/index.css');
+
+/* 3. Components (Atomic Design) */
+@import url('components/atoms/index.css');
+@import url('components/molecules/index.css');
+@import url('components/organisms/index.css');
+
+/* 4. Layout Systems */
+@import url('layout/index.css');
+
+/* 5. Feature Modules */
+@import url('features/listing/index.css');
+@import url('features/agent/index.css'); 
+@import url('features/dashboard/index.css');
+@import url('features/marketing/index.css');
+
+/* 6. Utilities */
+@import url('utilities/index.css');
+
+/* 7. Themes */
+@import url('themes/default.css');
+
+/* 8. Vendor Overrides */
+@import url('vendor/wordpress.css');

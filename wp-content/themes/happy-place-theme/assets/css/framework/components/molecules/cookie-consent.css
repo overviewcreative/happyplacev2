@@ -1,0 +1,122 @@
+/**
+ * Cookie Consent Modal Styles
+ * 
+ * @package HappyPlaceTheme
+ */
+
+.hph-cookie-consent {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background: var(--hph-white);
+    border-top: 1px solid var(--hph-gray-200);
+    box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1), 0 -2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: var(--hph-padding-lg);
+    transform: translateY(100%);
+    transition: transform 0.3s ease-in-out;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.hph-cookie-consent.visible {
+    transform: translateY(0);
+}
+
+.hph-cookie-consent-content {
+    max-width: var(--hph-container-xl);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--hph-gap-lg);
+}
+
+.hph-cookie-consent-content p {
+    margin: 0;
+    color: var(--hph-text-color);
+    font-size: var(--hph-text-base);
+    line-height: var(--hph-leading-relaxed);
+    flex: 1;
+}
+
+.hph-cookie-consent-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--hph-gap-md);
+    flex-shrink: 0;
+}
+
+.hph-cookie-consent .hph-btn {
+    white-space: nowrap;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .hph-cookie-consent {
+        padding: var(--hph-padding-md);
+    }
+    
+    .hph-cookie-consent-content {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+        gap: var(--hph-gap-md);
+    }
+    
+    .hph-cookie-consent-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .hph-cookie-consent .hph-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Dark theme support */
+.hph-theme-dark .hph-cookie-consent,
+[data-theme="dark"] .hph-cookie-consent {
+    background: var(--hph-gray-800);
+    border-top-color: var(--hph-gray-700);
+}
+
+.hph-theme-dark .hph-cookie-consent-content p,
+[data-theme="dark"] .hph-cookie-consent-content p {
+    color: var(--hph-gray-100);
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .hph-cookie-consent {
+        border-top-width: 2px;
+        border-top-color: var(--hph-gray-900);
+    }
+}
+
+/* Animation variants */
+.hph-cookie-consent.slide-up {
+    transform: translateY(100%);
+}
+
+.hph-cookie-consent.slide-up.visible {
+    transform: translateY(0);
+}
+
+.hph-cookie-consent.fade-in {
+    opacity: 0;
+    transform: none;
+}
+
+.hph-cookie-consent.fade-in.visible {
+    opacity: 1;
+}
+
+/* Print styles */
+@media print {
+    .hph-cookie-consent {
+        display: none !important;
+    }
+}

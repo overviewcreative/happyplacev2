@@ -1,0 +1,349 @@
+/**
+ * Countdown Timer Component CSS - Production Styles
+ * Extracted from mature CTA sections countdown styles
+ * 
+ * @package HappyPlaceTheme
+ */
+
+/* ================================================
+   COUNTDOWN TIMER BASE
+   ================================================ */
+.hph-countdown {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.hph-countdown-label {
+    font-size: var(--hph-text-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+    opacity: 0.8;
+}
+
+.hph-countdown-timer {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ================================================
+   COUNTDOWN UNITS
+   ================================================ */
+.hph-countdown-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.hph-countdown-value {
+    display: block;
+    font-size: var(--hph-text-2xl);
+    font-weight: 800;
+    line-height: 1;
+    color: var(--hph-primary);
+    background: var(--hph-white);
+    padding: 0.75rem 1rem;
+    border-radius: var(--hph-radius-md);
+    box-shadow: var(--hph-shadow-sm);
+    min-width: 3rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.hph-countdown-unit-label {
+    font-size: var(--hph-text-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 0.5rem;
+    opacity: 0.7;
+}
+
+/* ================================================
+   COUNTDOWN SEPARATORS
+   ================================================ */
+.hph-countdown-separator {
+    font-size: var(--hph-text-2xl);
+    font-weight: 800;
+    color: var(--hph-primary);
+    opacity: 0.6;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 0.6; }
+    51%, 100% { opacity: 0.2; }
+}
+
+/* ================================================
+   COUNTDOWN THEMES
+   ================================================ */
+
+/* Dark Theme */
+.hph-countdown--dark .hph-countdown-value,
+.hph-cta--dark .hph-countdown-value,
+.hph-cta--gradient .hph-countdown-value,
+.hph-cta--primary .hph-countdown-value {
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--hph-primary);
+}
+
+.hph-countdown--dark .hph-countdown-separator,
+.hph-cta--dark .hph-countdown-separator,
+.hph-cta--gradient .hph-countdown-separator,
+.hph-cta--primary .hph-countdown-separator {
+    color: var(--hph-white);
+}
+
+/* Light Theme */
+.hph-countdown--light .hph-countdown-value {
+    background: var(--hph-gray-50);
+    color: var(--hph-primary);
+    border: 1px solid var(--hph-border-color);
+}
+
+/* Gradient Theme */
+.hph-countdown--gradient .hph-countdown-value {
+    background: linear-gradient(135deg, var(--hph-primary) 0%, var(--hph-primary-dark) 100%);
+    color: var(--hph-white);
+    border: none;
+}
+
+/* ================================================
+   COUNTDOWN SIZES
+   ================================================ */
+.hph-countdown--sm .hph-countdown-value {
+    font-size: var(--hph-text-lg);
+    padding: 0.5rem 0.75rem;
+    min-width: 2.5rem;
+}
+
+.hph-countdown--sm .hph-countdown-separator {
+    font-size: var(--hph-text-lg);
+}
+
+.hph-countdown--lg .hph-countdown-value {
+    font-size: var(--hph-text-3xl);
+    padding: 1rem 1.5rem;
+    min-width: 4rem;
+}
+
+.hph-countdown--lg .hph-countdown-separator {
+    font-size: var(--hph-text-3xl);
+}
+
+/* ================================================
+   COUNTDOWN STYLES
+   ================================================ */
+
+/* Modern Style */
+.hph-countdown--modern .hph-countdown-value {
+    border-radius: var(--hph-radius-lg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Minimal Style */
+.hph-countdown--minimal .hph-countdown-value {
+    background: transparent;
+    box-shadow: none;
+    border-bottom: 2px solid var(--hph-primary);
+    border-radius: 0;
+    padding: 0.5rem 0;
+}
+
+/* Card Style */
+.hph-countdown--card .hph-countdown-value {
+    background: var(--hph-white);
+    border: 1px solid var(--hph-border-color);
+    border-radius: var(--hph-radius-xl);
+    box-shadow: var(--hph-shadow-lg);
+}
+
+/* Neon Style */
+.hph-countdown--neon .hph-countdown-value {
+    background: var(--hph-gray-900);
+    color: var(--hph-primary);
+    box-shadow: 
+        0 0 10px rgba(81, 186, 224, 0.3),
+        inset 0 0 10px rgba(81, 186, 224, 0.1);
+    border: 1px solid var(--hph-primary);
+}
+
+/* ================================================
+   COUNTDOWN ANIMATIONS
+   ================================================ */
+
+/* Pulse Animation */
+.hph-countdown--pulse .hph-countdown-value {
+    animation: countdown-pulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes countdown-pulse {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.05); }
+}
+
+/* Flip Animation */
+.hph-countdown--flip .hph-countdown-value {
+    transform-style: preserve-3d;
+    transition: transform 0.6s ease;
+}
+
+.hph-countdown--flip .hph-countdown-value.flipping {
+    transform: rotateX(90deg);
+}
+
+/* Urgent Animation (when time is running out) */
+.hph-countdown--urgent .hph-countdown-value {
+    animation: countdown-urgent 0.5s ease-in-out infinite alternate;
+    background: var(--hph-danger);
+    color: var(--hph-white);
+}
+
+@keyframes countdown-urgent {
+    0% { 
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    }
+    100% { 
+        transform: scale(1.1);
+        box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+    }
+}
+
+/* ================================================
+   COUNTDOWN LAYOUTS
+   ================================================ */
+
+/* Inline Layout */
+.hph-countdown--inline {
+    flex-direction: row;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.hph-countdown--inline .hph-countdown-timer {
+    gap: 0.5rem;
+}
+
+.hph-countdown--inline .hph-countdown-unit {
+    flex-direction: row;
+    gap: 0.25rem;
+}
+
+/* Compact Layout */
+.hph-countdown--compact .hph-countdown-timer {
+    gap: 0.75rem;
+}
+
+.hph-countdown--compact .hph-countdown-value {
+    font-size: var(--hph-text-lg);
+    padding: 0.5rem;
+    min-width: 2rem;
+}
+
+/* ================================================
+   RESPONSIVE DESIGN
+   ================================================ */
+@media (max-width: 768px) {
+    .hph-countdown-timer {
+        gap: 1rem;
+    }
+    
+    .hph-countdown-value {
+        font-size: var(--hph-text-lg);
+        padding: 0.5rem 0.75rem;
+        min-width: 2.5rem;
+    }
+    
+    .hph-countdown-separator {
+        font-size: var(--hph-text-lg);
+    }
+    
+    .hph-countdown--lg .hph-countdown-value {
+        font-size: var(--hph-text-xl);
+        padding: 0.75rem 1rem;
+        min-width: 3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hph-countdown-timer {
+        gap: 0.75rem;
+    }
+    
+    .hph-countdown-value {
+        font-size: var(--hph-text-base);
+        padding: 0.5rem;
+        min-width: 2.5rem;
+    }
+    
+    .hph-countdown-separator {
+        font-size: var(--hph-text-base);
+    }
+    
+    .hph-countdown-unit-label {
+        font-size: 0.625rem;
+    }
+    
+    /* Stack vertically on very small screens */
+    .hph-countdown--inline {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .hph-countdown--inline .hph-countdown-unit {
+        flex-direction: column;
+    }
+}
+
+/* ================================================
+   COUNTDOWN EXPIRED STATE
+   ================================================ */
+.hph-countdown--expired {
+    opacity: 0.5;
+}
+
+.hph-countdown--expired .hph-countdown-value {
+    background: var(--hph-gray-300);
+    color: var(--hph-gray-600);
+    animation: none;
+}
+
+.hph-countdown--expired .hph-countdown-separator {
+    animation: none;
+    opacity: 0.3;
+}
+
+/* ================================================
+   ACCESSIBILITY
+   ================================================ */
+@media (prefers-reduced-motion: reduce) {
+    .hph-countdown-separator,
+    .hph-countdown--pulse .hph-countdown-value,
+    .hph-countdown--urgent .hph-countdown-value {
+        animation: none;
+    }
+}
+
+/* Screen Reader Text */
+.hph-countdown-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* File Location: /wp-content/themes/happy-place/assets/css/framework/components/molecules/countdown.css */

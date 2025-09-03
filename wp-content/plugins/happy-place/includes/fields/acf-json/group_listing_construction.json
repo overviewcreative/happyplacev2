@@ -1,0 +1,315 @@
+{
+  "key": "group_listing_construction",
+  "title": "Listing - Construction & Systems",
+  "fields": [
+    {
+      "key": "field_builder",
+      "label": "Builder",
+      "name": "builder",
+      "type": "text",
+      "instructions": "Name of the builder/developer",
+      "wrapper": {
+        "width": "50"
+      },
+      "maxlength": 100,
+      "placeholder": "Builder Name"
+    },
+    {
+      "key": "field_roof_type",
+      "label": "Roof Type",
+      "name": "roof_type",
+      "type": "select",
+      "instructions": "Primary roofing material",
+      "wrapper": {
+        "width": "50"
+      },
+      "choices": {
+        "asphalt_shingle": "Asphalt Shingle",
+        "architectural_shingle": "Architectural Shingle",
+        "metal": "Metal",
+        "tile": "Tile",
+        "slate": "Slate",
+        "wood_shake": "Wood Shake",
+        "rubber": "Rubber",
+        "tar_gravel": "Tar & Gravel",
+        "other": "Other"
+      },
+      "allow_null": 1,
+      "ui": 1,
+      "placeholder": "Select roof type..."
+    },
+    {
+      "key": "field_foundation_type",
+      "label": "Foundation",
+      "name": "foundation_type",
+      "type": "select",
+      "instructions": "Foundation type",
+      "wrapper": {
+        "width": "33"
+      },
+      "choices": {
+        "slab": "Slab",
+        "crawl_space": "Crawl Space",
+        "full_basement": "Full Basement",
+        "partial_basement": "Partial Basement",
+        "pier_beam": "Pier & Beam",
+        "block": "Block",
+        "other": "Other"
+      },
+      "allow_null": 1,
+      "ui": 1,
+      "placeholder": "Select foundation..."
+    },
+    {
+      "key": "field_exterior_materials",
+      "label": "Exterior Materials",
+      "name": "exterior_materials",
+      "type": "checkbox",
+      "instructions": "Primary exterior materials",
+      "wrapper": {
+        "width": "33"
+      },
+      "choices": {
+        "brick": "Brick",
+        "vinyl_siding": "Vinyl Siding",
+        "wood_siding": "Wood Siding",
+        "stucco": "Stucco",
+        "stone": "Stone",
+        "fiber_cement": "Fiber Cement",
+        "aluminum": "Aluminum",
+        "concrete": "Concrete",
+        "log": "Log",
+        "other": "Other"
+      },
+      "layout": "vertical"
+    },
+    {
+      "key": "field_flooring_types",
+      "label": "Flooring Types",
+      "name": "flooring_types",
+      "type": "checkbox",
+      "instructions": "Primary flooring materials",
+      "wrapper": {
+        "width": "34"
+      },
+      "choices": {
+        "hardwood": "Hardwood",
+        "laminate": "Laminate",
+        "luxury_vinyl": "Luxury Vinyl Plank",
+        "tile": "Tile",
+        "carpet": "Carpet",
+        "stone": "Stone",
+        "concrete": "Concrete",
+        "bamboo": "Bamboo",
+        "cork": "Cork",
+        "other": "Other"
+      },
+      "layout": "vertical"
+    },
+    {
+      "key": "field_heating_system",
+      "label": "Heating System",
+      "name": "heating_system",
+      "type": "select",
+      "instructions": "Primary heating system",
+      "wrapper": {
+        "width": "25"
+      },
+      "choices": {
+        "central_air": "Central Air",
+        "heat_pump": "Heat Pump",
+        "forced_air": "Forced Air",
+        "baseboard": "Baseboard",
+        "radiant": "Radiant",
+        "wood_stove": "Wood Stove",
+        "fireplace": "Fireplace",
+        "geothermal": "Geothermal",
+        "solar": "Solar",
+        "none": "None",
+        "other": "Other"
+      },
+      "allow_null": 1,
+      "ui": 1,
+      "placeholder": "Select heating..."
+    },
+    {
+      "key": "field_heating_fuel",
+      "label": "Heating Fuel",
+      "name": "heating_fuel",
+      "type": "select",
+      "instructions": "Primary heating fuel source",
+      "wrapper": {
+        "width": "25"
+      },
+      "choices": {
+        "electric": "Electric",
+        "natural_gas": "Natural Gas",
+        "propane": "Propane",
+        "oil": "Oil",
+        "wood": "Wood",
+        "solar": "Solar",
+        "geothermal": "Geothermal",
+        "other": "Other"
+      },
+      "allow_null": 1,
+      "ui": 1,
+      "placeholder": "Select fuel..."
+    },
+    {
+      "key": "field_cooling_system",
+      "label": "Cooling System",
+      "name": "cooling_system",
+      "type": "select",
+      "instructions": "Primary cooling system",
+      "wrapper": {
+        "width": "25"
+      },
+      "choices": {
+        "central_air": "Central Air",
+        "heat_pump": "Heat Pump",
+        "window_units": "Window Units",
+        "evaporative": "Evaporative",
+        "geothermal": "Geothermal",
+        "fans": "Ceiling Fans Only",
+        "none": "None",
+        "other": "Other"
+      },
+      "allow_null": 1,
+      "ui": 1,
+      "placeholder": "Select cooling..."
+    },
+    {
+      "key": "field_cooling_fuel",
+      "label": "Cooling Fuel",
+      "name": "cooling_fuel",
+      "type": "select",
+      "instructions": "Primary cooling fuel source",
+      "wrapper": {
+        "width": "25"
+      },
+      "choices": {
+        "electric": "Electric",
+        "natural_gas": "Natural Gas",
+        "geothermal": "Geothermal",
+        "solar": "Solar",
+        "other": "Other"
+      },
+      "allow_null": 1,
+      "ui": 1,
+      "placeholder": "Select fuel..."
+    },
+    {
+      "key": "field_water_source",
+      "label": "Water Source",
+      "name": "water_source",
+      "type": "select",
+      "instructions": "Primary water source",
+      "wrapper": {
+        "width": "33"
+      },
+      "choices": {
+        "city": "City Water",
+        "well": "Private Well",
+        "community": "Community Well",
+        "other": "Other"
+      },
+      "allow_null": 1,
+      "ui": 1,
+      "placeholder": "Select water source..."
+    },
+    {
+      "key": "field_sewer_system",
+      "label": "Sewer System",
+      "name": "sewer_system",
+      "type": "select",
+      "instructions": "Waste water system",
+      "wrapper": {
+        "width": "33"
+      },
+      "choices": {
+        "city_sewer": "City Sewer",
+        "septic": "Septic System",
+        "community": "Community System",
+        "lpp": "Low Pressure Pipe (LPP)",
+        "other": "Other"
+      },
+      "allow_null": 1,
+      "ui": 1,
+      "placeholder": "Select sewer system..."
+    },
+    {
+      "key": "field_electric_service",
+      "label": "Electric Service",
+      "name": "electric_service",
+      "type": "select",
+      "instructions": "Electrical service capacity",
+      "wrapper": {
+        "width": "34"
+      },
+      "choices": {
+        "100_amp": "100 Amp",
+        "150_amp": "150 Amp", 
+        "200_amp": "200 Amp",
+        "200_plus_amp": "200+ Amp",
+        "400_amp": "400 Amp",
+        "other": "Other"
+      },
+      "allow_null": 1,
+      "ui": 1,
+      "placeholder": "Select service..."
+    },
+    {
+      "key": "field_hot_water",
+      "label": "Hot Water System",
+      "name": "hot_water",
+      "type": "select",
+      "instructions": "Hot water heating system",
+      "wrapper": {
+        "width": "50"
+      },
+      "choices": {
+        "electric_tank": "Electric Tank",
+        "gas_tank": "Gas Tank",
+        "tankless_electric": "Tankless Electric",
+        "tankless_gas": "Tankless Gas",
+        "heat_pump": "Heat Pump Water Heater",
+        "solar": "Solar",
+        "other": "Other"
+      },
+      "allow_null": 1,
+      "ui": 1,
+      "placeholder": "Select hot water system..."
+    },
+    {
+      "key": "field_construction_materials",
+      "label": "Construction Materials",
+      "name": "construction_materials",
+      "type": "textarea",
+      "instructions": "Additional construction details and materials",
+      "wrapper": {
+        "width": "50"
+      },
+      "rows": 4,
+      "placeholder": "Frame construction, insulation details, etc."
+    }
+  ],
+  "location": [
+    [
+      {
+        "param": "post_type",
+        "operator": "==",
+        "value": "listing"
+      }
+    ]
+  ],
+  "menu_order": 7,
+  "position": "normal",
+  "style": "default",
+  "label_placement": "top",
+  "instruction_placement": "label",
+  "hide_on_screen": [],
+  "active": true,
+  "description": "Construction details, building systems, and utilities",
+  "show_in_rest": 1,
+  "modified": 1725235200
+}

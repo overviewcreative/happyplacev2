@@ -1,0 +1,204 @@
+/* ================================================
+   CONTAINER SYSTEM
+   Layout containers with consistent spacing
+   ================================================ */
+
+/* Page wrapper - optional semantic container */
+.hph-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.hph-main {
+  flex: 1; /* Takes remaining space between header/footer */
+  display: flex;
+  flex-direction: column;
+}
+
+/* ================================================
+   CONTENT CONTAINERS
+   ================================================ */
+
+/* Base container - constrains content width */
+.hph-container {
+  width: 100%;
+  max-width: var(--hph-container-default, 1440px); /* Increased default width */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--hph-container-padding, 1.5rem);
+  padding-right: var(--hph-container-padding, 1.5rem);
+}
+
+/* Container sizes - Only use these when you specifically need narrower content */
+.hph-container-sm {
+  max-width: var(--hph-container-sm, 640px) !important;
+}
+
+.hph-container-md {
+  max-width: var(--hph-container-md, 768px) !important;
+}
+
+.hph-container-lg {
+  max-width: var(--hph-container-lg, 1024px) !important;
+}
+
+.hph-container-xl {
+  max-width: var(--hph-container-xl, 1280px) !important;
+}
+
+.hph-container-2xl {
+  max-width: var(--hph-container-2xl, 1536px) !important;
+}
+
+.hph-container-3xl {
+  max-width: var(--hph-container-3xl, 1728px) !important;
+}
+
+/* Text-focused containers for readability */
+.hph-container-prose {
+  max-width: 65ch; /* Optimal reading width */
+}
+
+.hph-container-narrow {
+  max-width: 700px;
+}
+
+/* ================================================
+   CONTAINER WIDTH VARIATIONS
+   ================================================ */
+
+.hph-container--narrow {
+  max-width: var(--hph-container-sm);
+}
+
+.hph-container--wide {
+  max-width: var(--hph-container-2xl);
+}
+
+.hph-container--full {
+  max-width: none;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* ================================================
+   SECTION CONTAINERS
+   ================================================ */
+
+/* Section wrapper - handles vertical spacing */
+.hph-section {
+  padding-top: var(--hph-section-padding-y, 4rem);
+  padding-bottom: var(--hph-section-padding-y, 4rem);
+}
+
+.hph-section-sm {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.hph-section-lg {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+}
+
+/* Full-width sections */
+.hph-full-width {
+  width: 100vw;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Constrained full-width (respects container max-width) */
+.hph-full-width-contained {
+  width: 100%;
+  max-width: 100vw;
+}
+
+/* ================================================
+   LAYOUT CONTAINERS
+   ================================================ */
+
+/* Content + Sidebar layouts */
+.hph-layout-sidebar {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1fr 300px;
+}
+
+.hph-layout-sidebar-left {
+  grid-template-columns: 300px 1fr;
+}
+
+/* Dashboard layouts */
+.hph-layout-dashboard {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  min-height: 100vh;
+}
+
+/* Admin/CMS layouts */
+.hph-layout-admin {
+  display: grid;
+  grid-template-areas: 
+    "sidebar header"
+    "sidebar main";
+  grid-template-columns: 250px 1fr;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+}
+
+/* ================================================
+   RESPONSIVE CONTAINERS
+   ================================================ */
+
+@media (max-width: 768px) {
+  .hph-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .hph-section {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+  
+  .hph-layout-sidebar,
+  .hph-layout-sidebar-left {
+    grid-template-columns: 1fr;
+  }
+  
+  .hph-layout-dashboard {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ================================================
+   UTILITY CONTAINERS
+   ================================================ */
+
+/* Breakout containers - allow content to escape constraints */
+.hph-breakout {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+
+.hph-breakout-subtle {
+  width: calc(100% + 4rem);
+  margin-left: -2rem;
+  margin-right: -2rem;
+}
+
+/* Center content without width constraints */
+.hph-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Flex-based centering */
+.hph-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

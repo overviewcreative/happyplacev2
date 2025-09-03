@@ -9,6 +9,9 @@ class HP_Settings {
     }
     
     public function add_settings_page() {
+        // Menu registration moved to AdminMenu class - Integrations section
+        // This keeps the functionality but consolidates the menu structure
+        /*
         add_options_page(
             'Happy Place Settings',
             'Happy Place',
@@ -16,6 +19,7 @@ class HP_Settings {
             'hp-settings',
             [$this, 'render_settings_page']
         );
+        */
     }
     
     public function register_settings() {
@@ -183,10 +187,10 @@ class HP_Settings {
     }
 }
 
-// Initialize
-add_action('init', function() {
-    new HP_Settings();
-});
+// Initialize - DISABLED: Moved to unified AdminMenu
+// add_action('init', function() {
+//     new HP_Settings();
+// });
 
 // Test geocoding endpoint
 add_action('wp_ajax_hp_test_geocoding', function() {

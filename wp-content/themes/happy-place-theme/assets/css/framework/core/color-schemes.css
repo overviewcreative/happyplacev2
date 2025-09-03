@@ -1,0 +1,372 @@
+/* ================================================
+   Enhanced Color Scheme System with Primary Blue Shades
+   
+   Creates context-aware color systems that leverage the full
+   range of blue primary colors for better visual hierarchy
+   and brand cohesion across all background variations.
+   ================================================ */
+
+:root {
+  /* Light backgrounds - utilize blue accents */
+  --hph-scheme-light-heading: var(--hph-primary-800);           /* Deep blue headings */
+  --hph-scheme-light-subheading: var(--hph-primary-700);        /* Slightly lighter blue */
+  --hph-scheme-light-text: var(--hph-gray-700);                 /* Keep body text neutral */
+  --hph-scheme-light-text-muted: var(--hph-gray-500);          
+  --hph-scheme-light-link: var(--hph-primary-600);              /* Strong blue links */
+  --hph-scheme-light-link-hover: var(--hph-primary-700);
+  --hph-scheme-light-accent: var(--hph-primary-500);
+  --hph-scheme-light-border: var(--hph-primary-100);            /* Subtle blue borders */
+  --hph-scheme-light-badge-bg: var(--hph-primary-50);           /* Very light blue bg */
+  --hph-scheme-light-badge-text: var(--hph-primary-700);
+  
+  /* Gray/Off-white backgrounds - subtle blue tints */
+  --hph-scheme-gray-heading: var(--hph-primary-900);            /* Almost black-blue */
+  --hph-scheme-gray-subheading: var(--hph-primary-800);
+  --hph-scheme-gray-text: var(--hph-gray-700);
+  --hph-scheme-gray-text-muted: var(--hph-gray-500);
+  --hph-scheme-gray-link: var(--hph-primary);
+  --hph-scheme-gray-link-hover: var(--hph-primary-600);
+  --hph-scheme-gray-accent: var(--hph-primary-400);
+  --hph-scheme-gray-border: var(--hph-primary-200);
+  --hph-scheme-gray-badge-bg: var(--hph-primary-100);
+  --hph-scheme-gray-badge-text: var(--hph-primary-800);
+  
+  /* Dark backgrounds - leverage lighter blue shades */
+  --hph-scheme-dark-heading: var(--hph-primary-50);             /* Almost white with blue tint */
+  --hph-scheme-dark-subheading: var(--hph-primary-100);         /* Soft blue-white */
+  --hph-scheme-dark-text: var(--hph-primary-200);               /* Light blue-gray */
+  --hph-scheme-dark-text-muted: var(--hph-primary-300);
+  --hph-scheme-dark-link: var(--hph-primary-400);               /* Bright enough to stand out */
+  --hph-scheme-dark-link-hover: var(--hph-primary-300);
+  --hph-scheme-dark-accent: var(--hph-primary-500);
+  --hph-scheme-dark-border: rgba(81, 186, 224, 0.2);           /* Primary with transparency */
+  --hph-scheme-dark-badge-bg: rgba(81, 186, 224, 0.15);
+  --hph-scheme-dark-badge-text: var(--hph-primary-300);
+  
+  /* Primary blue backgrounds - use white with blue tints */
+  --hph-scheme-primary-heading: var(--hph-white);               /* Pure white for contrast */
+  --hph-scheme-primary-subheading: var(--hph-primary-50);       /* Slightest blue tint */
+  --hph-scheme-primary-text: var(--hph-primary-100);            /* Soft blue-white */
+  --hph-scheme-primary-text-muted: var(--hph-primary-200);
+  --hph-scheme-primary-link: var(--hph-white);
+  --hph-scheme-primary-link-hover: var(--hph-primary-100);
+  --hph-scheme-primary-accent: var(--hph-primary-300);          /* Lighter blue accent */
+  --hph-scheme-primary-border: rgba(255, 255, 255, 0.3);
+  --hph-scheme-primary-badge-bg: rgba(255, 255, 255, 0.2);
+  --hph-scheme-primary-badge-text: var(--hph-white);
+  
+  /* Primary dark backgrounds - for gradient dark areas */
+  --hph-scheme-primary-dark-heading: var(--hph-primary-25);     /* Lightest blue tint */
+  --hph-scheme-primary-dark-subheading: var(--hph-primary-50);
+  --hph-scheme-primary-dark-text: var(--hph-primary-100);
+  --hph-scheme-primary-dark-text-muted: var(--hph-primary-200);
+  --hph-scheme-primary-dark-link: var(--hph-primary-300);
+  --hph-scheme-primary-dark-link-hover: var(--hph-primary-200);
+  --hph-scheme-primary-dark-accent: var(--hph-primary-400);
+  --hph-scheme-primary-dark-border: rgba(203, 234, 246, 0.2);  /* primary-50 with transparency */
+  --hph-scheme-primary-dark-badge-bg: rgba(203, 234, 246, 0.15);
+  --hph-scheme-primary-dark-badge-text: var(--hph-primary-200);
+  
+  /* Secondary color scheme - for accent sections */
+  --hph-scheme-secondary-heading: var(--hph-white);
+  --hph-scheme-secondary-subheading: var(--hph-secondary-50);
+  --hph-scheme-secondary-text: var(--hph-secondary-100);
+  --hph-scheme-secondary-text-muted: var(--hph-secondary-200);
+  --hph-scheme-secondary-link: var(--hph-white);
+  --hph-scheme-secondary-link-hover: var(--hph-secondary-100);
+  --hph-scheme-secondary-accent: var(--hph-secondary-300);
+  --hph-scheme-secondary-border: rgba(255, 255, 255, 0.3);
+  --hph-scheme-secondary-badge-bg: rgba(255, 255, 255, 0.2);
+  --hph-scheme-secondary-badge-text: var(--hph-white);
+  
+  /* Default to light scheme */
+  --hph-current-heading: var(--hph-scheme-light-heading);
+  --hph-current-subheading: var(--hph-scheme-light-subheading);
+  --hph-current-text: var(--hph-scheme-light-text);
+  --hph-current-text-muted: var(--hph-scheme-light-text-muted);
+  --hph-current-link: var(--hph-scheme-light-link);
+  --hph-current-link-hover: var(--hph-scheme-light-link-hover);
+  --hph-current-accent: var(--hph-scheme-light-accent);
+  --hph-current-border: var(--hph-scheme-light-border);
+  --hph-current-badge-bg: var(--hph-scheme-light-badge-bg);
+  --hph-current-badge-text: var(--hph-scheme-light-badge-text);
+}
+
+/* ================================================
+   Background Context Classes & Data Attributes
+   ================================================ */
+
+/* White/Light backgrounds */
+.hph-bg-white,
+[data-bg="white"],
+section[style*="background-color: var(--hph-white)"],
+section[style*="background: var(--hph-white)"] {
+  --hph-current-heading: var(--hph-scheme-light-heading);
+  --hph-current-subheading: var(--hph-scheme-light-subheading);
+  --hph-current-text: var(--hph-scheme-light-text);
+  --hph-current-text-muted: var(--hph-scheme-light-text-muted);
+  --hph-current-link: var(--hph-scheme-light-link);
+  --hph-current-link-hover: var(--hph-scheme-light-link-hover);
+  --hph-current-accent: var(--hph-scheme-light-accent);
+  --hph-current-border: var(--hph-scheme-light-border);
+  --hph-current-badge-bg: var(--hph-scheme-light-badge-bg);
+  --hph-current-badge-text: var(--hph-scheme-light-badge-text);
+}
+
+/* Gray/Light gray backgrounds */
+.hph-bg-light,
+.hph-bg-gray-50,
+.hph-bg-gray-100,
+[data-bg="light"],
+section[style*="background-color: var(--hph-gray-50)"],
+section[style*="background-color: var(--hph-gray-100)"],
+section[style*="background: var(--hph-gray-50)"],
+section[style*="background: var(--hph-gray-100)"] {
+  --hph-current-heading: var(--hph-scheme-gray-heading);
+  --hph-current-subheading: var(--hph-scheme-gray-subheading);
+  --hph-current-text: var(--hph-scheme-gray-text);
+  --hph-current-text-muted: var(--hph-scheme-gray-text-muted);
+  --hph-current-link: var(--hph-scheme-gray-link);
+  --hph-current-link-hover: var(--hph-scheme-gray-link-hover);
+  --hph-current-accent: var(--hph-scheme-gray-accent);
+  --hph-current-border: var(--hph-scheme-gray-border);
+  --hph-current-badge-bg: var(--hph-scheme-gray-badge-bg);
+  --hph-current-badge-text: var(--hph-scheme-gray-badge-text);
+}
+
+/* Dark backgrounds */
+.hph-bg-dark,
+.hph-bg-gray-800,
+.hph-bg-gray-900,
+[data-bg="dark"],
+section[style*="background-color: var(--hph-gray-800)"],
+section[style*="background-color: var(--hph-gray-900)"],
+section[style*="background: var(--hph-gray-800)"],
+section[style*="background: var(--hph-gray-900)"] {
+  --hph-current-heading: var(--hph-scheme-dark-heading);
+  --hph-current-subheading: var(--hph-scheme-dark-subheading);
+  --hph-current-text: var(--hph-scheme-dark-text);
+  --hph-current-text-muted: var(--hph-scheme-dark-text-muted);
+  --hph-current-link: var(--hph-scheme-dark-link);
+  --hph-current-link-hover: var(--hph-scheme-dark-link-hover);
+  --hph-current-accent: var(--hph-scheme-dark-accent);
+  --hph-current-border: var(--hph-scheme-dark-border);
+  --hph-current-badge-bg: var(--hph-scheme-dark-badge-bg);
+  --hph-current-badge-text: var(--hph-scheme-dark-badge-text);
+}
+
+/* Primary blue backgrounds */
+.hph-bg-primary,
+.hph-bg-primary-500,
+[data-bg="primary"],
+section[style*="background-color: var(--hph-primary)"],
+section[style*="background: var(--hph-primary)"] {
+  --hph-current-heading: var(--hph-scheme-primary-heading);
+  --hph-current-subheading: var(--hph-scheme-primary-subheading);
+  --hph-current-text: var(--hph-scheme-primary-text);
+  --hph-current-text-muted: var(--hph-scheme-primary-text-muted);
+  --hph-current-link: var(--hph-scheme-primary-link);
+  --hph-current-link-hover: var(--hph-scheme-primary-link-hover);
+  --hph-current-accent: var(--hph-scheme-primary-accent);
+  --hph-current-border: var(--hph-scheme-primary-border);
+  --hph-current-badge-bg: var(--hph-scheme-primary-badge-bg);
+  --hph-current-badge-text: var(--hph-scheme-primary-badge-text);
+}
+
+/* Primary dark/gradient backgrounds */
+.hph-bg-primary-dark,
+.hph-bg-gradient,
+[data-bg="gradient"],
+section[style*="linear-gradient"] {
+  --hph-current-heading: var(--hph-scheme-primary-dark-heading);
+  --hph-current-subheading: var(--hph-scheme-primary-dark-subheading);
+  --hph-current-text: var(--hph-scheme-primary-dark-text);
+  --hph-current-text-muted: var(--hph-scheme-primary-dark-text-muted);
+  --hph-current-link: var(--hph-scheme-primary-dark-link);
+  --hph-current-link-hover: var(--hph-scheme-primary-dark-link-hover);
+  --hph-current-accent: var(--hph-scheme-primary-dark-accent);
+  --hph-current-border: var(--hph-scheme-primary-dark-border);
+  --hph-current-badge-bg: var(--hph-scheme-primary-dark-badge-bg);
+  --hph-current-badge-text: var(--hph-scheme-primary-dark-badge-text);
+}
+
+/* Secondary backgrounds */
+.hph-bg-secondary,
+[data-bg="secondary"],
+section[style*="background-color: var(--hph-secondary)"],
+section[style*="background: var(--hph-secondary)"] {
+  --hph-current-heading: var(--hph-scheme-secondary-heading);
+  --hph-current-subheading: var(--hph-scheme-secondary-subheading);
+  --hph-current-text: var(--hph-scheme-secondary-text);
+  --hph-current-text-muted: var(--hph-scheme-secondary-text-muted);
+  --hph-current-link: var(--hph-scheme-secondary-link);
+  --hph-current-link-hover: var(--hph-scheme-secondary-link-hover);
+  --hph-current-accent: var(--hph-scheme-secondary-accent);
+  --hph-current-border: var(--hph-scheme-secondary-border);
+  --hph-current-badge-bg: var(--hph-scheme-secondary-badge-bg);
+  --hph-current-badge-text: var(--hph-scheme-secondary-badge-text);
+}
+
+/* ================================================
+   Automatic Color Application
+   ================================================ */
+
+/* Headings */
+[data-bg] h1,
+.hph-bg-white h1,
+.hph-bg-light h1,
+.hph-bg-dark h1,
+.hph-bg-primary h1,
+.hph-bg-gradient h1,
+.hph-bg-secondary h1,
+section h1 {
+  color: var(--hph-current-heading);
+}
+
+[data-bg] h2,
+.hph-bg-white h2,
+.hph-bg-light h2,
+.hph-bg-dark h2,
+.hph-bg-primary h2,
+.hph-bg-gradient h2,
+.hph-bg-secondary h2,
+section h2 {
+  color: var(--hph-current-subheading);
+}
+
+[data-bg] h3,
+[data-bg] h4,
+[data-bg] h5,
+[data-bg] h6,
+section h3,
+section h4,
+section h5,
+section h6 {
+  color: var(--hph-current-subheading);
+}
+
+/* Body text */
+[data-bg] p,
+[data-bg] li,
+[data-bg] .content,
+section p,
+section li,
+section .content {
+  color: var(--hph-current-text);
+}
+
+/* Muted text */
+[data-bg] .text-muted,
+[data-bg] .muted,
+[data-bg] small,
+section .text-muted,
+section .muted,
+section small {
+  color: var(--hph-current-text-muted);
+}
+
+/* Links */
+[data-bg] a:not(.btn):not(.button),
+section a:not(.btn):not(.button) {
+  color: var(--hph-current-link);
+}
+
+[data-bg] a:not(.btn):not(.button):hover,
+section a:not(.btn):not(.button):hover {
+  color: var(--hph-current-link-hover);
+}
+
+/* Badges */
+[data-bg] .badge,
+[data-bg] .hph-badge,
+section .badge,
+section .hph-badge {
+  background-color: var(--hph-current-badge-bg);
+  color: var(--hph-current-badge-text);
+  border: 1px solid var(--hph-current-border);
+}
+
+/* Borders */
+[data-bg] hr,
+[data-bg] .border,
+[data-bg] .border-top,
+[data-bg] .border-bottom,
+section hr,
+section .border,
+section .border-top,
+section .border-bottom {
+  border-color: var(--hph-current-border);
+}
+
+/* Icons */
+[data-bg] .icon,
+[data-bg] .hph-icon,
+[data-bg] i[class*="fa-"],
+section .icon,
+section .hph-icon,
+section i[class*="fa-"] {
+  color: var(--hph-current-accent);
+}
+
+/* Stats and numbers */
+[data-bg] .stat-number,
+[data-bg] .number,
+[data-bg] .count,
+section .stat-number,
+section .number,
+section .count {
+  color: var(--hph-current-heading);
+}
+
+/* ================================================
+   Utility Classes for Manual Override
+   ================================================ */
+
+.text-inherit { color: inherit !important; }
+.text-current { color: currentColor !important; }
+.text-heading { color: var(--hph-current-heading) !important; }
+.text-subheading { color: var(--hph-current-subheading) !important; }
+.text-body { color: var(--hph-current-text) !important; }
+.text-muted { color: var(--hph-current-text-muted) !important; }
+.text-link { color: var(--hph-current-link) !important; }
+.text-accent { color: var(--hph-current-accent) !important; }
+
+/* Background-specific utility classes */
+.text-white { color: var(--hph-white) !important; }
+.text-primary { color: var(--hph-primary) !important; }
+.text-secondary { color: var(--hph-secondary) !important; }
+.text-gray-500 { color: var(--hph-gray-500) !important; }
+.text-gray-700 { color: var(--hph-gray-700) !important; }
+
+/* ================================================
+   Responsive Considerations
+   ================================================ */
+
+@media (max-width: 768px) {
+  /* Slightly adjust contrast for mobile readability */
+  :root {
+    --hph-scheme-light-text: var(--hph-gray-800);
+    --hph-scheme-gray-text: var(--hph-gray-800);
+  }
+}
+
+/* ================================================
+   Print Styles
+   ================================================ */
+
+@media print {
+  /* Ensure good contrast for printing */
+  [data-bg] *,
+  section * {
+    color: var(--hph-gray-900) !important;
+  }
+  
+  [data-bg] h1,
+  [data-bg] h2,
+  [data-bg] h3,
+  section h1,
+  section h2,
+  section h3 {
+    color: var(--hph-primary-900) !important;
+  }
+}

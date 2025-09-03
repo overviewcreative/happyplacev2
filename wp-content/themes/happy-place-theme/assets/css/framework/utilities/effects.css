@@ -1,0 +1,666 @@
+/* Merged from: 06-utilities/hph-effects.css, 06-utilities/hph-animations.css */
+/* Generated: 2025-08-27 15:04:59 */
+
+/* === 06-utilities/hph-effects.css === */
+/* ================================================
+   HPH FRAMEWORK - VISUAL EFFECTS
+   Shadows, opacity, filters, and visual enhancements
+   ================================================ */
+
+/* ================================================
+   BOX SHADOWS
+   ================================================ */
+.hph-shadow-none { box-shadow: none !important; }
+.hph-shadow-sm { box-shadow: var(--hph-shadow-sm) !important; }
+.hph-shadow { box-shadow: var(--hph-shadow-md) !important; }
+.hph-shadow-md { box-shadow: var(--hph-shadow-md) !important; }
+.hph-shadow-lg { box-shadow: var(--hph-shadow-lg) !important; }
+.hph-shadow-xl { box-shadow: var(--hph-shadow-xl) !important; }
+.hph-shadow-2xl { box-shadow: var(--hph-shadow-2xl) !important; }
+.hph-shadow-inner { box-shadow: var(--hph-shadow-inner) !important; }
+
+/* Colored Shadows */
+.hph-shadow-primary { box-shadow: 0 4px 14px 0 rgba(81, 186, 224, 0.39) !important; }
+.hph-shadow-success { box-shadow: 0 4px 14px 0 rgba(124, 155, 89, 0.39) !important; }
+.hph-shadow-warning { box-shadow: 0 4px 14px 0 rgba(232, 168, 124, 0.39) !important; }
+.hph-shadow-danger { box-shadow: 0 4px 14px 0 rgba(229, 127, 108, 0.39) !important; }
+
+/* Custom Shadows */
+.hph-shadow-soft {
+  box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.08) !important;
+}
+
+.hph-shadow-hard {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2) !important;
+}
+
+.hph-shadow-float {
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.2) !important;
+}
+
+.hph-shadow-glow {
+  box-shadow: 0 0 20px rgba(81, 186, 224, 0.5) !important;
+}
+
+.hph-shadow-card {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1) !important;
+}
+
+.hph-shadow-elevated {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Hover Shadows */
+.hph-hover\:shadow-none:hover { box-shadow: none !important; }
+.hph-hover\:shadow-sm:hover { box-shadow: var(--hph-shadow-sm) !important; }
+.hph-hover\:shadow:hover { box-shadow: var(--hph-shadow-md) !important; }
+.hph-hover\:shadow-md:hover { box-shadow: var(--hph-shadow-md) !important; }
+.hph-hover\:shadow-lg:hover { box-shadow: var(--hph-shadow-lg) !important; }
+.hph-hover\:shadow-xl:hover { box-shadow: var(--hph-shadow-xl) !important; }
+.hph-hover\:shadow-2xl:hover { box-shadow: var(--hph-shadow-2xl) !important; }
+
+/* ================================================
+   OPACITY
+   ================================================ */
+.hph-opacity-0 { opacity: 0 !important; }
+.hph-opacity-5 { opacity: 0.05 !important; }
+.hph-opacity-10 { opacity: 0.1 !important; }
+.hph-opacity-20 { opacity: 0.2 !important; }
+.hph-opacity-25 { opacity: 0.25 !important; }
+.hph-opacity-30 { opacity: 0.3 !important; }
+.hph-opacity-40 { opacity: 0.4 !important; }
+.hph-opacity-50 { opacity: 0.5 !important; }
+.hph-opacity-60 { opacity: 0.6 !important; }
+.hph-opacity-70 { opacity: 0.7 !important; }
+.hph-opacity-75 { opacity: 0.75 !important; }
+.hph-opacity-80 { opacity: 0.8 !important; }
+.hph-opacity-90 { opacity: 0.9 !important; }
+.hph-opacity-95 { opacity: 0.95 !important; }
+.hph-opacity-100 { opacity: 1 !important; }
+
+/* Hover Opacity */
+.hph-hover\:opacity-0:hover { opacity: 0 !important; }
+.hph-hover\:opacity-5:hover { opacity: 0.05 !important; }
+.hph-hover\:opacity-10:hover { opacity: 0.1 !important; }
+.hph-hover\:opacity-20:hover { opacity: 0.2 !important; }
+.hph-hover\:opacity-25:hover { opacity: 0.25 !important; }
+.hph-hover\:opacity-30:hover { opacity: 0.3 !important; }
+.hph-hover\:opacity-40:hover { opacity: 0.4 !important; }
+.hph-hover\:opacity-50:hover { opacity: 0.5 !important; }
+.hph-hover\:opacity-60:hover { opacity: 0.6 !important; }
+.hph-hover\:opacity-70:hover { opacity: 0.7 !important; }
+.hph-hover\:opacity-75:hover { opacity: 0.75 !important; }
+.hph-hover\:opacity-80:hover { opacity: 0.8 !important; }
+.hph-hover\:opacity-90:hover { opacity: 0.9 !important; }
+.hph-hover\:opacity-95:hover { opacity: 0.95 !important; }
+.hph-hover\:opacity-100:hover { opacity: 1 !important; }
+
+/* ================================================
+   FILTERS
+   ================================================ */
+
+/* Blur */
+.hph-blur-none { filter: blur(0) !important; }
+.hph-blur-xs { filter: blur(2px) !important; }
+.hph-blur-sm { filter: blur(4px) !important; }
+.hph-blur { filter: blur(8px) !important; }
+.hph-blur-md { filter: blur(12px) !important; }
+.hph-blur-lg { filter: blur(16px) !important; }
+.hph-blur-xl { filter: blur(24px) !important; }
+.hph-blur-2xl { filter: blur(40px) !important; }
+.hph-blur-3xl { filter: blur(64px) !important; }
+
+/* Brightness */
+.hph-brightness-0 { filter: brightness(0) !important; }
+.hph-brightness-50 { filter: brightness(0.5) !important; }
+.hph-brightness-75 { filter: brightness(0.75) !important; }
+.hph-brightness-90 { filter: brightness(0.9) !important; }
+.hph-brightness-95 { filter: brightness(0.95) !important; }
+.hph-brightness-100 { filter: brightness(1) !important; }
+.hph-brightness-105 { filter: brightness(1.05) !important; }
+.hph-brightness-110 { filter: brightness(1.1) !important; }
+.hph-brightness-125 { filter: brightness(1.25) !important; }
+.hph-brightness-150 { filter: brightness(1.5) !important; }
+.hph-brightness-200 { filter: brightness(2) !important; }
+
+/* Contrast */
+.hph-contrast-0 { filter: contrast(0) !important; }
+.hph-contrast-50 { filter: contrast(0.5) !important; }
+.hph-contrast-75 { filter: contrast(0.75) !important; }
+.hph-contrast-100 { filter: contrast(1) !important; }
+.hph-contrast-125 { filter: contrast(1.25) !important; }
+.hph-contrast-150 { filter: contrast(1.5) !important; }
+.hph-contrast-200 { filter: contrast(2) !important; }
+
+/* Grayscale */
+.hph-grayscale-0 { filter: grayscale(0) !important; }
+.hph-grayscale { filter: grayscale(100%) !important; }
+.hph-grayscale-50 { filter: grayscale(50%) !important; }
+
+/* Saturate */
+.hph-saturate-0 { filter: saturate(0) !important; }
+.hph-saturate-50 { filter: saturate(0.5) !important; }
+.hph-saturate-100 { filter: saturate(1) !important; }
+.hph-saturate-150 { filter: saturate(1.5) !important; }
+.hph-saturate-200 { filter: saturate(2) !important; }
+
+/* Sepia */
+.hph-sepia-0 { filter: sepia(0) !important; }
+.hph-sepia { filter: sepia(100%) !important; }
+
+/* Invert */
+.hph-invert-0 { filter: invert(0) !important; }
+.hph-invert { filter: invert(100%) !important; }
+
+/* ================================================
+   BACKDROP FILTERS
+   ================================================ */
+.hph-backdrop-blur-none { backdrop-filter: blur(0) !important; }
+.hph-backdrop-blur-xs { backdrop-filter: blur(2px) !important; }
+.hph-backdrop-blur-sm { backdrop-filter: blur(4px) !important; }
+.hph-backdrop-blur { backdrop-filter: blur(8px) !important; }
+.hph-backdrop-blur-md { backdrop-filter: blur(12px) !important; }
+.hph-backdrop-blur-lg { backdrop-filter: blur(16px) !important; }
+.hph-backdrop-blur-xl { backdrop-filter: blur(24px) !important; }
+.hph-backdrop-blur-2xl { backdrop-filter: blur(40px) !important; }
+.hph-backdrop-blur-3xl { backdrop-filter: blur(64px) !important; }
+
+.hph-backdrop-brightness-50 { backdrop-filter: brightness(0.5) !important; }
+.hph-backdrop-brightness-75 { backdrop-filter: brightness(0.75) !important; }
+.hph-backdrop-brightness-90 { backdrop-filter: brightness(0.9) !important; }
+.hph-backdrop-brightness-95 { backdrop-filter: brightness(0.95) !important; }
+.hph-backdrop-brightness-100 { backdrop-filter: brightness(1) !important; }
+.hph-backdrop-brightness-105 { backdrop-filter: brightness(1.05) !important; }
+.hph-backdrop-brightness-110 { backdrop-filter: brightness(1.1) !important; }
+.hph-backdrop-brightness-125 { backdrop-filter: brightness(1.25) !important; }
+
+.hph-backdrop-contrast-50 { backdrop-filter: contrast(0.5) !important; }
+.hph-backdrop-contrast-75 { backdrop-filter: contrast(0.75) !important; }
+.hph-backdrop-contrast-100 { backdrop-filter: contrast(1) !important; }
+.hph-backdrop-contrast-125 { backdrop-filter: contrast(1.25) !important; }
+.hph-backdrop-contrast-200 { backdrop-filter: contrast(2) !important; }
+
+.hph-backdrop-grayscale-0 { backdrop-filter: grayscale(0) !important; }
+.hph-backdrop-grayscale { backdrop-filter: grayscale(100%) !important; }
+
+.hph-backdrop-saturate-50 { backdrop-filter: saturate(0.5) !important; }
+.hph-backdrop-saturate-100 { backdrop-filter: saturate(1) !important; }
+.hph-backdrop-saturate-150 { backdrop-filter: saturate(1.5) !important; }
+.hph-backdrop-saturate-200 { backdrop-filter: saturate(2) !important; }
+
+.hph-backdrop-sepia-0 { backdrop-filter: sepia(0) !important; }
+.hph-backdrop-sepia { backdrop-filter: sepia(100%) !important; }
+
+/* ================================================
+   BORDER RADIUS
+   ================================================ */
+.hph-rounded-none { border-radius: 0 !important; }
+.hph-rounded-xs { border-radius: var(--hph-radius-xs) !important; }
+.hph-rounded-sm { border-radius: var(--hph-radius-sm) !important; }
+.hph-rounded { border-radius: var(--hph-radius) !important; }
+.hph-rounded-md { border-radius: var(--hph-radius-md) !important; }
+.hph-rounded-lg { border-radius: var(--hph-radius-lg) !important; }
+.hph-rounded-xl { border-radius: var(--hph-radius-xl) !important; }
+.hph-rounded-2xl { border-radius: var(--hph-radius-2xl) !important; }
+.hph-rounded-3xl { border-radius: var(--hph-radius-3xl) !important; }
+.hph-rounded-full { border-radius: var(--hph-radius-full) !important; }
+
+/* Individual corners */
+.hph-rounded-t-none { border-top-left-radius: 0; border-top-right-radius: 0; }
+.hph-rounded-t-sm { border-top-left-radius: var(--hph-radius-sm); border-top-right-radius: var(--hph-radius-sm); }
+.hph-rounded-t { border-top-left-radius: var(--hph-radius); border-top-right-radius: var(--hph-radius); }
+.hph-rounded-t-md { border-top-left-radius: var(--hph-radius-md); border-top-right-radius: var(--hph-radius-md); }
+.hph-rounded-t-lg { border-top-left-radius: var(--hph-radius-lg); border-top-right-radius: var(--hph-radius-lg); }
+.hph-rounded-t-xl { border-top-left-radius: var(--hph-radius-xl); border-top-right-radius: var(--hph-radius-xl); }
+.hph-rounded-t-2xl { border-top-left-radius: var(--hph-radius-2xl); border-top-right-radius: var(--hph-radius-2xl); }
+.hph-rounded-t-full { border-top-left-radius: var(--hph-radius-full); border-top-right-radius: var(--hph-radius-full); }
+
+.hph-rounded-b-none { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.hph-rounded-b-sm { border-bottom-left-radius: var(--hph-radius-sm); border-bottom-right-radius: var(--hph-radius-sm); }
+.hph-rounded-b { border-bottom-left-radius: var(--hph-radius); border-bottom-right-radius: var(--hph-radius); }
+.hph-rounded-b-md { border-bottom-left-radius: var(--hph-radius-md); border-bottom-right-radius: var(--hph-radius-md); }
+.hph-rounded-b-lg { border-bottom-left-radius: var(--hph-radius-lg); border-bottom-right-radius: var(--hph-radius-lg); }
+.hph-rounded-b-xl { border-bottom-left-radius: var(--hph-radius-xl); border-bottom-right-radius: var(--hph-radius-xl); }
+.hph-rounded-b-2xl { border-bottom-left-radius: var(--hph-radius-2xl); border-bottom-right-radius: var(--hph-radius-2xl); }
+.hph-rounded-b-full { border-bottom-left-radius: var(--hph-radius-full); border-bottom-right-radius: var(--hph-radius-full); }
+
+.hph-rounded-l-none { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.hph-rounded-l-sm { border-top-left-radius: var(--hph-radius-sm); border-bottom-left-radius: var(--hph-radius-sm); }
+.hph-rounded-l { border-top-left-radius: var(--hph-radius); border-bottom-left-radius: var(--hph-radius); }
+.hph-rounded-l-md { border-top-left-radius: var(--hph-radius-md); border-bottom-left-radius: var(--hph-radius-md); }
+.hph-rounded-l-lg { border-top-left-radius: var(--hph-radius-lg); border-bottom-left-radius: var(--hph-radius-lg); }
+.hph-rounded-l-xl { border-top-left-radius: var(--hph-radius-xl); border-bottom-left-radius: var(--hph-radius-xl); }
+.hph-rounded-l-2xl { border-top-left-radius: var(--hph-radius-2xl); border-bottom-left-radius: var(--hph-radius-2xl); }
+.hph-rounded-l-full { border-top-left-radius: var(--hph-radius-full); border-bottom-left-radius: var(--hph-radius-full); }
+
+.hph-rounded-r-none { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.hph-rounded-r-sm { border-top-right-radius: var(--hph-radius-sm); border-bottom-right-radius: var(--hph-radius-sm); }
+.hph-rounded-r { border-top-right-radius: var(--hph-radius); border-bottom-right-radius: var(--hph-radius); }
+.hph-rounded-r-md { border-top-right-radius: var(--hph-radius-md); border-bottom-right-radius: var(--hph-radius-md); }
+.hph-rounded-r-lg { border-top-right-radius: var(--hph-radius-lg); border-bottom-right-radius: var(--hph-radius-lg); }
+.hph-rounded-r-xl { border-top-right-radius: var(--hph-radius-xl); border-bottom-right-radius: var(--hph-radius-xl); }
+.hph-rounded-r-2xl { border-top-right-radius: var(--hph-radius-2xl); border-bottom-right-radius: var(--hph-radius-2xl); }
+.hph-rounded-r-full { border-top-right-radius: var(--hph-radius-full); border-bottom-right-radius: var(--hph-radius-full); }
+
+/* ================================================
+   REAL ESTATE SPECIFIC EFFECTS
+   ================================================ */
+
+/* Property image effects */
+.hph-property-image {
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--hph-transition-duration, 300ms) ease-out;
+}
+
+.hph-property-image:hover {
+  transform: scale(1.05);
+}
+
+.hph-property-image::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+  opacity: 0;
+  transition: opacity var(--hph-transition-duration, 300ms) ease-out;
+}
+
+.hph-property-image:hover::after {
+  opacity: 1;
+}
+
+/* Glass morphism effect */
+.hph-glass {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.hph-glass-dark {
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+/* Elevation levels */
+.hph-elevation-0 { box-shadow: none !important; }
+.hph-elevation-1 { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24) !important; }
+.hph-elevation-2 { box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23) !important; }
+.hph-elevation-3 { box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23) !important; }
+.hph-elevation-4 { box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22) !important; }
+.hph-elevation-5 { box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22) !important; }
+
+/* File Location: /wp-content/themes/happy-place-theme/assets/css/framework/06-utilities/hph-effects.css */
+
+/* === 06-utilities/hph-animations.css === */
+/* ================================================
+   HPH FRAMEWORK - ANIMATIONS & TRANSITIONS
+   Comprehensive animation system with keyframes and utilities
+   ================================================ */
+
+/* ================================================
+   KEYFRAME ANIMATIONS
+   ================================================ */
+
+/* Fade Animations */
+@keyframes hph-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes hph-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes hph-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(var(--hph-padding-lg));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hph-fade-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--hph-padding-lg)));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hph-fade-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(calc(-1 * var(--hph-padding-lg)));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes hph-fade-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(var(--hph-padding-lg));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Scale Animations */
+@keyframes hph-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes hph-scale-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+/* Slide Animations */
+@keyframes hph-slide-in-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes hph-slide-in-down {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes hph-slide-in-left {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes hph-slide-in-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+/* Spin Animation */
+@keyframes hph-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Pulse Animation */
+@keyframes hph-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Bounce Animation */
+@keyframes hph-bounce {
+  0%, 100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+/* Shake Animation */
+@keyframes hph-shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+  20%, 40%, 60%, 80% { transform: translateX(10px); }
+}
+
+/* ================================================
+   ANIMATION UTILITY CLASSES
+   ================================================ */
+
+/* Basic Animations */
+.hph-animate-fade-in { animation: hph-fade-in var(--hph-transition-duration, 300ms) ease-out; }
+.hph-animate-fade-out { animation: hph-fade-out var(--hph-transition-duration, 300ms) ease-out; }
+.hph-animate-fade-in-up { animation: fadeInUp 0.8s ease-out forwards; }
+.hph-animate-fade-in-down { animation: hph-fade-in-down var(--hph-transition-duration, 300ms) ease-out; }
+.hph-animate-fade-in-left { animation: hph-fade-in-left var(--hph-transition-duration, 300ms) ease-out; }
+.hph-animate-fade-in-right { animation: hph-fade-in-right var(--hph-transition-duration, 300ms) ease-out; }
+
+.hph-animate-scale-in { animation: hph-scale-in var(--hph-transition-duration, 300ms) ease-out; }
+.hph-animate-scale-out { animation: hph-scale-out var(--hph-transition-duration, 300ms) ease-out; }
+
+.hph-animate-slide-in-up { animation: hph-slide-in-up var(--hph-transition-duration, 300ms) ease-out; }
+.hph-animate-slide-in-down { animation: hph-slide-in-down var(--hph-transition-duration, 300ms) ease-out; }
+.hph-animate-slide-in-left { animation: hph-slide-in-left var(--hph-transition-duration, 300ms) ease-out; }
+.hph-animate-slide-in-right { animation: hph-slide-in-right var(--hph-transition-duration, 300ms) ease-out; }
+
+.hph-animate-spin { animation: hph-spin 1s linear infinite; }
+.hph-animate-pulse { animation: hph-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+.hph-animate-bounce { animation: hph-bounce 1s infinite; }
+.hph-animate-shake { animation: hph-shake 0.5s ease-in-out; }
+
+/* Animation Controls */
+.hph-animate-paused { animation-play-state: paused !important; }
+.hph-animate-running { animation-play-state: running !important; }
+.hph-animate-reverse { animation-direction: reverse !important; }
+.hph-animate-alternate { animation-direction: alternate !important; }
+
+/* ================================================
+   TRANSITION UTILITIES
+   ================================================ */
+
+/* Transition Properties */
+.hph-transition-none { transition: none !important; }
+.hph-transition-all { transition: all var(--hph-transition-duration, 150ms) var(--hph-transition-timing, ease-in-out) !important; }
+.hph-transition-colors { 
+  transition: color var(--hph-transition-duration, 150ms) var(--hph-transition-timing, ease-in-out),
+              background-color var(--hph-transition-duration, 150ms) var(--hph-transition-timing, ease-in-out),
+              border-color var(--hph-transition-duration, 150ms) var(--hph-transition-timing, ease-in-out) !important; 
+}
+.hph-transition-opacity { transition: opacity var(--hph-transition-duration, 150ms) var(--hph-transition-timing, ease-in-out) !important; }
+.hph-transition-shadow { transition: box-shadow var(--hph-transition-duration, 150ms) var(--hph-transition-timing, ease-in-out) !important; }
+.hph-transition-transform { transition: transform var(--hph-transition-duration, 150ms) var(--hph-transition-timing, ease-in-out) !important; }
+
+/* Transition Durations */
+.hph-duration-75 { transition-duration: 75ms !important; }
+.hph-duration-100 { transition-duration: 100ms !important; }
+.hph-duration-150 { transition-duration: 150ms !important; }
+.hph-duration-200 { transition-duration: 200ms !important; }
+.hph-duration-300 { transition-duration: 300ms !important; }
+.hph-duration-500 { transition-duration: 500ms !important; }
+.hph-duration-700 { transition-duration: 700ms !important; }
+.hph-duration-1000 { transition-duration: 1000ms !important; }
+
+/* Transition Timing Functions */
+.hph-ease-linear { transition-timing-function: linear !important; }
+.hph-ease-in { transition-timing-function: cubic-bezier(0.4, 0, 1, 1) !important; }
+.hph-ease-out { transition-timing-function: cubic-bezier(0, 0, 0.2, 1) !important; }
+.hph-ease-in-out { transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important; }
+.hph-ease-bounce { transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55) !important; }
+.hph-ease-smooth { transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94) !important; }
+.hph-ease-swift { transition-timing-function: cubic-bezier(0.55, 0, 0.1, 1) !important; }
+
+/* Transition Delays */
+.hph-delay-75 { transition-delay: 75ms !important; }
+.hph-delay-100 { transition-delay: 100ms !important; }
+.hph-delay-150 { transition-delay: 150ms !important; }
+.hph-delay-200 { transition-delay: 200ms !important; }
+.hph-delay-300 { transition-delay: 300ms !important; }
+.hph-delay-500 { transition-delay: 500ms !important; }
+.hph-delay-700 { transition-delay: 700ms !important; }
+.hph-delay-1000 { transition-delay: 1000ms !important; }
+
+/* ================================================
+   TRANSFORM UTILITIES
+   ================================================ */
+
+/* Scale */
+.hph-scale-0 { transform: scale(0) !important; }
+.hph-scale-50 { transform: scale(0.5) !important; }
+.hph-scale-75 { transform: scale(0.75) !important; }
+.hph-scale-90 { transform: scale(0.9) !important; }
+.hph-scale-95 { transform: scale(0.95) !important; }
+.hph-scale-100 { transform: scale(1) !important; }
+.hph-scale-105 { transform: scale(1.05) !important; }
+.hph-scale-110 { transform: scale(1.1) !important; }
+.hph-scale-125 { transform: scale(1.25) !important; }
+.hph-scale-150 { transform: scale(1.5) !important; }
+
+/* Rotate */
+.hph-rotate-0 { transform: rotate(0deg) !important; }
+.hph-rotate-1 { transform: rotate(1deg) !important; }
+.hph-rotate-2 { transform: rotate(2deg) !important; }
+.hph-rotate-3 { transform: rotate(3deg) !important; }
+.hph-rotate-6 { transform: rotate(6deg) !important; }
+.hph-rotate-12 { transform: rotate(12deg) !important; }
+.hph-rotate-45 { transform: rotate(45deg) !important; }
+.hph-rotate-90 { transform: rotate(90deg) !important; }
+.hph-rotate-180 { transform: rotate(180deg) !important; }
+
+/* Translate */
+.hph-translate-x-0 { transform: translateX(0) !important; }
+.hph-translate-x-1 { transform: translateX(0.25rem) !important; }
+.hph-translate-x-2 { transform: translateX(0.5rem) !important; }
+.hph-translate-x-3 { transform: translateX(0.75rem) !important; }
+.hph-translate-x-4 { transform: translateX(1rem) !important; }
+.hph-translate-x-full { transform: translateX(100%) !important; }
+.hph-translate-x-1/2 { transform: translateX(50%) !important; }
+
+.hph-translate-y-0 { transform: translateY(0) !important; }
+.hph-translate-y-1 { transform: translateY(0.25rem) !important; }
+.hph-translate-y-2 { transform: translateY(0.5rem) !important; }
+.hph-translate-y-3 { transform: translateY(0.75rem) !important; }
+.hph-translate-y-4 { transform: translateY(1rem) !important; }
+.hph-translate-y-full { transform: translateY(100%) !important; }
+.hph-translate-y-1/2 { transform: translateY(50%) !important; }
+
+/* Negative values */
+.hph--translate-x-1 { transform: translateX(-0.25rem) !important; }
+.hph--translate-x-2 { transform: translateX(-0.5rem) !important; }
+.hph--translate-x-3 { transform: translateX(-0.75rem) !important; }
+.hph--translate-x-4 { transform: translateX(-1rem) !important; }
+.hph--translate-x-full { transform: translateX(-100%) !important; }
+.hph--translate-x-1/2 { transform: translateX(-50%) !important; }
+
+.hph--translate-y-1 { transform: translateY(-0.25rem) !important; }
+.hph--translate-y-2 { transform: translateY(-0.5rem) !important; }
+.hph--translate-y-3 { transform: translateY(-0.75rem) !important; }
+.hph--translate-y-4 { transform: translateY(-1rem) !important; }
+.hph--translate-y-full { transform: translateY(-100%) !important; }
+.hph--translate-y-1/2 { transform: translateY(-50%) !important; }
+
+/* ================================================
+   HOVER ANIMATIONS
+   ================================================ */
+.hph-hover\:scale-105:hover { transform: scale(1.05) !important; }
+.hph-hover\:scale-110:hover { transform: scale(1.1) !important; }
+.hph-hover\:-translate-y-1:hover { transform: translateY(-0.25rem) !important; }
+.hph-hover\:-translate-y-2:hover { transform: translateY(-0.5rem) !important; }
+.hph-hover\:rotate-3:hover { transform: rotate(3deg) !important; }
+.hph-hover\:rotate-6:hover { transform: rotate(6deg) !important; }
+
+/* ================================================
+   ACCESSIBILITY
+   ================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .hph-animate-fade-in,
+  .hph-animate-fade-out,
+  .hph-animate-fade-in-up,
+  .hph-animate-fade-in-down,
+  .hph-animate-fade-in-left,
+  .hph-animate-fade-in-right,
+  .hph-animate-scale-in,
+  .hph-animate-scale-out,
+  .hph-animate-slide-in-up,
+  .hph-animate-slide-in-down,
+  .hph-animate-slide-in-left,
+  .hph-animate-slide-in-right,
+  .hph-animate-bounce,
+  .hph-animate-shake {
+    animation: none !important;
+  }
+  
+  .hph-animate-spin,
+  .hph-animate-pulse {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+}
+
+/* ================================================
+   REAL ESTATE SPECIFIC ANIMATIONS
+   ================================================ */
+
+/* Property card hover effects */
+.hph-property-hover {
+  transition: transform var(--hph-transition-duration, 300ms) var(--hph-transition-timing, ease-out),
+              box-shadow var(--hph-transition-duration, 300ms) var(--hph-transition-timing, ease-out);
+}
+
+.hph-property-hover:hover {
+  transform: translateY(-0.5rem);
+  box-shadow: var(--hph-shadow-xl);
+}
+
+/* Button animations */
+.hph-btn-animate {
+  position: relative;
+  overflow: hidden;
+  transition: all var(--hph-transition-duration, 300ms) var(--hph-transition-timing, ease-out);
+}
+
+.hph-btn-animate:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--hph-shadow-lg);
+}
+
+/* Loading states */
+.hph-loading-spin {
+  animation: hph-spin 1s linear infinite;
+}
+
+.hph-loading-pulse {
+  animation: hph-pulse 1.5s ease-in-out infinite;
+}
+
+/* File Location: /wp-content/themes/happy-place-theme/assets/css/framework/06-utilities/hph-animations.css */

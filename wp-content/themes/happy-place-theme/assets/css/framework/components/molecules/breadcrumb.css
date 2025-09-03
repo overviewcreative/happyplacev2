@@ -1,0 +1,369 @@
+/**
+ * Base Breadcrumbs Component CSS
+ * Navigation hierarchy with comprehensive styling options
+ * 
+ * @package HappyPlaceTheme
+ */
+
+/* ================================================
+   Base Breadcrumbs Styles
+   ================================================ */
+
+.hph-breadcrumbs {
+    --hph-breadcrumbs-separator-spacing: var(--hph-spacing-sm);
+    --hph-breadcrumbs-border-radius: var(--hph-radius-sm);
+    --hph-breadcrumbs-transition: all 0.2s ease;
+    
+    font-size: var(--hph-font-size-sm);
+    line-height: 1.5;
+}
+
+/* ================================================
+   Breadcrumb Container
+   ================================================ */
+
+.hph-breadcrumbs__container {
+    display: flex;
+    align-items: center;
+    gap: var(--hph-breadcrumbs-separator-spacing);
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* ================================================
+   Breadcrumb Items
+   ================================================ */
+
+.hph-breadcrumbs__item {
+    display: flex;
+    align-items: center;
+    gap: var(--hph-breadcrumbs-separator-spacing);
+}
+
+.hph-breadcrumbs__item:last-child .hph-breadcrumbs__separator {
+    display: none;
+}
+
+/* ================================================
+   Breadcrumb Links
+   ================================================ */
+
+.hph-breadcrumbs__link {
+    color: var(--hph-text-secondary);
+    text-decoration: none;
+    transition: var(--hph-breadcrumbs-transition);
+    border-radius: var(--hph-breadcrumbs-border-radius);
+    padding: var(--hph-spacing-xs) var(--hph-spacing-sm);
+    margin: calc(-1 * var(--hph-spacing-xs)) calc(-1 * var(--hph-spacing-sm));
+    display: inline-flex;
+    align-items: center;
+    gap: var(--hph-spacing-xs);
+}
+
+.hph-breadcrumbs__link:hover {
+    color: var(--hph-primary);
+    text-decoration: none;
+    background: var(--hph-gray-50);
+}
+
+.hph-breadcrumbs__link:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--hph-primary-alpha-20);
+    color: var(--hph-primary);
+}
+
+/* ================================================
+   Current Page
+   ================================================ */
+
+.hph-breadcrumbs__current {
+    color: var(--hph-text-primary);
+    font-weight: 600;
+    cursor: default;
+}
+
+/* ================================================
+   Separators
+   ================================================ */
+
+.hph-breadcrumbs__separator {
+    color: var(--hph-text-muted);
+    font-size: var(--hph-font-size-sm);
+    user-select: none;
+    flex-shrink: 0;
+}
+
+/* ================================================
+   Icons
+   ================================================ */
+
+.hph-breadcrumbs__icon {
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
+    fill: currentColor;
+}
+
+.hph-breadcrumbs__home-icon {
+    width: 1.1em;
+    height: 1.1em;
+}
+
+/* ================================================
+   Breadcrumb Variants
+   ================================================ */
+
+/* Background Variant */
+.hph-breadcrumbs--background {
+    background: var(--hph-gray-50);
+    border-radius: var(--hph-radius-md);
+    padding: var(--hph-spacing-md);
+}
+
+.hph-breadcrumbs--background .hph-breadcrumbs__link:hover {
+    background: var(--hph-white);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Bordered Variant */
+.hph-breadcrumbs--bordered {
+    border: 1px solid var(--hph-border-color);
+    border-radius: var(--hph-radius-md);
+    padding: var(--hph-spacing-md);
+}
+
+/* Minimal Variant */
+.hph-breadcrumbs--minimal .hph-breadcrumbs__link {
+    padding: 0;
+    margin: 0;
+    background: none;
+}
+
+.hph-breadcrumbs--minimal .hph-breadcrumbs__link:hover {
+    background: none;
+    text-decoration: underline;
+}
+
+/* Pill Variant */
+.hph-breadcrumbs--pill .hph-breadcrumbs__link {
+    background: var(--hph-gray-100);
+    border-radius: var(--hph-radius-full);
+    padding: var(--hph-spacing-xs) var(--hph-spacing-md);
+    margin: 0;
+}
+
+.hph-breadcrumbs--pill .hph-breadcrumbs__link:hover {
+    background: var(--hph-primary);
+    color: var(--hph-white);
+}
+
+.hph-breadcrumbs--pill .hph-breadcrumbs__current {
+    background: var(--hph-primary);
+    color: var(--hph-white);
+    padding: var(--hph-spacing-xs) var(--hph-spacing-md);
+    border-radius: var(--hph-radius-full);
+}
+
+/* ================================================
+   Size Variations
+   ================================================ */
+
+.hph-breadcrumbs--sm {
+    font-size: var(--hph-font-size-xs);
+    --hph-breadcrumbs-separator-spacing: var(--hph-spacing-xs);
+}
+
+.hph-breadcrumbs--sm .hph-breadcrumbs__link {
+    padding: var(--hph-spacing-xs);
+    margin: calc(-1 * var(--hph-spacing-xs));
+}
+
+.hph-breadcrumbs--lg {
+    font-size: var(--hph-font-size-base);
+    --hph-breadcrumbs-separator-spacing: var(--hph-spacing-md);
+}
+
+.hph-breadcrumbs--lg .hph-breadcrumbs__link {
+    padding: var(--hph-spacing-sm) var(--hph-spacing-md);
+    margin: calc(-1 * var(--hph-spacing-sm)) calc(-1 * var(--hph-spacing-md));
+}
+
+/* ================================================
+   Separator Styles
+   ================================================ */
+
+.hph-breadcrumbs--arrow .hph-breadcrumbs__separator::before {
+    content: '→';
+}
+
+.hph-breadcrumbs--chevron .hph-breadcrumbs__separator::before {
+    content: '❯';
+}
+
+.hph-breadcrumbs--slash .hph-breadcrumbs__separator::before {
+    content: '/';
+}
+
+.hph-breadcrumbs--dot .hph-breadcrumbs__separator::before {
+    content: '•';
+}
+
+.hph-breadcrumbs--pipe .hph-breadcrumbs__separator::before {
+    content: '|';
+}
+
+/* Default separator */
+.hph-breadcrumbs__separator::before {
+    content: '/';
+}
+
+/* ================================================
+   Truncation & Overflow
+   ================================================ */
+
+.hph-breadcrumbs--truncate .hph-breadcrumbs__item {
+    max-width: 200px;
+}
+
+.hph-breadcrumbs--truncate .hph-breadcrumbs__link,
+.hph-breadcrumbs--truncate .hph-breadcrumbs__current {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+/* Collapse middle items on smaller screens */
+.hph-breadcrumbs--collapse .hph-breadcrumbs__item:not(:first-child):not(:last-child):not(:nth-last-child(2)) {
+    display: none;
+}
+
+.hph-breadcrumbs--collapse .hph-breadcrumbs__item:nth-child(2)::after {
+    content: '…';
+    color: var(--hph-text-muted);
+    margin: 0 var(--hph-breadcrumbs-separator-spacing);
+}
+
+/* ================================================
+   Accessibility
+   ================================================ */
+
+.hph-breadcrumbs__link:focus-visible {
+    box-shadow: 0 0 0 2px var(--hph-primary);
+}
+
+/* Support for structured data and screen readers */
+.hph-breadcrumbs[typeof="BreadcrumbList"],
+.hph-breadcrumbs[aria-label] {
+    /* Preserve semantic structure for assistive technologies */
+    position: relative;
+}
+
+/* ================================================
+   Mobile Responsive
+   ================================================ */
+
+@media (max-width: 640px) {
+    .hph-breadcrumbs {
+        font-size: var(--hph-font-size-xs);
+        --hph-breadcrumbs-separator-spacing: var(--hph-spacing-xs);
+    }
+    
+    .hph-breadcrumbs__link {
+        padding: var(--hph-spacing-xs);
+        margin: calc(-1 * var(--hph-spacing-xs));
+    }
+    
+    /* Auto-collapse on mobile */
+    .hph-breadcrumbs__item:not(:first-child):not(:last-child):not(:nth-last-child(2)) {
+        display: none;
+    }
+    
+    .hph-breadcrumbs__item:nth-child(2)::after {
+        content: '…';
+        color: var(--hph-text-muted);
+        margin: 0 var(--hph-breadcrumbs-separator-spacing);
+    }
+    
+    /* Ensure home icon is always visible */
+    .hph-breadcrumbs__item:first-child {
+        display: flex;
+    }
+}
+
+@media (max-width: 480px) {
+    .hph-breadcrumbs {
+        --hph-breadcrumbs-separator-spacing: 0.25rem;
+    }
+    
+    /* Only show home and current on very small screens */
+    .hph-breadcrumbs__item:not(:first-child):not(:last-child) {
+        display: none;
+    }
+    
+    .hph-breadcrumbs__item:first-child + .hph-breadcrumbs__item::before {
+        content: '…';
+        color: var(--hph-text-muted);
+        margin-right: var(--hph-breadcrumbs-separator-spacing);
+    }
+}
+
+/* ================================================
+   Animation Support
+   ================================================ */
+
+.hph-breadcrumbs--animated .hph-breadcrumbs__item {
+    opacity: 0;
+    transform: translateX(-10px);
+    animation: breadcrumbSlideIn 0.3s ease forwards;
+}
+
+.hph-breadcrumbs--animated .hph-breadcrumbs__item:nth-child(1) { animation-delay: 0.1s; }
+.hph-breadcrumbs--animated .hph-breadcrumbs__item:nth-child(2) { animation-delay: 0.2s; }
+.hph-breadcrumbs--animated .hph-breadcrumbs__item:nth-child(3) { animation-delay: 0.3s; }
+.hph-breadcrumbs--animated .hph-breadcrumbs__item:nth-child(4) { animation-delay: 0.4s; }
+.hph-breadcrumbs--animated .hph-breadcrumbs__item:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes breadcrumbSlideIn {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hph-breadcrumbs--animated .hph-breadcrumbs__item {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+    
+    .hph-breadcrumbs__link {
+        transition: none;
+    }
+}
+
+/* ================================================
+   Print Styles
+   ================================================ */
+
+@media print {
+    .hph-breadcrumbs {
+        font-size: 10pt;
+        color: black;
+    }
+    
+    .hph-breadcrumbs__link {
+        color: black;
+        text-decoration: none;
+    }
+    
+    .hph-breadcrumbs--background,
+    .hph-breadcrumbs--bordered {
+        background: none;
+        border: none;
+        padding: 0;
+    }
+}

@@ -1,0 +1,631 @@
+/**
+ * Modal Component CSS - Production Styles
+ * Consolidated from mature listing-gallery.css lightbox/modal styles
+ * 
+ * @package HappyPlaceTheme
+ */
+
+/* ================================================
+   BASE MODAL/LIGHTBOX
+   ================================================ */
+
+.hph-modal,
+.hph-lightbox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(4px);
+}
+
+.hph-modal.active,
+.hph-lightbox.active {
+    display: flex;
+}
+
+/* ================================================
+   MODAL BACKDROP
+   ================================================ */
+
+.hph-modal-backdrop,
+.hph-lightbox-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+/* Backdrop variants */
+.hph-modal-backdrop--light {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+}
+
+.hph-modal-backdrop--dark {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.hph-modal-backdrop--blur {
+    backdrop-filter: blur(6px);
+}
+
+/* ================================================
+   MODAL CONTENT CONTAINER
+   ================================================ */
+
+.hph-modal-content,
+.hph-lightbox-content {
+    position: relative;
+    width: 90%;
+    max-width: 1200px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    z-index: 2;
+    background: var(--hph-white);
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+}
+
+/* Content variants */
+.hph-modal-content--small {
+    max-width: 400px;
+}
+
+.hph-modal-content--medium {
+    max-width: 600px;
+}
+
+.hph-modal-content--large {
+    max-width: 900px;
+}
+
+.hph-modal-content--fullscreen {
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+    border-radius: 0;
+}
+
+/* ================================================
+   MODAL HEADER
+   ================================================ */
+
+.hph-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 2rem;
+    background: var(--hph-white);
+    border-bottom: 1px solid var(--hph-gray-100);
+}
+
+.hph-modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--hph-gray-900);
+    margin: 0;
+}
+
+/* ================================================
+   MODAL CLOSE BUTTON
+   ================================================ */
+
+.hph-modal-close,
+.hph-lightbox-close {
+    position: absolute;
+    top: -3rem;
+    right: 0;
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    color: var(--hph-white);
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 3;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hph-modal-close:hover,
+.hph-lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+/* Close button inside modal */
+.hph-modal-close--inside {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: var(--hph-gray-100);
+    color: var(--hph-gray-600);
+    width: 36px;
+    height: 36px;
+    font-size: 1.25rem;
+}
+
+.hph-modal-close--inside:hover {
+    background: var(--hph-gray-200);
+    color: var(--hph-gray-800);
+    transform: none;
+}
+
+/* ================================================
+   MODAL BODY
+   ================================================ */
+
+.hph-modal-body {
+    padding: 2rem;
+    overflow-y: auto;
+    flex: 1;
+    background: var(--hph-white);
+}
+
+.hph-modal-body--no-padding {
+    padding: 0;
+}
+
+.hph-modal-body--small-padding {
+    padding: 1rem;
+}
+
+/* ================================================
+   MODAL FOOTER
+   ================================================ */
+
+.hph-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 1.5rem 2rem;
+    background: var(--hph-gray-50);
+    border-top: 1px solid var(--hph-gray-100);
+}
+
+.hph-modal-footer--center {
+    justify-content: center;
+}
+
+.hph-modal-footer--space-between {
+    justify-content: space-between;
+}
+
+/* ================================================
+   LIGHTBOX SPECIFIC STYLES
+   ================================================ */
+
+.hph-lightbox-image-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    background: transparent;
+}
+
+.hph-lightbox-image {
+    position: relative;
+    max-width: 100%;
+    max-height: 70vh;
+}
+
+.hph-lightbox-image img {
+    max-width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    border-radius: 0.5rem;
+}
+
+/* ================================================
+   LIGHTBOX NAVIGATION
+   ================================================ */
+
+.hph-lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 56px;
+    height: 56px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    color: var(--hph-white);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+}
+
+.hph-lightbox-prev {
+    left: 2rem;
+}
+
+.hph-lightbox-next {
+    right: 2rem;
+}
+
+.hph-lightbox-nav:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.hph-lightbox-nav:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+}
+
+/* ================================================
+   LIGHTBOX INFO/METADATA
+   ================================================ */
+
+.hph-lightbox-info {
+    margin-top: 2rem;
+    color: var(--hph-white);
+    text-align: center;
+}
+
+.hph-lightbox-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+    color: var(--hph-white);
+}
+
+.hph-lightbox-caption {
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0 1rem;
+    line-height: 1.5;
+}
+
+.hph-lightbox-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hph-lightbox-counter {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* ================================================
+   LIGHTBOX ACTIONS
+   ================================================ */
+
+.hph-lightbox-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.hph-lightbox-fullscreen,
+.hph-lightbox-download {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    color: var(--hph-white);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.hph-lightbox-fullscreen:hover,
+.hph-lightbox-download:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--hph-white);
+}
+
+/* ================================================
+   LOADING STATE
+   ================================================ */
+
+.hph-modal-loader,
+.hph-lightbox-loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--hph-white);
+    font-size: 2rem;
+    display: none;
+    z-index: 4;
+}
+
+.hph-modal-loader.active,
+.hph-lightbox-loader.active {
+    display: block;
+}
+
+.hph-modal-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid var(--hph-white);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* ================================================
+   VIDEO MODAL
+   ================================================ */
+
+.hph-video-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.95);
+}
+
+.hph-video-modal.active {
+    display: flex;
+}
+
+.hph-video-modal iframe,
+.hph-video-modal video {
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 0.5rem;
+}
+
+/* ================================================
+   MODAL ANIMATIONS
+   ================================================ */
+
+.hph-modal.active,
+.hph-lightbox.active {
+    animation: modalFadeIn 0.3s ease;
+}
+
+.hph-modal-content,
+.hph-lightbox-content {
+    animation: modalSlideUp 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ================================================
+   RESPONSIVE DESIGN
+   ================================================ */
+
+@media (max-width: 768px) {
+    .hph-modal-content,
+    .hph-lightbox-content {
+        width: 95%;
+        max-height: 95vh;
+    }
+    
+    .hph-modal-header {
+        padding: 1rem 1.5rem;
+    }
+    
+    .hph-modal-body {
+        padding: 1.5rem;
+    }
+    
+    .hph-modal-footer {
+        padding: 1rem 1.5rem;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .hph-lightbox-nav {
+        width: 48px;
+        height: 48px;
+        font-size: 1.25rem;
+    }
+    
+    .hph-lightbox-prev {
+        left: 1rem;
+    }
+    
+    .hph-lightbox-next {
+        right: 1rem;
+    }
+    
+    .hph-lightbox-close,
+    .hph-modal-close {
+        width: 40px;
+        height: 40px;
+        font-size: 1.25rem;
+        top: -2.5rem;
+    }
+    
+    .hph-lightbox-info {
+        margin-top: 1rem;
+    }
+    
+    .hph-lightbox-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .hph-modal-content,
+    .hph-lightbox-content {
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 0;
+    }
+    
+    .hph-modal-header {
+        padding: 1rem;
+    }
+    
+    .hph-modal-title {
+        font-size: 1.125rem;
+    }
+    
+    .hph-modal-body {
+        padding: 1rem;
+    }
+    
+    .hph-modal-footer {
+        padding: 1rem;
+    }
+    
+    .hph-lightbox-close,
+    .hph-modal-close {
+        top: 1rem;
+        right: 1rem;
+        position: fixed;
+        background: rgba(0, 0, 0, 0.5);
+    }
+    
+    .hph-lightbox-nav {
+        width: 44px;
+        height: 44px;
+    }
+    
+    .hph-lightbox-image img {
+        max-height: 60vh;
+    }
+}
+
+/* ================================================
+   ACCESSIBILITY
+   ================================================ */
+
+.hph-modal:focus,
+.hph-lightbox:focus {
+    outline: none;
+}
+
+.hph-modal-close:focus-visible,
+.hph-lightbox-close:focus-visible,
+.hph-lightbox-nav:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.8);
+    outline-offset: 2px;
+}
+
+/* ================================================
+   REDUCED MOTION
+   ================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    .hph-modal.active,
+    .hph-lightbox.active,
+    .hph-modal-content,
+    .hph-lightbox-content,
+    .hph-modal-close,
+    .hph-lightbox-close,
+    .hph-lightbox-nav {
+        animation: none;
+        transition: none;
+    }
+    
+    .hph-modal-close:hover,
+    .hph-lightbox-close:hover {
+        transform: none;
+    }
+    
+    .hph-lightbox-nav:hover {
+        transform: translateY(-50%);
+    }
+    
+    .hph-modal-spinner {
+        animation: none;
+    }
+}
+
+/* ================================================
+   DARK MODE SUPPORT
+   ================================================ */
+
+@media (prefers-color-scheme: dark) {
+    .hph-modal-content {
+        background: var(--hph-gray-800);
+        color: var(--hph-gray-100);
+    }
+    
+    .hph-modal-header {
+        background: var(--hph-gray-800);
+        border-bottom-color: var(--hph-gray-700);
+    }
+    
+    .hph-modal-title {
+        color: var(--hph-gray-100);
+    }
+    
+    .hph-modal-body {
+        background: var(--hph-gray-800);
+    }
+    
+    .hph-modal-footer {
+        background: var(--hph-gray-700);
+        border-top-color: var(--hph-gray-600);
+    }
+    
+    .hph-modal-close--inside {
+        background: var(--hph-gray-700);
+        color: var(--hph-gray-300);
+    }
+    
+    .hph-modal-close--inside:hover {
+        background: var(--hph-gray-600);
+        color: var(--hph-gray-100);
+    }
+}

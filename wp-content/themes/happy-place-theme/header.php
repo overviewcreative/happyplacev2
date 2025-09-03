@@ -173,9 +173,9 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                         <i class="fas fa-search"></i>
                     </button>
                     
-                    <!-- Saved Properties -->
+                    <!-- Saved Listings -->
                     <?php if ($is_logged_in) : ?>
-                    <a href="/my-account/saved-properties" 
+                    <a href="/my-account/saved-listings" 
                        class="hph-action-btn hph-saved-properties">
                         <i class="fas fa-heart"></i>
                         <?php if ($saved_properties_count > 0) : ?>
@@ -190,9 +190,6 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                                 aria-label="User menu"
                                 aria-expanded="false">
                             <i class="fas fa-user-circle"></i>
-                            <?php if ($is_logged_in) : ?>
-                            <span class="hph-user-name"><?php echo esc_html($current_user->display_name); ?></span>
-                            <?php endif; ?>
                         </button>
                         
                         <div class="hph-dropdown-menu hph-user-menu">
@@ -210,8 +207,8 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                                 <a href="/my-account" class="hph-dropdown-link">
                                     <i class="fas fa-tachometer-alt"></i> Dashboard
                                 </a>
-                                <a href="/my-account/saved-properties" class="hph-dropdown-link">
-                                    <i class="fas fa-heart"></i> Saved Properties
+                                <a href="/my-account/saved-listings" class="hph-dropdown-link">
+                                    <i class="fas fa-heart"></i> Saved Listings
                                 </a>
                                 <a href="/my-account/saved-searches" class="hph-dropdown-link">
                                     <i class="fas fa-search"></i> Saved Searches
@@ -235,7 +232,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                                 </a>
                                 <div class="hph-dropdown-divider"></div>
                                 <p class="hph-dropdown-text">
-                                    Sign in to save properties and searches
+                                    Sign in to save listings and searches
                                 </p>
                             <?php endif; ?>
                         </div>
@@ -259,13 +256,14 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
         <!-- Search Bar (Hidden by default) -->
         <div class="hph-search-bar" data-search-bar>
             <div class="hph-container">
-                <form class="hph-search-form" action="/properties" method="GET">
+                <form class="hph-search-form" action="<?php echo esc_url(home_url('/advanced-search/')); ?>" method="GET">
+                    <input type="hidden" name="post_type" value="listing">
                     <div class="hph-search-grid">
                         <!-- Search Input -->
                         <div class="hph-search-input-wrapper">
                             <i class="fas fa-search"></i>
                             <input type="text" 
-                                   name="location" 
+                                   name="s" 
                                    class="hph-search-input" 
                                    placeholder="Enter city, zip, address, or MLS#"
                                    autocomplete="off">
@@ -274,38 +272,41 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                         
                         <!-- Property Type -->
                         <select name="property_type" class="hph-search-select">
-                            <?php foreach ($property_types as $type) : ?>
-                            <option value="<?php echo esc_attr(strtolower(str_replace(' ', '-', $type))); ?>">
-                                <?php echo esc_html($type); ?>
-                            </option>
-                            <?php endforeach; ?>
+                            <option value="">All Types</option>
+                            <option value="single_family">Single Family</option>
+                            <option value="condo">Condo</option>
+                            <option value="townhouse">Townhouse</option>
+                            <option value="multi_family">Multi-Family</option>
+                            <option value="land">Land</option>
                         </select>
                         
                         <!-- Price Range -->
                         <select name="price_range" class="hph-search-select">
-                            <?php foreach ($price_ranges as $value => $label) : ?>
-                            <option value="<?php echo esc_attr($value); ?>">
-                                <?php echo esc_html($label); ?>
-                            </option>
-                            <?php endforeach; ?>
+                            <option value="">Price Range</option>
+                            <option value="0-250000">Under $250k</option>
+                            <option value="250000-500000">$250k - $500k</option>
+                            <option value="500000-750000">$500k - $750k</option>
+                            <option value="750000-1000000">$750k - $1M</option>
+                            <option value="1000000-9999999">Over $1M</option>
                         </select>
                         
                         <!-- Beds -->
-                        <select name="beds" class="hph-search-select">
-                            <?php foreach ($bed_options as $option) : ?>
-                            <option value="<?php echo esc_attr(str_replace('+', '', $option)); ?>">
-                                <?php echo esc_html($option); ?>
-                            </option>
-                            <?php endforeach; ?>
+                        <select name="bedrooms" class="hph-search-select">
+                            <option value="">Beds</option>
+                            <option value="1">1+</option>
+                            <option value="2">2+</option>
+                            <option value="3">3+</option>
+                            <option value="4">4+</option>
+                            <option value="5">5+</option>
                         </select>
                         
                         <!-- Baths -->
-                        <select name="baths" class="hph-search-select">
-                            <?php foreach ($bath_options as $option) : ?>
-                            <option value="<?php echo esc_attr(str_replace('+', '', $option)); ?>">
-                                <?php echo esc_html($option); ?>
-                            </option>
-                            <?php endforeach; ?>
+                        <select name="bathrooms" class="hph-search-select">
+                            <option value="">Baths</option>
+                            <option value="1">1+</option>
+                            <option value="2">2+</option>
+                            <option value="3">3+</option>
+                            <option value="4">4+</option>
                         </select>
                         
                         <!-- Submit Button -->
@@ -315,7 +316,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                         </button>
                         
                         <!-- Advanced Search Link -->
-                        <a href="/advanced-search" class="hph-advanced-search">
+                        <a href="<?php echo esc_url(home_url('/advanced-search/')); ?>" class="hph-advanced-search">
                             <i class="fas fa-sliders-h"></i>
                             Advanced Search
                         </a>
@@ -325,11 +326,11 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                 <!-- Quick Search Links -->
                 <div class="hph-quick-searches">
                     <span class="hph-quick-label">Quick Search:</span>
-                    <a href="/properties?status=open-house" class="hph-quick-link">Open Houses</a>
-                    <a href="/properties?status=new" class="hph-quick-link">New Listings</a>
-                    <a href="/properties?feature=waterfront" class="hph-quick-link">Waterfront</a>
-                    <a href="/properties?feature=pool" class="hph-quick-link">With Pool</a>
-                    <a href="/properties?status=reduced" class="hph-quick-link">Price Reduced</a>
+                    <a href="/listings/?status=open-house" class="hph-quick-link">Open Houses</a>
+                    <a href="/listings/?status=new" class="hph-quick-link">New Listings</a>
+                    <a href="/listings/?feature=waterfront" class="hph-quick-link">Waterfront</a>
+                    <a href="/listings/?feature=pool" class="hph-quick-link">With Pool</a>
+                    <a href="/listings/?status=reduced" class="hph-quick-link">Price Reduced</a>
                 </div>
             </div>
             
@@ -358,12 +359,13 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
         
         <!-- Mobile Search -->
         <div class="hph-mobile-search">
-            <form action="/properties" method="GET">
+            <form action="<?php echo esc_url(home_url('/advanced-search/')); ?>" method="GET">
+                <input type="hidden" name="type" value="listing">
                 <div class="hph-mobile-search-input">
                     <i class="fas fa-search"></i>
                     <input type="text" 
-                           name="location" 
-                           placeholder="Search properties..."
+                           name="s" 
+                           placeholder="Search listings..."
                            autocomplete="off">
                 </div>
             </form>
@@ -417,3 +419,8 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
     
     <!-- Mobile Menu Overlay -->
     <div class="hph-mobile-overlay" data-mobile-overlay></div>
+
+    <!-- Main Content Area -->
+    <div id="main" class="hph-main-content" role="main">
+        <div class="hph-main-wrapper">
+            <div class="hph-content-container"><?php // Template content will be inserted here ?>

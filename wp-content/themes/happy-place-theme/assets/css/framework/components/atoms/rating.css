@@ -1,0 +1,449 @@
+/**
+ * Base Rating Component CSS
+ * Star rating display and input with comprehensive styling options
+ * 
+ * @package HappyPlaceTheme
+ */
+
+/* ================================================
+   Base Rating Styles
+   ================================================ */
+
+.hph-rating {
+    --hph-rating-transition: all 0.2s ease;
+    --hph-rating-hover-scale: 1.1;
+    
+    display: inline-flex;
+    flex-direction: column;
+    gap: var(--hph-spacing-xs);
+}
+
+.hph-rating--disabled {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* ================================================
+   Label & Description
+   ================================================ */
+
+.hph-rating__label {
+    display: block;
+    font-weight: 600;
+    color: var(--hph-text-primary);
+    font-size: var(--hph-font-size-sm);
+    margin-bottom: var(--hph-spacing-xs);
+}
+
+.hph-rating__required {
+    color: var(--hph-error);
+    margin-left: var(--hph-spacing-xs);
+}
+
+.hph-rating__description {
+    font-size: var(--hph-font-size-sm);
+    color: var(--hph-text-secondary);
+    line-height: 1.4;
+    margin-bottom: var(--hph-spacing-sm);
+}
+
+/* ================================================
+   Container
+   ================================================ */
+
+.hph-rating__container {
+    display: flex;
+    align-items: center;
+    gap: var(--hph-spacing-sm);
+}
+
+.hph-rating--with-text .hph-rating__container {
+    gap: var(--hph-spacing-md);
+}
+
+/* ================================================
+   Stars Container
+   ================================================ */
+
+.hph-rating__stars {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+/* ================================================
+   Individual Star
+   ================================================ */
+
+.hph-rating__star {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+    transition: var(--hph-rating-transition);
+}
+
+.hph-rating--interactive .hph-rating__star {
+    cursor: pointer;
+}
+
+.hph-rating--interactive .hph-rating__star:hover {
+    transform: scale(var(--hph-rating-hover-scale));
+}
+
+.hph-rating--interactive .hph-rating__star:focus-within {
+    transform: scale(var(--hph-rating-hover-scale));
+}
+
+/* ================================================
+   Star Input (Hidden)
+   ================================================ */
+
+.hph-rating__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.hph-rating__input:focus + .hph-rating__icon {
+    outline: 2px solid var(--hph-primary);
+    outline-offset: 2px;
+    border-radius: var(--hph-radius-sm);
+}
+
+/* ================================================
+   Star Icon
+   ================================================ */
+
+.hph-rating__icon {
+    display: block;
+    transition: var(--hph-rating-transition);
+    color: var(--hph-gray-300);
+}
+
+/* ================================================
+   Star States
+   ================================================ */
+
+.hph-rating__star--empty .hph-rating__icon {
+    color: var(--hph-gray-300);
+}
+
+.hph-rating__star--filled .hph-rating__icon {
+    color: var(--hph-warning);
+}
+
+.hph-rating__star--half .hph-rating__icon {
+    color: var(--hph-warning);
+}
+
+/* ================================================
+   Color Variations
+   ================================================ */
+
+.hph-rating--primary .hph-rating__star--filled .hph-rating__icon,
+.hph-rating--primary .hph-rating__star--half .hph-rating__icon {
+    color: var(--hph-primary);
+}
+
+.hph-rating--secondary .hph-rating__star--filled .hph-rating__icon,
+.hph-rating--secondary .hph-rating__star--half .hph-rating__icon {
+    color: var(--hph-secondary);
+}
+
+.hph-rating--warning .hph-rating__star--filled .hph-rating__icon,
+.hph-rating--warning .hph-rating__star--half .hph-rating__icon {
+    color: var(--hph-warning);
+}
+
+/* ================================================
+   Size Variations
+   ================================================ */
+
+.hph-rating--xs {
+    --hph-rating-hover-scale: 1.05;
+}
+
+.hph-rating--xs .hph-rating__stars {
+    gap: 1px;
+}
+
+.hph-rating--sm {
+    --hph-rating-hover-scale: 1.08;
+}
+
+.hph-rating--sm .hph-rating__stars {
+    gap: 1px;
+}
+
+.hph-rating--lg {
+    --hph-rating-hover-scale: 1.15;
+}
+
+.hph-rating--lg .hph-rating__stars {
+    gap: 3px;
+}
+
+.hph-rating--xl {
+    --hph-rating-hover-scale: 1.2;
+}
+
+.hph-rating--xl .hph-rating__stars {
+    gap: 4px;
+}
+
+/* ================================================
+   Variant Styles
+   ================================================ */
+
+/* Filled Variant */
+.hph-rating--filled .hph-rating__star--empty .hph-rating__icon {
+    color: var(--hph-gray-200);
+    background: var(--hph-gray-100);
+    border-radius: var(--hph-radius-sm);
+    padding: 2px;
+}
+
+/* Outline Variant */
+.hph-rating--outline .hph-rating__star--filled .hph-rating__icon,
+.hph-rating--outline .hph-rating__star--half .hph-rating__icon {
+    filter: none;
+}
+
+.hph-rating--outline .hph-rating__star--empty .hph-rating__icon {
+    color: var(--hph-gray-400);
+}
+
+/* Minimal Variant */
+.hph-rating--minimal .hph-rating__stars {
+    gap: 1px;
+}
+
+.hph-rating--minimal .hph-rating__star--empty .hph-rating__icon {
+    color: var(--hph-gray-200);
+}
+
+/* ================================================
+   Shape Variations
+   ================================================ */
+
+.hph-rating--heart .hph-rating__star--filled .hph-rating__icon,
+.hph-rating--heart .hph-rating__star--half .hph-rating__icon {
+    color: var(--hph-error);
+}
+
+.hph-rating--thumb .hph-rating__star--filled .hph-rating__icon,
+.hph-rating--thumb .hph-rating__star--half .hph-rating__icon {
+    color: var(--hph-success);
+}
+
+/* ================================================
+   Interactive Hover Effects
+   ================================================ */
+
+.hph-rating--interactive .hph-rating__star:hover .hph-rating__icon,
+.hph-rating--interactive .hph-rating__star:hover ~ .hph-rating__star .hph-rating__icon {
+    color: var(--hph-gray-300);
+}
+
+.hph-rating--interactive .hph-rating__star:hover .hph-rating__icon {
+    color: var(--hph-warning);
+}
+
+.hph-rating--interactive.hph-rating--primary .hph-rating__star:hover .hph-rating__icon {
+    color: var(--hph-primary);
+}
+
+.hph-rating--interactive.hph-rating--secondary .hph-rating__star:hover .hph-rating__icon {
+    color: var(--hph-secondary);
+}
+
+/* ================================================
+   Clear Button
+   ================================================ */
+
+.hph-rating__clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0;
+    margin-left: var(--hph-spacing-xs);
+    background: transparent;
+    border: 1px solid var(--hph-border-color);
+    border-radius: var(--hph-radius-sm);
+    color: var(--hph-text-secondary);
+    cursor: pointer;
+    transition: var(--hph-rating-transition);
+    opacity: 0.7;
+}
+
+.hph-rating__clear:hover {
+    background: var(--hph-error-alpha-10);
+    border-color: var(--hph-error);
+    color: var(--hph-error);
+    opacity: 1;
+}
+
+.hph-rating__clear:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--hph-error-alpha-20);
+}
+
+.hph-rating__clear-icon {
+    width: 12px;
+    height: 12px;
+}
+
+/* ================================================
+   Rating Text
+   ================================================ */
+
+.hph-rating__text {
+    font-size: var(--hph-font-size-sm);
+    color: var(--hph-text-secondary);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.hph-rating--xs .hph-rating__text {
+    font-size: var(--hph-font-size-xs);
+}
+
+.hph-rating--lg .hph-rating__text,
+.hph-rating--xl .hph-rating__text {
+    font-size: var(--hph-font-size-base);
+}
+
+/* ================================================
+   Labels
+   ================================================ */
+
+.hph-rating__labels {
+    display: flex;
+    gap: var(--hph-spacing-xs);
+    margin-top: var(--hph-spacing-sm);
+    flex-wrap: wrap;
+}
+
+.hph-rating__label-item {
+    padding: var(--hph-spacing-xs) var(--hph-spacing-sm);
+    background: var(--hph-gray-100);
+    border-radius: var(--hph-radius-sm);
+    font-size: var(--hph-font-size-xs);
+    color: var(--hph-text-secondary);
+    transition: var(--hph-rating-transition);
+}
+
+.hph-rating__label-item--active {
+    background: var(--hph-primary);
+    color: var(--hph-white);
+    font-weight: 600;
+}
+
+/* ================================================
+   Readonly State
+   ================================================ */
+
+.hph-rating--readonly .hph-rating__star {
+    cursor: default;
+}
+
+.hph-rating--readonly .hph-rating__star:hover {
+    transform: none;
+}
+
+/* ================================================
+   Accessibility
+   ================================================ */
+
+.hph-rating__star:focus-visible {
+    outline: 2px solid var(--hph-primary);
+    outline-offset: 2px;
+    border-radius: var(--hph-radius-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hph-rating__star,
+    .hph-rating__icon,
+    .hph-rating__clear,
+    .hph-rating__label-item {
+        transition: none;
+    }
+    
+    .hph-rating--interactive .hph-rating__star:hover,
+    .hph-rating--interactive .hph-rating__star:focus-within {
+        transform: none;
+    }
+}
+
+/* ================================================
+   High Contrast Mode
+   ================================================ */
+
+@media (prefers-contrast: high) {
+    .hph-rating__star--filled .hph-rating__icon,
+    .hph-rating__star--half .hph-rating__icon {
+        filter: contrast(1.2);
+    }
+    
+    .hph-rating__clear {
+        border-width: 2px;
+    }
+}
+
+/* ================================================
+   Mobile Responsive
+   ================================================ */
+
+@media (max-width: 640px) {
+    .hph-rating__container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--hph-spacing-sm);
+    }
+    
+    .hph-rating--with-text .hph-rating__container {
+        gap: var(--hph-spacing-sm);
+    }
+    
+    .hph-rating__labels {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .hph-rating__label-item {
+        text-align: center;
+    }
+}
+
+/* ================================================
+   Print Styles
+   ================================================ */
+
+@media print {
+    .hph-rating__clear {
+        display: none;
+    }
+    
+    .hph-rating__star--filled .hph-rating__icon,
+    .hph-rating__star--half .hph-rating__icon {
+        color: black;
+    }
+    
+    .hph-rating__star--empty .hph-rating__icon {
+        color: #666;
+    }
+    
+    .hph-rating__text {
+        color: black;
+    }
+}

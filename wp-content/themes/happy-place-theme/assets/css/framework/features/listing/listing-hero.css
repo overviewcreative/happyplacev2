@@ -1,0 +1,340 @@
+/* Modern Hero Styles */
+.hph-hero--modern {
+    position: relative;
+    height: 80vh;
+    padding-top: var(--hph-space-6);
+    min-height: 600px;
+    max-height: 900px;
+    overflow: hidden;
+    background: #000;
+    display: flex;
+    align-items: flex-end;
+}
+
+/* Gallery Background */
+.hph-hero__gallery {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.hph-hero__image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+.hph-hero__image.active {
+    opacity: 1;
+}
+
+.hph-hero__image--placeholder {
+    background: var(--hph-gray-800);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    color: var(--hph-gray-600);
+}
+
+/* Status Badge */
+.hph-hero__status {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--hph-gray-900);
+    padding: 0.5rem 1.25rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    z-index: 10;
+}
+
+.hph-hero__status--pending {
+    background: var(--hph-warning);
+    color: white;
+}
+
+.hph-hero__status--sold {
+    background: var(--hph-danger);
+    color: white;
+}
+
+/* Photo Navigation */
+.hph-hero__photo-nav {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    z-index: 10;
+}
+
+.hph-hero__photo-count {
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.hph-hero__nav-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.hph-hero__nav-btn:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: scale(1.1);
+}
+
+/* Content Overlay - FIXED POSITIONING */
+.hph-hero__overlay {
+    position: relative;
+    width: 100%;
+    background: linear-gradient(to top, rgba(12, 18, 20, 0.926) 0%, rgba(4, 5, 5, 0.6) 50%, transparent 100%);
+    padding: 20rem 0 3rem;
+    margin-top: auto;
+    z-index: 5;
+}
+
+.hph-hero__content {
+    color: white;
+    width: 100%;
+}
+
+.hph-hero__info {
+    max-width: 800px;
+}
+
+.hph-hero__title {
+    margin: 0 0 0.5rem 0;
+    color: var(--hph-primary-200);
+    letter-spacing: -0.02em;
+}
+
+.hph-hero__location {
+    font-size: 1.125rem;
+    opacity: 0.9;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.hph-hero__location i {
+    font-size: 0.875rem;
+}
+
+/* Price Display */
+.hph-hero__price-wrapper {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.hph-hero__price {
+    font-size: var(--hph-text-3xl);
+    font-weight: 500;
+    color: var(--hph-primary);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.hph-hero__price-per {
+    font-size: 1.125rem;
+    opacity: 0.8;
+}
+
+/* Stats Row */
+.hph-hero__stats {
+    display: flex;
+    gap: 3rem;
+    margin-bottom: 1rem;
+}
+
+.hph-hero__stat {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.hph-hero__stat i {
+    font-size: 1.5rem;
+    opacity: 0.7;
+}
+
+.hph-hero__stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.hph-hero__stat-value {
+    font-size: 1.125rem;
+    font-weight: 500;
+}
+
+.hph-hero__stat-label {
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+    margin-top: 0.25rem;
+}
+
+/* Action Buttons */
+.hph-hero__actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.hph-hero__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.hph-hero__btn--primary {
+    background: var(--hph-primary);
+    color: white;
+}
+
+.hph-hero__btn--primary:hover {
+    background: var(--hph-primary-dark);
+    transform: translateY(-2px);
+}
+
+.hph-hero__btn--secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.hph-hero__btn--secondary:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.hph-hero__btn--icon {
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.hph-hero__btn--icon:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .hph-hero__title {
+        font-size: 2.5rem;
+    }
+    
+    .hph-hero__price {
+        font-size: 3rem;
+    }
+    
+    .hph-hero__stats {
+        gap: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .hph-hero--modern {
+        height: 70vh;
+        min-height: 500px;
+    }
+    
+    .hph-hero__title {
+        font-size: 2rem;
+    }
+    
+    .hph-hero__price {
+        font-size: 2.5rem;
+    }
+    
+    .hph-hero__stats {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .hph-hero__actions {
+        flex-wrap: wrap;
+    }
+    
+    .hph-hero__btn {
+        flex: 1;
+        min-width: 140px;
+    }
+    
+    .hph-hero__btn--icon {
+        flex: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .hph-hero__overlay {
+        padding: 2rem 0;
+    }
+    
+    .hph-hero__title {
+        font-size: 1.5rem;
+    }
+    
+    .hph-hero__price {
+        font-size: 2rem;
+    }
+    
+    .hph-hero__price-per {
+        display: none;
+    }
+    
+    .hph-hero__stat-label {
+        display: none;
+    }
+    
+    .hph-hero__btn {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.875rem;
+    }
+}

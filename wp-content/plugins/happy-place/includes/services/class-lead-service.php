@@ -50,9 +50,9 @@ class LeadService extends Service {
         // Register shortcodes
         $this->register_shortcodes();
         
-        // Register admin menu
+        // Register admin menu - DISABLED: Moved to unified AdminMenu
         if (is_admin()) {
-            add_action('admin_menu', [$this, 'register_admin_menu']);
+            // add_action('admin_menu', [$this, 'register_admin_menu']); // Commented out - moved to AdminMenu
             add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
         }
         
@@ -465,8 +465,12 @@ class LeadService extends Service {
     
     /**
      * Register admin menu
+     * NOTE: Commented out - functionality moved to unified AdminMenu Analytics tab
      */
     public function register_admin_menu(): void {
+        // Menu registration moved to AdminMenu class - Analytics section
+        // This keeps the functionality but consolidates the menu structure
+        /*
         add_menu_page(
             'Leads',
             'Leads',
@@ -485,6 +489,7 @@ class LeadService extends Service {
             'hp-lead-settings',
             [$this, 'render_settings_page']
         );
+        */
     }
     
     /**

@@ -1,0 +1,434 @@
+<?php
+/**
+ * HPH Hero Section Template
+ * 
+ * Hero section template using existing CSS framework classes
+ * 
+ * @package HappyPlaceTheme
+ * @since 3.0.0
+ * 
+ * Args:
+ * - style: 'minimal' | 'gradient' | 'image' | 'video' | 'split' | 'property'
+ * - height: 'sm' | 'md' | 'lg' | 'xl' | 'full'
+ * - background_image: string (URL)
+ * - background_video: string (URL for MP4)
+ * - overlay: 'none' | 'light' | 'dark' | 'gradient' | 'gradient-reverse' | 'gradient-radial' | 'primary' | 'primary-gradient'
+ * - overlay_opacity: string ('20', '40', '60', '80')
+ * - alignment: 'left' | 'center' | 'right'
+ * - content_width: 'narrow' | 'normal' | 'wide' | 'full'
+ * - badge: string (optional)
+ * - badge_icon: string (optional icon class)
+ * - headline: string
+ * - subheadline: string (optional)
+ * - content: string
+ * - buttons: array of button configurations
+ * - scroll_indicator: boolean
+ * - section_id: string (optional)
+ * - parallax: boolean (optional)
+ * - fade_in: boolean (optional)
+ * 
+ * Property-specific args:
+ * - listing_id: int (for property hero)
+ * - show_gallery: boolean
+ * - show_status: boolean
+ * - show_price: boolean
+ * - show_stats: boolean
+ */
+
+// Register this template part for asset loading
+if (function_exists('hph_register_template_part')) {
+    hph_register_template_part('sections/hero');
+}
+
+// Default arguments
+$defaults = array(
+    'style' => 'gradient',
+    'height' => 'lg',
+    'background_image' => '',
+    'background_video' => '',
+    'overlay' => 'dark',
+    'overlay_opacity' => '40',
+    'alignment' => 'center',
+    'content_width' => 'normal',
+    'badge' => '',
+    'badge_icon' => '',
+    'headline' => 'Hero Section',
+    'subheadline' => '',
+    'content' => '',
+    'buttons' => array(),
+    'scroll_indicator' => false,
+    'section_id' => '',
+    'parallax' => false,
+    'fade_in' => false,
+    // Property-specific defaults
+    'listing_id' => 0,
+    'show_gallery' => false,
+    'show_status' => false,
+    'show_price' => false,
+    'show_stats' => false
+);
+
+// Merge with provided args
+$config = wp_parse_args($args ?? array(), $defaults);
+
+// Extract configuration
+$style = $config['style'];
+$height = $config['height'];
+$background_image = $config['background_image'];
+$background_video = $config['background_video'];
+$overlay = $config['overlay'];
+$overlay_opacity = $config['overlay_opacity'];
+$alignment = $config['alignment'];
+$content_width = $config['content_width'];
+$badge = $config['badge'];
+$badge_icon = $config['badge_icon'];
+$headline = $config['headline'];
+$subheadline = $config['subheadline'];
+$content = $config['content'];
+$buttons = $config['buttons'];
+$scroll_indicator = $config['scroll_indicator'];
+$section_id = $config['section_id'];
+$parallax = $config['parallax'];
+$fade_in = $config['fade_in'];
+// Property-specific configuration
+$listing_id = $config['listing_id'];
+$show_gallery = $config['show_gallery'];
+$show_status = $config['show_status'];
+$show_price = $config['show_price'];
+$show_stats = $config['show_stats'];
+
+// AUTO-FIX: Switch to image style if background_image is provided
+if (!empty($background_image) && $style === 'gradient') {
+    $style = 'image';
+}
+
+// Property-specific auto-configuration
+if ($style === 'property' && $listing_id) {
+    if (function_exists('hpt_get_listing_title') && empty($headline)) {
+        $headline = hpt_get_listing_title($listing_id);
+    }
+    if (function_exists('hpt_get_listing_address') && empty($subheadline)) {
+        $subheadline = hpt_get_listing_address($listing_id);
+    }
+    if (function_exists('hpt_get_listing_featured_image') && empty($background_image)) {
+        $background_image = hpt_get_listing_featured_image($listing_id);
+    }
+    
+    if (!empty($background_image)) {
+        $style = 'image';
+    }
+}
+
+// Build hero classes using existing framework classes
+$hero_classes = array(
+    'hph-hero',
+    'hph-hero-' . $style,
+    'hph-hero-' . $height,
+    'position-relative',
+    'hph-flex',
+    'hph-items-center',
+    'hph-justify-center',
+    'w-full'
+);
+
+// Add class if background image exists
+if ($background_image) {
+    $hero_classes[] = 'has-bg-image';
+    if ($parallax) {
+        $hero_classes[] = 'hph-hero-parallax';
+    }
+}
+
+// Add overlay classes
+if ($overlay !== 'none') {
+    $hero_classes[] = 'hph-hero-overlay-' . $overlay;
+    $hero_classes[] = 'hph-hero-opacity-' . $overlay_opacity;
+}
+
+// Build content container classes
+$container_classes = array(
+    'hph-hero-content',
+    'position-relative',
+    'z-10',
+    'w-full'
+);
+
+// Determine container width class
+$width_class = 'hph-container'; // Default
+
+switch ($content_width) {
+    case 'narrow':
+        $width_class = 'hph-container hph-container-sm';
+        break;
+    case 'wide':
+        $width_class = 'hph-container hph-container-2xl';
+        break;
+    case 'full':
+        $width_class = 'w-full px-4';
+        break;
+    case 'normal':
+    default:
+        $width_class = 'hph-container';
+        break;
+}
+
+// Add fade in animation if enabled
+if ($fade_in) {
+    $container_classes[] = 'hph-animate-fade-in-up';
+}
+
+// Build inner content classes
+$inner_classes = array();
+
+// Alignment classes
+switch ($alignment) {
+    case 'left':
+        $inner_classes[] = 'text-left';
+        break;
+    case 'right':
+        $inner_classes[] = 'text-right';
+        break;
+    case 'center':
+    default:
+        $inner_classes[] = 'text-center';
+        $inner_classes[] = 'hph-mx-auto';
+        break;
+}
+
+// Text color based on style
+if ($style === 'minimal' || ($overlay === 'light' && !empty($background_image))) {
+    $inner_classes[] = 'text-primary';
+} else {
+    $inner_classes[] = 'text-white';
+}
+
+// Build inline styles
+$inline_styles = array();
+
+if ($background_image) {
+    $inline_styles[] = "background-image: url('" . esc_url($background_image) . "')";
+    $inline_styles[] = "background-size: cover";
+    $inline_styles[] = "background-position: center";
+    $inline_styles[] = "background-repeat: no-repeat";
+    if ($parallax) {
+        $inline_styles[] = "background-attachment: fixed";
+    }
+}
+
+$style_attr = !empty($inline_styles) ? 'style="' . implode('; ', $inline_styles) . '"' : '';
+
+// Ensure Font Awesome is loaded for icons
+if (!wp_script_is('font-awesome', 'enqueued')) {
+    wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css', array(), '6.5.1');
+}
+?>
+
+<section 
+    class="<?php echo esc_attr(implode(' ', $hero_classes)); ?>"
+    <?php if ($section_id): ?>id="<?php echo esc_attr($section_id); ?>"<?php endif; ?>
+    <?php echo $style_attr; ?>
+    data-hero-style="<?php echo esc_attr($style); ?>"
+>
+    
+    <?php if ($background_video): ?>
+    <!-- Video Background -->
+    <video 
+        class="hph-hero-video position-absolute inset-0 w-full h-full object-cover"
+        autoplay 
+        muted 
+        loop 
+        playsinline
+        <?php if ($background_image): ?>poster="<?php echo esc_url($background_image); ?>"<?php endif; ?>
+    >
+        <source src="<?php echo esc_url($background_video); ?>" type="video/mp4">
+        <?php if ($background_image): ?>
+        <!-- Fallback image for browsers that don't support video -->
+        <img src="<?php echo esc_url($background_image); ?>" alt="Hero background" class="w-full h-full object-cover">
+        <?php endif; ?>
+    </video>
+    <?php endif; ?>
+    
+    <?php if ($overlay !== 'none'): ?>
+    <!-- Overlay -->
+    <div class="hph-hero-overlay position-absolute inset-0"></div>
+    <?php endif; ?>
+    
+    <!-- Content Container -->
+    <div class="<?php echo esc_attr(implode(' ', $container_classes)); ?>">
+        <div class="<?php echo esc_attr($width_class); ?>">
+            <div class="<?php echo esc_attr(implode(' ', $inner_classes)); ?>">
+                
+                <?php if ($badge): ?>
+                <!-- Badge -->
+                <div class="hph-mb-lg">
+                    <span class="hph-badge hph-badge-pill hph-hero-badge">
+                        <?php if ($badge_icon): ?>
+                        <i class="<?php echo esc_attr($badge_icon); ?> mr-2"></i>
+                        <?php endif; ?>
+                        <?php echo esc_html($badge); ?>
+                    </span>
+                </div>
+                <?php endif; ?>
+                
+                <?php if ($headline): ?>
+                <!-- Hero Headline -->
+                <h1 class="hph-hero-headline hph-mb-xl text-fluid-3xl md\:text-fluid-4xl lg\:text-fluid-5xl font-bold leading-tight <?php echo $fade_in ? 'hph-animate-fade-in-up' : ''; ?>">
+                    <?php echo esc_html($headline); ?>
+                </h1>
+                <?php endif; ?>
+                
+                <?php if ($subheadline): ?>
+                <!-- Hero Subheadline -->
+                <h2 class="hph-hero-subheadline hph-mb-xl text-fluid-lg md\:text-fluid-xl font-medium leading-snug opacity-90 <?php echo $fade_in ? 'hph-animate-fade-in-up hph-delay-100' : ''; ?>">
+                    <?php echo esc_html($subheadline); ?>
+                </h2>
+                <?php endif; ?>
+                
+                <?php if ($content): ?>
+                <!-- Hero Content -->
+                <div class="hph-hero-content-text hph-mb-2xl text-fluid-base md\:text-fluid-lg leading-normal opacity-85 <?php echo $fade_in ? 'hph-animate-fade-in-up hph-delay-200' : ''; ?>">
+                    <?php echo wp_kses_post($content); ?>
+                </div>
+                <?php endif; ?>
+                
+                <?php if ($style === 'property' && $listing_id): ?>
+                <!-- Property-specific content -->
+                <div class="hph-property-hero-details hph-mb-2xl <?php echo $fade_in ? 'hph-animate-fade-in-up hph-delay-250' : ''; ?>">
+                    
+                    <?php if ($show_price || $show_status): ?>
+                    <div class="hph-property-meta hph-flex hph-flex-wrap hph-items-center hph-gap-md hph-mb-lg <?php echo $alignment === 'center' ? 'hph-justify-center' : ($alignment === 'right' ? 'hph-justify-end' : ''); ?>">
+                        <?php if ($show_price && function_exists('hpt_get_listing_price_formatted')): ?>
+                            <?php $price = hpt_get_listing_price_formatted($listing_id); ?>
+                            <?php if ($price): ?>
+                            <div class="hph-property-price text-2xl md\:text-3xl font-bold">
+                                <?php echo esc_html($price); ?>
+                            </div>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                        
+                        <?php if ($show_status && function_exists('hpt_get_listing_status')): ?>
+                            <?php $status = hpt_get_listing_status($listing_id); ?>
+                            <?php if ($status): ?>
+                            <span class="hph-property-status hph-badge hph-badge-lg hph-badge-white opacity-90">
+                                <?php echo esc_html($status); ?>
+                            </span>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if ($show_stats): ?>
+                    <div class="hph-property-stats hph-flex hph-flex-wrap hph-gap-lg opacity-90 <?php echo $alignment === 'center' ? 'hph-justify-center' : ($alignment === 'right' ? 'hph-justify-end' : ''); ?>">
+                        <?php
+                        $bedrooms = function_exists('hpt_get_listing_bedrooms') ? hpt_get_listing_bedrooms($listing_id) : '';
+                        $bathrooms = function_exists('hpt_get_listing_bathrooms') ? hpt_get_listing_bathrooms($listing_id) : '';
+                        $sqft = function_exists('hpt_get_listing_square_footage') ? hpt_get_listing_square_footage($listing_id) : '';
+                        
+                        if ($bedrooms): ?>
+                        <div class="hph-stat-item hph-flex hph-items-center hph-gap-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                            </svg>
+                            <span class="font-semibold"><?php echo esc_html($bedrooms); ?></span>
+                            <span><?php echo _n('Bed', 'Beds', intval($bedrooms), 'happy-place-theme'); ?></span>
+                        </div>
+                        <?php endif; ?>
+                        
+                        <?php if ($bathrooms): ?>
+                        <div class="hph-stat-item hph-flex hph-items-center hph-gap-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h8m-8 5h8m-4.5 5.5l.5.5m-1-1v-4a1 1 0 011-1h0a1 1 0 011 1v4m-2 0h2"></path>
+                            </svg>
+                            <span class="font-semibold"><?php echo esc_html($bathrooms); ?></span>
+                            <span><?php echo _n('Bath', 'Baths', floatval($bathrooms), 'happy-place-theme'); ?></span>
+                        </div>
+                        <?php endif; ?>
+                        
+                        <?php if ($sqft): ?>
+                        <div class="hph-stat-item hph-flex hph-items-center hph-gap-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
+                            </svg>
+                            <span class="font-semibold"><?php echo esc_html($sqft); ?></span>
+                            <span><?php _e('Sq Ft', 'happy-place-theme'); ?></span>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+                    <?php endif; ?>
+                    
+                </div>
+                <?php endif; ?>
+                
+                <?php if (!empty($buttons)): ?>
+                <!-- Hero Buttons -->
+                <div class="hph-hero-buttons hph-flex hph-flex-wrap hph-gap-lg hph-items-center <?php echo $alignment === 'center' ? 'hph-justify-center' : ($alignment === 'right' ? 'hph-justify-end' : 'hph-justify-start'); ?> <?php echo $fade_in ? 'hph-animate-fade-in-up hph-delay-300' : ''; ?>">
+                    <?php foreach ($buttons as $index => $button): 
+                        $btn_defaults = array(
+                            'text' => 'Button',
+                            'url' => '#',
+                            'style' => 'white',
+                            'size' => 'xl',
+                            'icon' => '',
+                            'icon_position' => 'left',
+                            'target' => '_self'
+                        );
+                        $btn = wp_parse_args($button, $btn_defaults);
+                        
+                        $btn_classes = array(
+                            'hph-hero-btn'
+                        );
+                        
+                        // Button style classes
+                        switch($btn['style']) {
+                            case 'white':
+                                $btn_classes[] = 'hph-btn-white';
+                                break;
+                            case 'outline-white':
+                                $btn_classes[] = 'hph-btn-outline-white';
+                                break;
+                            case 'primary':
+                                $btn_classes[] = 'hph-btn-primary';
+                                break;
+                            default:
+                                $btn_classes[] = 'hph-btn-' . $btn['style'];
+                        }
+                        
+                        // Button size classes
+                        $btn_classes[] = 'hph-btn-' . $btn['size'];
+                        $btn_classes[] = 'hph-transition-all';
+                        $btn_classes[] = 'shadow-lg';
+                    ?>
+                    <a 
+                        href="<?php echo esc_url($btn['url']); ?>"
+                        class="<?php echo esc_attr(implode(' ', $btn_classes)); ?>"
+                        <?php if ($btn['target'] !== '_self'): ?>target="<?php echo esc_attr($btn['target']); ?>"<?php endif; ?>
+                    >
+                        <?php if ($btn['icon'] && $btn['icon_position'] === 'left'): ?>
+                        <i class="<?php echo esc_attr($btn['icon']); ?> mr-2"></i>
+                        <?php endif; ?>
+                        <span><?php echo esc_html($btn['text']); ?></span>
+                        <?php if ($btn['icon'] && $btn['icon_position'] === 'right'): ?>
+                        <i class="<?php echo esc_attr($btn['icon']); ?> ml-2"></i>
+                        <?php endif; ?>
+                    </a>
+                    <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
+                
+            </div>
+        </div>
+    </div>
+    
+    <?php if ($scroll_indicator): ?>
+    <!-- Scroll Indicator -->
+    <div class="hph-hero-scroll position-absolute bottom-0 hph-mb-lg w-full">
+        <div class="hph-scroll-indicator hph-flex hph-flex-col hph-items-center text-white hph-opacity-75 hph-transition-opacity">
+            <span class="text-sm hph-mb-sm font-medium">Scroll</span>
+            <div class="hph-scroll-arrow w-8 h-10 border-2 border-white rounded-full position-relative">
+                <div class="hph-scroll-dot position-absolute bg-white rounded-full hph-animate-bounce" style="top: 0.5rem; left: 50%; width: 0.25rem; height: 0.5rem; transform: translateX(-50%);"></div>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+    
+</section>

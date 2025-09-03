@@ -1,0 +1,17 @@
+/* Base Link Styles */
+a {
+  color: var(--hph-primary);
+  text-decoration: none;
+  transition: color var(--hph-duration-fast);
+}
+
+a:hover {
+  color: var(--hph-primary-600);
+  text-decoration: none;
+}
+
+a:focus {
+  outline: 2px solid var(--hph-primary);
+  outline-offset: 2px;
+  border-radius: var(--hph-radius-sm);
+}

@@ -1,0 +1,346 @@
+/**
+ * Dropdown Component CSS - Production Styles
+ * Consolidated from mature header.css dropdown styles
+ * 
+ * @package HappyPlaceTheme
+ */
+
+/* ================================================
+   BASE DROPDOWN STYLES
+   ================================================ */
+
+.hph-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* ================================================
+   NAVIGATION DROPDOWN MENU (Sub Menu)
+   ================================================ */
+
+.hph-nav-menu .sub-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 220px;
+    background: var(--hph-white);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+    padding: 0.5rem 0;
+    margin-top: 0.5rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    list-style: none;
+    z-index: 1000;
+}
+
+.hph-nav-menu li:hover > .sub-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.sub-menu li a {
+    display: block;
+    padding: 0.625rem 1.25rem;
+    color: var(--hph-gray-600);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.sub-menu li a:hover {
+    background: var(--hph-gray-50);
+    color: var(--hph-primary);
+}
+
+/* ================================================
+   USER DROPDOWN
+   ================================================ */
+
+.hph-user-dropdown {
+    position: relative;
+}
+
+.hph-user-toggle {
+    width: auto;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    gap: 0.5rem;
+    background: var(--hph-gray-50);
+    border: none;
+    color: var(--hph-gray-700);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.hph-user-toggle:hover {
+    background: var(--hph-primary);
+    color: var(--hph-white);
+}
+
+.hph-user-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* ================================================
+   DROPDOWN MENU
+   ================================================ */
+
+.hph-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    min-width: 280px;
+    background: var(--hph-white);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    border-radius: 0.75rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.hph-user-dropdown:hover .hph-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Dropdown positioning variations */
+.hph-dropdown-menu--left {
+    left: 0;
+    right: auto;
+}
+
+.hph-dropdown-menu--center {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%) translateY(-10px);
+}
+
+.hph-dropdown-menu--center.active {
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ================================================
+   DROPDOWN CONTENT
+   ================================================ */
+
+.hph-user-info {
+    display: flex;
+    gap: 1rem;
+    padding: 1.25rem;
+    border-bottom: 1px solid var(--hph-gray-100);
+}
+
+.hph-user-avatar img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.hph-user-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.hph-user-greeting {
+    font-weight: 600;
+    color: var(--hph-gray-900);
+    margin-bottom: 0.25rem;
+}
+
+.hph-user-email {
+    font-size: 0.875rem;
+    color: var(--hph-gray-600);
+}
+
+/* ================================================
+   DROPDOWN ITEMS
+   ================================================ */
+
+.hph-dropdown-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    color: var(--hph-gray-700);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+.hph-dropdown-link:hover {
+    background: var(--hph-gray-50);
+    color: var(--hph-primary);
+}
+
+.hph-dropdown-link:focus {
+    outline: none;
+    background: var(--hph-gray-100);
+    color: var(--hph-primary);
+}
+
+.hph-dropdown-link i {
+    width: 16px;
+    text-align: center;
+    color: var(--hph-gray-400);
+    flex-shrink: 0;
+}
+
+.hph-dropdown-link:hover i,
+.hph-dropdown-link:focus i {
+    color: var(--hph-primary);
+}
+
+/* ================================================
+   DROPDOWN DIVIDER
+   ================================================ */
+
+.hph-dropdown-divider {
+    height: 1px;
+    background: var(--hph-gray-100);
+    margin: 0.5rem 0;
+    border: none;
+}
+
+/* ================================================
+   DROPDOWN TEXT/LABELS
+   ================================================ */
+
+.hph-dropdown-text {
+    padding: 0.75rem 1.25rem;
+    color: var(--hph-gray-600);
+    font-size: 0.875rem;
+    margin: 0;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ================================================
+   DROPDOWN VARIANTS
+   ================================================ */
+
+/* Small dropdown */
+.hph-dropdown--sm .hph-dropdown-menu {
+    min-width: 180px;
+}
+
+.hph-dropdown--sm .hph-dropdown-link {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+/* Large dropdown */
+.hph-dropdown--lg .hph-dropdown-menu {
+    min-width: 320px;
+}
+
+.hph-dropdown--lg .hph-dropdown-link {
+    padding: 1rem 1.5rem;
+}
+
+/* ================================================
+   RESPONSIVE DESIGN
+   ================================================ */
+
+@media (max-width: 768px) {
+    .hph-dropdown-menu {
+        position: fixed;
+        top: auto !important;
+        left: 1rem !important;
+        right: 1rem !important;
+        bottom: 1rem;
+        min-width: auto;
+        max-height: 60vh;
+        overflow-y: auto;
+        border-radius: 1rem;
+    }
+    
+    .hph-dropdown-menu--center {
+        transform: none;
+        left: 1rem !important;
+        right: 1rem !important;
+    }
+    
+    .hph-dropdown-link {
+        padding: 1rem 1.25rem;
+        font-size: 1rem;
+    }
+    
+    .hph-user-info {
+        padding: 1rem 1.25rem;
+    }
+    
+    .hph-user-avatar img {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+/* ================================================
+   ACCESSIBILITY
+   ================================================ */
+
+.hph-dropdown-link:focus-visible {
+    outline: 2px solid var(--hph-primary);
+    outline-offset: -2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hph-dropdown-menu,
+    .hph-dropdown-link,
+    .sub-menu {
+        transition: none;
+    }
+    
+    .hph-dropdown-menu,
+    .sub-menu {
+        transform: none;
+    }
+}
+
+/* ================================================
+   DARK MODE SUPPORT
+   ================================================ */
+
+@media (prefers-color-scheme: dark) {
+    .hph-dropdown-menu,
+    .sub-menu {
+        background: var(--hph-gray-800);
+        border: 1px solid var(--hph-gray-700);
+    }
+    
+    .hph-dropdown-link,
+    .sub-menu li a {
+        color: var(--hph-gray-100);
+    }
+    
+    .hph-dropdown-link:hover,
+    .sub-menu li a:hover {
+        background: var(--hph-gray-700);
+        color: var(--hph-primary);
+    }
+    
+    .hph-user-greeting {
+        color: var(--hph-gray-100);
+    }
+    
+    .hph-user-email,
+    .hph-dropdown-text {
+        color: var(--hph-gray-400);
+    }
+}

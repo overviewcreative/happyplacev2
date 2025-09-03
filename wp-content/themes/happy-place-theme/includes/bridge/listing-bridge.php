@@ -218,15 +218,60 @@ function hpt_get_listing_bedrooms($listing_id) {
  * Get bathrooms
  */
 function hpt_get_listing_bathrooms($listing_id) {
-    $bathrooms = get_field('bathrooms', $listing_id);
-    
-    // Handle string values with commas/formatting
-    if (is_string($bathrooms)) {
-        // Remove any non-numeric characters except decimal point
-        $bathrooms = preg_replace('/[^0-9.]/', '', $bathrooms);
+    if (!$listing_id) {
+        return null;
     }
     
-    return floatval($bathrooms);
+    // Get separate full and half bathroom fields from ACF
+    $full_baths = get_field('bathrooms_full', $listing_id);
+    $half_baths = get_field('bathrooms_half', $listing_id);
+    
+    // Convert to numbers with null safety
+    $full_baths = $full_baths !== null ? floatval($full_baths) : 0;
+    $half_baths = $half_baths !== null ? floatval($half_baths) : 0;
+    
+    // Calculate total: full baths + (half baths * 0.5)
+    $total_baths = $full_baths + ($half_baths * 0.5);
+    
+    // Return null if no bathroom data exists
+    if ($total_baths <= 0) {
+        // Fallback to legacy single field or post meta
+        $legacy_baths = get_field('bathrooms', $listing_id) ?: get_post_meta($listing_id, 'bathrooms', true);
+        if ($legacy_baths) {
+            // Handle string values with commas/formatting  
+            if (is_string($legacy_baths)) {
+                $legacy_baths = preg_replace('/[^0-9.]/', '', $legacy_baths);
+            }
+            return floatval($legacy_baths) ?: null;
+        }
+        return null;
+    }
+    
+    return $total_baths;
+}
+
+/**
+ * Get full bathrooms count
+ */
+function hpt_get_listing_bathrooms_full($listing_id) {
+    if (!$listing_id) {
+        return null;
+    }
+    
+    $full_baths = get_field('bathrooms_full', $listing_id);
+    return $full_baths !== null ? intval($full_baths) : null;
+}
+
+/**
+ * Get half bathrooms count
+ */
+function hpt_get_listing_bathrooms_half($listing_id) {
+    if (!$listing_id) {
+        return null;
+    }
+    
+    $half_baths = get_field('bathrooms_half', $listing_id);
+    return $half_baths !== null ? intval($half_baths) : null;
 }
 
 /**
@@ -274,14 +319,83 @@ function hpt_get_listing_square_feet_formatted($listing_id) {
  * Get lot size (in acres)
  */
 function hpt_get_listing_lot_size($listing_id) {
-    $lot_size = get_field('lot_size', $listing_id);
-    
-    // If lot size is stored in square feet, convert to acres
-    if ($lot_size && get_field('lot_size_unit', $listing_id) === 'sqft') {
-        return round($lot_size / 43560, 2); // Convert sq ft to acres
+    if (!$listing_id) {
+        return null;
     }
     
-    return $lot_size ? round(floatval($lot_size), 2) : null;
+    // Get ACF lot size fields - prefer acres, fallback to sqft  
+    $lot_size_acres = get_field('lot_size_acres', $listing_id);
+    $lot_size_sqft = get_field('lot_size_sqft', $listing_id);
+    
+    // If we have acres, use that
+    if ($lot_size_acres !== null && $lot_size_acres > 0) {
+        return round(floatval($lot_size_acres), 3); // Return in acres
+    }
+    
+    // If we have square feet, convert to acres
+    if ($lot_size_sqft !== null && $lot_size_sqft > 0) {
+        return round(floatval($lot_size_sqft) / 43560, 3); // Convert sq ft to acres
+    }
+    
+    // Fallback to legacy field for backward compatibility
+    $legacy_lot_size = get_field('lot_size', $listing_id);
+    if ($legacy_lot_size) {
+        // Check if there's a unit field to determine conversion
+        $lot_size_unit = get_field('lot_size_unit', $listing_id);
+        if ($lot_size_unit === 'sqft') {
+            return round(floatval($legacy_lot_size) / 43560, 3);
+        }
+        return round(floatval($legacy_lot_size), 3);
+    }
+    
+    return null;
+}
+
+/**
+ * Get lot size in acres (raw field)
+ */
+function hpt_get_listing_lot_size_acres($listing_id) {
+    if (!$listing_id) {
+        return null;
+    }
+    
+    $acres = get_field('lot_size_acres', $listing_id);
+    return $acres !== null ? floatval($acres) : null;
+}
+
+/**
+ * Get lot size in square feet (raw field)
+ */
+function hpt_get_listing_lot_size_sqft($listing_id) {
+    if (!$listing_id) {
+        return null;
+    }
+    
+    $sqft = get_field('lot_size_sqft', $listing_id);
+    return $sqft !== null ? floatval($sqft) : null;
+}
+
+/**
+ * Get lot size in square feet (converted if needed)
+ */
+function hpt_get_listing_lot_size_in_sqft($listing_id) {
+    if (!$listing_id) {
+        return null;
+    }
+    
+    // First check if we have sqft directly
+    $lot_size_sqft = get_field('lot_size_sqft', $listing_id);
+    if ($lot_size_sqft !== null && $lot_size_sqft > 0) {
+        return intval($lot_size_sqft);
+    }
+    
+    // Convert from acres if available
+    $lot_size_acres = get_field('lot_size_acres', $listing_id);
+    if ($lot_size_acres !== null && $lot_size_acres > 0) {
+        return intval($lot_size_acres * 43560);
+    }
+    
+    return null;
 }
 
 /**
@@ -323,7 +437,7 @@ function hpt_get_listing_address($listing_id, $format = 'full') {
     $street_number = get_field('street_number', $listing_id) ?: '';
     $street_dir_prefix = get_field('street_dir_prefix', $listing_id) ?: '';
     $street_name = get_field('street_name', $listing_id) ?: '';
-    $street_suffix = get_field('street_suffix', $listing_id) ?: '';
+    $street_type = get_field('street_type', $listing_id) ?: get_field('street_suffix', $listing_id) ?: '';
     $street_dir_suffix = get_field('street_dir_suffix', $listing_id) ?: '';
     $unit_number = get_field('unit_number', $listing_id) ?: '';
     $street_address = get_field('street_address', $listing_id) ?: '';
@@ -334,7 +448,7 @@ function hpt_get_listing_address($listing_id, $format = 'full') {
             $street_number,
             $street_dir_prefix,
             $street_name,
-            $street_suffix,
+            $street_type,
             $street_dir_suffix,
             $unit_number ? $unit_number : ''
         ));
@@ -382,7 +496,7 @@ function hpt_get_listing_street_address($listing_id) {
     $street_number = get_field('street_number', $listing_id) ?: '';
     $street_dir_prefix = get_field('street_dir_prefix', $listing_id) ?: '';
     $street_name = get_field('street_name', $listing_id) ?: '';
-    $street_suffix = get_field('street_suffix', $listing_id) ?: '';
+    $street_type = get_field('street_type', $listing_id) ?: get_field('street_suffix', $listing_id) ?: '';
     $street_dir_suffix = get_field('street_dir_suffix', $listing_id) ?: '';
     $unit_number = get_field('unit_number', $listing_id) ?: '';
     $street_address = get_field('street_address', $listing_id) ?: '';
@@ -393,7 +507,7 @@ function hpt_get_listing_street_address($listing_id) {
             $street_number,
             $street_dir_prefix,
             $street_name,
-            $street_suffix,
+            $street_type,
             $street_dir_suffix,
             $unit_number ? $unit_number : ''
         ));
@@ -422,7 +536,19 @@ function hpt_get_listing_street_name($listing_id) {
  * Get listing street type/suffix (abbreviated)
  */
 function hpt_get_listing_street_type($listing_id) {
-    return get_field('street_suffix', $listing_id) ?: '';
+    if (!$listing_id) {
+        return null;
+    }
+    
+    // Get correct ACF field name 
+    $street_type = get_field('street_type', $listing_id);
+    
+    if (!$street_type) {
+        // Fallback to legacy field name for backward compatibility
+        $street_type = get_field('street_suffix', $listing_id);
+    }
+    
+    return !empty($street_type) ? $street_type : null;
 }
 
 /**
@@ -524,14 +650,96 @@ function hpt_get_listing_neighborhood($listing_id) {
  * Get listing description
  */
 function hpt_get_listing_description($listing_id) {
-    $description = get_field('description', $listing_id);
-    
-    if (!$description) {
-        $post = get_post($listing_id);
-        $description = $post->post_content;
+    if (!$listing_id) {
+        return null;
     }
     
-    return $description;
+    // Get ACF property description field (WYSIWYG)
+    $description = get_field('property_description', $listing_id);
+    
+    // Fallback chain for backward compatibility
+    if (!$description) {
+        // Try legacy description field
+        $description = get_field('description', $listing_id);
+    }
+    
+    if (!$description) {
+        // Try post content as final fallback
+        $post = get_post($listing_id);
+        if ($post && !empty($post->post_content)) {
+            $description = $post->post_content;
+        }
+    }
+    
+    // Clean up and return
+    if ($description) {
+        // Remove empty paragraphs and extra whitespace
+        $description = trim(preg_replace('/<p[^>]*>\\s*<\\/p>/i', '', $description));
+        return !empty($description) ? $description : null;
+    }
+    
+    return null;
+}
+
+/**
+ * Get property marketing title (override)
+ */
+function hpt_get_listing_marketing_title($listing_id) {
+    if (!$listing_id) {
+        return null;
+    }
+    
+    $title = get_field('property_title', $listing_id);
+    return !empty($title) ? trim($title) : null;
+}
+
+/**
+ * Get property highlights array
+ */
+function hpt_get_listing_highlights($listing_id) {
+    if (!$listing_id) {
+        return array();
+    }
+    
+    $highlights = get_field('property_highlights', $listing_id);
+    
+    if (!$highlights || !is_array($highlights)) {
+        return array();
+    }
+    
+    // Extract just the text values from repeater field
+    $highlight_texts = array();
+    foreach ($highlights as $highlight) {
+        if (isset($highlight['text']) && !empty($highlight['text'])) {
+            $highlight_texts[] = trim($highlight['text']);
+        }
+    }
+    
+    return $highlight_texts;
+}
+
+/**
+ * Get showing instructions
+ */
+function hpt_get_listing_showing_instructions($listing_id) {
+    if (!$listing_id) {
+        return null;
+    }
+    
+    $instructions = get_field('showing_instructions', $listing_id);
+    return !empty($instructions) ? trim($instructions) : null;
+}
+
+/**
+ * Get internal notes (private)
+ */
+function hpt_get_listing_internal_notes($listing_id) {
+    if (!$listing_id) {
+        return null;
+    }
+    
+    $notes = get_field('internal_notes', $listing_id);
+    return !empty($notes) ? trim($notes) : null;
 }
 
 /**
@@ -939,17 +1147,122 @@ function hpt_get_listing_community($listing_id) {
  */
 
 /**
- * Get listing HOA fees
- */
-function hpt_get_listing_hoa_fees($listing_id) {
-    return floatval(get_field('hoa_fees', $listing_id));
-}
-
-/**
  * Get listing property taxes
  */
 function hpt_get_listing_property_taxes($listing_id) {
-    return floatval(get_field('property_taxes', $listing_id));
+    if (!$listing_id) {
+        return null;
+    }
+    
+    $taxes = get_field('property_taxes', $listing_id);
+    return $taxes ? floatval($taxes) : null;
+}
+
+/**
+ * Get HOA fees
+ */
+function hpt_get_listing_hoa_fees($listing_id) {
+    if (!$listing_id) {
+        return null;
+    }
+    
+    $hoa_fees = get_field('hoa_fees', $listing_id);
+    return $hoa_fees ? floatval($hoa_fees) : null;
+}
+
+/**
+ * Get buyer commission
+ */
+function hpt_get_listing_buyer_commission($listing_id) {
+    if (!$listing_id) {
+        return null;
+    }
+    
+    $commission = get_field('buyer_commission', $listing_id);
+    return !empty($commission) ? trim($commission) : null;
+}
+
+/**
+ * Get estimated insurance (monthly)
+ */
+function hpt_get_listing_estimated_insurance($listing_id) {
+    if (!$listing_id) {
+        return null;
+    }
+    
+    $insurance = get_field('estimated_insurance', $listing_id);
+    return $insurance ? floatval($insurance) : null;
+}
+
+/**
+ * Get estimated utilities (monthly)
+ */
+function hpt_get_listing_estimated_utilities($listing_id) {
+    if (!$listing_id) {
+        return null;
+    }
+    
+    $utilities = get_field('estimated_utilities', $listing_id);
+    return $utilities ? floatval($utilities) : null;
+}
+
+/**
+ * Get address display setting
+ */
+function hpt_get_listing_address_display($listing_id) {
+    if (!$listing_id) {
+        return 'full'; // Default to full display
+    }
+    
+    $display = get_field('address_display', $listing_id);
+    return !empty($display) ? $display : 'full';
+}
+
+/**
+ * Get parcel number
+ */
+function hpt_get_listing_parcel_number($listing_id) {
+    if (!$listing_id) {
+        return null;
+    }
+    
+    $parcel = get_field('parcel_number', $listing_id);
+    return !empty($parcel) ? trim($parcel) : null;
+}
+
+/**
+ * Get address with privacy controls applied
+ */
+function hpt_get_listing_address_public($listing_id, $format = 'full') {
+    if (!$listing_id) {
+        return null;
+    }
+    
+    $display_setting = hpt_get_listing_address_display($listing_id);
+    
+    switch ($display_setting) {
+        case 'hidden':
+            return null; // Do not display address
+            
+        case 'area':
+            // Show only city, state
+            $city = get_field('city', $listing_id);
+            $state = get_field('state', $listing_id);
+            return trim("$city, $state");
+            
+        case 'street':
+            // Show street name without number
+            $street_name = get_field('street_name', $listing_id);
+            $street_type = get_field('street_type', $listing_id) ?: get_field('street_suffix', $listing_id);
+            $city = get_field('city', $listing_id);
+            $state = get_field('state', $listing_id);
+            return trim("$street_name $street_type, $city, $state");
+            
+        case 'full':
+        default:
+            // Show full address
+            return hpt_get_listing_address($listing_id, $format);
+    }
 }
 
 /**
@@ -1140,63 +1453,6 @@ function hpt_get_listing_price_per_sqft($listing_id) {
  */
 function hpt_get_listing_price_raw($listing_id) {
     return hpt_get_listing_price($listing_id);
-}
-
-/**
- * Get listing highlights for marketing
- */
-function hpt_get_listing_highlights($listing_id) {
-    $highlights = get_field('highlights', $listing_id);
-    
-    if (!is_array($highlights)) {
-        $highlights = get_field('property_highlights', $listing_id);
-    }
-    
-    if (!is_array($highlights)) {
-        $highlights = get_field('key_features', $listing_id);
-    }
-    
-    // If no custom highlights, generate some from available data
-    if (!is_array($highlights) || empty($highlights)) {
-        $highlights = array();
-        
-        // Add condition-based highlights
-        if (get_field('move_in_ready', $listing_id)) {
-            $highlights[] = __('Move-in ready condition', 'happy-place-theme');
-        }
-        
-        if (get_field('recently_renovated', $listing_id)) {
-            $highlights[] = __('Recently renovated', 'happy-place-theme');
-        }
-        
-        // Add feature-based highlights
-        $features = hpt_get_listing_features($listing_id);
-        if (is_array($features)) {
-            foreach ($features as $feature) {
-                if (is_string($feature)) {
-                    $highlights[] = $feature;
-                } elseif (is_array($feature) && isset($feature['name'])) {
-                    $highlights[] = $feature['name'];
-                }
-                
-                // Limit to 5 highlights
-                if (count($highlights) >= 5) {
-                    break;
-                }
-            }
-        }
-        
-        // Add default highlights if still empty
-        if (empty($highlights)) {
-            $highlights = array(
-                __('Great location', 'happy-place-theme'),
-                __('Well maintained', 'happy-place-theme'),
-                __('Ready to view', 'happy-place-theme')
-            );
-        }
-    }
-    
-    return is_array($highlights) ? $highlights : array();
 }
 
 /**

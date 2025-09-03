@@ -1,0 +1,323 @@
+/**
+ * HPH Content Sections CSS
+ * Comprehensive styles for content sections and components
+ * 
+ * @package HappyPlaceTheme
+ */
+
+/* ================================================
+   Content Section Base Styles
+   ================================================ */
+
+.hph-content-section {
+    position: relative;
+    width: 100%;
+}
+
+/* ================================================
+   Section Background Variants
+   ================================================ */
+
+.hph-section-white {
+    background-color: var(--hph-white);
+    color: var(--hph-text-primary);
+}
+
+.hph-section-light {
+    background-color: var(--hph-gray-50);
+    color: var(--hph-text-primary);
+}
+
+.hph-section-dark {
+    background-color: var(--hph-gray-800);
+    color: var(--hph-white);
+}
+
+.hph-section-primary {
+    background-color: var(--hph-primary);
+    color: var(--hph-white);
+}
+
+.hph-section-secondary {
+    background-color: var(--hph-secondary);
+    color: var(--hph-white);
+}
+
+.hph-section-gradient {
+    background: linear-gradient(135deg, var(--hph-primary) 0%, var(--hph-primary-dark) 100%);
+    color: var(--hph-white);
+}
+
+.hph-section-image {
+    position: relative;
+    color: var(--hph-white);
+}
+
+.hph-section-image::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+}
+
+.hph-section-image > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* ================================================
+   Item Card Components
+   ================================================ */
+
+.hph-item-card {
+    transition: all 0.2s ease;
+}
+
+.hph-item-card:hover {
+    transform: translateY(-2px);
+}
+
+/* ================================================
+   Statistics Counter Components
+   ================================================ */
+
+.hph-stat-item .hph-counter {
+    opacity: 0;
+    animation: countUp 0.8s ease-out forwards;
+}
+
+.hph-stat-counter {
+    transition: all 0.3s ease;
+}
+
+@keyframes countUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ================================================
+   Accordion Components
+   ================================================ */
+
+.hph-accordion-trigger[aria-expanded="true"] .hph-accordion-icon {
+    transform: rotate(180deg);
+}
+
+.hph-accordion-content.hph-show {
+    display: block;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 200px;
+    }
+}
+
+/* ================================================
+   Utility Classes from Content CSS
+   ================================================ */
+
+/* Opacity utilities */
+.hph-opacity-75 {
+    opacity: 0.75;
+}
+
+/* Text alignment */
+.hph-text-center {
+    text-align: center;
+}
+
+.hph-text-left {
+    text-align: left;
+}
+
+/* Layout utilities */
+.hph-items-center {
+    align-items: center;
+}
+
+.hph-justify-center {
+    justify-content: center;
+}
+
+.hph-justify-start {
+    justify-content: flex-start;
+}
+
+.hph-flex-wrap {
+    flex-wrap: wrap;
+}
+
+.hph-object-cover {
+    object-fit: cover;
+}
+
+/* Line height utilities */
+.hph-leading-tight {
+    line-height: var(--hph-leading-tight);
+}
+
+.hph-leading-relaxed {
+    line-height: var(--hph-leading-relaxed);
+}
+
+/* Typography sizes */
+.hph-text-sm {
+    font-size: var(--hph-text-sm);
+}
+
+.hph-text-base {
+    font-size: var(--hph-text-base);
+}
+
+.hph-text-lg {
+    font-size: var(--hph-text-lg);
+}
+
+.hph-text-xl {
+    font-size: var(--hph-text-xl);
+}
+
+.hph-text-2xl {
+    font-size: var(--hph-text-2xl);
+}
+
+.hph-text-3xl {
+    font-size: var(--hph-text-3xl, 1.875rem);
+}
+
+.hph-text-4xl {
+    font-size: var(--hph-text-4xl, 2.25rem);
+}
+
+.hph-text-5xl {
+    font-size: var(--hph-text-5xl, 3rem);
+}
+
+/* Font weights */
+.hph-font-medium {
+    font-weight: var(--hph-font-medium);
+}
+
+.hph-font-bold {
+    font-weight: var(--hph-font-bold);
+}
+
+/* Color utilities */
+.hph-text-primary {
+    color: var(--hph-primary);
+}
+
+.hph-text-gray-600 {
+    color: var(--hph-gray-600);
+}
+
+.hph-text-gray-700 {
+    color: var(--hph-gray-700);
+}
+
+.hph-text-primary-700 {
+    color: var(--hph-primary-700);
+}
+
+.hph-bg-primary-100 {
+    background-color: var(--hph-primary-100);
+}
+
+/* Layout and positioning */
+.hph-relative {
+    position: relative;
+}
+
+.hph-overflow-hidden {
+    overflow: hidden;
+}
+
+/* Transition utilities */
+.hph-transition-transform {
+    transition: transform var(--hph-transition-duration, 300ms) ease-out;
+}
+
+.hph-transition-colors {
+    transition: color var(--hph-transition-duration, 300ms) ease-out,
+                background-color var(--hph-transition-duration, 300ms) ease-out;
+}
+
+.hph-transition-all {
+    transition: all var(--hph-transition-duration, 300ms) ease-out;
+}
+
+.hph-duration-300 {
+    transition-duration: 300ms;
+}
+
+/* ================================================
+   Responsive Grid Utilities
+   ================================================ */
+
+/* Multi-column responsive adjustments */
+@media (max-width: 768px) {
+    .hph-lg\:grid-cols-3,
+    .hph-lg\:grid-cols-4 {
+        grid-template-columns: 1fr;
+    }
+    
+    .hph-md\:grid-cols-2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Large screen responsive utilities */
+@media (min-width: 1024px) {
+    .hph-lg\:grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    
+    .hph-lg\:order-1 {
+        order: 1;
+    }
+    
+    .hph-lg\:order-2 {
+        order: 2;
+    }
+    
+    .hph-lg\:text-lg {
+        font-size: var(--hph-text-lg, 1.125rem);
+    }
+    
+    .hph-lg\:text-xl {
+        font-size: var(--hph-text-xl, 1.25rem);
+    }
+    
+    .hph-lg\:text-2xl {
+        font-size: var(--hph-text-2xl, 1.5rem);
+    }
+    
+    .hph-lg\:text-3xl {
+        font-size: var(--hph-text-3xl, 1.875rem);
+    }
+    
+    .hph-lg\:text-4xl {
+        font-size: var(--hph-text-4xl, 2.25rem);
+    }
+    
+    .hph-lg\:text-5xl {
+        font-size: var(--hph-text-5xl, 3rem);
+    }
+}

@@ -1,0 +1,292 @@
+{
+    "key": "group_agent_fields",
+    "title": "Agent Profile Fields",
+    "fields": [
+        {
+            "key": "field_agent_first_name",
+            "label": "First Name",
+            "name": "first_name",
+            "type": "text",
+            "instructions": "",
+            "required": 1,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_agent_last_name",
+            "label": "Last Name",
+            "name": "last_name",
+            "type": "text",
+            "instructions": "",
+            "required": 1,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_agent_profile_photo",
+            "label": "Profile Photo",
+            "name": "profile_photo",
+            "type": "image",
+            "instructions": "Upload agent's profile photo",
+            "required": 0,
+            "return_format": "array",
+            "preview_size": "medium",
+            "library": "all",
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_agent_title",
+            "label": "Title/Position",
+            "name": "title",
+            "type": "text",
+            "instructions": "e.g., Senior Real Estate Agent, Broker Associate",
+            "required": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_agent_email",
+            "label": "Email",
+            "name": "email",
+            "type": "email",
+            "instructions": "",
+            "required": 1,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_agent_phone",
+            "label": "Phone",
+            "name": "phone",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_agent_bio",
+            "label": "Biography",
+            "name": "bio",
+            "type": "wysiwyg",
+            "instructions": "Agent's professional biography",
+            "required": 0,
+            "toolbar": "full",
+            "media_upload": 1
+        },
+        {
+            "key": "field_agent_years_experience",
+            "label": "Years of Experience",
+            "name": "years_experience",
+            "type": "number",
+            "instructions": "",
+            "required": 0,
+            "min": 0,
+            "max": 50,
+            "wrapper": {
+                "width": "33.33",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_agent_license_number",
+            "label": "License Number",
+            "name": "license_number",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "wrapper": {
+                "width": "33.33",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_agent_featured",
+            "label": "Featured Agent",
+            "name": "featured",
+            "type": "true_false",
+            "instructions": "Mark as featured agent",
+            "required": 0,
+            "default_value": 0,
+            "wrapper": {
+                "width": "33.33",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_agent_specialties",
+            "label": "Specialties",
+            "name": "specialties",
+            "type": "select",
+            "instructions": "Select agent's areas of specialty",
+            "required": 0,
+            "multiple": 1,
+            "ui": 1,
+            "ajax": 0,
+            "choices": {
+                "luxury_homes": "Luxury Homes",
+                "first_time_buyers": "First-Time Buyers",
+                "commercial": "Commercial Real Estate",
+                "investment": "Investment Properties",
+                "new_construction": "New Construction",
+                "relocation": "Relocation Services",
+                "foreclosures": "Foreclosures",
+                "condos": "Condominiums",
+                "waterfront": "Waterfront Properties",
+                "land": "Land and Lots"
+            }
+        },
+        {
+            "key": "field_agent_languages",
+            "label": "Languages",
+            "name": "languages",
+            "type": "select",
+            "instructions": "Languages spoken by the agent",
+            "required": 0,
+            "multiple": 1,
+            "ui": 1,
+            "ajax": 0,
+            "choices": {
+                "english": "English",
+                "spanish": "Spanish",
+                "french": "French",
+                "portuguese": "Portuguese",
+                "mandarin": "Mandarin",
+                "russian": "Russian",
+                "german": "German",
+                "italian": "Italian"
+            }
+        },
+        {
+            "key": "field_agent_total_sales_volume",
+            "label": "Total Sales Volume",
+            "name": "total_sales_volume",
+            "type": "number",
+            "instructions": "Total career sales volume in dollars",
+            "required": 0,
+            "min": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_agent_total_listings_sold",
+            "label": "Total Listings Sold",
+            "name": "total_listings_sold",
+            "type": "number",
+            "instructions": "Total number of properties sold",
+            "required": 0,
+            "min": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_agent_office",
+            "label": "Office",
+            "name": "office",
+            "type": "post_object",
+            "instructions": "Select the office this agent belongs to",
+            "required": 0,
+            "post_type": ["office"],
+            "return_format": "id",
+            "ui": 1
+        },
+        {
+            "key": "field_agent_facebook",
+            "label": "Facebook URL",
+            "name": "facebook",
+            "type": "url",
+            "instructions": "",
+            "required": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_agent_instagram",
+            "label": "Instagram URL",
+            "name": "instagram",
+            "type": "url",
+            "instructions": "",
+            "required": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_agent_linkedin",
+            "label": "LinkedIn URL",
+            "name": "linkedin",
+            "type": "url",
+            "instructions": "",
+            "required": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        },
+        {
+            "key": "field_agent_twitter",
+            "label": "Twitter URL",
+            "name": "twitter",
+            "type": "url",
+            "instructions": "",
+            "required": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            }
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "agent"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": [],
+    "active": true,
+    "description": "Complete agent profile information",
+    "show_in_rest": 1
+}

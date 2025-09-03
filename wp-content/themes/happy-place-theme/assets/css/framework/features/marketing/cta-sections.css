@@ -1,0 +1,612 @@
+/* ================================================
+   CTA (CALL-TO-ACTION) SECTIONS
+   Comprehensive styling for compelling CTA sections with multiple layouts,
+   styles, and interactive elements.
+   
+   @package HappyPlaceTheme
+   @since 3.0.0
+   
+   FEATURES:
+   - Multiple layout options (centered, split, inline, corner, floating)
+   - Enhanced style variations (default, gradient, bordered, minimal, bold)
+   - Theme variations (default, dark, light, primary)
+   - Interactive elements (forms, countdown, social proof)
+   - Animation and scroll reveal support
+   - Background options (color, gradient, image, pattern)
+   
+   LAYOUT CLASSES:
+   .hph-cta--* - Layout-specific styling
+   .hph-cta--style-* - Style variations
+   .hph-cta--theme-* - Theme variations
+   .hph-cta--spacing-* - Spacing options
+   .hph-cta--animated - Animation classes
+   ================================================ */
+
+/* ================================================
+   BASE CTA SECTION
+   ================================================ */
+.hph-cta {
+  position: relative;
+  width: 100%;
+  padding: var(--hph-section-padding) 0;
+  overflow: hidden;
+  background: var(--hph-white);
+  color: var(--hph-text-color);
+}
+
+.hph-cta__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+.hph-container {
+  position: relative;
+  z-index: 2;
+}
+
+/* ================================================
+   LAYOUT VARIATIONS
+   ================================================ */
+
+/* Centered Layout (Default) */
+.hph-cta--centered {
+  text-align: center;
+}
+
+.hph-cta__centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Split Layout */
+.hph-cta--split .hph-cta__split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.hph-cta__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.hph-cta__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+}
+
+/* Inline Layout */
+.hph-cta--inline .hph-cta__inline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.hph-cta--inline .hph-cta__content-wrapper {
+  flex: 1;
+}
+
+.hph-cta--inline .hph-cta__actions {
+  flex-direction: row;
+  flex-shrink: 0;
+}
+
+/* Corner Layout */
+.hph-cta--corner .hph-cta__corner {
+  position: relative;
+  padding: 3rem;
+  border-radius: var(--hph-radius-xl);
+  background: var(--hph-gradient-primary);
+  color: var(--hph-white);
+  overflow: hidden;
+}
+
+.hph-cta__badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 3;
+}
+
+.hph-cta__media--corner {
+  position: absolute;
+  bottom: -2rem;
+  right: -2rem;
+  opacity: 0.1;
+  z-index: 1;
+}
+
+/* ================================================
+   STYLE VARIATIONS
+   ================================================ */
+
+/* Default Style */
+.hph-cta--default {
+  background: var(--hph-white);
+  border: 1px solid var(--hph-border-color);
+}
+
+/* Gradient Style */
+.hph-cta--gradient {
+  background: linear-gradient(135deg, var(--hph-primary) 0%, var(--hph-primary-dark) 100%);
+  color: var(--hph-white);
+}
+
+/* Bordered Style */
+.hph-cta--bordered {
+  background: var(--hph-white);
+  border: 2px solid var(--hph-primary);
+  border-radius: var(--hph-radius-lg);
+}
+
+/* Minimal Style */
+.hph-cta--minimal {
+  background: transparent;
+  border: none;
+  padding: var(--hph-section-padding-sm) 0;
+}
+
+/* Bold Style */
+.hph-cta--bold {
+  background: var(--hph-gray-900);
+  color: var(--hph-white);
+  border-radius: var(--hph-radius-xl);
+  box-shadow: var(--hph-shadow-2xl);
+}
+
+/* ================================================
+   THEME VARIATIONS
+   ================================================ */
+
+/* Dark Theme */
+.hph-cta--dark {
+  background: var(--hph-gray-900);
+  color: var(--hph-white);
+}
+
+/* Light Theme */
+.hph-cta--light {
+  background: var(--hph-gray-50);
+  color: var(--hph-text-color);
+}
+
+/* Primary Theme */
+.hph-cta--primary {
+  background: var(--hph-primary);
+  color: var(--hph-white);
+}
+
+/* Inverted */
+.hph-cta--inverted {
+  background: var(--hph-white);
+  color: var(--hph-text-color);
+  border: 1px solid var(--hph-border-color);
+}
+
+.hph-cta--primary.hph-cta--inverted {
+  background: var(--hph-white);
+  color: var(--hph-primary);
+  border-color: var(--hph-primary);
+}
+
+/* ================================================
+   ALIGNMENT OPTIONS
+   ================================================ */
+
+.hph-cta--align-left {
+  text-align: left;
+}
+
+.hph-cta--align-left .hph-cta__centered {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.hph-cta--align-right {
+  text-align: right;
+}
+
+.hph-cta--align-right .hph-cta__centered {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.hph-cta--align-center {
+  text-align: center;
+}
+
+/* ================================================
+   SPACING VARIATIONS
+   ================================================ */
+
+.hph-cta--spacing-compact {
+  padding: var(--hph-section-padding-sm) 0;
+}
+
+.hph-cta--spacing-spacious {
+  padding: var(--hph-section-padding-lg) 0;
+}
+
+.hph-cta--spacing-custom {
+  padding: var(--hph-custom-padding, var(--hph-section-padding)) 0;
+}
+
+/* ================================================
+   CONTENT ELEMENTS
+   ================================================ */
+
+.hph-cta__content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.hph-cta__eyebrow {
+  font-size: var(--hph-text-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--hph-primary);
+  margin-bottom: 0.5rem;
+}
+
+.hph-cta--dark .hph-cta__eyebrow,
+.hph-cta--gradient .hph-cta__eyebrow,
+.hph-cta--primary .hph-cta__eyebrow {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.hph-cta__title {
+  font-size: var(--hph-text-3xl);
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 0;
+  color: inherit;
+}
+
+.hph-cta__subtitle {
+  font-size: var(--hph-text-lg);
+  font-weight: 500;
+  line-height: 1.4;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.hph-cta__description {
+  font-size: var(--hph-text-base);
+  line-height: 1.6;
+  opacity: 0.8;
+}
+
+/* ================================================
+   ACTIONS & BUTTONS
+   ================================================ */
+
+.hph-cta__actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.hph-cta--centered .hph-cta__actions {
+  justify-content: center;
+}
+
+.hph-cta--align-left .hph-cta__actions {
+  justify-content: flex-start;
+}
+
+.hph-cta--align-right .hph-cta__actions {
+  justify-content: flex-end;
+}
+
+/* ================================================
+   MEDIA ELEMENTS
+   ================================================ */
+
+.hph-cta__media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hph-cta__media--top {
+  order: -1;
+  margin-bottom: 2rem;
+}
+
+.hph-cta__media--bottom {
+  order: 1;
+  margin-top: 2rem;
+}
+
+.hph-cta__image {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--hph-radius-lg);
+}
+
+.hph-cta__icon {
+  width: 4rem;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--hph-primary-light);
+  color: var(--hph-primary);
+  border-radius: var(--hph-radius-full);
+  font-size: 2rem;
+}
+
+.hph-cta__illustration {
+  max-width: 200px;
+  opacity: 0.8;
+}
+
+/* ================================================
+   FORM INTEGRATION
+   ================================================ */
+
+.hph-cta__form {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.hph-cta__form-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.hph-cta__form--email .hph-cta__form-group {
+  background: var(--hph-white);
+  border-radius: var(--hph-radius-lg);
+  padding: 0.5rem;
+  box-shadow: var(--hph-shadow-lg);
+}
+
+.hph-cta__form input {
+  flex: 1;
+  border: none;
+  padding: 0.875rem 1rem;
+  border-radius: var(--hph-radius-md);
+  font-size: var(--hph-text-base);
+}
+
+.hph-cta__form button {
+  flex-shrink: 0;
+}
+
+/* ================================================
+   COUNTDOWN TIMER
+   ================================================ */
+
+.hph-cta__countdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.hph-cta__countdown-label {
+  font-size: var(--hph-text-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+  opacity: 0.8;
+}
+
+.hph-cta__countdown-timer {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.hph-countdown__unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hph-countdown__value {
+  display: block;
+  font-size: var(--hph-text-2xl);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--hph-primary);
+  background: var(--hph-white);
+  padding: 0.75rem 1rem;
+  border-radius: var(--hph-radius-md);
+  box-shadow: var(--hph-shadow-sm);
+  min-width: 3rem;
+}
+
+.hph-countdown__label {
+  font-size: var(--hph-text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.5rem;
+  opacity: 0.7;
+}
+
+.hph-cta--dark .hph-countdown__value,
+.hph-cta--gradient .hph-countdown__value,
+.hph-cta--primary .hph-countdown__value {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--hph-primary);
+}
+
+/* ================================================
+   SOCIAL PROOF
+   ================================================ */
+
+.hph-cta__social-proof {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.hph-cta__avatars {
+  display: flex;
+  margin-left: -0.5rem;
+}
+
+.hph-cta__avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--hph-radius-full);
+  border: 2px solid var(--hph-white);
+  margin-left: -0.5rem;
+  object-fit: cover;
+}
+
+.hph-cta__rating {
+  display: flex;
+  gap: 0.25rem;
+  color: var(--hph-warning);
+}
+
+.hph-cta__rating .is-filled {
+  color: var(--hph-warning);
+}
+
+.hph-cta__social-text {
+  font-size: var(--hph-text-sm);
+  text-align: center;
+  opacity: 0.8;
+  margin: 0;
+}
+
+/* ================================================
+   ANIMATION & EFFECTS
+   ================================================ */
+
+.hph-cta--animated {
+  opacity: 0;
+  transform: translateY(2rem);
+  transition: all 0.6s ease-out;
+}
+
+.hph-cta--animated.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hph-cta--rounded {
+  border-radius: var(--hph-radius-2xl);
+  overflow: hidden;
+}
+
+/* Hover Effects */
+.hph-cta--bordered:hover {
+  border-color: var(--hph-primary-dark);
+  box-shadow: var(--hph-shadow-lg);
+}
+
+.hph-cta--bold:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--hph-shadow-2xl);
+}
+
+/* ================================================
+   CONTAINER WIDTH VARIATIONS
+   ================================================ */
+
+.hph-container--narrow {
+  max-width: var(--hph-container-sm);
+}
+
+.hph-container--wide {
+  max-width: var(--hph-container-2xl);
+}
+
+.hph-container--full {
+  max-width: none;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* ================================================
+   RESPONSIVE DESIGN
+   ================================================ */
+
+@media (max-width: 768px) {
+  .hph-cta--split .hph-cta__split {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
+  }
+  
+  .hph-cta--inline .hph-cta__inline {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .hph-cta__title {
+    font-size: var(--hph-text-2xl);
+  }
+  
+  .hph-cta__actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .hph-cta__form-group {
+    flex-direction: column;
+  }
+  
+  .hph-countdown__timer {
+    gap: 1rem;
+  }
+  
+  .hph-countdown__value {
+    font-size: var(--hph-text-lg);
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .hph-cta--corner .hph-cta__corner {
+    padding: 2rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hph-cta {
+    padding: var(--hph-section-padding-sm) 0;
+  }
+  
+  .hph-cta__title {
+    font-size: var(--hph-text-xl);
+  }
+  
+  .hph-cta__subtitle {
+    font-size: var(--hph-text-base);
+  }
+  
+  .hph-countdown__timer {
+    gap: 0.75rem;
+  }
+  
+  .hph-countdown__value {
+    font-size: var(--hph-text-base);
+    padding: 0.5rem;
+    min-width: 2.5rem;
+  }
+}

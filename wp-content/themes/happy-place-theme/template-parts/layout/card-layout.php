@@ -451,206 +451,59 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
     
 </div>
 
-<script>
-// Initialize layout manager
-document.addEventListener('DOMContentLoaded', function() {
-    const container = document.getElementById('<?php echo esc_js($container_id); ?>');
-    
-    if (!container) return;
-    
-    // Layout switcher
-    const layoutBtns = container.querySelectorAll('.hph-layout-btn');
-    layoutBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const newLayout = this.dataset.layout;
-            
-            // Update active state
-            layoutBtns.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Update container classes
-            container.className = container.className.replace(/hph-layout-\w+/, 'hph-layout-' + newLayout);
-            
-            // Update layout container
-            const layoutContainer = container.querySelector('.hph-layout-container');
-            layoutContainer.className = layoutContainer.className.replace(/hph-layout-\w+/, 'hph-layout-' + newLayout);
-            
-            // Trigger layout change event
-            const event = new CustomEvent('hph:layout-change', {
-                detail: { layout: newLayout, container: container }
-            });
-            document.dispatchEvent(event);
-            
-            // Initialize map if switching to map view
-            if (newLayout === 'map' && typeof initHPHMap === 'function') {
-                initHPHMap(container);
-            }
-        });
-    });
-    
-    // Carousel initialization
-    <?php if ($layout === 'carousel'): ?>
-    const swiper = new Swiper('#<?php echo esc_js($container_id); ?> .swiper', {
-        slidesPerView: 1,
-        spaceBetween: <?php echo $gap === 'sm' ? 10 : ($gap === 'md' ? 20 : ($gap === 'lg' ? 30 : 40)); ?>,
-        navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-        },
-        pagination: {
-            el: '.swiper-pagination',
-            clickable: true,
-        },
-        breakpoints: {
-            640: {
-                slidesPerView: <?php echo $columns['tablet']; ?>,
-            },
-            1024: {
-                slidesPerView: <?php echo $columns['desktop']; ?>,
-            },
-            1280: {
-                slidesPerView: <?php echo $columns['wide']; ?>,
-            },
-        },
-    });
-    <?php endif; ?>
-    
-    // Filter handling
-    const filters = container.querySelectorAll('.hph-filter-select, .hph-filter-checkbox, .hph-filter-range');
-    filters.forEach(filter => {
-        filter.addEventListener('change', function() {
-            // Collect all filter values
-            const filterData = {};
-            container.querySelectorAll('[data-filter]').forEach(f => {
-                const filterName = f.dataset.filter;
-                if (f.type === 'checkbox') {
-                    if (!filterData[filterName]) filterData[filterName] = [];
-                    if (f.checked) filterData[filterName].push(f.value);
-                } else {
-                    filterData[filterName] = f.value;
-                }
-            });
-            
-            // Trigger filter event
-            const event = new CustomEvent('hph:filter-change', {
-                detail: { filters: filterData, container: container }
-            });
-            document.dispatchEvent(event);
-        });
-    });
-    
-    // Clear filters
-    const clearBtn = container.querySelector('.hph-filter-clear');
-    if (clearBtn) {
-        clearBtn.addEventListener('click', function() {
-            container.querySelectorAll('.hph-filter-select').forEach(s => s.value = '');
-            container.querySelectorAll('.hph-filter-checkbox').forEach(c => c.checked = false);
-            
-            const event = new CustomEvent('hph:filter-clear', { detail: { container: container } });
-            document.dispatchEvent(event);
-        });
-    }
-    
-    // Sort handling
-    const sortSelect = container.querySelector('.hph-sort-select');
-    if (sortSelect) {
-        sortSelect.addEventListener('change', function() {
-            const event = new CustomEvent('hph:sort-change', {
-                detail: { sort: this.value, container: container }
-            });
-            document.dispatchEvent(event);
-        });
-    }
-    
-    // Pagination
-    const paginationBtns = container.querySelectorAll('.hph-pagination-page, .hph-pagination-prev, .hph-pagination-next');
-    paginationBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            if (this.disabled) return;
-            
-            let page = this.dataset.page;
-            if (this.classList.contains('hph-pagination-prev')) {
-                page = parseInt(container.dataset.page) - 1;
-            } else if (this.classList.contains('hph-pagination-next')) {
-                page = parseInt(container.dataset.page) + 1;
-            }
-            
-            container.dataset.page = page;
-            
-            const event = new CustomEvent('hph:page-change', {
-                detail: { page: page, container: container }
-            });
-            document.dispatchEvent(event);
-        });
-    });
-    
-    // Infinite scroll
-    <?php if ($infinite_scroll): ?>
-    let isLoading = false;
-    const loader = container.querySelector('.hph-infinite-loader');
-    
-    window.addEventListener('scroll', function() {
-        if (isLoading) return;
-        
-        const scrollPos = window.scrollY + window.innerHeight;
-        const docHeight = document.documentElement.scrollHeight;
-        
-        if (scrollPos >= docHeight - 100) {
-            isLoading = true;
-            loader.style.display = 'block';
-            
-            const nextPage = parseInt(container.dataset.page) + 1;
-            const event = new CustomEvent('hph:infinite-load', {
-                detail: { page: nextPage, container: container }
-            });
-            document.dispatchEvent(event);
-            
-            // Reset after load (handled by AJAX callback)
-            setTimeout(() => {
-                isLoading = false;
-                loader.style.display = 'none';
-                container.dataset.page = nextPage;
-            }, 1000);
-        }
-    });
-    <?php endif; ?>
-});
+<?php
+// Enqueue card layout manager JavaScript
+wp_enqueue_script('hph-card-layout-manager', get_template_directory_uri() . '/assets/js/layout/card-layout-manager.js', [], '1.0.0', true);
 
-// Map initialization callback
-<?php if ($layout === 'map'): ?>
-function initHPHMaps() {
-    const mapContainers = document.querySelectorAll('.hph-map-canvas');
-    mapContainers.forEach(mapEl => {
-        const map = new google.maps.Map(mapEl, {
-            center: { lat: <?php echo esc_js($map_args['center_lat']); ?>, lng: <?php echo esc_js($map_args['center_lng']); ?> },
-            zoom: <?php echo esc_js($map_args['zoom']); ?>,
-            mapTypeId: '<?php echo esc_js($map_args['map_style']); ?>'
-        });
-        
-        // Add markers for items
-        <?php foreach ($items as $index => $item): ?>
-            <?php if (function_exists('hpt_get_listing_coordinates') && isset($item->ID)): ?>
-                <?php $coords = hpt_get_listing_coordinates($item->ID); ?>
-                <?php if ($coords): ?>
-                const marker<?php echo $index; ?> = new google.maps.Marker({
-                    position: { lat: <?php echo esc_js($coords['lat']); ?>, lng: <?php echo esc_js($coords['lng']); ?> },
-                    map: map,
-                    title: '<?php echo esc_js(get_the_title($item->ID)); ?>'
-                });
-                
-                marker<?php echo $index; ?>.addListener('click', function() {
-                    // Highlight corresponding card
-                    const card = document.querySelector('[data-marker-id="marker-<?php echo esc_js($item->ID); ?>"]');
-                    if (card) {
-                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        card.classList.add('hph-highlighted');
-                        setTimeout(() => card.classList.remove('hph-highlighted'), 2000);
-                    }
-                });
-                <?php endif; ?>
-            <?php endif; ?>
-        <?php endforeach; ?>
-    });
+// Build configuration for JavaScript
+$js_config = [
+    'defaultLayout' => $layout,
+    'allowLayoutSwitching' => !empty($layout_options),
+    'enableFiltering' => !empty($filter_options),
+    'enableSorting' => !empty($sort_options),
+    'enableMap' => $layout === 'map' && !empty($map_args),
+    'mapOptions' => [
+        'enabled' => $layout === 'map',
+        'centerLat' => $map_args['center_lat'] ?? 40.7128,
+        'centerLng' => $map_args['center_lng'] ?? -74.0060,
+        'zoom' => $map_args['zoom'] ?? 12,
+        'mapStyle' => $map_args['map_style'] ?? 'roadmap',
+        'markers' => []
+    ],
+    'infiniteScroll' => $infinite_scroll ?? false,
+    'carousel' => [
+        'enabled' => $layout === 'carousel',
+        'spaceBetween' => $gap === 'sm' ? 10 : ($gap === 'md' ? 20 : ($gap === 'lg' ? 30 : 40)),
+        'breakpoints' => [
+            640 => $columns['tablet'] ?? 2,
+            1024 => $columns['desktop'] ?? 3,
+            1280 => $columns['wide'] ?? 4
+        ]
+    ]
+];
+
+// Add map markers if map layout
+if ($layout === 'map' && !empty($items)) {
+    foreach ($items as $index => $item) {
+        if (function_exists('hpt_get_listing_coordinates') && isset($item->ID)) {
+            $coords = hpt_get_listing_coordinates($item->ID);
+            if ($coords) {
+                $js_config['mapOptions']['markers'][] = [
+                    'id' => $item->ID,
+                    'lat' => floatval($coords['lat']),
+                    'lng' => floatval($coords['lng']),
+                    'title' => get_the_title($item->ID)
+                ];
+            }
+        }
+    }
 }
-<?php endif; ?>
+?>
+<script>
+// Initialize this specific card layout instance
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.HPH && window.HPH.CardLayoutManager) {
+        window.HPH.CardLayoutManager.init('<?php echo esc_js($container_id); ?>', <?php echo json_encode($js_config); ?>);
+    }
+});
 </script>

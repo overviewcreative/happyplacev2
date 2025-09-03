@@ -314,7 +314,7 @@
             "required": false,
             "conditional_logic": false,
             "wrapper": {
-                "width": "34",
+                "width": "25",
                 "class": "",
                 "id": ""
             },
@@ -322,6 +322,80 @@
             "return_format": "Y-m-d",
             "first_day": 0,
             "default_to_current_date": 0
+        },
+        {
+            "key": "field_days_on_market",
+            "label": "Days on Market",
+            "name": "days_on_market",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Number of days since listing",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "min": 0,
+            "step": 1,
+            "placeholder": "",
+            "default_value": "",
+            "max": "",
+            "prepend": "",
+            "append": "days"
+        },
+        {
+            "key": "field_stories",
+            "label": "Stories/Levels",
+            "name": "stories",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Number of floors/levels",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "min": 1,
+            "max": 5,
+            "step": 1,
+            "default_value": 1,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_condition",
+            "label": "Property Condition",
+            "name": "condition",
+            "aria-label": "",
+            "type": "select",
+            "instructions": "Overall condition of the property",
+            "required": false,
+            "conditional_logic": false,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "excellent": "Excellent",
+                "very_good": "Very Good",
+                "good": "Good",
+                "fair": "Fair",
+                "needs_work": "Needs Work",
+                "fixer_upper": "Fixer Upper"
+            },
+            "allow_null": 1,
+            "ui": 1,
+            "placeholder": "Select condition...",
+            "multiple": 0,
+            "default_value": false,
+            "ajax": 0,
+            "return_format": "value"
         }
     ],
     "location": [

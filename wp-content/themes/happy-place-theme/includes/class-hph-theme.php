@@ -81,6 +81,11 @@ class HPH_Theme {
         // Initialize services
         $this->init_services();
         
+        // Load AJAX handlers
+        $this->load_ajax_handlers();
+        
+        // Archive assets now handled by main theme-assets.php system
+        
         // Force rewrite flush on theme initialization if needed
         add_action('init', array($this, 'maybe_flush_rewrite_rules'), 999);
         
@@ -115,23 +120,82 @@ class HPH_Theme {
         // Load service classes
         $this->load_service_classes();
         
-        // Load the template loader
-        require_once HPH_INC_DIR . '/class-hph-template-loader.php';
+        // Legacy template loader removed - using unified HPH_Component_Loader system
+        // require_once HPH_INC_DIR . '/class-hph-template-loader.php';
+        
+        // Load template part tracker
+        require_once HPH_INC_DIR . '/templates/template-part-tracker.php';
+
+        // Load block register
+        require_once HPH_INC_DIR . '/services/class-hph-block-register.php';
         
         // Load component loader
         require_once HPH_INC_DIR . '/class-hph-component-loader.php';
         
+        // Load the adapter service
+        require_once HPH_INC_DIR . '/services/class-adapter-service.php';
+        
         // Load menu walker class
         require_once HPH_THEME_DIR . '/includes/class-menu-walker.php';
+        
+        // Load bridge functions
+        $this->load_bridge_functions();
         
         // Load integrations
         $this->load_integrations();
         
-        // Load AJAX handlers for frontend functionality
-        require_once HPH_INC_DIR . '/ajax-handlers.php';
+        // Load organized AJAX handlers (New organized system)
+        require_once HPH_INC_DIR . '/ajax/contact-forms.php';
+        require_once HPH_INC_DIR . '/ajax/user-interactions.php';
+        require_once HPH_INC_DIR . '/ajax/search-ajax.php';
+        require_once HPH_INC_DIR . '/ajax/archive-ajax.php';
+        
+        // Load admin AJAX handlers only for admin users
+        if (is_admin() || wp_doing_ajax()) {
+            require_once HPH_INC_DIR . '/ajax/admin-ajax.php';
+        }
+        
+        // Legacy AJAX file - TODO: Remove after testing new system
+        // require_once HPH_INC_DIR . '/ajax-handlers.php';
+        
+        // Load admin interfaces
+        if (is_admin()) {
+            require_once HPH_INC_DIR . '/admin/class-hph-asset-admin.php';
+        }
         
         // Load theme settings helpers
-        require_once HPH_INC_DIR . '/theme-settings-helpers.php';
+        require_once HPH_INC_DIR . '/helpers/theme-settings-helpers.php';
+        
+        // Load agent helpers
+        require_once HPH_INC_DIR . '/helpers/agent-helpers.php';
+        
+        // Load card adapter functions
+        require_once HPH_INC_DIR . '/adapters/listing-card-adapter.php';
+        require_once HPH_INC_DIR . '/adapters/agent-card-adapter.php';
+        require_once HPH_INC_DIR . '/adapters/city-card-adapter.php';
+        require_once HPH_INC_DIR . '/adapters/community-card-adapter.php';
+        
+        // Load archive hero helpers
+        require_once HPH_INC_DIR . '/helpers/archive-hero-helpers.php';
+        
+        // Load component helpers
+        require_once HPH_INC_DIR . '/helpers/component-helpers.php';
+        
+        // Load image helpers
+        require_once HPH_INC_DIR . '/helpers/image-helpers.php';
+        
+        // Load debug helpers (development only)
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            require_once HPH_INC_DIR . '/debug/asset-debug.php';
+            require_once HPH_INC_DIR . '/debug/asset-testing.php';
+            require_once HPH_INC_DIR . '/debug/file-audit.php';
+        }
+        
+        // Load contact form handler
+        require_once HPH_INC_DIR . '/handlers/contact-form-handler.php';
+        
+        // Load template registration
+        require_once HPH_INC_DIR . '/templates/template-registration.php';
         
         // Load admin functionality
         if (is_admin()) {
@@ -174,6 +238,26 @@ class HPH_Theme {
     }
     
     /**
+     * Load bridge functions
+     */
+    private function load_bridge_functions() {
+        $bridge_files = array(
+            'listing-bridge.php',
+            'agent-bridge.php',
+            'community-bridge.php',
+            'open-house-bridge.php',
+            'dashboard-bridge.php',
+        );
+        
+        foreach ($bridge_files as $bridge_file) {
+            $file = HPH_INC_DIR . '/bridge/' . $bridge_file;
+            if (file_exists($file)) {
+                require_once $file;
+            }
+        }
+    }
+    
+    /**
      * Load service classes
      */
     private function load_service_classes() {
@@ -181,7 +265,7 @@ class HPH_Theme {
             // Core services
             'class-hph-config.php',
             'class-hph-theme-support.php',
-            'class-hph-assets.php',
+            // 'class-hph-assets.php', // REMOVED: Replaced with simple theme-assets.php
             'class-hph-widgets.php',
             'class-hph-menus.php',
             
@@ -218,8 +302,8 @@ class HPH_Theme {
             // Core services (order matters)
             'config'        => 'HPH_Config',
             'theme_support' => 'HPH_Theme_Support',
-            'assets'        => 'HPH_Assets',
-            'template'      => 'HPH_Template_Loader',
+            // 'assets'        => 'HPH_Assets', // REMOVED: Replaced with simple theme-assets.php
+            // 'template'      => 'HPH_Template_Loader', // REMOVED: Using HPH_Component_Loader instead
             
             // Features
             'widgets'       => 'HPH_Widgets',
@@ -231,6 +315,9 @@ class HPH_Theme {
             'ajax'          => 'HPH_Ajax_Handler',
             'shortcodes'    => 'HPH_Shortcodes',
             'performance'   => 'HPH_Performance',
+            
+            // Data services
+            'adapter'       => 'HappyPlaceTheme\\Services\\AdapterService',
         );
         
         // Allow filtering of services
@@ -297,6 +384,50 @@ class HPH_Theme {
             if (file_exists($file)) {
                 require_once $file;
             }
+        }
+    }
+    
+    /**
+     * Load AJAX handlers
+     */
+    private function load_ajax_handlers() {
+        $ajax_handlers = array(
+            'contact-forms.php',
+            'user-interactions.php',
+            // Note: archive-ajax.php is loaded via ajax-handlers.php already
+        );
+        
+        foreach ($ajax_handlers as $handler) {
+            $file = HPH_INC_DIR . '/ajax/' . $handler;
+            if (file_exists($file)) {
+                require_once $file;
+            }
+        }
+    }
+}
+
+/**
+ * Helper function for easy access to Adapter Service
+ * 
+ * @return \HappyPlaceTheme\Services\AdapterService
+ */
+function hpt_adapter() {
+    return \HappyPlaceTheme\Services\AdapterService::get_instance();
+}
+
+
+//ACF Flexible Content Helper
+
+function hph_render_flexible_section($layout) {
+    $template_path = 'template-parts/flexible-content/' . str_replace('_', '-', $layout);
+    $full_path = get_template_directory() . '/' . $template_path . '.php';
+    
+    if (file_exists($full_path)) {
+        get_template_part($template_path);
+    } else {
+        // Development helper - shows missing templates
+        if (WP_DEBUG) {
+            echo '<!-- Missing template: ' . $template_path . ' -->';
         }
     }
 }

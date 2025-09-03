@@ -113,6 +113,21 @@ class Bootstrap {
     public static function init_core(): void {
         error_log('Happy Place: init_core() called on init action');
         
+        // Manually load Configuration Manager if not already loaded
+        $config_manager_file = HP_INCLUDES_DIR . 'core/class-configuration-manager.php';
+        if (file_exists($config_manager_file) && !class_exists('HappyPlace\\Core\\ConfigurationManager')) {
+            require_once $config_manager_file;
+        }
+        
+        // Initialize Configuration Manager first (this handles all API keys and settings)
+        if (class_exists('HappyPlace\\Core\\ConfigurationManager')) {
+            \HappyPlace\Core\ConfigurationManager::get_instance();
+            error_log('Happy Place: Configuration Manager initialized');
+        }
+        
+        // Initialize integrations after Configuration Manager
+        self::init_integrations();
+        
         // Initialize Post Types
         if (class_exists('HappyPlace\\Core\\PostTypes')) {
             $post_types = \HappyPlace\Core\PostTypes::get_instance();
@@ -130,13 +145,11 @@ class Bootstrap {
         // Initialize Core Services
         self::init_services();
         
-        // Initialize Admin Menu
+        // Initialize Admin Menu (needs to be early to register admin_menu hook)
         if (is_admin() && class_exists('HappyPlace\\Admin\\AdminMenu')) {
-            add_action('admin_menu', function() {
-                $admin_menu = \HappyPlace\Admin\AdminMenu::get_instance();
-                $admin_menu->init();
-                error_log('Happy Place: Admin menu initialized');
-            });
+            $admin_menu = \HappyPlace\Admin\AdminMenu::get_instance();
+            $admin_menu->init();
+            error_log('Happy Place: Admin menu initialized');
         }
         
         // Initialize Admin Service Test (only in debug mode)
@@ -161,8 +174,7 @@ class Bootstrap {
      */
     private static function init_dashboard_bridge(): void {
         // Only initialize if theme functions indicate dashboard usage
-        if (function_exists('hpt_get_dashboard_stats') || 
-            (defined('HPH_DASHBOARD_LOADING') && HPH_DASHBOARD_LOADING)) {
+        if (function_exists('hpt_get_dashboard_stats')) {
             
             if (class_exists('HappyPlace\\Integrations\\DashboardBridge')) {
                 $dashboard_bridge = \HappyPlace\Integrations\DashboardBridge::get_instance();
@@ -196,11 +208,25 @@ class Bootstrap {
             error_log('Happy Place: Import service initialized');
         }
         
+        // Initialize Export Service
+        if (class_exists('HappyPlace\\Services\\ExportService')) {
+            $export_service = new \HappyPlace\Services\ExportService();
+            $export_service->init();
+            error_log('Happy Place: Export service initialized');
+        }
+        
         // Initialize Lead Service
         if (class_exists('HappyPlace\\Services\\LeadService')) {
             $lead_service = new \HappyPlace\Services\LeadService();
             $lead_service->init();
             error_log('Happy Place: Lead service initialized');
+        }
+        
+        // Initialize User Role Service (before Agent Service)
+        if (class_exists('HappyPlace\\Services\\UserRoleService')) {
+            $user_role_service = new \HappyPlace\Services\UserRoleService();
+            $user_role_service->init();
+            error_log('Happy Place: User Role service initialized');
         }
         
         // Initialize Agent Service
@@ -280,6 +306,34 @@ class Bootstrap {
             </div>
             <?php
         }
+    }
+    
+    /**
+     * Initialize integrations
+     */
+    private static function init_integrations(): void {
+        // Load Mapbox integration
+        $mapbox_integration_file = HP_INCLUDES_DIR . 'integrations/mapbox-integration.php';
+        if (file_exists($mapbox_integration_file)) {
+            require_once $mapbox_integration_file;
+            error_log('Happy Place: Mapbox integration initialized');
+        }
+        
+        // Load FollowUp Boss integration
+        $followup_boss_file = HP_INCLUDES_DIR . 'integrations/class-followup-boss-integration.php';
+        if (file_exists($followup_boss_file)) {
+            require_once $followup_boss_file;
+            error_log('Happy Place: FollowUp Boss integration initialized');
+        }
+        
+        // Add other integrations here as needed
+        // Example:
+        // $google_maps_file = HP_INCLUDES_DIR . 'integrations/google-maps-integration.php';
+        // if (file_exists($google_maps_file)) {
+        //     require_once $google_maps_file;
+        // }
+        
+        error_log('Happy Place: All integrations loaded');
     }
     
     /**

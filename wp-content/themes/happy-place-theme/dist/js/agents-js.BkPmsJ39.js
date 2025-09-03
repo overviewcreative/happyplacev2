@@ -1,0 +1,1 @@
+function n(){import.meta.url,import("_").catch(()=>1),async function*(){}().next()}document.addEventListener("DOMContentLoaded",function(){console.log("%c👥 Happy Place Agents Loaded","color: #06b6d4; font-weight: bold;"),window.HPH&&window.HPH.AgentArchive&&window.HPH.AgentArchive.init&&window.HPH.AgentArchive.init()});export{n as __vite_legacy_guard};

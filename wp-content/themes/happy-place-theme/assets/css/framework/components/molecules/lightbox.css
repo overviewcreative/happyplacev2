@@ -1,0 +1,297 @@
+/**
+ * Lightbox Component CSS - Production Styles
+ * Extracted from mature listing-gallery.css lightbox styles
+ * 
+ * @package HappyPlaceTheme
+ */
+
+/* ================================================
+   LIGHTBOX MODAL
+   ================================================ */
+.hph-lightbox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000;
+}
+
+.hph-lightbox.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hph-lightbox-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    cursor: zoom-out;
+}
+
+.hph-lightbox-content {
+    position: relative;
+    width: 90%;
+    max-width: 1200px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ================================================
+   LIGHTBOX MODAL (ALTERNATIVE NAMING)
+   ================================================ */
+.hph-lightbox-modal {
+    z-index: 9999;
+    backdrop-filter: blur(4px);
+}
+
+.hph-lightbox-modal.hph-hidden {
+    display: none !important;
+}
+
+.hph-lightbox-open {
+    overflow: hidden;
+}
+
+/* ================================================
+   LIGHTBOX CONTROLS
+   ================================================ */
+.hph-lightbox-close {
+    position: absolute;
+    top: -3rem;
+    right: 0;
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    color: var(--hph-white);
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 2;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hph-lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+/* ================================================
+   LIGHTBOX IMAGE CONTAINER
+   ================================================ */
+.hph-lightbox-image-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.hph-lightbox-image {
+    position: relative;
+    max-width: 100%;
+    max-height: 70vh;
+}
+
+.hph-lightbox-image img {
+    max-width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+}
+
+.hph-lightbox-loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--hph-white);
+    font-size: 2rem;
+    display: none;
+}
+
+.hph-lightbox-loader.active {
+    display: block;
+}
+
+/* ================================================
+   LIGHTBOX NAVIGATION
+   ================================================ */
+.hph-lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 56px;
+    height: 56px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    color: var(--hph-white);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hph-lightbox-prev {
+    left: 2rem;
+}
+
+.hph-lightbox-next {
+    right: 2rem;
+}
+
+.hph-lightbox-nav:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* ================================================
+   LIGHTBOX INFO SECTION
+   ================================================ */
+.hph-lightbox-info {
+    margin-top: 2rem;
+    color: var(--hph-white);
+    text-align: center;
+}
+
+.hph-lightbox-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+}
+
+.hph-lightbox-caption {
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0 1rem;
+}
+
+.hph-lightbox-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hph-lightbox-counter {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.hph-lightbox-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* ================================================
+   LIGHTBOX ACTION BUTTONS
+   ================================================ */
+.hph-lightbox-fullscreen,
+.hph-lightbox-download {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    color: var(--hph-white);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.hph-lightbox-fullscreen:hover,
+.hph-lightbox-download:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* ================================================
+   RESPONSIVE DESIGN
+   ================================================ */
+@media (max-width: 1024px) {
+    .hph-lightbox-nav {
+        width: 48px;
+        height: 48px;
+        font-size: 1.25rem;
+    }
+    
+    .hph-lightbox-prev {
+        left: 1rem;
+    }
+    
+    .hph-lightbox-next {
+        right: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .hph-lightbox-modal .hph-lightbox-content {
+        margin: 1rem;
+    }
+    
+    .hph-lightbox-image {
+        max-height: 80vh;
+        max-width: 95vw;
+    }
+}
+
+@media (max-width: 480px) {
+    .hph-lightbox-content {
+        width: 95%;
+    }
+    
+    .hph-lightbox-info {
+        padding: 0 1rem;
+    }
+    
+    .hph-lightbox-nav {
+        padding: 0.5rem;
+    }
+    
+    .hph-lightbox-nav svg {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+}
+
+/* ================================================
+   ACCESSIBILITY ENHANCEMENTS
+   ================================================ */
+.hph-lightbox-trigger:focus {
+    outline: 2px solid var(--hph-primary);
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .hph-lightbox-modal {
+        background: rgba(0, 0, 0, 0.95);
+    }
+    
+    .hph-lightbox-overlay {
+        background: rgba(0, 0, 0, 1);
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .hph-lightbox-image {
+        transition: none;
+    }
+}
+
+/* File Location: /wp-content/themes/happy-place/assets/css/framework/components/molecules/lightbox.css */

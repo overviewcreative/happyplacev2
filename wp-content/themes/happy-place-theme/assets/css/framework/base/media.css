@@ -1,0 +1,19 @@
+/* Base Media Styles */
+img, video, audio {
+  max-width: 100%;
+  height: auto;
+}
+
+img {
+  border-radius: var(--hph-radius);
+}
+
+figure {
+  margin: 0;
+}
+
+figcaption {
+  font-size: var(--hph-text-sm);
+  color: var(--hph-gray-600);
+  margin-top: var(--hph-space-2);
+}

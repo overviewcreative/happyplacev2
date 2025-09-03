@@ -1,10 +1,6 @@
 /**
- * Happy Place Theme Jav        // Initialize theme features
-        initThemeFeatures: function() {
-            this.initStickyHeader();
-            this.initMobileNav();
-            // Theme switcher temporarily disabled
-            // this.initThemeSwitcher();in theme functionality and WordPress integration
+ * Happy Place Theme JavaScript
+ * Main theme functionality and WordPress integration
  * Theme-specific features and customizations
  *
  * @package HappyPlaceTheme
@@ -176,12 +172,12 @@
          */
         showCookieConsent: function() {
             var consentHtml = `
-                <div id="cookie-consent" class="cookie-consent">
-                    <div class="cookie-consent-content">
+                <div id="hph-cookie-consent" class="hph-cookie-consent">
+                    <div class="hph-cookie-consent-content">
                         <p>We use cookies to enhance your browsing experience and analyze our traffic. By clicking "Accept All", you consent to our use of cookies.</p>
-                        <div class="cookie-consent-actions">
-                            <button type="button" class="accept-cookies hph-btn hph-btn-primary hph-btn-sm">Accept All</button>
-                            <button type="button" class="decline-cookies hph-btn hph-btn-outline hph-btn-sm">Decline</button>
+                        <div class="hph-cookie-consent-actions">
+                            <button type="button" class="hph-accept-cookies hph-btn hph-btn-primary hph-btn-sm">Accept All</button>
+                            <button type="button" class="hph-decline-cookies hph-btn hph-btn-outline hph-btn-sm">Decline</button>
                             <a href="/privacy-policy" class="hph-text-sm hph-underline">Privacy Policy</a>
                         </div>
                     </div>
@@ -190,14 +186,25 @@
             
             $('body').append(consentHtml);
             
-            $('.accept-cookies').on('click', function() {
+            // Add visible class with slight delay for animation
+            setTimeout(function() {
+                $('#hph-cookie-consent').addClass('visible');
+            }, 100);
+            
+            $('.hph-accept-cookies').on('click', function() {
                 localStorage.setItem('cookieConsent', 'accepted');
-                $('#cookie-consent').fadeOut();
+                $('#hph-cookie-consent').removeClass('visible');
+                setTimeout(function() {
+                    $('#hph-cookie-consent').remove();
+                }, 300);
             });
             
-            $('.decline-cookies').on('click', function() {
+            $('.hph-decline-cookies').on('click', function() {
                 localStorage.setItem('cookieConsent', 'declined');
-                $('#cookie-consent').fadeOut();
+                $('#hph-cookie-consent').removeClass('visible');
+                setTimeout(function() {
+                    $('#hph-cookie-consent').remove();
+                }, 300);
             });
         },
         
@@ -715,6 +722,64 @@
                 
                 printWindow.document.close();
             }
+        },
+        
+        /**
+         * Initialize theme switcher
+         */
+        initThemeSwitcher: function() {
+            // Basic theme switcher implementation
+            var $themeSwitcher = $('.theme-switcher, [data-theme-switcher]');
+            
+            if ($themeSwitcher.length === 0) {
+                // No theme switcher found, just return
+                return;
+            }
+            
+            // Get current theme from localStorage or default
+            var currentTheme = localStorage.getItem('hph-theme') || 'light';
+            $('body').attr('data-theme', currentTheme);
+            
+            // Update switcher UI
+            $themeSwitcher.each(function() {
+                var $switcher = $(this);
+                if ($switcher.is('select')) {
+                    $switcher.val(currentTheme);
+                } else {
+                    $switcher.toggleClass('active', currentTheme === 'dark');
+                }
+            });
+            
+            // Handle theme switching
+            $themeSwitcher.on('change click', function(e) {
+                var $switcher = $(this);
+                var newTheme;
+                
+                if ($switcher.is('select')) {
+                    newTheme = $switcher.val();
+                } else {
+                    e.preventDefault();
+                    newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                }
+                
+                // Apply theme
+                $('body').attr('data-theme', newTheme);
+                localStorage.setItem('hph-theme', newTheme);
+                currentTheme = newTheme;
+                
+                // Update all switchers
+                $themeSwitcher.each(function() {
+                    var $s = $(this);
+                    if ($s.is('select')) {
+                        $s.val(newTheme);
+                    } else {
+                        $s.toggleClass('active', newTheme === 'dark');
+                    }
+                });
+                
+                // Trigger custom event
+                $(document).trigger('theme-changed', [newTheme]);
+            });
         }
     };
     

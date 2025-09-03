@@ -441,37 +441,14 @@ class AgentService extends Service {
     
     /**
      * Add agent capabilities
+     * NOTE: Role creation is now handled by UserRoleService
      */
     public function add_agent_capabilities(): void {
-        $role = get_role('agent');
-        if (!$role) {
-            // Create agent role if it doesn't exist
-            add_role('agent', 'Real Estate Agent', [
-                'read' => true,
-                'edit_posts' => true,
-                'edit_published_posts' => true,
-                'publish_posts' => true,
-                'delete_posts' => true,
-                'upload_files' => true,
-                'edit_listings' => true,
-                'edit_published_listings' => true,
-                'publish_listings' => true,
-                'delete_listings' => true,
-                'manage_leads' => true,
-                'view_agent_stats' => true
-            ]);
-        }
+        // Role creation is now handled by UserRoleService
+        // This method is kept for backward compatibility but capabilities
+        // are managed centrally by the UserRoleService
         
-        // Add capabilities to administrator
-        $admin_role = get_role('administrator');
-        if ($admin_role) {
-            $admin_role->add_cap('edit_agents');
-            $admin_role->add_cap('edit_published_agents');
-            $admin_role->add_cap('publish_agents');
-            $admin_role->add_cap('delete_agents');
-            $admin_role->add_cap('manage_agents');
-            $admin_role->add_cap('view_agent_stats');
-        }
+        $this->log('Agent capabilities managed by UserRoleService');
     }
     
     /**

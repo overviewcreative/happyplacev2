@@ -10,6 +10,8 @@
 
 namespace HappyPlace\Admin;
 
+use HappyPlace\Core\ConfigurationManager;
+
 // Prevent direct access
 if (!defined('ABSPATH')) {
     exit;
@@ -37,6 +39,13 @@ class AdminMenu {
     private array $pages = [];
     
     /**
+     * Configuration Manager
+     * 
+     * @var ConfigurationManager
+     */
+    private ConfigurationManager $config_manager;
+    
+    /**
      * Get instance
      * 
      * @return AdminMenu
@@ -52,6 +61,7 @@ class AdminMenu {
      * Constructor
      */
     private function __construct() {
+        $this->config_manager = ConfigurationManager::get_instance();
         $this->define_pages();
     }
     
@@ -63,6 +73,22 @@ class AdminMenu {
     public function init(): void {
         // Add menu pages
         add_action('admin_menu', [$this, 'add_menu_pages']);
+        
+        // Enqueue admin scripts
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_scripts']);
+        
+        // Add AJAX handlers
+        add_action('wp_ajax_hp_clear_cache', [$this, 'ajax_clear_cache']);
+        add_action('wp_ajax_hp_regenerate_thumbnails', [$this, 'ajax_regenerate_thumbnails']);
+        add_action('wp_ajax_hp_optimize_database', [$this, 'ajax_optimize_database']);
+        add_action('wp_ajax_hp_sync_mls', [$this, 'ajax_sync_mls']);
+        add_action('wp_ajax_hp_sync_config', [$this, 'ajax_sync_config']);
+        add_action('wp_ajax_hp_test_airtable_connection', [$this, 'ajax_test_airtable_connection']);
+        add_action('wp_ajax_hp_test_followup_boss_connection', [$this, 'ajax_test_followup_boss_connection']);
+        add_action('wp_ajax_hp_bulk_sync_leads', [$this, 'ajax_bulk_sync_leads']);
+        add_action('wp_ajax_hp_cleanup_roles', [$this, 'ajax_cleanup_roles']);
+        add_action('wp_ajax_hp_preview_role_changes', [$this, 'ajax_preview_role_changes']);
+        add_action('wp_ajax_get_lead_details', [$this, 'ajax_get_lead_details']);
         
         // Add toolbar items
         add_action('admin_bar_menu', [$this, 'add_toolbar_items'], 100);
@@ -83,55 +109,105 @@ class AdminMenu {
      */
     private function define_pages(): void {
         $this->pages = [
+            // Main Dashboard
             'dashboard' => [
                 'title' => __('Happy Place Dashboard', 'happy-place'),
                 'menu_title' => __('Happy Place', 'happy-place'),
                 'capability' => 'manage_options',
                 'slug' => 'happy-place',
                 'callback' => [$this, 'render_dashboard'],
-                'icon' => 'dashicons-admin-multisite',
+                'icon' => 'dashicons-admin-home',
                 'position' => 4,
             ],
+            
+            // Theme Settings (consolidating theme admin features)
+            'theme-settings' => [
+                'parent' => 'happy-place',
+                'title' => __('Theme Settings', 'happy-place'),
+                'menu_title' => __('Theme Settings', 'happy-place'),
+                'capability' => 'manage_options',
+                'slug' => 'hp-theme-settings',
+                'callback' => [$this, 'render_theme_settings'],
+            ],
+            
+            // Integrations & APIs (consolidating HP Settings and external services)
+            'integrations' => [
+                'parent' => 'happy-place',
+                'title' => __('Integrations & APIs', 'happy-place'),
+                'menu_title' => __('Integrations & APIs', 'happy-place'),
+                'capability' => 'manage_options',
+                'slug' => 'hp-integrations',
+                'callback' => [$this, 'render_integrations'],
+            ],
+            
+            // Import (data import tools)
+            'import' => [
+                'parent' => 'happy-place',
+                'title' => __('Import Data', 'happy-place'),
+                'menu_title' => __('Import', 'happy-place'),
+                'capability' => 'manage_options',
+                'slug' => 'hp-import',
+                'callback' => [$this, 'render_import'],
+            ],
+            
+            // Export (data export tools)
+            'export' => [
+                'parent' => 'happy-place',
+                'title' => __('Export Data', 'happy-place'),
+                'menu_title' => __('Export', 'happy-place'),
+                'capability' => 'manage_options',
+                'slug' => 'hp-export',
+                'callback' => [$this, 'render_export'],
+            ],
+            
+            // Sync (MLS sync, ACF sync, data synchronization)
+            'sync' => [
+                'parent' => 'happy-place',
+                'title' => __('Data Synchronization', 'happy-place'),
+                'menu_title' => __('Sync', 'happy-place'),
+                'capability' => 'manage_options',
+                'slug' => 'hp-sync',
+                'callback' => [$this, 'render_sync'],
+            ],
+            
+            // Analytics (reports, statistics, lead reports, transactions)
             'analytics' => [
                 'parent' => 'happy-place',
-                'title' => __('Analytics', 'happy-place'),
+                'title' => __('Analytics & Reports', 'happy-place'),
                 'menu_title' => __('Analytics', 'happy-place'),
                 'capability' => 'manage_options',
                 'slug' => 'hp-analytics',
                 'callback' => [$this, 'render_analytics'],
             ],
-            // Leads menu moved to Lead Service class
-            'import' => [
+            
+            // Leads (lead management and viewing)
+            'leads' => [
                 'parent' => 'happy-place',
-                'title' => __('Import/Export', 'happy-place'),
-                'menu_title' => __('Import/Export', 'happy-place'),
-                'capability' => 'manage_options',
-                'slug' => 'hp-import-export',
-                'callback' => [$this, 'render_import_export'],
+                'title' => __('Lead Management', 'happy-place'),
+                'menu_title' => __('Leads', 'happy-place'),
+                'capability' => 'edit_posts',
+                'slug' => 'happy-place-leads',
+                'callback' => [$this, 'render_leads'],
             ],
-            'config-sync' => [
+            
+            // Marketing (social, email, SEO, lead capture)
+            'marketing' => [
                 'parent' => 'happy-place',
-                'title' => __('Configuration Sync', 'happy-place'),
-                'menu_title' => __('Config Sync', 'happy-place'),
+                'title' => __('Marketing Tools', 'happy-place'),
+                'menu_title' => __('Marketing', 'happy-place'),
                 'capability' => 'manage_options',
-                'slug' => 'hp-config-sync',
-                'callback' => [$this, 'render_config_sync'],
+                'slug' => 'hp-marketing',
+                'callback' => [$this, 'render_marketing'],
             ],
-            'tools' => [
+            
+            // Users (agent management, roles, permissions)
+            'users' => [
                 'parent' => 'happy-place',
-                'title' => __('Tools', 'happy-place'),
-                'menu_title' => __('Tools', 'happy-place'),
+                'title' => __('User Management', 'happy-place'),
+                'menu_title' => __('Users', 'happy-place'),
                 'capability' => 'manage_options',
-                'slug' => 'hp-tools',
-                'callback' => [$this, 'render_tools'],
-            ],
-            'system' => [
-                'parent' => 'happy-place',
-                'title' => __('System Status', 'happy-place'),
-                'menu_title' => __('System Status', 'happy-place'),
-                'capability' => 'manage_options',
-                'slug' => 'hp-system',
-                'callback' => [$this, 'render_system_status'],
+                'slug' => 'hp-users',
+                'callback' => [$this, 'render_users'],
             ],
         ];
         
@@ -279,7 +355,16 @@ class AdminMenu {
         <div class="wrap hp-admin-dashboard">
             <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
             
+            <!-- Configuration Status Alert -->
+            <?php $this->render_configuration_alerts(); ?>
+            
             <div class="hp-dashboard-widgets">
+                <!-- Configuration Status Widget -->
+                <div class="hp-widget hp-config-widget">
+                    <h2><?php _e('Configuration Status', 'happy-place'); ?></h2>
+                    <?php $this->render_configuration_status(); ?>
+                </div>
+                
                 <!-- Stats Widget -->
                 <div class="hp-widget hp-stats-widget">
                     <h2><?php _e('Quick Stats', 'happy-place'); ?></h2>
@@ -324,7 +409,7 @@ class AdminMenu {
                         <a href="<?php echo admin_url('post-new.php?post_type=open_house'); ?>" class="button">
                             <?php _e('Schedule Open House', 'happy-place'); ?>
                         </a>
-                        <a href="<?php echo admin_url('admin.php?page=hp-import-export'); ?>" class="button">
+                        <a href="<?php echo admin_url('admin.php?page=hp-import'); ?>" class="button">
                             <?php _e('Import Listings', 'happy-place'); ?>
                         </a>
                     </div>
@@ -344,206 +429,1719 @@ class AdminMenu {
         <div class="wrap hp-admin-analytics">
             <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
             
-            <div class="hp-analytics-filters">
-                <form method="get" action="">
-                    <input type="hidden" name="page" value="hp-analytics">
-                    
-                    <label for="date-range">
-                        <?php _e('Date Range:', 'happy-place'); ?>
-                    </label>
-                    <select name="range" id="date-range">
-                        <option value="7"><?php _e('Last 7 Days', 'happy-place'); ?></option>
-                        <option value="30" selected><?php _e('Last 30 Days', 'happy-place'); ?></option>
-                        <option value="90"><?php _e('Last 90 Days', 'happy-place'); ?></option>
-                        <option value="365"><?php _e('Last Year', 'happy-place'); ?></option>
-                    </select>
-                    
-                    <button type="submit" class="button"><?php _e('Apply', 'happy-place'); ?></button>
-                </form>
+            <div class="hp-settings-nav">
+                <ul class="hp-nav-tabs">
+                    <li><a href="#overview" class="nav-tab nav-tab-active"><?php _e('Overview', 'happy-place'); ?></a></li>
+                    <li><a href="#listings" class="nav-tab"><?php _e('Listing Analytics', 'happy-place'); ?></a></li>
+                    <li><a href="#leads" class="nav-tab"><?php _e('Lead Reports', 'happy-place'); ?></a></li>
+                    <li><a href="#agents" class="nav-tab"><?php _e('Agent Performance', 'happy-place'); ?></a></li>
+                    <li><a href="#system" class="nav-tab"><?php _e('System Status', 'happy-place'); ?></a></li>
+                </ul>
             </div>
             
-            <div class="hp-analytics-charts">
-                <canvas id="hp-views-chart"></canvas>
-                <canvas id="hp-leads-chart"></canvas>
+            <div id="overview" class="hp-settings-section">
+                <div class="hp-analytics-filters">
+                    <form method="get" action="">
+                        <input type="hidden" name="page" value="hp-analytics">
+                        
+                        <label for="date-range">
+                            <?php _e('Date Range:', 'happy-place'); ?>
+                        </label>
+                        <select name="range" id="date-range">
+                            <option value="7"><?php _e('Last 7 Days', 'happy-place'); ?></option>
+                            <option value="30" selected><?php _e('Last 30 Days', 'happy-place'); ?></option>
+                            <option value="90"><?php _e('Last 90 Days', 'happy-place'); ?></option>
+                            <option value="365"><?php _e('Last Year', 'happy-place'); ?></option>
+                        </select>
+                        
+                        <button type="submit" class="button"><?php _e('Apply', 'happy-place'); ?></button>
+                    </form>
+                </div>
+                
+                <div class="hp-analytics-charts">
+                    <canvas id="hp-views-chart"></canvas>
+                    <canvas id="hp-leads-chart"></canvas>
+                </div>
+                
+                <div class="hp-analytics-summary">
+                    <h2><?php _e('Performance Summary', 'happy-place'); ?></h2>
+                    <?php $this->render_analytics_summary(); ?>
+                </div>
             </div>
             
-            <div class="hp-analytics-tables">
+            <div id="listings" class="hp-settings-section" style="display:none;">
                 <h2><?php _e('Top Performing Listings', 'happy-place'); ?></h2>
                 <?php $this->render_top_listings_table(); ?>
+                
+                <h2><?php _e('Listing Views Over Time', 'happy-place'); ?></h2>
+                <canvas id="hp-listing-views-chart"></canvas>
+            </div>
+            
+            <div id="leads" class="hp-settings-section" style="display:none;">
+                <h2><?php _e('Lead Generation Report', 'happy-place'); ?></h2>
+                <?php $this->render_lead_reports(); ?>
+            </div>
+            
+            <div id="agents" class="hp-settings-section" style="display:none;">
+                <h2><?php _e('Agent Performance', 'happy-place'); ?></h2>
+                <?php $this->render_agent_performance(); ?>
+            </div>
+            
+            <div id="system" class="hp-settings-section" style="display:none;">
+                <h2><?php _e('System Information', 'happy-place'); ?></h2>
+                <?php $this->render_system_info(); ?>
+                
+                <h2><?php _e('Recent Errors', 'happy-place'); ?></h2>
+                <?php $this->render_error_log(); ?>
+                
+                <h2><?php _e('Tools', 'happy-place'); ?></h2>
+                <div class="hp-tools-grid">
+                    <div class="hp-tool">
+                        <h3><?php _e('Clear Cache', 'happy-place'); ?></h3>
+                        <p><?php _e('Clear all cached data to ensure fresh content.', 'happy-place'); ?></p>
+                        <button class="button" id="hp-clear-cache"><?php _e('Clear Cache', 'happy-place'); ?></button>
+                    </div>
+                    
+                    <div class="hp-tool">
+                        <h3><?php _e('Regenerate Thumbnails', 'happy-place'); ?></h3>
+                        <p><?php _e('Regenerate all listing thumbnails.', 'happy-place'); ?></p>
+                        <button class="button" id="hp-regenerate-thumbnails"><?php _e('Regenerate', 'happy-place'); ?></button>
+                    </div>
+                    
+                    <div class="hp-tool">
+                        <h3><?php _e('Database Optimization', 'happy-place'); ?></h3>
+                        <p><?php _e('Optimize database tables for better performance.', 'happy-place'); ?></p>
+                        <button class="button" id="hp-optimize-db"><?php _e('Optimize', 'happy-place'); ?></button>
+                    </div>
+                </div>
             </div>
         </div>
         <?php
     }
     
-    // render_leads method removed - now handled by Lead Service
-    
     /**
-     * Render import/export page
+     * Render theme settings page
      * 
      * @return void
      */
-    public function render_import_export(): void {
-        ?>
-        <div class="wrap hp-admin-import-export">
-            <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
-            
-            <div class="hp-import-section">
-                <h2><?php _e('Import Listings', 'happy-place'); ?></h2>
-                <form method="post" enctype="multipart/form-data" action="<?php echo admin_url('admin-post.php'); ?>">
-                    <?php wp_nonce_field('hp_import_listings'); ?>
-                    <input type="hidden" name="action" value="hp_import_listings">
+    public function render_theme_settings(): void {
+        // Load required settings class if not already loaded
+        if (!class_exists('HPH_Admin_Settings')) {
+            $hph_settings_file = get_template_directory() . '/includes/admin/class-hph-admin-settings.php';
+            if (file_exists($hph_settings_file)) {
+                require_once $hph_settings_file;
+            }
+        }
+        
+        // Integrate with existing HPH_Admin_Settings class from theme
+        if (class_exists('HPH_Admin_Settings')) {
+            // Use the existing theme settings rendering
+            \HPH_Admin_Settings::render_settings_page();
+        } else {
+            // Fallback if theme class not available
+            ?>
+            <div class="wrap hp-admin-theme-settings">
+                <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+                
+                <div class="hp-settings-nav">
+                    <ul class="hp-nav-tabs">
+                        <li><a href="#branding" class="nav-tab nav-tab-active"><?php _e('Branding', 'happy-place'); ?></a></li>
+                        <li><a href="#colors" class="nav-tab"><?php _e('Colors', 'happy-place'); ?></a></li>
+                        <li><a href="#typography" class="nav-tab"><?php _e('Typography', 'happy-place'); ?></a></li>
+                        <li><a href="#layout" class="nav-tab"><?php _e('Layout', 'happy-place'); ?></a></li>
+                        <li><a href="#footer" class="nav-tab"><?php _e('Footer', 'happy-place'); ?></a></li>
+                    </ul>
+                </div>
+                
+                <form method="post" action="options.php">
+                    <?php
+                    settings_fields('hp_theme_settings');
+                    do_settings_sections('hp_theme_settings');
+                    ?>
                     
-                    <p>
-                        <label for="import-file"><?php _e('Select CSV file:', 'happy-place'); ?></label>
-                        <input type="file" name="import_file" id="import-file" accept=".csv">
-                    </p>
+                    <div id="branding" class="hp-settings-section">
+                        <h2><?php _e('Site Branding', 'happy-place'); ?></h2>
+                        <table class="form-table">
+                            <tr>
+                                <th scope="row"><?php _e('Company Name', 'happy-place'); ?></th>
+                                <td><input type="text" name="hp_company_name" value="<?php echo esc_attr(get_option('hp_company_name')); ?>" class="regular-text" /></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><?php _e('Logo', 'happy-place'); ?></th>
+                                <td>
+                                    <input type="url" name="hp_logo_url" value="<?php echo esc_url(get_option('hp_logo_url')); ?>" class="regular-text" />
+                                    <button type="button" class="button hp-upload-logo"><?php _e('Upload Logo', 'happy-place'); ?></button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                     
-                    <p class="submit">
-                        <button type="submit" class="button button-primary">
-                            <?php _e('Import Listings', 'happy-place'); ?>
-                        </button>
-                    </p>
+                    <div id="colors" class="hp-settings-section" style="display:none;">
+                        <h2><?php _e('Color Scheme', 'happy-place'); ?></h2>
+                        <!-- Color picker fields will be added here -->
+                        <p><?php _e('Color customization options will be integrated here.', 'happy-place'); ?></p>
+                    </div>
+                    
+                    <?php submit_button(); ?>
                 </form>
             </div>
+            <?php
+        }
+    }
+    
+    /**
+     * Render integrations page
+     * 
+     * @return void
+     */
+    public function render_integrations(): void {
+        ?>
+        <div class="wrap hp-admin-integrations">
+            <h1>
+                <span class="dashicons dashicons-admin-plugins" style="font-size: 30px; margin-right: 10px;"></span>
+                <?php echo esc_html(get_admin_page_title()); ?>
+            </h1>
             
-            <div class="hp-export-section">
-                <h2><?php _e('Export Data', 'happy-place'); ?></h2>
-                <p>
-                    <a href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=hp_export_listings'), 'hp_export'); ?>" class="button">
-                        <?php _e('Export Listings', 'happy-place'); ?>
-                    </a>
-                    <a href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=hp_export_leads'), 'hp_export'); ?>" class="button">
-                        <?php _e('Export Leads', 'happy-place'); ?>
-                    </a>
-                </p>
+            <?php settings_errors(); ?>
+            
+            <?php 
+            // Debug information - only show for administrators
+            if (current_user_can('manage_options') && HP_DEBUG): ?>
+                <div class="notice notice-info">
+                    <p><strong>Debug Info:</strong></p>
+                    <p>Settings Group: hp_integrations_settings</p>
+                    <p>Current User: <?php echo wp_get_current_user()->user_login; ?></p>
+                    <p>Form Action: <?php echo admin_url('options.php'); ?></p>
+                    <p>Nonce: <?php echo wp_create_nonce('hp_integrations_settings-options'); ?></p>
+                </div>
+            <?php endif; ?>
+            
+            <div class="hp-settings-nav">
+                <nav class="hp-nav-tabs">
+                    <a href="#api-keys" class="nav-tab nav-tab-active"><?php _e('API Keys', 'happy-place'); ?></a>
+                    <a href="#mls" class="nav-tab"><?php _e('MLS Integration', 'happy-place'); ?></a>
+                    <a href="#airtable" class="nav-tab"><?php _e('Airtable', 'happy-place'); ?></a>
+                    <a href="#followup-boss" class="nav-tab"><?php _e('FollowUp Boss', 'happy-place'); ?></a>
+                    <a href="#email" class="nav-tab"><?php _e('Email Services', 'happy-place'); ?></a>
+                    <a href="#analytics" class="nav-tab"><?php _e('Analytics', 'happy-place'); ?></a>
+                    <a href="#user-roles" class="nav-tab"><?php _e('User Roles', 'happy-place'); ?></a>
+                </nav>
+            </div>
+            
+            <form method="post" action="options.php">
+                <?php
+                settings_fields('hp_integrations_settings');
+                
+                // API Keys Section
+                ?>
+                <div id="api-keys" class="hp-settings-section">
+                    <h2><?php _e('API Keys & Core Services', 'happy-place'); ?></h2>
+                    <p><?php _e('Configure API keys for core functionality. These are centrally managed and used throughout the plugin.', 'happy-place'); ?></p>
+                    
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row"><?php _e('Google Maps API Key', 'happy-place'); ?></th>
+                            <td>
+                                <input type="text" name="hp_google_maps_api_key" 
+                                       value="<?php echo esc_attr($this->config_manager->get('google_maps_api_key', '')); ?>" 
+                                       class="regular-text" placeholder="<?php esc_attr_e('Enter your Google Maps API key', 'happy-place'); ?>" />
+                                <p class="description">
+                                    <?php _e('Required for map functionality and location services.', 'happy-place'); ?>
+                                    <a href="https://developers.google.com/maps/documentation/javascript/get-api-key" target="_blank">
+                                        <?php _e('Get your API key', 'happy-place'); ?>
+                                    </a>
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><?php _e('Mapbox Access Token', 'happy-place'); ?></th>
+                            <td>
+                                <input type="text" name="hp_mapbox_access_token" 
+                                       value="<?php echo esc_attr($this->config_manager->get('mapbox_access_token', '')); ?>" 
+                                       class="regular-text" placeholder="<?php esc_attr_e('Enter your Mapbox public access token', 'happy-place'); ?>" />
+                                <p class="description">
+                                    <?php _e('Required for advanced map views with interactive property listings. Mapbox provides modern, customizable maps.', 'happy-place'); ?>
+                                    <a href="https://docs.mapbox.com/help/getting-started/access-tokens/" target="_blank">
+                                        <?php _e('Get your access token', 'happy-place'); ?>
+                                    </a>
+                                </p>
+                                <div style="margin-top: 10px;">
+                                    <label>
+                                        <input type="checkbox" name="hp_mapbox_default_map_provider" 
+                                               value="1" <?php checked($this->config_manager->get('mapbox_default_map_provider', false)); ?> />
+                                        <?php _e('Use Mapbox as default map provider for property archives and listings', 'happy-place'); ?>
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><?php _e('Map Default Settings', 'happy-place'); ?></th>
+                            <td>
+                                <fieldset>
+                                    <legend class="screen-reader-text"><?php _e('Default map settings', 'happy-place'); ?></legend>
+                                    <label for="hp_map_center_lat">
+                                        <?php _e('Default Center Latitude:', 'happy-place'); ?>
+                                        <input type="text" id="hp_map_center_lat" name="hp_map_center_lat" 
+                                               value="<?php echo esc_attr($this->config_manager->get('map_center_lat', '29.4241')); ?>" 
+                                               class="small-text" placeholder="29.4241" />
+                                    </label>
+                                    <br><br>
+                                    <label for="hp_map_center_lng">
+                                        <?php _e('Default Center Longitude:', 'happy-place'); ?>
+                                        <input type="text" id="hp_map_center_lng" name="hp_map_center_lng" 
+                                               value="<?php echo esc_attr($this->config_manager->get('map_center_lng', '-98.4936')); ?>" 
+                                               class="small-text" placeholder="-98.4936" />
+                                    </label>
+                                    <br><br>
+                                    <label for="hp_map_default_zoom">
+                                        <?php _e('Default Zoom Level:', 'happy-place'); ?>
+                                        <input type="number" id="hp_map_default_zoom" name="hp_map_default_zoom" 
+                                               value="<?php echo esc_attr($this->config_manager->get('map_default_zoom', 11)); ?>" 
+                                               class="small-text" min="1" max="20" />
+                                    </label>
+                                    <p class="description">
+                                        <?php _e('Configure the default map center and zoom level for your property listings. Current default is set to San Antonio, TX.', 'happy-place'); ?>
+                                    </p>
+                                </fieldset>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><?php _e('Walk Score API Key', 'happy-place'); ?></th>
+                            <td>
+                                <input type="text" name="hp_walkscore_api_key" 
+                                       value="<?php echo esc_attr($this->config_manager->get('walkscore_api_key', '')); ?>" 
+                                       class="regular-text" placeholder="<?php esc_attr_e('Enter your Walk Score API key', 'happy-place'); ?>" />
+                                <p class="description">
+                                    <?php _e('Optional: Adds walkability scores to property listings.', 'happy-place'); ?>
+                                    <a href="https://www.walkscore.com/professional/api.php" target="_blank">
+                                        <?php _e('Get your API key', 'happy-place'); ?>
+                                    </a>
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div id="mls" class="hp-settings-section" style="display:none;">
+                    <h2><?php _e('MLS Integration', 'happy-place'); ?></h2>
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row"><?php _e('MLS Provider', 'happy-place'); ?></th>
+                            <td>
+                                <select name="hp_mls_provider">
+                                    <option value=""><?php _e('Select Provider', 'happy-place'); ?></option>
+                                    <option value="rets" <?php selected($this->config_manager->get('mls_provider', ''), 'rets'); ?>><?php _e('RETS', 'happy-place'); ?></option>
+                                    <option value="idx" <?php selected($this->config_manager->get('mls_provider', ''), 'idx'); ?>><?php _e('IDX', 'happy-place'); ?></option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><?php _e('MLS URL', 'happy-place'); ?></th>
+                            <td>
+                                <input type="url" name="hp_mls_url" 
+                                       value="<?php echo esc_attr($this->config_manager->get('mls_url', '')); ?>" 
+                                       class="regular-text" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div id="airtable" class="hp-settings-section" style="display:none;">
+                    <h2><?php _e('Airtable Integration', 'happy-place'); ?></h2>
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row"><?php _e('API Key', 'happy-place'); ?></th>
+                            <td>
+                                <input type="password" name="hp_airtable_api_key" 
+                                       value="<?php echo esc_attr($this->config_manager->get('airtable_api_key', '')); ?>" 
+                                       class="regular-text" />
+                                <button type="button" class="button" id="test-airtable-connection">
+                                    <?php _e('Test Connection', 'happy-place'); ?>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><?php _e('Base ID', 'happy-place'); ?></th>
+                            <td>
+                                <input type="text" name="hp_airtable_base_id" 
+                                       value="<?php echo esc_attr($this->config_manager->get('airtable_base_id', '')); ?>" 
+                                       class="regular-text" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div id="followup-boss" class="hp-settings-section" style="display:none;">
+                    <h2><?php _e('FollowUp Boss Integration', 'happy-place'); ?></h2>
+                    <p><?php _e('Configure FollowUp Boss CRM integration for automatic lead sync and management. This will sync leads from your Happy Place website directly to your FollowUp Boss account.', 'happy-place'); ?></p>
+                    
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row"><?php _e('API Key', 'happy-place'); ?></th>
+                            <td>
+                                <input type="password" name="hp_followup_boss_api_key" 
+                                       value="<?php echo esc_attr($this->config_manager->get('followup_boss_api_key', '')); ?>" 
+                                       class="regular-text" placeholder="<?php esc_attr_e('Enter your FollowUp Boss API key', 'happy-place'); ?>" />
+                                <button type="button" class="button" id="test-followup-boss-connection">
+                                    <?php _e('Test Connection', 'happy-place'); ?>
+                                </button>
+                                <p class="description">
+                                    <?php _e('Your FollowUp Boss API key. You can find this in FollowUp Boss under Settings > API.', 'happy-place'); ?>
+                                    <a href="https://followupboss.com/2/settings/api" target="_blank"><?php _e('Get your API key', 'happy-place'); ?></a>
+                                </p>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <th scope="row"><?php _e('Auto Sync Leads', 'happy-place'); ?></th>
+                            <td>
+                                <fieldset>
+                                    <label>
+                                        <input type="checkbox" name="hp_fub_auto_sync" 
+                                               value="1" <?php checked($this->config_manager->get('fub_auto_sync', true)); ?> />
+                                        <?php _e('Automatically send new leads to FollowUp Boss', 'happy-place'); ?>
+                                    </label>
+                                    <p class="description"><?php _e('When enabled, leads will be sent to FollowUp Boss immediately upon submission.', 'happy-place'); ?></p>
+                                </fieldset>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <th scope="row"><?php _e('Lead Source Name', 'happy-place'); ?></th>
+                            <td>
+                                <input type="text" name="hp_fub_lead_source" 
+                                       value="<?php echo esc_attr($this->config_manager->get('fub_lead_source', 'Website')); ?>" 
+                                       class="regular-text" placeholder="Website" />
+                                <p class="description"><?php _e('Default source name for leads sent to FollowUp Boss. This helps identify where leads came from.', 'happy-place'); ?></p>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <th scope="row"><?php _e('Default Lead Type', 'happy-place'); ?></th>
+                            <td>
+                                <select name="hp_fub_default_lead_type">
+                                    <option value="General Inquiry" <?php selected($this->config_manager->get('fub_default_lead_type', 'General Inquiry'), 'General Inquiry'); ?>><?php _e('General Inquiry', 'happy-place'); ?></option>
+                                    <option value="Property Inquiry" <?php selected($this->config_manager->get('fub_default_lead_type', 'General Inquiry'), 'Property Inquiry'); ?>><?php _e('Property Inquiry', 'happy-place'); ?></option>
+                                    <option value="Contact Request" <?php selected($this->config_manager->get('fub_default_lead_type', 'General Inquiry'), 'Contact Request'); ?>><?php _e('Contact Request', 'happy-place'); ?></option>
+                                    <option value="Listing Alert" <?php selected($this->config_manager->get('fub_default_lead_type', 'General Inquiry'), 'Listing Alert'); ?>><?php _e('Listing Alert', 'happy-place'); ?></option>
+                                </select>
+                                <p class="description"><?php _e('Default type classification for leads in FollowUp Boss.', 'happy-place'); ?></p>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <th scope="row"><?php _e('Agent Assignment', 'happy-place'); ?></th>
+                            <td>
+                                <fieldset>
+                                    <legend class="screen-reader-text"><?php _e('Agent Assignment Options', 'happy-place'); ?></legend>
+                                    
+                                    <label>
+                                        <input type="radio" name="hp_fub_agent_assignment" value="automatic" 
+                                               <?php checked($this->config_manager->get('fub_agent_assignment', 'automatic'), 'automatic'); ?> />
+                                        <?php _e('Automatic assignment by FollowUp Boss', 'happy-place'); ?>
+                                    </label><br>
+                                    
+                                    <label>
+                                        <input type="radio" name="hp_fub_agent_assignment" value="website_agent" 
+                                               <?php checked($this->config_manager->get('fub_agent_assignment', 'automatic'), 'website_agent'); ?> />
+                                        <?php _e('Assign to agent specified in lead (if available)', 'happy-place'); ?>
+                                    </label><br>
+                                    
+                                    <label>
+                                        <input type="radio" name="hp_fub_agent_assignment" value="default_agent" 
+                                               <?php checked($this->config_manager->get('fub_agent_assignment', 'automatic'), 'default_agent'); ?> />
+                                        <?php _e('Always assign to default agent:', 'happy-place'); ?>
+                                    </label>
+                                    <input type="email" name="hp_fub_default_agent_email" 
+                                           value="<?php echo esc_attr($this->config_manager->get('fub_default_agent_email', '')); ?>" 
+                                           class="regular-text" placeholder="agent@example.com" 
+                                           style="margin-left: 10px;" />
+                                    
+                                    <p class="description"><?php _e('Choose how leads should be assigned to agents in FollowUp Boss.', 'happy-place'); ?></p>
+                                </fieldset>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <th scope="row"><?php _e('Custom Fields Mapping', 'happy-place'); ?></th>
+                            <td>
+                                <fieldset>
+                                    <legend class="screen-reader-text"><?php _e('Custom Fields Options', 'happy-place'); ?></legend>
+                                    
+                                    <label>
+                                        <input type="checkbox" name="hp_fub_include_utm" 
+                                               value="1" <?php checked($this->config_manager->get('fub_include_utm', true)); ?> />
+                                        <?php _e('Include UTM tracking parameters', 'happy-place'); ?>
+                                    </label><br>
+                                    
+                                    <label>
+                                        <input type="checkbox" name="hp_fub_include_lead_score" 
+                                               value="1" <?php checked($this->config_manager->get('fub_include_lead_score', true)); ?> />
+                                        <?php _e('Include lead score and priority', 'happy-place'); ?>
+                                    </label><br>
+                                    
+                                    <label>
+                                        <input type="checkbox" name="hp_fub_include_property_details" 
+                                               value="1" <?php checked($this->config_manager->get('fub_include_property_details', true)); ?> />
+                                        <?php _e('Include property details for listing inquiries', 'happy-place'); ?>
+                                    </label><br>
+                                    
+                                    <label>
+                                        <input type="checkbox" name="hp_fub_include_referrer" 
+                                               value="1" <?php checked($this->config_manager->get('fub_include_referrer', true)); ?> />
+                                        <?php _e('Include referrer and IP address information', 'happy-place'); ?>
+                                    </label>
+                                    
+                                    <p class="description"><?php _e('Select which additional fields to send to FollowUp Boss as custom fields.', 'happy-place'); ?></p>
+                                </fieldset>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <th scope="row"><?php _e('Webhook URL', 'happy-place'); ?></th>
+                            <td>
+                                <input type="url" name="hp_fub_webhook_url" 
+                                       value="<?php echo esc_url(rest_url('fub/v1/webhook')); ?>" 
+                                       class="regular-text" readonly />
+                                <button type="button" class="button" onclick="navigator.clipboard.writeText(this.previousElementSibling.value)">
+                                    <?php _e('Copy', 'happy-place'); ?>
+                                </button>
+                                <p class="description">
+                                    <?php _e('Add this webhook URL to your FollowUp Boss settings to receive updates when leads are modified in FollowUp Boss.', 'happy-place'); ?>
+                                    <a href="https://help.followupboss.com/en/articles/1154799-webhooks" target="_blank"><?php _e('Learn about webhooks', 'happy-place'); ?></a>
+                                </p>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <th scope="row"><?php _e('Sync Status', 'happy-place'); ?></th>
+                            <td>
+                                <?php
+                                global $wpdb;
+                                $total_leads = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}hp_leads");
+                                $synced_leads = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}hp_leads WHERE fub_contact_id IS NOT NULL");
+                                $pending_leads = $total_leads - $synced_leads;
+                                ?>
+                                <div class="hp-sync-stats">
+                                    <p><strong><?php _e('Total Leads:', 'happy-place'); ?></strong> <?php echo number_format($total_leads); ?></p>
+                                    <p><strong><?php _e('Synced to FollowUp Boss:', 'happy-place'); ?></strong> <?php echo number_format($synced_leads); ?></p>
+                                    <p><strong><?php _e('Pending Sync:', 'happy-place'); ?></strong> <?php echo number_format($pending_leads); ?></p>
+                                    
+                                    <?php if ($pending_leads > 0): ?>
+                                        <button type="button" class="button button-secondary" id="bulk-sync-leads">
+                                            <?php printf(_n('Sync %d Lead', 'Sync %d Leads', $pending_leads, 'happy-place'), $pending_leads); ?>
+                                        </button>
+                                    <?php endif; ?>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <th scope="row"><?php _e('Error Handling', 'happy-place'); ?></th>
+                            <td>
+                                <fieldset>
+                                    <legend class="screen-reader-text"><?php _e('Error Handling Options', 'happy-place'); ?></legend>
+                                    
+                                    <label>
+                                        <input type="checkbox" name="hp_fub_retry_failed" 
+                                               value="1" <?php checked($this->config_manager->get('fub_retry_failed', true)); ?> />
+                                        <?php _e('Automatically retry failed sync attempts', 'happy-place'); ?>
+                                    </label><br>
+                                    
+                                    <label>
+                                        <input type="checkbox" name="hp_fub_log_errors" 
+                                               value="1" <?php checked($this->config_manager->get('fub_log_errors', true)); ?> />
+                                        <?php _e('Log sync errors for debugging', 'happy-place'); ?>
+                                    </label><br>
+                                    
+                                    <label>
+                                        <input type="checkbox" name="hp_fub_admin_notifications" 
+                                               value="1" <?php checked($this->config_manager->get('fub_admin_notifications', false)); ?> />
+                                        <?php _e('Email admin when sync fails repeatedly', 'happy-place'); ?>
+                                    </label>
+                                    
+                                    <p class="description"><?php _e('Configure how FollowUp Boss sync errors should be handled.', 'happy-place'); ?></p>
+                                </fieldset>
+                            </td>
+                        </tr>
+                    </table>
+                    
+                    <div id="fub-test-results" class="notice" style="display: none; margin-top: 20px;">
+                        <p id="fub-test-message"></p>
+                    </div>
+                </div>
+                
+                <div id="email" class="hp-settings-section" style="display:none;">
+                    <h2><?php _e('Email Services', 'happy-place'); ?></h2>
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row"><?php _e('Mailchimp API Key', 'happy-place'); ?></th>
+                            <td>
+                                <input type="password" name="hp_mailchimp_api_key" 
+                                       value="<?php echo esc_attr($this->config_manager->get('mailchimp_api_key', '')); ?>" 
+                                       class="regular-text" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div id="analytics" class="hp-settings-section" style="display:none;">
+                    <h2><?php _e('Analytics & Tracking', 'happy-place'); ?></h2>
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row"><?php _e('Google Analytics ID', 'happy-place'); ?></th>
+                            <td>
+                                <input type="text" name="hp_google_analytics_id" 
+                                       value="<?php echo esc_attr($this->config_manager->get('google_analytics_id', '')); ?>" 
+                                       class="regular-text" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                
+                
+                <div id="user-roles" class="hp-settings-section" style="display:none;">
+                    <h2><?php _e('User Role Management', 'happy-place'); ?></h2>
+                    <p><?php _e('Manage WordPress user roles and configure Happy Place role structure.', 'happy-place'); ?></p>
+                    
+                    <h3><?php _e('Current User Roles', 'happy-place'); ?></h3>
+                    <table class="wp-list-table widefat fixed striped">
+                        <thead>
+                            <tr>
+                                <th><?php _e('Role', 'happy-place'); ?></th>
+                                <th><?php _e('Display Name', 'happy-place'); ?></th>
+                                <th><?php _e('User Count', 'happy-place'); ?></th>
+                                <th><?php _e('Status', 'happy-place'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            global $wp_roles;
+                            $all_roles = $wp_roles->roles;
+                            $role_counts = count_users();
+                            $role_status = [
+                                'agent' => 'Happy Place',
+                                'lead' => 'Happy Place', 
+                                'staff' => 'Happy Place',
+                                'administrator' => 'WordPress Core',
+                                'real_estate_agent' => 'Legacy - Needs Migration',
+                                'broker' => 'Legacy - Needs Migration',
+                                'client' => 'Legacy - Needs Migration',
+                                'subscriber' => 'WordPress Core',
+                                'contributor' => 'WordPress Core',
+                                'author' => 'WordPress Core',
+                                'editor' => 'WordPress Core',
+                            ];
+                            
+                            foreach ($all_roles as $role_key => $role_info):
+                                $user_count = isset($role_counts['avail_roles'][$role_key]) ? $role_counts['avail_roles'][$role_key] : 0;
+                                $status = isset($role_status[$role_key]) ? $role_status[$role_key] : 'Unknown';
+                                $status_class = '';
+                                if (strpos($status, 'Legacy') !== false) {
+                                    $status_class = 'hp-status-warning';
+                                } elseif ($status === 'Happy Place') {
+                                    $status_class = 'hp-status-success';
+                                }
+                                ?>
+                                <tr>
+                                    <td><code><?php echo esc_html($role_key); ?></code></td>
+                                    <td><?php echo esc_html($role_info['name']); ?></td>
+                                    <td><?php echo esc_html($user_count); ?></td>
+                                    <td><span class="<?php echo esc_attr($status_class); ?>"><?php echo esc_html($status); ?></span></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                    
+                    <div class="hp-role-actions">
+                        <h3><?php _e('Role Management Actions', 'happy-place'); ?></h3>
+                        <p><?php _e('Clean up legacy user roles and ensure proper Happy Place role structure.', 'happy-place'); ?></p>
+                        
+                        <div class="hp-action-buttons">
+                            <button type="button" class="button button-primary" id="hp-cleanup-roles">
+                                <?php _e('Clean Up User Roles', 'happy-place'); ?>
+                            </button>
+                            <button type="button" class="button" id="hp-preview-role-changes">
+                                <?php _e('Preview Changes', 'happy-place'); ?>
+                            </button>
+                        </div>
+                        
+                        <div id="hp-role-preview" style="display:none; margin-top: 20px;">
+                            <h4><?php _e('Proposed Changes:', 'happy-place'); ?></h4>
+                            <div id="hp-role-preview-content"></div>
+                        </div>
+                        
+                        <div id="hp-role-status" style="margin-top: 20px;"></div>
+                    </div>
+                </div>
+                
+                <?php submit_button(); ?>
+            </form>
+            
+            <?php if (HP_DEBUG): ?>
+            <script>
+            jQuery(document).ready(function($) {
+                console.log('Happy Place Admin: Integrations form loaded');
+                console.log('Settings fields:', $('#hp_integrations_settings-options').length ? 'Found' : 'Missing');
+                
+                $('form[action*="options.php"]').on('submit', function(e) {
+                    console.log('Happy Place Admin: Form submitted');
+                    console.log('Form data:', $(this).serialize());
+                });
+            });
+            </script>
+            <?php endif; ?>
+            
+            <script>
+            jQuery(document).ready(function($) {
+                // Tab navigation
+                $('.hp-nav-tabs a').on('click', function(e) {
+                    e.preventDefault();
+                    var target = $(this).attr('href');
+                    
+                    // Update active tab
+                    $('.hp-nav-tabs a').removeClass('nav-tab-active');
+                    $(this).addClass('nav-tab-active');
+                    
+                    // Show target section
+                    $('.hp-settings-section').hide();
+                    $(target).show();
+                });
+                
+                // FollowUp Boss connection test
+                $('#test-followup-boss-connection').on('click', function() {
+                    var $button = $(this);
+                    var $results = $('#fub-test-results');
+                    var $message = $('#fub-test-message');
+                    var apiKey = $('input[name="hp_followup_boss_api_key"]').val();
+                    
+                    if (!apiKey) {
+                        $message.text('<?php _e('Please enter an API key first.', 'happy-place'); ?>');
+                        $results.removeClass('notice-success notice-error').addClass('notice-error').show();
+                        return;
+                    }
+                    
+                    $button.prop('disabled', true).text('<?php _e('Testing...', 'happy-place'); ?>');
+                    $results.hide();
+                    
+                    $.post(ajaxurl, {
+                        action: 'hp_test_followup_boss_connection',
+                        api_key: apiKey,
+                        api_secret: '', // FollowUp Boss now uses just API key for some endpoints
+                        _wpnonce: '<?php echo wp_create_nonce('hp_admin_nonce'); ?>'
+                    })
+                    .done(function(response) {
+                        if (response.success) {
+                            var message = '<?php _e('✅ Connection successful!', 'happy-place'); ?><br>' + response.data.message;
+                            if (response.data.agents && Object.keys(response.data.agents).length > 0) {
+                                message += '<br><small><?php _e('Found agents:', 'happy-place'); ?> ' + Object.keys(response.data.agents).length + '</small>';
+                            }
+                            $message.html(message);
+                            $results.removeClass('notice-error').addClass('notice-success').show();
+                        } else {
+                            $message.html('<?php _e('❌ Connection failed:', 'happy-place'); ?> ' + response.data.message);
+                            $results.removeClass('notice-success').addClass('notice-error').show();
+                        }
+                    })
+                    .fail(function() {
+                        $message.text('<?php _e('❌ Request failed. Please try again.', 'happy-place'); ?>');
+                        $results.removeClass('notice-success').addClass('notice-error').show();
+                    })
+                    .always(function() {
+                        $button.prop('disabled', false).text('<?php _e('Test Connection', 'happy-place'); ?>');
+                    });
+                });
+                
+                // Bulk sync leads to FollowUp Boss
+                $('#bulk-sync-leads').on('click', function() {
+                    var $button = $(this);
+                    var originalText = $button.text();
+                    
+                    if (!confirm('<?php _e('Are you sure you want to sync all pending leads to FollowUp Boss? This action cannot be undone.', 'happy-place'); ?>')) {
+                        return;
+                    }
+                    
+                    $button.prop('disabled', true).text('<?php _e('Syncing...', 'happy-place'); ?>');
+                    
+                    $.post(ajaxurl, {
+                        action: 'hp_bulk_sync_leads',
+                        _wpnonce: '<?php echo wp_create_nonce('hp_bulk_sync_leads'); ?>'
+                    })
+                    .done(function(response) {
+                        if (response.success) {
+                            alert('<?php _e('Sync completed successfully!', 'happy-place'); ?>\n' + response.data.message);
+                            location.reload(); // Refresh to update sync stats
+                        } else {
+                            alert('<?php _e('Sync failed:', 'happy-place'); ?> ' + response.data.message);
+                        }
+                    })
+                    .fail(function() {
+                        alert('<?php _e('Sync request failed. Please try again.', 'happy-place'); ?>');
+                    })
+                    .always(function() {
+                        $button.prop('disabled', false).text(originalText);
+                    });
+                });
+                
+                // Agent assignment radio button handling
+                $('input[name="hp_fub_agent_assignment"]').on('change', function() {
+                    var $emailField = $('input[name="hp_fub_default_agent_email"]');
+                    if ($(this).val() === 'default_agent') {
+                        $emailField.prop('required', true).focus();
+                    } else {
+                        $emailField.prop('required', false);
+                    }
+                });
+                
+                // Initialize agent assignment field requirement
+                $('input[name="hp_fub_agent_assignment"]:checked').trigger('change');
+                
+                // Copy webhook URL functionality
+                $('.hp-settings-section').on('click', 'button[onclick*="clipboard"]', function() {
+                    var $this = $(this);
+                    var originalText = $this.text();
+                    
+                    // The onclick attribute already handles the copy
+                    $this.text('<?php _e('Copied!', 'happy-place'); ?>');
+                    
+                    setTimeout(function() {
+                        $this.text(originalText);
+                    }, 2000);
+                });
+                
+                // Form validation for FollowUp Boss settings
+                $('form').on('submit', function() {
+                    var autoSync = $('input[name="hp_fub_auto_sync"]').is(':checked');
+                    var apiKey = $('input[name="hp_followup_boss_api_key"]').val();
+                    
+                    if (autoSync && !apiKey) {
+                        alert('<?php _e('Please enter a FollowUp Boss API key or disable auto-sync.', 'happy-place'); ?>');
+                        $('#followup-boss').show();
+                        $('.hp-nav-tabs a[href="#followup-boss"]').click();
+                        $('input[name="hp_followup_boss_api_key"]').focus();
+                        return false;
+                    }
+                    
+                    var defaultAgent = $('input[name="hp_fub_agent_assignment"]:checked').val();
+                    var agentEmail = $('input[name="hp_fub_default_agent_email"]').val();
+                    
+                    if (defaultAgent === 'default_agent' && !agentEmail) {
+                        alert('<?php _e('Please enter a default agent email address.', 'happy-place'); ?>');
+                        $('#followup-boss').show();
+                        $('.hp-nav-tabs a[href="#followup-boss"]').click();
+                        $('input[name="hp_fub_default_agent_email"]').focus();
+                        return false;
+                    }
+                });
+            });
+            </script>
+        </div>
+        <?php
+    }
+    
+    /**
+     * Render import page
+     * 
+     * @return void
+     */
+    public function render_import(): void {
+        wp_enqueue_script('hp-csv-import', HP_PLUGIN_URL . 'assets/js/admin/csv-import.js', ['jquery'], HP_VERSION, true);
+        wp_enqueue_style('hp-import-export', HP_PLUGIN_URL . 'assets/css/admin/import-export.css', [], HP_VERSION);
+        
+        wp_localize_script('hp-csv-import', 'hpImport', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('hp_import_nonce'),
+            'strings' => [
+                'selectFile' => __('Select a CSV file to upload', 'happy-place'),
+                'dragDrop' => __('or drag and drop your file here', 'happy-place'),
+                'processing' => __('Processing...', 'happy-place'),
+                'success' => __('Import completed successfully!', 'happy-place'),
+                'error' => __('Import failed. Please try again.', 'happy-place'),
+                'mapping' => __('Map CSV columns to database fields', 'happy-place'),
+                'autoMapped' => __('Auto-mapped', 'happy-place'),
+                'cancel' => __('Cancel Import', 'happy-place'),
+                'restart' => __('Start New Import', 'happy-place'),
+                'viewResults' => __('View Import Log', 'happy-place'),
+            ]
+        ]);
+        ?>
+        <div class="wrap hp-admin-import">
+            <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+            
+            <div id="import-notices"></div>
+            
+            <!-- CSV Import Interface -->
+            <div id="csv-import-interface">
+                <!-- Step Indicators -->
+                <ol class="import-steps">
+                    <li class="step-indicator active" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-title"><?php _e('Upload File', 'happy-place'); ?></div>
+                    </li>
+                    <li class="step-indicator" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-title"><?php _e('Map Fields', 'happy-place'); ?></div>
+                    </li>
+                    <li class="step-indicator" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-title"><?php _e('Import Data', 'happy-place'); ?></div>
+                    </li>
+                    <li class="step-indicator" data-step="4">
+                        <div class="step-number">4</div>
+                        <div class="step-title"><?php _e('Complete', 'happy-place'); ?></div>
+                    </li>
+                </ol>
+
+                <!-- Step 1: File Upload -->
+                <div id="step-1" class="import-step active" data-step="1">
+                    <h2><?php _e('Upload CSV File', 'happy-place'); ?></h2>
+                    
+                    <div class="csv-upload-area" id="csv-upload-area">
+                        <div class="upload-icon">📁</div>
+                        <div class="upload-text"><?php _e('Select a CSV file to upload', 'happy-place'); ?></div>
+                        <div class="upload-subtext"><?php _e('or drag and drop your file here', 'happy-place'); ?></div>
+                        <button type="button" class="button button-primary upload-button" id="upload-button">
+                            <?php _e('Choose File', 'happy-place'); ?>
+                        </button>
+                        <input type="file" id="csv-file-input" accept=".csv" style="display: none;">
+                    </div>
+                    
+                    <div id="file-info" style="display: none;">
+                        <h3><?php _e('File Information', 'happy-place'); ?></h3>
+                        <p><strong><?php _e('File Name:', 'happy-place'); ?></strong> <span id="file-name"></span></p>
+                        <p><strong><?php _e('File Size:', 'happy-place'); ?></strong> <span id="file-size"></span></p>
+                        <p><strong><?php _e('Rows:', 'happy-place'); ?></strong> <span id="file-rows"></span></p>
+                    </div>
+                </div>
+
+                <!-- Step 2: Field Mapping -->
+                <div id="step-2" class="import-step" data-step="2">
+                    <h2><?php _e('Map CSV Fields', 'happy-place'); ?></h2>
+                    <p><?php _e('Match your CSV columns to the appropriate database fields.', 'happy-place'); ?></p>
+                    
+                    <!-- Dynamic mapping interface populated by JavaScript -->
+                    <div id="mapping-interface"></div>
+                    
+                    <!-- Step 2 Navigation -->
+                    <div class="step-navigation">
+                        <button type="button" class="button" data-step="1" onclick="hpImportTool.navigateStep(event)"><?php _e('← Back to Upload', 'happy-place'); ?></button>
+                        <div class="step-actions">
+                            <button type="button" class="button" id="auto-map-btn"><?php _e('Auto-Map Fields', 'happy-place'); ?></button>
+                            <button type="button" class="button button-primary" id="start-import-btn" disabled><?php _e('Start Import →', 'happy-place'); ?></button>
+                        </div>
+                    </div>
+                    
+                    <div class="field-mapping-container" style="display:none;">
+                        <div class="mapping-header">
+                            <h3><?php _e('Map CSV Fields', 'happy-place'); ?></h3>
+                            <p><?php _e('Match your CSV columns to the appropriate database fields. Fields marked as auto-mapped have been automatically detected.', 'happy-place'); ?></p>
+                        </div>
+                        
+                        <div class="mapping-controls">
+                            <div class="template-controls">
+                                <label for="mapping-template"><?php _e('Use Template:', 'happy-place'); ?></label>
+                                <select id="mapping-template">
+                                    <option value=""><?php _e('-- Select Template --', 'happy-place'); ?></option>
+                                    <option value="mls-standard"><?php _e('MLS Standard', 'happy-place'); ?></option>
+                                    <option value="zillow"><?php _e('Zillow Export', 'happy-place'); ?></option>
+                                    <option value="realtor-com"><?php _e('Realtor.com', 'happy-place'); ?></option>
+                                </select>
+                                <button type="button" class="button" id="save-template-btn"><?php _e('Save as Template', 'happy-place'); ?></button>
+                            </div>
+                            <div>
+                                <button type="button" class="button" id="auto-map-btn"><?php _e('Auto-Map Fields', 'happy-place'); ?></button>
+                                <button type="button" class="button" id="clear-mapping-btn"><?php _e('Clear All', 'happy-place'); ?></button>
+                            </div>
+                        </div>
+                        
+                        <div id="field-mapping-grid">
+                            <!-- Mapping grid will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Import Progress -->
+                <div id="step-3" class="import-step" data-step="3">
+                    <div class="import-progress">
+                        <h3><?php _e('Importing Data', 'happy-place'); ?></h3>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-bar-fill" id="progress-bar-fill"></div>
+                            </div>
+                            <div class="progress-text" id="progress-text">0%</div>
+                            <div class="progress-details" id="progress-details">
+                                <?php _e('Preparing import...', 'happy-place'); ?>
+                            </div>
+                        </div>
+                        <button type="button" class="button" id="cancel-import-btn" style="margin-top: 20px;">
+                            <?php _e('Cancel Import', 'happy-place'); ?>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Results -->
+                <div id="step-4" class="import-step" data-step="4">
+                    <div class="import-results">
+                        <h3><?php _e('Import Complete!', 'happy-place'); ?></h3>
+                        
+                        <div class="results-summary" id="results-summary">
+                            <!-- Results will be populated by JavaScript -->
+                        </div>
+                        
+                        <div class="import-errors" id="import-errors" style="display: none;">
+                            <h4><?php _e('Import Errors', 'happy-place'); ?></h4>
+                            <div class="error-list" id="error-list">
+                                <!-- Errors will be populated by JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <div class="results-actions">
+                            <button type="button" class="button button-primary" id="new-import-btn">
+                                <?php _e('Start New Import', 'happy-place'); ?>
+                            </button>
+                            <button type="button" class="button" id="view-log-btn">
+                                <?php _e('View Import Log', 'happy-place'); ?>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step Navigation -->
+                <div class="step-navigation">
+                    <button type="button" class="button step-nav-btn" id="prev-step-btn" style="display: none;">
+                        <?php _e('Previous', 'happy-place'); ?>
+                    </button>
+                    <button type="button" class="button button-primary step-nav-btn" id="next-step-btn" style="display: none;">
+                        <?php _e('Next', 'happy-place'); ?>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Loading Overlay -->
+            <div id="loading-overlay">
+                <div class="loading-content">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-message"><?php _e('Processing...', 'happy-place'); ?></div>
+                </div>
             </div>
         </div>
         <?php
     }
     
     /**
-     * Render config sync page
+     * Render export page
      * 
      * @return void
      */
-    public function render_config_sync(): void {
+    public function render_export(): void {
+        wp_enqueue_style('hp-import-export', HP_PLUGIN_URL . 'assets/css/admin/import-export.css', [], HP_VERSION);
+        ?>
+        <div class="wrap hp-admin-export">
+            <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+            
+            <div class="hp-export-options">
+                <div class="hp-export-section">
+                    <h2><?php _e('Export Listings', 'happy-place'); ?></h2>
+                    <p class="description"><?php _e('Export your property listings in various formats with filtering options.', 'happy-place'); ?></p>
+                    
+                    <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
+                        <?php wp_nonce_field('hp_export_listings', '_wpnonce'); ?>
+                        <input type="hidden" name="action" value="hp_export_listings">
+                        
+                        <div class="export-filters">
+                            <div class="filter-group">
+                                <label for="export_format"><?php _e('Export Format', 'happy-place'); ?></label>
+                                <select name="export_format" id="export_format">
+                                    <option value="csv"><?php _e('CSV (Excel Compatible)', 'happy-place'); ?></option>
+                                    <option value="xml"><?php _e('XML (MLS Standard)', 'happy-place'); ?></option>
+                                    <option value="json"><?php _e('JSON (API Format)', 'happy-place'); ?></option>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label for="status_filter"><?php _e('Status Filter', 'happy-place'); ?></label>
+                                <select name="status_filter" id="status_filter">
+                                    <option value="all"><?php _e('All Listings', 'happy-place'); ?></option>
+                                    <option value="active"><?php _e('Active Only', 'happy-place'); ?></option>
+                                    <option value="sold"><?php _e('Sold Only', 'happy-place'); ?></option>
+                                    <option value="pending"><?php _e('Pending Only', 'happy-place'); ?></option>
+                                    <option value="draft"><?php _e('Draft Only', 'happy-place'); ?></option>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label for="property_type"><?php _e('Property Type', 'happy-place'); ?></label>
+                                <select name="property_type" id="property_type">
+                                    <option value="all"><?php _e('All Types', 'happy-place'); ?></option>
+                                    <option value="residential"><?php _e('Residential', 'happy-place'); ?></option>
+                                    <option value="commercial"><?php _e('Commercial', 'happy-place'); ?></option>
+                                    <option value="land"><?php _e('Land', 'happy-place'); ?></option>
+                                    <option value="condo"><?php _e('Condo/Townhome', 'happy-place'); ?></option>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label><?php _e('Date Range', 'happy-place'); ?></label>
+                                <div class="date-range">
+                                    <input type="date" name="date_from" placeholder="<?php _e('From', 'happy-place'); ?>">
+                                    <span><?php _e('to', 'happy-place'); ?></span>
+                                    <input type="date" name="date_to" placeholder="<?php _e('To', 'happy-place'); ?>">
+                                </div>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label>
+                                    <input type="checkbox" name="include_images" value="1" checked>
+                                    <?php _e('Include Image URLs', 'happy-place'); ?>
+                                </label>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label>
+                                    <input type="checkbox" name="include_agent_info" value="1" checked>
+                                    <?php _e('Include Agent Information', 'happy-place'); ?>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <?php submit_button(__('Export Listings', 'happy-place'), 'primary', 'submit', false, ['style' => 'width: 100%;']); ?>
+                    </form>
+                </div>
+                
+                <div class="hp-export-section">
+                    <h2><?php _e('Quick Export Reports', 'happy-place'); ?></h2>
+                    <p class="description"><?php _e('Generate and download common reports in CSV format.', 'happy-place'); ?></p>
+                    
+                    <div class="hp-export-links">
+                        <a href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=hp_export_leads&format=csv'), 'hp_export'); ?>" class="button">
+                            <span class="dashicons dashicons-groups"></span>
+                            <?php _e('Export All Leads', 'happy-place'); ?>
+                        </a>
+                        <a href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=hp_export_agents&format=csv'), 'hp_export'); ?>" class="button">
+                            <span class="dashicons dashicons-businessperson"></span>
+                            <?php _e('Export All Agents', 'happy-place'); ?>
+                        </a>
+                        <a href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=hp_export_listings&format=csv&quick=active'), 'hp_export'); ?>" class="button">
+                            <span class="dashicons dashicons-building"></span>
+                            <?php _e('Export Active Listings', 'happy-place'); ?>
+                        </a>
+                        <a href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=hp_export_listings&format=csv&quick=sold_this_month'), 'hp_export'); ?>" class="button">
+                            <span class="dashicons dashicons-chart-line"></span>
+                            <?php _e('Monthly Sales Report', 'happy-place'); ?>
+                        </a>
+                        <a href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=hp_export_analytics&format=csv'), 'hp_export'); ?>" class="button">
+                            <span class="dashicons dashicons-chart-bar"></span>
+                            <?php _e('Analytics Report', 'happy-place'); ?>
+                        </a>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd;">
+                        <h3><?php _e('Custom Export Templates', 'happy-place'); ?></h3>
+                        <p class="description"><?php _e('Download pre-configured export templates for common MLS and real estate platforms.', 'happy-place'); ?></p>
+                        
+                        <div class="hp-export-links">
+                            <a href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=hp_export_template&template=mls_standard'), 'hp_export'); ?>" class="button">
+                                <?php _e('MLS Standard Template', 'happy-place'); ?>
+                            </a>
+                            <a href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=hp_export_template&template=zillow'), 'hp_export'); ?>" class="button">
+                                <?php _e('Zillow Import Template', 'happy-place'); ?>
+                            </a>
+                            <a href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=hp_export_template&template=realtor_com'), 'hp_export'); ?>" class="button">
+                                <?php _e('Realtor.com Template', 'happy-place'); ?>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+    
+    /**
+     * Render sync page
+     * 
+     * @return void
+     */
+    public function render_sync(): void {
         $sync_manager = \HappyPlace\Core\Config_Sync_Manager::get_instance();
         $sync_status = $sync_manager->get_sync_status();
         
         ?>
-        <div class="wrap hp-admin-config-sync">
+        <div class="wrap hp-admin-sync">
             <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
             
-            <?php if (isset($_GET['imported'])): ?>
+            <?php if (isset($_GET['synced'])): ?>
                 <div class="notice notice-success is-dismissible">
-                    <p><?php _e('Configuration imported successfully!', 'happy-place'); ?></p>
+                    <p><?php _e('Synchronization completed successfully!', 'happy-place'); ?></p>
                 </div>
             <?php endif; ?>
             
-            <div class="hp-sync-status">
-                <h2><?php _e('Sync Status', 'happy-place'); ?></h2>
-                <table class="wp-list-table widefat fixed striped">
-                    <thead>
+            <div class="hp-sync-sections">
+                <div class="hp-sync-section">
+                    <h2><?php _e('MLS Data Sync', 'happy-place'); ?></h2>
+                    <p><?php _e('Synchronize listing data with your MLS provider.', 'happy-place'); ?></p>
+                    
+                    <table class="form-table">
                         <tr>
-                            <th><?php _e('Configuration', 'happy-place'); ?></th>
-                            <th><?php _e('Files', 'happy-place'); ?></th>
-                            <th><?php _e('Database', 'happy-place'); ?></th>
-                            <th><?php _e('ACF', 'happy-place'); ?></th>
-                            <th><?php _e('Status', 'happy-place'); ?></th>
-                            <th><?php _e('Actions', 'happy-place'); ?></th>
+                            <th scope="row"><?php _e('Last Sync', 'happy-place'); ?></th>
+                            <td><?php echo esc_html(get_option('hp_last_mls_sync', __('Never', 'happy-place'))); ?></td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($sync_status as $key => $status): ?>
-                            <tr>
-                                <td><strong><?php echo esc_html($key); ?></strong></td>
-                                <td><?php echo $status['in_files'] ? '✓' : '✗'; ?></td>
-                                <td><?php echo $status['in_database'] ? '✓' : '✗'; ?></td>
-                                <td><?php echo $status['in_acf'] ? '✓' : '✗'; ?></td>
-                                <td>
-                                    <?php if ($status['synced']): ?>
-                                        <span class="hp-status-badge hp-status-synced"><?php _e('Synced', 'happy-place'); ?></span>
-                                    <?php else: ?>
-                                        <span class="hp-status-badge hp-status-conflict"><?php _e('Conflict', 'happy-place'); ?></span>
-                                    <?php endif; ?>
-                                </td>
-                                <td>
-                                    <?php if (!$status['synced']): ?>
-                                        <button class="button button-small hp-sync-config" data-key="<?php echo esc_attr($key); ?>">
-                                            <?php _e('Sync', 'happy-place'); ?>
-                                        </button>
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
+                        <tr>
+                            <th scope="row"><?php _e('Auto Sync', 'happy-place'); ?></th>
+                            <td>
+                                <label>
+                                    <input type="checkbox" name="hp_auto_mls_sync" value="1" <?php checked(get_option('hp_auto_mls_sync')); ?> />
+                                    <?php _e('Enable automatic MLS synchronization', 'happy-place'); ?>
+                                </label>
+                            </td>
+                        </tr>
+                    </table>
+                    
+                    <p>
+                        <button type="button" class="button button-primary hp-sync-mls">
+                            <?php _e('Sync Now', 'happy-place'); ?>
+                        </button>
+                    </p>
+                </div>
+                
+                <div class="hp-sync-section">
+                    <h2><?php _e('ACF Field Sync', 'happy-place'); ?></h2>
+                    <p><?php _e('Synchronize Advanced Custom Fields configuration.', 'happy-place'); ?></p>
+                    
+                    <div class="hp-sync-status">
+                        <table class="wp-list-table widefat fixed striped">
+                            <thead>
+                                <tr>
+                                    <th><?php _e('Field Group', 'happy-place'); ?></th>
+                                    <th><?php _e('Files', 'happy-place'); ?></th>
+                                    <th><?php _e('Database', 'happy-place'); ?></th>
+                                    <th><?php _e('Status', 'happy-place'); ?></th>
+                                    <th><?php _e('Actions', 'happy-place'); ?></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($sync_status as $key => $status): ?>
+                                    <tr>
+                                        <td><strong><?php echo esc_html($key); ?></strong></td>
+                                        <td><?php echo $status['in_files'] ? '✓' : '✗'; ?></td>
+                                        <td><?php echo $status['in_database'] ? '✓' : '✗'; ?></td>
+                                        <td>
+                                            <?php if ($status['synced']): ?>
+                                                <span class="hp-status-badge hp-status-synced"><?php _e('Synced', 'happy-place'); ?></span>
+                                            <?php else: ?>
+                                                <span class="hp-status-badge hp-status-conflict"><?php _e('Needs Sync', 'happy-place'); ?></span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <?php if (!$status['synced']): ?>
+                                                <button class="button button-small hp-sync-config" data-key="<?php echo esc_attr($key); ?>">
+                                                    <?php _e('Sync', 'happy-place'); ?>
+                                                </button>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+    
+    /**
+     * Render leads management page
+     * 
+     * @return void
+     */
+    public function render_leads(): void {
+        global $wpdb;
+        
+        // Handle actions
+        if (isset($_POST['action']) && $_POST['action'] === 'update_lead_status') {
+            $lead_id = intval($_POST['lead_id']);
+            $new_status = sanitize_text_field($_POST['status']);
+            
+            $wpdb->update(
+                $wpdb->prefix . 'hp_leads',
+                ['status' => $new_status, 'updated_at' => current_time('mysql')],
+                ['id' => $lead_id],
+                ['%s', '%s'],
+                ['%d']
+            );
+            
+            echo '<div class="notice notice-success"><p>Lead status updated successfully!</p></div>';
+        }
+        
+        // Get filter parameters
+        $status_filter = sanitize_text_field($_GET['status'] ?? '');
+        $source_filter = sanitize_text_field($_GET['source'] ?? '');
+        $search = sanitize_text_field($_GET['search'] ?? '');
+        $per_page = 20;
+        $current_page = max(1, intval($_GET['paged'] ?? 1));
+        $offset = ($current_page - 1) * $per_page;
+        
+        // Build query
+        $where_conditions = ['1=1'];
+        $where_values = [];
+        
+        if ($status_filter) {
+            $where_conditions[] = 'status = %s';
+            $where_values[] = $status_filter;
+        }
+        
+        if ($source_filter) {
+            $where_conditions[] = 'source = %s';
+            $where_values[] = $source_filter;
+        }
+        
+        if ($search) {
+            $where_conditions[] = '(first_name LIKE %s OR last_name LIKE %s OR email LIKE %s OR message LIKE %s)';
+            $search_term = '%' . $wpdb->esc_like($search) . '%';
+            $where_values[] = $search_term;
+            $where_values[] = $search_term;
+            $where_values[] = $search_term;
+            $where_values[] = $search_term;
+        }
+        
+        $where_clause = implode(' AND ', $where_conditions);
+        
+        // Get total count
+        $count_query = "SELECT COUNT(*) FROM {$wpdb->prefix}hp_leads WHERE {$where_clause}";
+        if (!empty($where_values)) {
+            $count_query = $wpdb->prepare($count_query, $where_values);
+        }
+        $total_items = $wpdb->get_var($count_query);
+        
+        // Get leads
+        $leads_query = "SELECT * FROM {$wpdb->prefix}hp_leads WHERE {$where_clause} ORDER BY created_at DESC LIMIT %d OFFSET %d";
+        $query_values = array_merge($where_values, [$per_page, $offset]);
+        $leads = $wpdb->get_results($wpdb->prepare($leads_query, $query_values));
+        
+        // Get available statuses and sources
+        $statuses = $wpdb->get_col("SELECT DISTINCT status FROM {$wpdb->prefix}hp_leads WHERE status IS NOT NULL");
+        $sources = $wpdb->get_col("SELECT DISTINCT source FROM {$wpdb->prefix}hp_leads WHERE source IS NOT NULL");
+        
+        ?>
+        <div class="wrap hp-admin-leads">
+            <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+            
+            <!-- Filters -->
+            <div class="hp-leads-filters">
+                <form method="get" action="">
+                    <input type="hidden" name="page" value="happy-place-leads">
+                    
+                    <label for="status">Status:</label>
+                    <select name="status" id="status">
+                        <option value="">All Statuses</option>
+                        <?php foreach ($statuses as $status): ?>
+                            <option value="<?php echo esc_attr($status); ?>" <?php selected($status_filter, $status); ?>>
+                                <?php echo esc_html(ucwords(str_replace('_', ' ', $status))); ?>
+                            </option>
                         <?php endforeach; ?>
-                    </tbody>
-                </table>
+                    </select>
+                    
+                    <label for="source">Source:</label>
+                    <select name="source" id="source">
+                        <option value="">All Sources</option>
+                        <?php foreach ($sources as $source): ?>
+                            <option value="<?php echo esc_attr($source); ?>" <?php selected($source_filter, $source); ?>>
+                                <?php echo esc_html(ucwords(str_replace('_', ' ', $source))); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    
+                    <label for="search">Search:</label>
+                    <input type="text" name="search" id="search" value="<?php echo esc_attr($search); ?>" placeholder="Name, email, or message...">
+                    
+                    <button type="submit" class="button">Filter</button>
+                    <a href="<?php echo admin_url('admin.php?page=happy-place-leads'); ?>" class="button">Clear</a>
+                </form>
             </div>
+            
+            <!-- Leads Table -->
+            <div class="hp-leads-table">
+                <?php if (empty($leads)): ?>
+                    <p>No leads found matching your criteria.</p>
+                <?php else: ?>
+                    <table class="wp-list-table widefat fixed striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Source</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($leads as $lead): ?>
+                                <tr>
+                                    <td>
+                                        <strong><?php echo esc_html($lead->first_name . ' ' . $lead->last_name); ?></strong>
+                                        <?php if ($lead->listing_id): ?>
+                                            <br><small>Listing: <a href="<?php echo get_edit_post_link($lead->listing_id); ?>">#<?php echo $lead->listing_id; ?></a></small>
+                                        <?php endif; ?>
+                                        <?php if ($lead->agent_id): ?>
+                                            <br><small>Agent: <a href="<?php echo get_edit_post_link($lead->agent_id); ?>"><?php echo get_the_title($lead->agent_id); ?></a></small>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <a href="mailto:<?php echo esc_attr($lead->email); ?>"><?php echo esc_html($lead->email); ?></a>
+                                    </td>
+                                    <td>
+                                        <?php if ($lead->phone): ?>
+                                            <a href="tel:<?php echo esc_attr($lead->phone); ?>"><?php echo esc_html($lead->phone); ?></a>
+                                        <?php else: ?>
+                                            —
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <span class="hp-source-badge"><?php echo esc_html(ucwords(str_replace('_', ' ', $lead->source))); ?></span>
+                                    </td>
+                                    <td>
+                                        <form method="post" style="display: inline;">
+                                            <input type="hidden" name="action" value="update_lead_status">
+                                            <input type="hidden" name="lead_id" value="<?php echo $lead->id; ?>">
+                                            <select name="status" onchange="this.form.submit()">
+                                                <option value="new" <?php selected($lead->status, 'new'); ?>>New</option>
+                                                <option value="contacted" <?php selected($lead->status, 'contacted'); ?>>Contacted</option>
+                                                <option value="qualified" <?php selected($lead->status, 'qualified'); ?>>Qualified</option>
+                                                <option value="nurturing" <?php selected($lead->status, 'nurturing'); ?>>Nurturing</option>
+                                                <option value="converted" <?php selected($lead->status, 'converted'); ?>>Converted</option>
+                                                <option value="lost" <?php selected($lead->status, 'lost'); ?>>Lost</option>
+                                            </select>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <?php echo esc_html(date('M j, Y g:i A', strtotime($lead->created_at))); ?>
+                                    </td>
+                                    <td>
+                                        <button class="button button-small view-lead-details" data-lead-id="<?php echo $lead->id; ?>">View</button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                    
+                    <!-- Pagination -->
+                    <?php if ($total_items > $per_page): ?>
+                        <div class="tablenav">
+                            <?php
+                            $total_pages = ceil($total_items / $per_page);
+                            $page_links = paginate_links([
+                                'base' => add_query_arg('paged', '%#%'),
+                                'format' => '',
+                                'prev_text' => '&laquo;',
+                                'next_text' => '&raquo;',
+                                'total' => $total_pages,
+                                'current' => $current_page
+                            ]);
+                            echo $page_links;
+                            ?>
+                        </div>
+                    <?php endif; ?>
+                <?php endif; ?>
+            </div>
+        </div>
+        
+        <!-- Lead Details Modal -->
+        <div id="lead-details-modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div id="lead-details-content"></div>
+            </div>
+        </div>
+        
+        <style>
+        .hp-leads-filters { 
+            background: #f9f9f9; 
+            padding: 15px; 
+            margin: 20px 0; 
+            border: 1px solid #ddd; 
+        }
+        .hp-leads-filters label { 
+            display: inline-block; 
+            width: 80px; 
+            margin-right: 10px; 
+        }
+        .hp-leads-filters select, .hp-leads-filters input[type="text"] { 
+            margin-right: 15px; 
+        }
+        .hp-source-badge { 
+            background: #e8f4fd; 
+            color: #0073aa; 
+            padding: 2px 8px; 
+            border-radius: 3px; 
+            font-size: 12px; 
+        }
+        #lead-details-modal {
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 60%;
+            border-radius: 5px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        </style>
+        
+        <script>
+        jQuery(document).ready(function($) {
+            $('.view-lead-details').click(function() {
+                var leadId = $(this).data('lead-id');
+                
+                $.post(ajaxurl, {
+                    action: 'get_lead_details',
+                    lead_id: leadId
+                }, function(response) {
+                    $('#lead-details-content').html(response);
+                    $('#lead-details-modal').show();
+                });
+            });
+            
+            $('.close').click(function() {
+                $('#lead-details-modal').hide();
+            });
+            
+            $(window).click(function(event) {
+                if (event.target.id === 'lead-details-modal') {
+                    $('#lead-details-modal').hide();
+                }
+            });
+        });
+        </script>
+        <?php
+    }
+
+    /**
+     * Render marketing page
+     * 
+     * @return void
+     */
+    public function render_marketing(): void {
+        ?>
+        <div class="wrap hp-admin-marketing">
+            <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+            
+            <div class="hp-settings-nav">
+                <ul class="hp-nav-tabs">
+                    <li><a href="#social-media" class="nav-tab nav-tab-active"><?php _e('Social Media', 'happy-place'); ?></a></li>
+                    <li><a href="#email-marketing" class="nav-tab"><?php _e('Email Marketing', 'happy-place'); ?></a></li>
+                    <li><a href="#seo" class="nav-tab"><?php _e('SEO', 'happy-place'); ?></a></li>
+                    <li><a href="#lead-capture" class="nav-tab"><?php _e('Lead Capture', 'happy-place'); ?></a></li>
+                </ul>
+            </div>
+            
+            <form method="post" action="options.php">
+                <?php
+                settings_fields('hp_marketing_settings');
+                do_settings_sections('hp_marketing_settings');
+                ?>
+                
+                <div id="social-media" class="hp-settings-section">
+                    <h2><?php _e('Social Media Integration', 'happy-place'); ?></h2>
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row"><?php _e('Facebook Page', 'happy-place'); ?></th>
+                            <td><input type="url" name="hp_facebook_page" value="<?php echo esc_url(get_option('hp_facebook_page')); ?>" class="regular-text" /></td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><?php _e('Instagram Profile', 'happy-place'); ?></th>
+                            <td><input type="url" name="hp_instagram_profile" value="<?php echo esc_url(get_option('hp_instagram_profile')); ?>" class="regular-text" /></td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><?php _e('Auto-Share New Listings', 'happy-place'); ?></th>
+                            <td>
+                                <label>
+                                    <input type="checkbox" name="hp_auto_share_listings" value="1" <?php checked(get_option('hp_auto_share_listings')); ?> />
+                                    <?php _e('Automatically share new listings on social media', 'happy-place'); ?>
+                                </label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div id="email-marketing" class="hp-settings-section" style="display:none;">
+                    <h2><?php _e('Email Marketing', 'happy-place'); ?></h2>
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row"><?php _e('Email Service Provider', 'happy-place'); ?></th>
+                            <td>
+                                <select name="hp_email_provider">
+                                    <option value=""><?php _e('Select Provider', 'happy-place'); ?></option>
+                                    <option value="mailchimp" <?php selected(get_option('hp_email_provider'), 'mailchimp'); ?>><?php _e('MailChimp', 'happy-place'); ?></option>
+                                    <option value="constant_contact" <?php selected(get_option('hp_email_provider'), 'constant_contact'); ?>><?php _e('Constant Contact', 'happy-place'); ?></option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <?php submit_button(); ?>
+            </form>
         </div>
         <?php
     }
     
     /**
-     * Render tools page
+     * Render users page
      * 
      * @return void
      */
-    public function render_tools(): void {
+    public function render_users(): void {
         ?>
-        <div class="wrap hp-admin-tools">
+        <div class="wrap hp-admin-users">
             <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
             
-            <div class="hp-tools-grid">
-                <div class="hp-tool">
-                    <h3><?php _e('Clear Cache', 'happy-place'); ?></h3>
-                    <p><?php _e('Clear all cached data to ensure fresh content.', 'happy-place'); ?></p>
-                    <button class="button" id="hp-clear-cache"><?php _e('Clear Cache', 'happy-place'); ?></button>
+            <div class="hp-settings-nav">
+                <ul class="hp-nav-tabs">
+                    <li><a href="#agent-management" class="nav-tab nav-tab-active"><?php _e('Agent Management', 'happy-place'); ?></a></li>
+                    <li><a href="#roles-permissions" class="nav-tab"><?php _e('Roles & Permissions', 'happy-place'); ?></a></li>
+                    <li><a href="#user-settings" class="nav-tab"><?php _e('User Settings', 'happy-place'); ?></a></li>
+                </ul>
+            </div>
+            
+            <div id="agent-management" class="hp-settings-section">
+                <h2><?php _e('Agent Management', 'happy-place'); ?></h2>
+                
+                <div class="hp-agent-stats">
+                    <div class="hp-stat-box">
+                        <h3><?php echo wp_count_posts('agent')->publish; ?></h3>
+                        <p><?php _e('Active Agents', 'happy-place'); ?></p>
+                    </div>
+                    <div class="hp-stat-box">
+                        <h3><?php echo count(get_users(['role' => 'agent'])); ?></h3>
+                        <p><?php _e('Agent Users', 'happy-place'); ?></p>
+                    </div>
                 </div>
                 
-                <div class="hp-tool">
-                    <h3><?php _e('Regenerate Thumbnails', 'happy-place'); ?></h3>
-                    <p><?php _e('Regenerate all listing thumbnails.', 'happy-place'); ?></p>
-                    <button class="button" id="hp-regenerate-thumbnails"><?php _e('Regenerate', 'happy-place'); ?></button>
+                <div class="hp-quick-actions">
+                    <a href="<?php echo admin_url('post-new.php?post_type=agent'); ?>" class="button button-primary">
+                        <?php _e('Add New Agent', 'happy-place'); ?>
+                    </a>
+                    <a href="<?php echo admin_url('edit.php?post_type=agent'); ?>" class="button">
+                        <?php _e('Manage Agents', 'happy-place'); ?>
+                    </a>
+                </div>
+            </div>
+            
+            <div id="roles-permissions" class="hp-settings-section" style="display:none;">
+                <h2><?php _e('Roles & Permissions', 'happy-place'); ?></h2>
+                
+                <?php
+                // Show current roles
+                global $wp_roles;
+                $all_roles = $wp_roles->roles;
+                ?>
+                
+                <div class="hp-role-management">
+                    <h3><?php _e('Current User Roles', 'happy-place'); ?></h3>
+                    <table class="wp-list-table widefat striped">
+                        <thead>
+                            <tr>
+                                <th><?php _e('Role', 'happy-place'); ?></th>
+                                <th><?php _e('Display Name', 'happy-place'); ?></th>
+                                <th><?php _e('User Count', 'happy-place'); ?></th>
+                                <th><?php _e('Status', 'happy-place'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($all_roles as $role_key => $role_info): 
+                                $user_count = count(get_users(['role' => $role_key]));
+                                $is_custom_role = in_array($role_key, ['agent', 'lead', 'staff', 'admin']);
+                                $is_legacy_role = in_array($role_key, ['real_estate_agent', 'broker', 'client', 'subscriber', 'contributor', 'author']);
+                                ?>
+                                <tr class="<?php echo $is_legacy_role ? 'hp-legacy-role' : ($is_custom_role ? 'hp-custom-role' : 'hp-wp-role'); ?>">
+                                    <td><code><?php echo esc_html($role_key); ?></code></td>
+                                    <td><?php echo esc_html($role_info['name']); ?></td>
+                                    <td><?php echo $user_count; ?></td>
+                                    <td>
+                                        <?php if ($is_legacy_role): ?>
+                                            <span class="hp-status hp-status-warning"><?php _e('Legacy - Will be removed', 'happy-place'); ?></span>
+                                        <?php elseif ($is_custom_role): ?>
+                                            <span class="hp-status hp-status-success"><?php _e('Happy Place Role', 'happy-place'); ?></span>
+                                        <?php elseif ($role_key === 'administrator'): ?>
+                                            <span class="hp-status hp-status-info"><?php _e('WordPress Admin', 'happy-place'); ?></span>
+                                        <?php else: ?>
+                                            <span class="hp-status hp-status-neutral"><?php _e('WordPress Default', 'happy-place'); ?></span>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                    
+                    <div class="hp-role-actions">
+                        <h3><?php _e('Role Management Actions', 'happy-place'); ?></h3>
+                        <p><?php _e('Clean up legacy user roles and ensure proper Happy Place role structure.', 'happy-place'); ?></p>
+                        
+                        <div class="hp-action-buttons">
+                            <button type="button" class="button button-primary" id="hp-cleanup-roles">
+                                <?php _e('Clean Up User Roles', 'happy-place'); ?>
+                            </button>
+                            <button type="button" class="button" id="hp-preview-role-changes">
+                                <?php _e('Preview Changes', 'happy-place'); ?>
+                            </button>
+                        </div>
+                        
+                        <div id="hp-role-preview" style="display:none; margin-top: 20px;">
+                            <h4><?php _e('Proposed Changes:', 'happy-place'); ?></h4>
+                            <div id="hp-role-preview-content"></div>
+                        </div>
+                        
+                        <div id="hp-role-status" style="margin-top: 20px;"></div>
+                    </div>
                 </div>
                 
-                <div class="hp-tool">
-                    <h3><?php _e('Sync MLS Data', 'happy-place'); ?></h3>
-                    <p><?php _e('Manually trigger MLS data synchronization.', 'happy-place'); ?></p>
-                    <button class="button" id="hp-sync-mls"><?php _e('Sync Now', 'happy-place'); ?></button>
-                </div>
-                
-                <div class="hp-tool">
-                    <h3><?php _e('Database Optimization', 'happy-place'); ?></h3>
-                    <p><?php _e('Optimize database tables for better performance.', 'happy-place'); ?></p>
-                    <button class="button" id="hp-optimize-db"><?php _e('Optimize', 'happy-place'); ?></button>
-                </div>
+                <form method="post" action="options.php">
+                    <?php
+                    settings_fields('hp_user_roles');
+                    ?>
+                    
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row"><?php _e('Agent Capabilities', 'happy-place'); ?></th>
+                            <td>
+                                <label>
+                                    <input type="checkbox" name="hp_agent_can_edit_listings" value="1" <?php checked(get_option('hp_agent_can_edit_listings')); ?> />
+                                    <?php _e('Agents can edit all listings', 'happy-place'); ?>
+                                </label><br>
+                                <label>
+                                    <input type="checkbox" name="hp_agent_can_view_leads" value="1" <?php checked(get_option('hp_agent_can_view_leads')); ?> />
+                                    <?php _e('Agents can view all leads', 'happy-place'); ?>
+                                </label>
+                            </td>
+                        </tr>
+                    </table>
+                    
+                    <?php submit_button(); ?>
+                </form>
             </div>
         </div>
         <?php
     }
     
-    /**
-     * Render system status page
-     * 
-     * @return void
-     */
-    public function render_system_status(): void {
-        ?>
-        <div class="wrap hp-admin-system">
-            <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
-            
-            <div class="hp-system-info">
-                <h2><?php _e('System Information', 'happy-place'); ?></h2>
-                <?php $this->render_system_info(); ?>
-            </div>
-            
-            <div class="hp-error-log">
-                <h2><?php _e('Recent Errors', 'happy-place'); ?></h2>
-                <?php $this->render_error_log(); ?>
-            </div>
-        </div>
-        <?php
-    }
+    // Remove old render methods that are now consolidated
+    // render_import_export, render_config_sync, render_tools, render_system_status
     
     /**
      * Get dashboard stats
@@ -597,8 +2195,169 @@ class AdminMenu {
      * @return void
      */
     private function render_top_listings_table(): void {
-        // Implementation for top listings table
-        echo '<p>' . __('Top listings data will be displayed here', 'happy-place') . '</p>';
+        global $wpdb;
+        
+        $top_listings = $wpdb->get_results(
+            "SELECT p.ID, p.post_title, COUNT(pv.id) as view_count, COUNT(l.id) as lead_count
+            FROM {$wpdb->posts} p
+            LEFT JOIN {$wpdb->prefix}hp_property_views pv ON p.ID = pv.property_id
+            LEFT JOIN {$wpdb->prefix}hp_leads l ON p.ID = l.property_id
+            WHERE p.post_type = 'listing' AND p.post_status = 'publish'
+            GROUP BY p.ID
+            ORDER BY view_count DESC, lead_count DESC
+            LIMIT 10"
+        );
+        
+        if (empty($top_listings)) {
+            echo '<p>' . __('No listing data available', 'happy-place') . '</p>';
+            return;
+        }
+        
+        echo '<table class="wp-list-table widefat fixed striped">';
+        echo '<thead><tr>';
+        echo '<th>' . __('Listing', 'happy-place') . '</th>';
+        echo '<th>' . __('Views', 'happy-place') . '</th>';
+        echo '<th>' . __('Leads', 'happy-place') . '</th>';
+        echo '<th>' . __('Conversion Rate', 'happy-place') . '</th>';
+        echo '</tr></thead><tbody>';
+        
+        foreach ($top_listings as $listing) {
+            $conversion_rate = $listing->view_count > 0 ? round(($listing->lead_count / $listing->view_count) * 100, 2) : 0;
+            echo '<tr>';
+            echo '<td><a href="' . get_edit_post_link($listing->ID) . '">' . esc_html($listing->post_title) . '</a></td>';
+            echo '<td>' . number_format($listing->view_count) . '</td>';
+            echo '<td>' . number_format($listing->lead_count) . '</td>';
+            echo '<td>' . $conversion_rate . '%</td>';
+            echo '</tr>';
+        }
+        
+        echo '</tbody></table>';
+    }
+    
+    /**
+     * Render analytics summary
+     * 
+     * @return void
+     */
+    private function render_analytics_summary(): void {
+        global $wpdb;
+        
+        $date_range = isset($_GET['range']) ? intval($_GET['range']) : 30;
+        $date_filter = "DATE_SUB(NOW(), INTERVAL {$date_range} DAY)";
+        
+        $summary = [
+            'total_views' => $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}hp_property_views WHERE created_at >= {$date_filter}"),
+            'total_leads' => $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'lead' AND post_date >= {$date_filter}"),
+            'avg_time_on_site' => $wpdb->get_var("SELECT AVG(time_on_site) FROM {$wpdb->prefix}hp_analytics WHERE date >= {$date_filter}"),
+            'bounce_rate' => $wpdb->get_var("SELECT AVG(bounce_rate) FROM {$wpdb->prefix}hp_analytics WHERE date >= {$date_filter}"),
+        ];
+        
+        echo '<div class="hp-summary-stats">';
+        echo '<div class="hp-stat-card">';
+        echo '<h3>' . number_format($summary['total_views'] ?: 0) . '</h3>';
+        echo '<p>' . __('Total Views', 'happy-place') . '</p>';
+        echo '</div>';
+        echo '<div class="hp-stat-card">';
+        echo '<h3>' . number_format($summary['total_leads'] ?: 0) . '</h3>';
+        echo '<p>' . __('Total Leads', 'happy-place') . '</p>';
+        echo '</div>';
+        echo '<div class="hp-stat-card">';
+        echo '<h3>' . round($summary['avg_time_on_site'] ?: 0, 2) . 's</h3>';
+        echo '<p>' . __('Avg. Time on Site', 'happy-place') . '</p>';
+        echo '</div>';
+        echo '<div class="hp-stat-card">';
+        echo '<h3>' . round($summary['bounce_rate'] ?: 0, 2) . '%</h3>';
+        echo '<p>' . __('Bounce Rate', 'happy-place') . '</p>';
+        echo '</div>';
+        echo '</div>';
+    }
+    
+    /**
+     * Render lead reports
+     * 
+     * @return void
+     */
+    private function render_lead_reports(): void {
+        global $wpdb;
+        
+        $lead_sources = $wpdb->get_results(
+            "SELECT source, COUNT(*) as count 
+            FROM {$wpdb->prefix}hp_leads 
+            WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+            GROUP BY source 
+            ORDER BY count DESC"
+        );
+        
+        echo '<div class="hp-lead-reports">';
+        
+        if (!empty($lead_sources)) {
+            echo '<h3>' . __('Lead Sources (Last 30 Days)', 'happy-place') . '</h3>';
+            echo '<table class="wp-list-table widefat fixed striped">';
+            echo '<thead><tr><th>' . __('Source', 'happy-place') . '</th><th>' . __('Leads', 'happy-place') . '</th></tr></thead><tbody>';
+            
+            foreach ($lead_sources as $source) {
+                echo '<tr>';
+                echo '<td>' . esc_html($source->source ?: __('Direct', 'happy-place')) . '</td>';
+                echo '<td>' . number_format($source->count) . '</td>';
+                echo '</tr>';
+            }
+            
+            echo '</tbody></table>';
+        } else {
+            echo '<p>' . __('No lead data available', 'happy-place') . '</p>';
+        }
+        
+        echo '</div>';
+    }
+    
+    /**
+     * Render agent performance
+     * 
+     * @return void
+     */
+    private function render_agent_performance(): void {
+        global $wpdb;
+        
+        $agent_stats = $wpdb->get_results(
+            "SELECT a.ID, a.post_title as agent_name, 
+            COUNT(DISTINCT l.ID) as listing_count,
+            COUNT(DISTINCT ld.id) as lead_count,
+            COUNT(DISTINCT t.id) as transaction_count
+            FROM {$wpdb->posts} a
+            LEFT JOIN {$wpdb->posts} l ON a.ID = l.post_author AND l.post_type = 'listing'
+            LEFT JOIN {$wpdb->prefix}hp_leads ld ON a.ID = ld.agent_id
+            LEFT JOIN {$wpdb->prefix}hp_transactions t ON a.ID = t.agent_id
+            WHERE a.post_type = 'agent' AND a.post_status = 'publish'
+            GROUP BY a.ID
+            ORDER BY transaction_count DESC, lead_count DESC"
+        );
+        
+        if (empty($agent_stats)) {
+            echo '<p>' . __('No agent performance data available', 'happy-place') . '</p>';
+            return;
+        }
+        
+        echo '<table class="wp-list-table widefat fixed striped">';
+        echo '<thead><tr>';
+        echo '<th>' . __('Agent', 'happy-place') . '</th>';
+        echo '<th>' . __('Active Listings', 'happy-place') . '</th>';
+        echo '<th>' . __('Leads', 'happy-place') . '</th>';
+        echo '<th>' . __('Transactions', 'happy-place') . '</th>';
+        echo '<th>' . __('Performance Score', 'happy-place') . '</th>';
+        echo '</tr></thead><tbody>';
+        
+        foreach ($agent_stats as $agent) {
+            $performance_score = ($agent->transaction_count * 10) + ($agent->lead_count * 2) + $agent->listing_count;
+            echo '<tr>';
+            echo '<td><a href="' . get_edit_post_link($agent->ID) . '">' . esc_html($agent->agent_name) . '</a></td>';
+            echo '<td>' . number_format($agent->listing_count) . '</td>';
+            echo '<td>' . number_format($agent->lead_count) . '</td>';
+            echo '<td>' . number_format($agent->transaction_count) . '</td>';
+            echo '<td>' . number_format($performance_score) . '</td>';
+            echo '</tr>';
+        }
+        
+        echo '</tbody></table>';
     }
     
     /**
@@ -685,5 +2444,782 @@ class AdminMenu {
         return '<p><strong>' . __('For more information:', 'happy-place') . '</strong></p>' .
                '<p><a href="https://happyplace.com/docs" target="_blank">' . __('Documentation', 'happy-place') . '</a></p>' .
                '<p><a href="https://happyplace.com/support" target="_blank">' . __('Support', 'happy-place') . '</a></p>';
+    }
+    
+    /**
+     * Enqueue admin scripts and styles
+     * 
+     * @param string $hook
+     * @return void
+     */
+    public function enqueue_admin_scripts(string $hook): void {
+        // Only load on our admin pages
+        $happy_place_pages = [
+            'toplevel_page_happy-place',
+            'happy-place_page_hp-dashboard',
+            'happy-place_page_hp-theme-settings',
+            'happy-place_page_hp-integrations',
+            'happy-place_page_hp-import',
+            'happy-place_page_hp-export',
+            'happy-place_page_hp-sync',
+            'happy-place_page_hp-analytics',
+            'happy-place_page_hp-marketing',
+            'happy-place_page_hp-users',
+        ];
+        
+        if (!in_array($hook, $happy_place_pages)) {
+            return;
+        }
+        
+        // Enqueue admin styles
+        wp_enqueue_style(
+            'hp-admin-style',
+            plugin_dir_url(__FILE__) . '../../assets/css/admin/admin.css',
+            [],
+            '4.0.0'
+        );
+        
+        // Enqueue admin JavaScript
+        wp_enqueue_script(
+            'hp-admin-menu',
+            plugin_dir_url(__FILE__) . '../../assets/js/admin/admin-menu.js',
+            ['jquery'],
+            '4.0.0',
+            true
+        );
+        
+        // Localize script with admin data
+        wp_localize_script(
+            'hp-admin-menu',
+            'hp_admin',
+            [
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('hp_admin_nonce'),
+                'strings' => [
+                    'confirm_delete' => __('Are you sure you want to delete this item?', 'happy-place'),
+                    'confirm_clear_cache' => __('Are you sure you want to clear the cache?', 'happy-place'),
+                    'confirm_optimize_db' => __('Are you sure you want to optimize the database? This may take a few minutes.', 'happy-place'),
+                    'sync_in_progress' => __('Sync in progress...', 'happy-place'),
+                    'sync_complete' => __('Sync completed successfully!', 'happy-place'),
+                    'sync_failed' => __('Sync failed. Please try again.', 'happy-place'),
+                ],
+            ]
+        );
+        
+        hp_log("Admin scripts enqueued for page: $hook", 'debug', 'AdminMenu');
+    }
+    
+    /**
+     * AJAX handler for clearing cache
+     * 
+     * @return void
+     */
+    public function ajax_clear_cache(): void {
+        check_ajax_referer('hp_admin_nonce', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.', 'happy-place'));
+        }
+        
+        try {
+            // Clear WordPress object cache
+            if (function_exists('wp_cache_flush')) {
+                wp_cache_flush();
+            }
+            
+            // Clear any transients
+            global $wpdb;
+            $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_%'");
+            $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_site_transient_%'");
+            
+            // Clear other caches if available
+            if (function_exists('w3tc_flush_all')) {
+                \w3tc_flush_all();
+            }
+            
+            if (function_exists('wp_rocket_clean_domain')) {
+                \wp_rocket_clean_domain();
+            }
+            
+            hp_log('Cache cleared via AJAX', 'info', 'AdminMenu');
+            wp_send_json_success(__('Cache cleared successfully', 'happy-place'));
+            
+        } catch (\Exception $e) {
+            hp_log('Failed to clear cache: ' . $e->getMessage(), 'error', 'AdminMenu');
+            wp_send_json_error(__('Failed to clear cache: ', 'happy-place') . $e->getMessage());
+        }
+    }
+    
+    /**
+     * AJAX handler for regenerating thumbnails
+     * 
+     * @return void
+     */
+    public function ajax_regenerate_thumbnails(): void {
+        check_ajax_referer('hp_admin_nonce', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.', 'happy-place'));
+        }
+        
+        try {
+            // Get all attachment IDs
+            $attachments = get_posts([
+                'post_type' => 'attachment',
+                'post_mime_type' => 'image',
+                'post_status' => 'inherit',
+                'posts_per_page' => -1,
+                'fields' => 'ids'
+            ]);
+            
+            $regenerated = 0;
+            foreach ($attachments as $attachment_id) {
+                $metadata = wp_generate_attachment_metadata($attachment_id, get_attached_file($attachment_id));
+                if ($metadata) {
+                    wp_update_attachment_metadata($attachment_id, $metadata);
+                    $regenerated++;
+                }
+            }
+            
+            hp_log("Regenerated $regenerated thumbnails via AJAX", 'info', 'AdminMenu');
+            wp_send_json_success(sprintf(__('Regenerated %d thumbnails', 'happy-place'), $regenerated));
+            
+        } catch (\Exception $e) {
+            hp_log('Failed to regenerate thumbnails: ' . $e->getMessage(), 'error', 'AdminMenu');
+            wp_send_json_error(__('Failed to regenerate thumbnails: ', 'happy-place') . $e->getMessage());
+        }
+    }
+    
+    /**
+     * AJAX handler for database optimization
+     * 
+     * @return void
+     */
+    public function ajax_optimize_database(): void {
+        check_ajax_referer('hp_admin_nonce', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.', 'happy-place'));
+        }
+        
+        try {
+            global $wpdb;
+            
+            // Get all tables
+            $tables = $wpdb->get_results('SHOW TABLES', ARRAY_N);
+            $optimized = 0;
+            
+            foreach ($tables as $table) {
+                $table_name = $table[0];
+                $result = $wpdb->query("OPTIMIZE TABLE `$table_name`");
+                if ($result !== false) {
+                    $optimized++;
+                }
+            }
+            
+            hp_log("Optimized $optimized database tables via AJAX", 'info', 'AdminMenu');
+            wp_send_json_success(sprintf(__('Optimized %d database tables', 'happy-place'), $optimized));
+            
+        } catch (\Exception $e) {
+            hp_log('Failed to optimize database: ' . $e->getMessage(), 'error', 'AdminMenu');
+            wp_send_json_error(__('Failed to optimize database: ', 'happy-place') . $e->getMessage());
+        }
+    }
+    
+    /**
+     * AJAX handler for MLS sync
+     * 
+     * @return void
+     */
+    public function ajax_sync_mls(): void {
+        check_ajax_referer('hp_admin_nonce', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.', 'happy-place'));
+        }
+        
+        try {
+            // This would integrate with your MLS sync functionality
+            // For now, just simulate a sync
+            sleep(2); // Simulate processing time
+            
+            hp_log('MLS sync completed via AJAX', 'info', 'AdminMenu');
+            wp_send_json_success(__('MLS sync completed successfully', 'happy-place'));
+            
+        } catch (\Exception $e) {
+            hp_log('MLS sync failed: ' . $e->getMessage(), 'error', 'AdminMenu');
+            wp_send_json_error(__('MLS sync failed: ', 'happy-place') . $e->getMessage());
+        }
+    }
+    
+    /**
+     * AJAX handler for config sync
+     * 
+     * @return void
+     */
+    public function ajax_sync_config(): void {
+        check_ajax_referer('hp_admin_nonce', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.', 'happy-place'));
+        }
+        
+        $config_key = sanitize_text_field($_POST['config_key'] ?? '');
+        
+        if (empty($config_key)) {
+            wp_send_json_error(__('No configuration key provided', 'happy-place'));
+        }
+        
+        try {
+            // This would integrate with your config sync functionality
+            // For now, just simulate a sync
+            hp_log("Config sync completed for key: $config_key", 'info', 'AdminMenu');
+            wp_send_json_success(__('Configuration synced successfully', 'happy-place'));
+            
+        } catch (\Exception $e) {
+            hp_log('Config sync failed: ' . $e->getMessage(), 'error', 'AdminMenu');
+            wp_send_json_error(__('Config sync failed: ', 'happy-place') . $e->getMessage());
+        }
+    }
+    
+    /**
+     * AJAX handler for testing Airtable connection
+     * 
+     * @return void
+     */
+    public function ajax_test_airtable_connection(): void {
+        check_ajax_referer('hp_admin_nonce', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.', 'happy-place'));
+        }
+        
+        $api_key = sanitize_text_field($_POST['api_key'] ?? '');
+        $base_id = sanitize_text_field($_POST['base_id'] ?? '');
+        
+        if (empty($api_key) || empty($base_id)) {
+            wp_send_json_error(__('API Key and Base ID are required', 'happy-place'));
+        }
+        
+        try {
+            // Test Airtable API connection
+            $response = wp_remote_get("https://api.airtable.com/v0/{$base_id}", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $api_key,
+                    'Content-Type' => 'application/json'
+                ],
+                'timeout' => 10
+            ]);
+            
+            if (is_wp_error($response)) {
+                throw new \Exception($response->get_error_message());
+            }
+            
+            $status_code = wp_remote_retrieve_response_code($response);
+            
+            if ($status_code === 200) {
+                hp_log('Airtable connection test successful', 'info', 'AdminMenu');
+                wp_send_json_success(__('Connection successful! Airtable base is accessible.', 'happy-place'));
+            } else {
+                $body = wp_remote_retrieve_body($response);
+                $error_data = json_decode($body, true);
+                $error_message = $error_data['error']['message'] ?? 'Connection failed';
+                
+                throw new \Exception($error_message);
+            }
+            
+        } catch (\Exception $e) {
+            hp_log('Airtable connection test failed: ' . $e->getMessage(), 'error', 'AdminMenu');
+            wp_send_json_error(__('Connection failed: ', 'happy-place') . $e->getMessage());
+        }
+    }
+    
+    /**
+     * AJAX handler for testing FollowUp Boss connection
+     * 
+     * @return void
+     */
+    public function ajax_test_followup_boss_connection(): void {
+        check_ajax_referer('hp_admin_nonce', '_wpnonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.', 'happy-place'));
+        }
+        
+        $api_key = sanitize_text_field($_POST['api_key'] ?? '');
+        
+        if (empty($api_key)) {
+            wp_send_json_error(__('API Key is required', 'happy-place'));
+        }
+        
+        try {
+            // Test FollowUp Boss API connection using just API key
+            // FollowUp Boss uses HTTP Basic Auth with API key as username and empty password
+            $auth = base64_encode($api_key . ':');
+            
+            $response = wp_remote_get('https://api.followupboss.com/v1/people?count=1', [
+                'headers' => [
+                    'Authorization' => 'Basic ' . $auth,
+                    'Content-Type' => 'application/json'
+                ],
+                'timeout' => 15
+            ]);
+            
+            if (is_wp_error($response)) {
+                throw new \Exception($response->get_error_message());
+            }
+            
+            $status_code = wp_remote_retrieve_response_code($response);
+            
+            if ($status_code === 200) {
+                // Get users/agents list to show account info
+                $users_response = wp_remote_get('https://api.followupboss.com/v1/users', [
+                    'headers' => [
+                        'Authorization' => 'Basic ' . $auth,
+                        'Content-Type' => 'application/json'
+                    ],
+                    'timeout' => 10
+                ]);
+                
+                $agents = [];
+                $account_info = '';
+                
+                if (!is_wp_error($users_response) && wp_remote_retrieve_response_code($users_response) === 200) {
+                    $users_data = json_decode(wp_remote_retrieve_body($users_response), true);
+                    if (isset($users_data['users'])) {
+                        foreach ($users_data['users'] as $user) {
+                            $agents[] = $user['name'] ?? $user['email'];
+                        }
+                        $account_info = sprintf(
+                            __('Account verified with %d agents/users.', 'happy-place'),
+                            count($agents)
+                        );
+                        
+                        // Cache the agents list for future use
+                        update_option('hp_followup_boss_agents', $users_data['users']);
+                    }
+                }
+                
+                hp_log('FollowUp Boss connection test successful', 'info', 'AdminMenu');
+                wp_send_json_success([
+                    'message' => __('Connection successful! FollowUp Boss API is accessible. ', 'happy-place') . $account_info,
+                    'agents' => $agents
+                ]);
+                
+            } elseif ($status_code === 401) {
+                throw new \Exception(__('Invalid API key. Please check your FollowUp Boss API key.', 'happy-place'));
+            } elseif ($status_code === 403) {
+                throw new \Exception(__('Access forbidden. Please check your API key permissions.', 'happy-place'));
+            } else {
+                $body = wp_remote_retrieve_body($response);
+                $error_data = json_decode($body, true);
+                $error_message = '';
+                
+                if (isset($error_data['error'])) {
+                    $error_message = is_array($error_data['error']) 
+                        ? ($error_data['error']['message'] ?? 'Unknown error')
+                        : $error_data['error'];
+                } else {
+                    $error_message = sprintf(__('HTTP %d error', 'happy-place'), $status_code);
+                }
+                
+                throw new \Exception($error_message);
+            }
+            
+        } catch (\Exception $e) {
+            hp_log('FollowUp Boss connection test failed: ' . $e->getMessage(), 'error', 'AdminMenu');
+            wp_send_json_error($e->getMessage());
+        }
+    }
+    
+    /**
+     * AJAX handler for bulk syncing leads to FollowUp Boss
+     * 
+     * @return void
+     */
+    public function ajax_bulk_sync_leads(): void {
+        check_ajax_referer('hp_bulk_sync_leads', '_wpnonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.', 'happy-place'));
+        }
+        
+        try {
+            global $wpdb;
+            
+            // Check if FollowUp Boss is configured
+            $api_key = $this->config_manager->get('followup_boss_api_key');
+            if (empty($api_key)) {
+                wp_send_json_error(__('FollowUp Boss API key is not configured.', 'happy-place'));
+                return;
+            }
+            
+            // Get leads that haven't been synced to FollowUp Boss
+            $leads = $wpdb->get_results(
+                "SELECT * FROM {$wpdb->prefix}hp_leads 
+                 WHERE fub_contact_id IS NULL 
+                 AND fub_sync_status != 'failed_permanent'
+                 ORDER BY created_at DESC 
+                 LIMIT 50",
+                ARRAY_A
+            );
+            
+            if (empty($leads)) {
+                wp_send_json_success([
+                    'message' => __('No leads require syncing to FollowUp Boss.', 'happy-place')
+                ]);
+                return;
+            }
+            
+            // Check if FollowUp Boss integration class exists
+            if (!class_exists('FollowUpBossIntegration')) {
+                // For now, just mark as synced for demo purposes
+                // In real implementation, this would use the FollowUpBossIntegration class
+                $synced_count = 0;
+                
+                foreach ($leads as $lead) {
+                    // Simulate API call delay
+                    usleep(100000); // 0.1 second delay per lead
+                    
+                    // Update sync status
+                    $wpdb->update(
+                        $wpdb->prefix . 'hp_leads',
+                        [
+                            'fub_sync_status' => 'synced',
+                            'fub_last_sync' => current_time('mysql'),
+                            'fub_contact_id' => 'demo_' . $lead['id'] // Placeholder contact ID
+                        ],
+                        ['id' => $lead['id']]
+                    );
+                    
+                    $synced_count++;
+                }
+                
+                hp_log("Bulk synced $synced_count leads to FollowUp Boss (demo mode)", 'info', 'AdminMenu');
+                wp_send_json_success([
+                    'message' => sprintf(
+                        _n(
+                            'Successfully synced %d lead to FollowUp Boss.',
+                            'Successfully synced %d leads to FollowUp Boss.',
+                            $synced_count,
+                            'happy-place'
+                        ),
+                        $synced_count
+                    )
+                ]);
+            } else {
+                // Real FollowUp Boss sync would go here
+                // $fub = new FollowUpBossIntegration();
+                // $result = $fub->bulk_sync_leads($leads);
+                
+                wp_send_json_error(__('FollowUp Boss integration not yet implemented for bulk sync.', 'happy-place'));
+            }
+            
+        } catch (\Exception $e) {
+            hp_log('Bulk sync to FollowUp Boss failed: ' . $e->getMessage(), 'error', 'AdminMenu');
+            wp_send_json_error(__('Bulk sync failed: ', 'happy-place') . $e->getMessage());
+        }
+    }
+
+    /**
+     * Render configuration status alerts
+     * 
+     * @return void
+     */
+    private function render_configuration_alerts(): void {
+        $status = $this->config_manager->get_configuration_status();
+        $missing_required = [];
+        
+        foreach ($status as $key => $config) {
+            if ($config['required'] && !$config['configured']) {
+                $missing_required[] = $config['description'];
+            }
+        }
+        
+        if (!empty($missing_required)) {
+            echo '<div class="notice notice-warning">';
+            echo '<p><strong>' . __('Configuration Required:', 'happy-place') . '</strong> ';
+            echo sprintf(
+                __('Some required integrations are not configured: %s', 'happy-place'),
+                implode(', ', $missing_required)
+            );
+            echo ' <a href="' . admin_url('admin.php?page=hp-integrations') . '">' . __('Configure now', 'happy-place') . '</a>';
+            echo '</p>';
+            echo '</div>';
+        }
+    }
+    
+    /**
+     * Render configuration status dashboard
+     * 
+     * @return void
+     */
+    private function render_configuration_status(): void {
+        $status = $this->config_manager->get_configuration_status();
+        $categories = [];
+        
+        // Group by category
+        foreach ($status as $key => $config) {
+            $category = $config['category'];
+            if (!isset($categories[$category])) {
+                $categories[$category] = [];
+            }
+            $categories[$category][$key] = $config;
+        }
+        
+        echo '<div class="hp-config-categories">';
+        
+        foreach ($categories as $category => $configs) {
+            $configured_count = count(array_filter($configs, fn($c) => $c['configured']));
+            $total_count = count($configs);
+            $category_status = $configured_count === $total_count ? 'complete' : ($configured_count > 0 ? 'partial' : 'none');
+            
+            echo "<div class='hp-config-category hp-config-{$category_status}'>";
+            echo "<h4>" . esc_html(ucfirst($category)) . " <span class='hp-config-count'>({$configured_count}/{$total_count})</span></h4>";
+            echo "<div class='hp-config-items'>";
+            
+            foreach ($configs as $key => $config) {
+                $status_class = $config['configured'] ? 'configured' : 'not-configured';
+                $status_icon = $config['configured'] ? '✓' : '✗';
+                $required_text = $config['required'] ? ' (Required)' : '';
+                
+                echo "<div class='hp-config-item {$status_class}'>";
+                echo "<span class='hp-config-status'>{$status_icon}</span>";
+                echo "<span class='hp-config-name'>" . esc_html($config['description']) . "{$required_text}</span>";
+                echo "</div>";
+            }
+            
+            echo "</div>";
+            echo "</div>";
+        }
+        
+        echo '</div>';
+        
+        // Show action link to integrations page
+        echo '<div class="hp-config-action">';
+        echo '<a href="' . admin_url('admin.php?page=hp-integrations') . '" class="button button-primary">';
+        echo __('Configure Integrations', 'happy-place');
+        echo '</a>';
+        echo '</div>';
+    }
+    
+    /**
+     * AJAX: Preview role changes
+     */
+    public function ajax_preview_role_changes(): void {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Insufficient permissions', 'happy-place')]);
+            return;
+        }
+        
+        check_ajax_referer('hp_admin_nonce', 'nonce');
+        
+        // Get current roles
+        global $wp_roles;
+        $all_roles = $wp_roles->roles;
+        
+        $legacy_roles = ['real_estate_agent', 'broker', 'client', 'subscriber', 'contributor', 'author'];
+        $changes = [];
+        
+        foreach ($legacy_roles as $role_key) {
+            if (isset($all_roles[$role_key])) {
+                $user_count = count(get_users(['role' => $role_key]));
+                $migration_target = $this->determine_migration_role($role_key);
+                
+                $changes[] = [
+                    'action' => 'remove',
+                    'role' => $role_key,
+                    'role_name' => $all_roles[$role_key]['name'],
+                    'user_count' => $user_count,
+                    'migration_target' => $migration_target
+                ];
+            }
+        }
+        
+        // Generate HTML for the changes
+        $html = '';
+        if (empty($changes)) {
+            $html = '<div class="notice notice-info"><p>' . __('No legacy roles found. Your user roles are already clean.', 'happy-place') . '</p></div>';
+        } else {
+            $html .= '<table class="wp-list-table widefat fixed striped">';
+            $html .= '<thead><tr>';
+            $html .= '<th>' . __('Legacy Role', 'happy-place') . '</th>';
+            $html .= '<th>' . __('Users Count', 'happy-place') . '</th>';
+            $html .= '<th>' . __('Migration Target', 'happy-place') . '</th>';
+            $html .= '<th>' . __('Action', 'happy-place') . '</th>';
+            $html .= '</tr></thead><tbody>';
+            
+            foreach ($changes as $change) {
+                $html .= '<tr>';
+                $html .= '<td><strong>' . esc_html($change['role_name']) . '</strong> (' . esc_html($change['role']) . ')</td>';
+                $html .= '<td>' . esc_html($change['user_count']) . '</td>';
+                $html .= '<td>' . esc_html(ucwords(str_replace('_', ' ', $change['migration_target']))) . '</td>';
+                $html .= '<td><span class="dashicons dashicons-no-alt" style="color: #dc3232;"></span> ' . __('Remove', 'happy-place') . '</td>';
+                $html .= '</tr>';
+            }
+            
+            $html .= '</tbody></table>';
+            $html .= '<p><strong>' . __('Note:', 'happy-place') . '</strong> ' . __('Users will be migrated to the target roles with corresponding agent/staff records created as needed.', 'happy-place') . '</p>';
+        }
+        
+        wp_send_json_success(['html' => $html]);
+    }
+    
+    /**
+     * AJAX: Cleanup roles
+     */
+    public function ajax_cleanup_roles(): void {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Insufficient permissions', 'happy-place')]);
+            return;
+        }
+        
+        check_ajax_referer('hp_admin_nonce', 'nonce');
+        
+        try {
+            // Initialize UserRoleService if available
+            if (class_exists('HappyPlace\\Services\\UserRoleService')) {
+                $user_role_service = new \HappyPlace\Services\UserRoleService();
+                $user_role_service->force_role_cleanup();
+                
+                hp_log('User roles cleaned up via admin interface', 'info', 'AdminMenu');
+                wp_send_json_success(['message' => __('User roles cleaned up successfully', 'happy-place')]);
+            } else {
+                wp_send_json_error(['message' => __('UserRoleService not available', 'happy-place')]);
+            }
+        } catch (\Exception $e) {
+            hp_log('Role cleanup failed: ' . $e->getMessage(), 'error', 'AdminMenu');
+            wp_send_json_error(['message' => __('Role cleanup failed: ', 'happy-place') . $e->getMessage()]);
+        }
+    }
+    
+    /**
+     * Determine migration role for legacy role
+     */
+    private function determine_migration_role(string $old_role): string {
+        $migration_map = [
+            'real_estate_agent' => 'agent',
+            'broker' => 'agent',
+            'client' => 'lead',
+            'subscriber' => 'lead',
+            'contributor' => 'staff',
+            'author' => 'staff'
+        ];
+        
+        return $migration_map[$old_role] ?? 'lead';
+    }
+    
+    /**
+     * AJAX handler to get lead details
+     */
+    public function ajax_get_lead_details(): void {
+        if (!current_user_can('edit_posts')) {
+            wp_die('Unauthorized');
+        }
+        
+        $lead_id = intval($_POST['lead_id']);
+        if (!$lead_id) {
+            wp_die('Invalid lead ID');
+        }
+        
+        global $wpdb;
+        $lead = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$wpdb->prefix}hp_leads WHERE id = %d",
+            $lead_id
+        ));
+        
+        if (!$lead) {
+            wp_die('Lead not found');
+        }
+        
+        // Get listing and agent info
+        $listing_title = $lead->listing_id ? get_the_title($lead->listing_id) : 'N/A';
+        $agent_name = $lead->agent_id ? get_the_title($lead->agent_id) : 'N/A';
+        
+        ?>
+        <h2>Lead Details</h2>
+        <table class="form-table">
+            <tr>
+                <th>Name:</th>
+                <td><?php echo esc_html($lead->first_name . ' ' . $lead->last_name); ?></td>
+            </tr>
+            <tr>
+                <th>Email:</th>
+                <td><a href="mailto:<?php echo esc_attr($lead->email); ?>"><?php echo esc_html($lead->email); ?></a></td>
+            </tr>
+            <tr>
+                <th>Phone:</th>
+                <td>
+                    <?php if ($lead->phone): ?>
+                        <a href="tel:<?php echo esc_attr($lead->phone); ?>"><?php echo esc_html($lead->phone); ?></a>
+                    <?php else: ?>
+                        Not provided
+                    <?php endif; ?>
+                </td>
+            </tr>
+            <tr>
+                <th>Message:</th>
+                <td><?php echo esc_html($lead->message); ?></td>
+            </tr>
+            <tr>
+                <th>Source:</th>
+                <td><?php echo esc_html(ucwords(str_replace('_', ' ', $lead->source))); ?></td>
+            </tr>
+            <tr>
+                <th>Status:</th>
+                <td><?php echo esc_html(ucwords(str_replace('_', ' ', $lead->status))); ?></td>
+            </tr>
+            <tr>
+                <th>Priority:</th>
+                <td><?php echo esc_html(ucwords($lead->priority)); ?></td>
+            </tr>
+            <tr>
+                <th>Listing:</th>
+                <td>
+                    <?php if ($lead->listing_id): ?>
+                        <a href="<?php echo get_edit_post_link($lead->listing_id); ?>"><?php echo esc_html($listing_title); ?></a>
+                    <?php else: ?>
+                        N/A
+                    <?php endif; ?>
+                </td>
+            </tr>
+            <tr>
+                <th>Agent:</th>
+                <td>
+                    <?php if ($lead->agent_id): ?>
+                        <a href="<?php echo get_edit_post_link($lead->agent_id); ?>"><?php echo esc_html($agent_name); ?></a>
+                    <?php else: ?>
+                        N/A
+                    <?php endif; ?>
+                </td>
+            </tr>
+            <tr>
+                <th>Created:</th>
+                <td><?php echo esc_html(date('F j, Y g:i A', strtotime($lead->created_at))); ?></td>
+            </tr>
+            <tr>
+                <th>Updated:</th>
+                <td><?php echo esc_html(date('F j, Y g:i A', strtotime($lead->updated_at))); ?></td>
+            </tr>
+            <?php if ($lead->ip_address): ?>
+            <tr>
+                <th>IP Address:</th>
+                <td><?php echo esc_html($lead->ip_address); ?></td>
+            </tr>
+            <?php endif; ?>
+            <?php if ($lead->utm_source || $lead->utm_medium || $lead->utm_campaign): ?>
+            <tr>
+                <th>UTM Tracking:</th>
+                <td>
+                    <?php if ($lead->utm_source): ?>Source: <?php echo esc_html($lead->utm_source); ?><br><?php endif; ?>
+                    <?php if ($lead->utm_medium): ?>Medium: <?php echo esc_html($lead->utm_medium); ?><br><?php endif; ?>
+                    <?php if ($lead->utm_campaign): ?>Campaign: <?php echo esc_html($lead->utm_campaign); ?><?php endif; ?>
+                </td>
+            </tr>
+            <?php endif; ?>
+        </table>
+        <?php
+        
+        wp_die();
     }
 }

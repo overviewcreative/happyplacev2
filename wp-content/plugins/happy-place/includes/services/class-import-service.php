@@ -74,6 +74,10 @@ class ImportService extends Service {
         // Register AJAX handlers
         add_action('wp_ajax_hp_upload_import_file', [$this, 'ajax_upload_file']);
         add_action('wp_ajax_hp_validate_csv', [$this, 'ajax_validate_csv']);
+        add_action('wp_ajax_hp_get_csv_sample', [$this, 'ajax_get_csv_sample']);
+        add_action('wp_ajax_hp_auto_map_fields', [$this, 'ajax_auto_map_fields']);
+        add_action('wp_ajax_hp_save_mapping_template', [$this, 'ajax_save_mapping_template']);
+        add_action('wp_ajax_hp_get_mapping_templates', [$this, 'ajax_get_mapping_templates']);
         add_action('wp_ajax_hp_process_import', [$this, 'ajax_process_import']);
         add_action('wp_ajax_hp_get_import_progress', [$this, 'ajax_get_progress']);
         
@@ -115,7 +119,12 @@ class ImportService extends Service {
             'session_id' => $session_id
         ];
         
-        $listing_service = new ListingService();
+        // Initialize listing service
+        if (!class_exists('HappyPlace\\Services\\ListingService')) {
+            return new \WP_Error('service_missing', 'ListingService not available');
+        }
+        
+        $listing_service = new \HappyPlace\Services\ListingService();
         
         for ($i = 0; $i < $total_rows; $i += $batch_size) {
             $batch = array_slice($csv_data['data'], $i, $batch_size);
@@ -127,8 +136,16 @@ class ImportService extends Service {
                     // Map CSV row to listing data
                     $listing_data = $this->map_csv_row($row, $csv_data['headers'], $mapping);
                     
-                    // Skip empty rows
-                    if (empty($listing_data['title'])) {
+                    // Debug logging
+                    if (HP_DEBUG) {
+                        $this->log('Row ' . $actual_row . ' mapped data: ' . print_r($listing_data, true), 'debug', 'IMPORT');
+                    }
+                    
+                    // Skip empty rows - check for post_title or title
+                    if (empty($listing_data['title']) && empty($listing_data['post_title'])) {
+                        if (HP_DEBUG) {
+                            $this->log('Row ' . $actual_row . ' skipped - no title found', 'debug', 'IMPORT');
+                        }
                         $results['skipped']++;
                         continue;
                     }
@@ -141,6 +158,10 @@ class ImportService extends Service {
                     }
                     
                     // Create listing
+                    if (HP_DEBUG) {
+                        $this->log('Creating listing for row ' . $actual_row, 'debug', 'IMPORT');
+                    }
+                    
                     $listing_id = $listing_service->create_listing($listing_data);
                     
                     if (is_wp_error($listing_id)) {
@@ -151,8 +172,15 @@ class ImportService extends Service {
                             'error' => $listing_id->get_error_message(),
                             'data' => $listing_data
                         ];
+                        
+                        if (HP_DEBUG) {
+                            $this->log('Row ' . $actual_row . ' failed: ' . $listing_id->get_error_message(), 'error', 'IMPORT');
+                        }
                     } else {
                         $results['success']++;
+                        if (HP_DEBUG) {
+                            $this->log('Row ' . $actual_row . ' created listing ID: ' . $listing_id, 'debug', 'IMPORT');
+                        }
                     }
                     
                 } catch (\Exception $e) {
@@ -180,6 +208,10 @@ class ImportService extends Service {
         }
         
         // Complete import session
+        if (HP_DEBUG) {
+            $this->log('Import completed. Final results: ' . print_r($results, true), 'debug', 'IMPORT');
+        }
+        
         $this->complete_import_session($session_id, $results);
         
         return $results;
@@ -507,6 +539,9 @@ class ImportService extends Service {
             }
         }
         
+        // Transform field names to match what ListingService expects
+        $this->transform_field_names($listing_data);
+        
         // Set default values
         if (empty($listing_data['status'])) {
             $listing_data['status'] = 'draft';
@@ -517,6 +552,59 @@ class ImportService extends Service {
         }
         
         return $listing_data;
+    }
+    
+    /**
+     * Transform field names to match ListingService expectations
+     * 
+     * @param array &$listing_data Reference to listing data array
+     * @return void
+     */
+    private function transform_field_names(array &$listing_data): void {
+        $field_mapping = [
+            'post_title' => 'title',
+            'post_content' => 'description',
+            'property_description' => 'description',
+            'property_title' => 'marketing_title',
+        ];
+        
+        foreach ($field_mapping as $import_field => $service_field) {
+            if (isset($listing_data[$import_field])) {
+                // Move the value to the expected field name
+                $listing_data[$service_field] = $listing_data[$import_field];
+                
+                // Keep the original field too for ACF processing
+                // Don't unset the original as it may be needed for ACF
+            }
+        }
+        
+        // Ensure we have a title from some source
+        if (empty($listing_data['title'])) {
+            if (!empty($listing_data['post_title'])) {
+                $listing_data['title'] = $listing_data['post_title'];
+            } elseif (!empty($listing_data['property_title'])) {
+                $listing_data['title'] = $listing_data['property_title'];
+            } else {
+                // Generate a title from address or MLS if available
+                if (!empty($listing_data['street_name'])) {
+                    $listing_data['title'] = $listing_data['street_name'];
+                    if (!empty($listing_data['city'])) {
+                        $listing_data['title'] .= ', ' . $listing_data['city'];
+                    }
+                } elseif (!empty($listing_data['mls_number'])) {
+                    $listing_data['title'] = 'Property ' . $listing_data['mls_number'];
+                }
+            }
+        }
+        
+        // Ensure we have a description from some source
+        if (empty($listing_data['description'])) {
+            if (!empty($listing_data['property_description'])) {
+                $listing_data['description'] = $listing_data['property_description'];
+            } elseif (!empty($listing_data['post_content'])) {
+                $listing_data['description'] = $listing_data['post_content'];
+            }
+        }
     }
     
     /**
@@ -610,55 +698,131 @@ class ImportService extends Service {
             'listing title' => 'title',
             'name' => 'title',
             
-            'description' => 'description',
-            'details' => 'description',
-            'property description' => 'description',
+            // Basic Information
+            'title' => 'post_title',
+            'listing title' => 'post_title',
+            'property title' => 'post_title',
             
+            'description' => 'property_description',
+            'property description' => 'property_description',
+            'listing description' => 'property_description',
+            
+            'marketing title' => 'property_title',
+            'property highlights' => 'property_highlights',
+            
+            // Pricing
             'price' => 'price',
             'listing price' => 'price',
             'asking price' => 'price',
             'sale price' => 'price',
             
+            'property taxes' => 'property_taxes',
+            'taxes' => 'property_taxes',
+            'hoa' => 'hoa_fees',
+            'hoa fees' => 'hoa_fees',
+            'homeowner fees' => 'hoa_fees',
+            
+            'buyer commission' => 'buyer_commission',
+            'commission' => 'buyer_commission',
+            'insurance' => 'estimated_insurance',
+            'utilities' => 'estimated_utilities',
+            
+            // Property Details
             'bedrooms' => 'bedrooms',
             'beds' => 'bedrooms',
             'bedroom' => 'bedrooms',
             'bed' => 'bedrooms',
             
-            'bathrooms' => 'bathrooms',
-            'baths' => 'bathrooms',
-            'bathroom' => 'bathrooms',
-            'bath' => 'bathrooms',
+            'bathrooms full' => 'bathrooms_full',
+            'full baths' => 'bathrooms_full',
+            'full bathrooms' => 'bathrooms_full',
+            
+            'bathrooms half' => 'bathrooms_half',
+            'half baths' => 'bathrooms_half',
+            'half bathrooms' => 'bathrooms_half',
+            
+            // Legacy bathroom mapping (split into full/half)
+            'bathrooms' => 'bathrooms_full',
+            'baths' => 'bathrooms_full',
+            'bathroom' => 'bathrooms_full',
+            'bath' => 'bathrooms_full',
             
             'square feet' => 'square_feet',
             'sqft' => 'square_feet',
             'sq ft' => 'square_feet',
             'size' => 'square_feet',
             
-            'lot size' => 'lot_size',
-            'lot' => 'lot_size',
-            'acres' => 'lot_size',
+            'lot size acres' => 'lot_size_acres',
+            'acres' => 'lot_size_acres',
+            'lot acres' => 'lot_size_acres',
+            
+            'lot size sqft' => 'lot_size_sqft',
+            'lot size' => 'lot_size_sqft',
+            'lot' => 'lot_size_sqft',
             
             'year built' => 'year_built',
             'built' => 'year_built',
             'construction year' => 'year_built',
             
+            'property type' => 'property_type',
+            'type' => 'property_type',
+            
+            // Address Fields
+            'street number' => 'street_number',
+            'number' => 'street_number',
+            'house number' => 'street_number',
+            
+            'street name' => 'street_name',
+            'street' => 'street_name',
+            
+            'street type' => 'street_type',
+            'street suffix' => 'street_type',
+            'suffix' => 'street_type',
+            
+            'address' => 'street_name', // Legacy mapping
+            'street address' => 'street_name',
+            
+            'city' => 'city',
+            'state' => 'state',
+            'zip' => 'zip_code',
+            'zip code' => 'zip_code',
+            'postal code' => 'zip_code',
+            'county' => 'county',
+            
+            'parcel number' => 'parcel_number',
+            'parcel' => 'parcel_number',
+            'parcel id' => 'parcel_number',
+            
+            // Listing Information
             'mls' => 'mls_number',
             'mls number' => 'mls_number',
             'mls #' => 'mls_number',
             'listing id' => 'mls_number',
             
-            'address' => 'address.street_address',
-            'street' => 'address.street_address',
-            'street address' => 'address.street_address',
-            
-            'city' => 'address.city',
-            'state' => 'address.state',
-            'zip' => 'address.zip_code',
-            'zip code' => 'address.zip_code',
-            'postal code' => 'address.zip_code',
-            
             'status' => 'status',
-            'listing status' => 'status'
+            'listing status' => 'status',
+            
+            'listing date' => 'listing_date',
+            'date listed' => 'listing_date',
+            
+            'sold date' => 'sold_date',
+            'date sold' => 'sold_date',
+            
+            'days on market' => 'days_on_market',
+            'dom' => 'days_on_market',
+            
+            // Location
+            'latitude' => 'latitude',
+            'lat' => 'latitude',
+            'longitude' => 'longitude',
+            'lng' => 'longitude',
+            'lon' => 'longitude',
+            
+            // Additional
+            'showing instructions' => 'showing_instructions',
+            'instructions' => 'showing_instructions',
+            'internal notes' => 'internal_notes',
+            'notes' => 'internal_notes'
         ];
     }
     
@@ -666,13 +830,23 @@ class ImportService extends Service {
      * AJAX handler for file upload
      */
     public function ajax_upload_file(): void {
+        // Debug information
+        if (HP_DEBUG) {
+            $this->log('AJAX upload file called', 'debug', 'IMPORT');
+            $this->log('POST data: ' . print_r($_POST, true), 'debug', 'IMPORT');
+            $this->log('FILES data: ' . print_r($_FILES, true), 'debug', 'IMPORT');
+        }
+        
         // Verify nonce
-        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'hp_import_upload')) {
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'hp_import_nonce')) {
+            if (HP_DEBUG) {
+                $this->log('Nonce verification failed. Expected: hp_import_nonce, Received: ' . ($_POST['nonce'] ?? 'none'), 'error', 'IMPORT');
+            }
             wp_send_json_error(['message' => 'Security check failed']);
         }
         
         // Check permissions
-        if (!current_user_can('import_data')) {
+        if (!current_user_can('import')) {
             wp_send_json_error(['message' => 'Insufficient permissions']);
         }
         
@@ -739,12 +913,12 @@ class ImportService extends Service {
      */
     public function ajax_process_import(): void {
         // Verify nonce
-        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'hp_import_process')) {
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'hp_import_nonce')) {
             wp_send_json_error(['message' => 'Security check failed']);
         }
         
         // Check permissions
-        if (!current_user_can('import_data')) {
+        if (!current_user_can('import')) {
             wp_send_json_error(['message' => 'Insufficient permissions']);
         }
         
@@ -789,5 +963,128 @@ class ImportService extends Service {
         }
         
         wp_send_json_success($progress);
+    }
+    
+    /**
+     * AJAX handler for getting CSV sample data
+     */
+    public function ajax_get_csv_sample(): void {
+        // Verify nonce
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'hp_import_nonce')) {
+            wp_send_json_error(['message' => 'Security check failed']);
+        }
+        
+        $file_path = sanitize_text_field($_POST['file_path'] ?? '');
+        
+        if (empty($file_path) || !file_exists($file_path)) {
+            wp_send_json_error(['message' => 'File not found']);
+        }
+        
+        // Get sample data (first 3 rows)
+        $handle = fopen($file_path, 'r');
+        if (!$handle) {
+            wp_send_json_error(['message' => 'Unable to read CSV file']);
+        }
+        
+        // Skip headers
+        $headers = fgetcsv($handle);
+        if (!$headers) {
+            fclose($handle);
+            wp_send_json_error(['message' => 'CSV file has no headers']);
+        }
+        
+        // Get up to 3 sample rows
+        $sample = [];
+        $row_count = 0;
+        while (($row = fgetcsv($handle)) !== false && $row_count < 3) {
+            // Ensure row has same number of columns as headers
+            $row = array_pad($row, count($headers), '');
+            $sample[] = $row;
+            $row_count++;
+        }
+        
+        fclose($handle);
+        
+        wp_send_json_success([
+            'sample' => $sample,
+            'row_count' => $row_count
+        ]);
+    }
+    
+    /**
+     * AJAX handler for auto-mapping fields
+     */
+    public function ajax_auto_map_fields(): void {
+        // Verify nonce
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'hp_import_nonce')) {
+            wp_send_json_error(['message' => 'Security check failed']);
+        }
+        
+        $file_path = sanitize_text_field($_POST['file_path'] ?? '');
+        
+        if (empty($file_path) || !file_exists($file_path)) {
+            wp_send_json_error(['message' => 'File not found']);
+        }
+        
+        // Get CSV headers
+        $headers = $this->get_csv_headers($file_path);
+        if (is_wp_error($headers)) {
+            wp_send_json_error(['message' => $headers->get_error_message()]);
+        }
+        
+        // Auto-map fields
+        $mapping = $this->auto_map_fields($headers);
+        
+        wp_send_json_success(['mapping' => $mapping]);
+    }
+    
+    /**
+     * AJAX handler for saving mapping templates
+     */
+    public function ajax_save_mapping_template(): void {
+        // Verify nonce
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'hp_import_nonce')) {
+            wp_send_json_error(['message' => 'Security check failed']);
+        }
+        
+        $template_name = sanitize_text_field($_POST['template_name'] ?? '');
+        $mapping = $_POST['mapping'] ?? [];
+        
+        if (empty($template_name)) {
+            wp_send_json_error(['message' => 'Template name is required']);
+        }
+        
+        // Sanitize mapping data
+        $clean_mapping = [];
+        foreach ($mapping as $key => $value) {
+            if (is_array($value)) {
+                $clean_mapping[intval($key)] = [
+                    'csv_header' => sanitize_text_field($value['csv_header'] ?? ''),
+                    'listing_field' => sanitize_text_field($value['listing_field'] ?? '')
+                ];
+            }
+        }
+        
+        $result = $this->save_mapping_template($template_name, $clean_mapping);
+        
+        if ($result) {
+            wp_send_json_success(['message' => 'Template saved successfully']);
+        } else {
+            wp_send_json_error(['message' => 'Failed to save template']);
+        }
+    }
+    
+    /**
+     * AJAX handler for getting mapping templates
+     */
+    public function ajax_get_mapping_templates(): void {
+        // Verify nonce
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'hp_import_nonce')) {
+            wp_send_json_error(['message' => 'Security check failed']);
+        }
+        
+        $templates = $this->get_mapping_templates();
+        
+        wp_send_json_success(['templates' => $templates]);
     }
 }

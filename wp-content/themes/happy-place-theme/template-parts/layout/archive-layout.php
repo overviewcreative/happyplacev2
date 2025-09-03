@@ -116,9 +116,9 @@ $archive_args = wp_parse_args($args ?? [], [
     'total_results' => null,
     
     // Layout Structure
-    'layout' => 'contained',
+    'layout' => 'full-width',
     'container_class' => 'hph-container',
-    'content_width' => 'normal',
+    'content_width' => 'full', 
     'padding' => 'xl',
     'background' => 'white',
     
@@ -422,20 +422,23 @@ $component_id = 'hph-archive-' . uniqid();
 $archive_args['component_id'] = $component_id;
 ?>
 
-<div 
-    id="<?php echo esc_attr($component_id); ?>"
-    class="<?php echo esc_attr(implode(' ', $layout_classes)); ?>"
-    data-view="<?php echo esc_attr($current_view); ?>"
-    data-sort="<?php echo esc_attr($current_sort); ?>"
-    data-per-page="<?php echo esc_attr($per_page); ?>"
-    data-page="<?php echo esc_attr($current_page); ?>"
-    data-total="<?php echo esc_attr($archive_args['total_results']); ?>"
-    data-post-type="<?php echo esc_attr($archive_args['post_type']); ?>"
-    <?php if ($archive_args['ajax_enabled']) : ?>
-        data-ajax="true"
-        data-ajax-url="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
-        data-nonce="<?php echo esc_attr(wp_create_nonce('hph_archive_ajax_' . $archive_args['post_type'])); ?>"
-    <?php endif; ?>
+<!-- Archive Layout Container -->
+<div id="<?php echo esc_attr($component_id); ?>" class="hph-archive-layout hph-relative">
+    
+    <!-- Archive Header -->
+    <header class="hph-archive-header hph-mb-lg">
+        <div class="hph-container">
+            <h1 class="hph-archive-title"><?php echo esc_html($archive_args['title']); ?></h1>
+            <?php if ($archive_args['description']) : ?>
+                <p class="hph-archive-description"><?php echo esc_html($archive_args['description']); ?></p>
+            <?php endif; ?>
+        </div>
+    </header>
+    
+    
+</div>
+
+<div class="<?php echo esc_attr(implode(' ', $layout_classes)); ?>" 
     <?php if ($archive_args['aria_label']) : ?>
         aria-label="<?php echo esc_attr($archive_args['aria_label']); ?>"
     <?php else : ?>
@@ -450,7 +453,7 @@ $archive_args['component_id'] = $component_id;
     <?php if ($archive_args['show_header']) : ?>
         <header class="hph-archive-header hph-mb-<?php echo esc_attr($archive_args['gap']); ?>" role="banner">
             <?php
-            get_template_part('template-parts/components/archive-header', null, array_merge($archive_args, [
+            hph_component('archive-header', array_merge($archive_args, [
                 'current_view' => $current_view,
                 'current_sort' => $current_sort,
                 'total_results' => $archive_args['total_results'],
@@ -464,7 +467,7 @@ $archive_args['component_id'] = $component_id;
     <?php if ($archive_args['show_controls']) : ?>
         <div class="hph-archive-controls hph-mb-<?php echo esc_attr($archive_args['gap']); ?>" role="navigation" aria-label="<?php esc_attr_e('Archive Controls', 'happy-place-theme'); ?>">
             <?php
-            get_template_part('template-parts/components/archive-controls', null, array_merge($archive_args, [
+            hph_component('archive-controls', array_merge($archive_args, [
                 'current_view' => $current_view,
                 'current_sort' => $current_sort,
                 'per_page' => $per_page,
@@ -484,7 +487,7 @@ $archive_args['component_id'] = $component_id;
     <?php if ($archive_args['show_filters']) : ?>
         <div class="hph-archive-filters hph-mb-<?php echo esc_attr($archive_args['gap']); ?>" role="search" aria-label="<?php esc_attr_e('Archive Filters', 'happy-place-theme'); ?>">
             <?php
-            get_template_part('template-parts/components/archive-filters', null, array_merge($archive_args, [
+            hph_component('archive-filters', array_merge($archive_args, [
                 'post_type' => $archive_args['post_type'],
                 'current_view' => $current_view,
                 'ajax_enabled' => $archive_args['ajax_enabled'],
@@ -502,7 +505,7 @@ $archive_args['component_id'] = $component_id;
             <?php if ($archive_args['loading_skeleton'] && $archive_args['ajax_enabled']) : ?>
                 <div class="hph-loading-skeleton hph-hidden" aria-hidden="true">
                     <?php
-                    get_template_part('template-parts/components/loading-skeleton', null, [
+                    hph_component('loading-skeleton', [
                         'type' => 'archive',
                         'view_mode' => $current_view,
                         'columns' => $archive_args['columns'],
@@ -518,7 +521,7 @@ $archive_args['component_id'] = $component_id;
                 <?php if ($archive_args['show_sidebar'] && $archive_args['sidebar_position'] === 'left') : ?>
                     <aside class="<?php echo esc_attr(implode(' ', $sidebar_classes)); ?>" role="complementary" aria-label="<?php esc_attr_e('Archive Sidebar', 'happy-place-theme'); ?>">
                         <?php
-                        get_template_part('template-parts/components/archive-sidebar', null, array_merge($archive_args, [
+                        hph_component('archive-sidebar', array_merge($archive_args, [
                             'position' => 'left',
                             'sticky' => $archive_args['sidebar_sticky'],
                             'animation_style' => $archive_args['animation_style']
@@ -563,10 +566,22 @@ $archive_args['component_id'] = $component_id;
                             // Determine layout component based on view mode
                             switch ($current_view) {
                                 case 'grid':
+                                    // Grid wrapper with responsive classes
+                                    $grid_classes = [
+                                        'hph-grid',
+                                        'hph-grid-cols-' . $archive_args['columns_mobile'],
+                                        'md:hph-grid-cols-' . $archive_args['columns_tablet'],
+                                        'lg:hph-grid-cols-' . $archive_args['columns'],
+                                        'hph-gap-' . $archive_args['gap']
+                                    ];
+                                    echo '<div class="' . esc_attr(implode(' ', $grid_classes)) . '">';
                                     get_template_part('template-parts/base/card-grid', null, $card_display_args);
+                                    echo '</div>';
                                     break;
                                     
                                 case 'list':
+                                    // List layout uses vertical stacking
+                                    echo '<div class="hph-space-y-' . esc_attr($archive_args['gap']) . '">';
                                     get_template_part('template-parts/base/card-grid', null, array_merge($card_display_args, [
                                         'layout' => 'list',
                                         'columns' => 1,
@@ -574,18 +589,28 @@ $archive_args['component_id'] = $component_id;
                                         'columns_mobile' => 1,
                                         'card_layout' => 'horizontal'
                                     ]));
+                                    echo '</div>';
                                     break;
                                     
                                 case 'masonry':
+                                    // Masonry layout with CSS columns
+                                    $masonry_classes = [
+                                        'hph-columns-' . $archive_args['columns_mobile'],
+                                        'md:hph-columns-' . $archive_args['columns_tablet'],
+                                        'lg:hph-columns-' . $archive_args['columns'],
+                                        'hph-gap-' . $archive_args['gap']
+                                    ];
+                                    echo '<div class="' . esc_attr(implode(' ', $masonry_classes)) . '">';
                                     get_template_part('template-parts/base/card-grid', null, array_merge($card_display_args, [
                                         'layout' => 'masonry',
                                         'masonry_enabled' => true
                                     ]));
+                                    echo '</div>';
                                     break;
                                     
                                 case 'map':
                                     if (file_exists(get_template_directory() . '/template-parts/components/archive-map.php')) {
-                                        get_template_part('template-parts/components/archive-map', null, array_merge($archive_args, [
+                                        hph_component('archive-map', array_merge($archive_args, [
                                             'posts' => $posts_array,
                                             'show_list' => true,
                                             'map_height' => '400px',
@@ -593,13 +618,31 @@ $archive_args['component_id'] = $component_id;
                                         ]));
                                     } else {
                                         // Fallback to grid if map component doesn't exist
+                                        $grid_classes = [
+                                            'hph-grid',
+                                            'hph-grid-cols-' . $archive_args['columns_mobile'],
+                                            'md:hph-grid-cols-' . $archive_args['columns_tablet'],
+                                            'lg:hph-grid-cols-' . $archive_args['columns'],
+                                            'hph-gap-' . $archive_args['gap']
+                                        ];
+                                        echo '<div class="' . esc_attr(implode(' ', $grid_classes)) . '">';
                                         get_template_part('template-parts/base/card-grid', null, $card_display_args);
+                                        echo '</div>';
                                     }
                                     break;
                                     
                                 default:
-                                    // Fallback to enhanced card-grid
+                                    // Fallback to enhanced card-grid with grid wrapper
+                                    $grid_classes = [
+                                        'hph-grid',
+                                        'hph-grid-cols-' . $archive_args['columns_mobile'],
+                                        'md:hph-grid-cols-' . $archive_args['columns_tablet'],
+                                        'lg:hph-grid-cols-' . $archive_args['columns'],
+                                        'hph-gap-' . $archive_args['gap']
+                                    ];
+                                    echo '<div class="' . esc_attr(implode(' ', $grid_classes)) . '">';
                                     get_template_part('template-parts/base/card-grid', null, $card_display_args);
+                                    echo '</div>';
                                     break;
                             }
                             ?>
@@ -621,9 +664,9 @@ $archive_args['component_id'] = $component_id;
                                         ];
                                         
                                         if ($archive_args['pagination_style'] === 'load-more' || $archive_args['infinite_scroll']) {
-                                            get_template_part('template-parts/components/load-more-pagination', null, $pagination_args);
+                                            hph_component('load-more-pagination', $pagination_args);
                                         } else {
-                                            get_template_part('template-parts/components/numbered-pagination', null, $pagination_args);
+                                            hph_component('numbered-pagination', $pagination_args);
                                         }
                                         ?>
                                     </div>
@@ -635,7 +678,7 @@ $archive_args['component_id'] = $component_id;
                         
                         <div class="hph-archive-no-results <?php echo $archive_args['animation_style'] !== 'none' ? 'hph-animate-fade-in-up' : ''; ?>" role="status" aria-live="polite">
                             <?php
-                            get_template_part('template-parts/components/archive-no-results', null, array_merge($archive_args, [
+                            hph_component('archive-no-results', array_merge($archive_args, [
                                 'search_query' => get_search_query(),
                                 'current_filters' => [],
                                 'show_suggestions' => true,
@@ -652,7 +695,7 @@ $archive_args['component_id'] = $component_id;
                 <?php if ($archive_args['show_sidebar'] && $archive_args['sidebar_position'] === 'right') : ?>
                     <aside class="<?php echo esc_attr(implode(' ', $sidebar_classes)); ?>" role="complementary" aria-label="<?php esc_attr_e('Archive Sidebar', 'happy-place-theme'); ?>">
                         <?php
-                        get_template_part('template-parts/components/archive-sidebar', null, array_merge($archive_args, [
+                        hph_component('archive-sidebar', array_merge($archive_args, [
                             'position' => 'right',
                             'sticky' => $archive_args['sidebar_sticky'],
                             'animation_style' => $archive_args['animation_style']
@@ -669,7 +712,7 @@ $archive_args['component_id'] = $component_id;
     <?php if ($archive_args['show_related']) : ?>
         <section class="hph-archive-related hph-mt-2xl hph-pt-2xl hph-border-t hph-border-gray-200" role="complementary" aria-labelledby="related-content-title">
             <?php
-            get_template_part('template-parts/components/archive-related', null, array_merge($archive_args, [
+            hph_component('archive-related', array_merge($archive_args, [
                 'related_type' => 'posts',
                 'related_count' => 3,
                 'show_title' => true,
@@ -710,5 +753,11 @@ $archive_args['component_id'] = $component_id;
         echo '<script type="application/ld+json">' . wp_json_encode($structured_data, JSON_UNESCAPED_SLASHES) . '</script>';
     }
     ?>
-    
 </div>
+
+<?php
+// Clean up and reset
+if ($archive_query && $archive_query !== $GLOBALS['wp_query']) {
+    wp_reset_postdata();
+}
+?>
