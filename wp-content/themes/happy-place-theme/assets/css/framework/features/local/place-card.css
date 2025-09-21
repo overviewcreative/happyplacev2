@@ -1,0 +1,330 @@
+/**
+ * Place Card Component Styles
+ * Styles for all place card variations
+ * 
+ * @package HappyPlaceTheme
+ * @since 1.0.0
+ */
+
+/* ============================================================================
+   BASE PLACE CARD
+   ============================================================================ */
+.hph-place-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: var(--hph-local-radius);
+    overflow: hidden;
+    box-shadow: var(--hph-local-shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+}
+
+.hph-place-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--hph-local-shadow-xl);
+}
+
+/* ============================================================================
+   CARD MEDIA
+   ============================================================================ */
+.hph-place-card__media {
+    position: relative;
+    overflow: hidden;
+    background: var(--hph-gray-100);
+}
+
+.hph-place-card__image-link {
+    display: block;
+    position: relative;
+}
+
+.hph-place-card__image-wrapper {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+}
+
+.hph-place-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.hph-place-card:hover .hph-place-card__image {
+    transform: scale(1.05);
+}
+
+/* No image state */
+.hph-place-card--no-image .hph-place-card__image-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--hph-place-primary-light), var(--hph-place-primary));
+    color: white;
+}
+
+.hph-place-card--no-image .hph-place-card__image-wrapper::before {
+    content: "📍";
+    font-size: 3rem;
+}
+
+/* Badges */
+.hph-place-card__badges {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    z-index: 1;
+}
+
+/* ============================================================================
+   CARD CONTENT
+   ============================================================================ */
+.hph-place-card__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: var(--hph-local-card-padding);
+}
+
+.hph-place-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
+.hph-place-card__title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 0;
+    flex: 1;
+}
+
+.hph-place-card__title-link {
+    color: var(--hph-gray-900);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.hph-place-card__title-link:hover {
+    color: var(--hph-place-primary);
+}
+
+/* Favorite Button */
+.hph-place-card__favorite {
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 1px solid var(--hph-gray-300);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.hph-place-card__favorite:hover {
+    background: var(--hph-pink-50);
+    border-color: var(--hph-pink-500);
+    color: var(--hph-pink-500);
+}
+
+.hph-place-card__favorite.is-favorited {
+    background: var(--hph-pink-500);
+    border-color: var(--hph-pink-500);
+    color: white;
+}
+
+/* Meta Information */
+.hph-place-card__meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: var(--hph-gray-600);
+    margin-bottom: 0.75rem;
+}
+
+.hph-place-card__location,
+.hph-place-card__distance {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.hph-place-card__excerpt {
+    flex: 1;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--hph-gray-600);
+    margin-bottom: 1rem;
+}
+
+/* Details (for list view) */
+.hph-place-card__details {
+    margin-bottom: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--hph-gray-200);
+}
+
+.hph-place-card__address,
+.hph-place-card__phone {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--hph-gray-600);
+    margin-bottom: 0.5rem;
+}
+
+.hph-place-card__phone a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.hph-place-card__phone a:hover {
+    color: var(--hph-place-primary);
+}
+
+/* Actions */
+.hph-place-card__actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: auto;
+}
+
+/* ============================================================================
+   GRID VARIANT
+   ============================================================================ */
+.hph-place-card--grid {
+    min-height: var(--hph-place-card-min-height);
+}
+
+/* ============================================================================
+   LIST VARIANT
+   ============================================================================ */
+.hph-place-card--list {
+    flex-direction: row;
+    min-height: 200px;
+}
+
+.hph-place-card--list .hph-place-card__media {
+    width: 300px;
+    flex-shrink: 0;
+}
+
+.hph-place-card--list .hph-place-card__image-wrapper {
+    height: 100%;
+    aspect-ratio: auto;
+}
+
+.hph-place-card--list .hph-place-card__badges {
+    bottom: 1rem;
+    top: auto;
+}
+
+/* ============================================================================
+   MINIMAL VARIANT
+   ============================================================================ */
+.hph-place-card--minimal {
+    flex-direction: row;
+    align-items: center;
+    padding: 1rem;
+    min-height: auto;
+}
+
+.hph-place-card--minimal .hph-place-card__content {
+    padding: 0;
+}
+
+.hph-place-card--minimal .hph-place-card__title {
+    font-size: 1rem;
+}
+
+.hph-place-card--minimal .hph-place-card__excerpt,
+.hph-place-card--minimal .hph-place-card__details {
+    display: none;
+}
+
+.hph-place-card--minimal .hph-place-card__actions {
+    margin-left: auto;
+}
+
+/* ============================================================================
+   RESPONSIVE
+   ============================================================================ */
+@media (max-width: 768px) {
+    .hph-place-card--list {
+        flex-direction: column;
+    }
+    
+    .hph-place-card--list .hph-place-card__media {
+        width: 100%;
+        height: 200px;
+    }
+    
+    .hph-place-card__content {
+        padding: 1rem;
+    }
+    
+    .hph-place-card__title {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hph-place-card__badges {
+        top: 0.5rem;
+        left: 0.5rem;
+    }
+    
+    .hph-place-card__actions {
+        flex-direction: column;
+    }
+    
+    .hph-place-card__actions .hph-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ============================================================================
+   STATES
+   ============================================================================ */
+.hph-place-card.is-family-friendly .hph-place-card__header::after {
+    content: "👨‍👩‍👧‍👦";
+    font-size: 1.25rem;
+    margin-left: 0.5rem;
+}
+
+.hph-place-card.is-loading {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.hph-place-card.is-loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 2rem;
+    height: 2rem;
+    border: 3px solid var(--hph-place-primary);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}

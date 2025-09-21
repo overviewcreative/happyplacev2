@@ -18,7 +18,20 @@ class HPH_Contact_Form_Handler {
     public function __construct() {
         add_action('wp_ajax_hph_contact_form', array($this, 'process_contact_form'));
         add_action('wp_ajax_nopriv_hph_contact_form', array($this, 'process_contact_form'));
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_contact_scripts'));
+        
+        // Add test AJAX handler for debugging
+        add_action('wp_ajax_test_ajax_connectivity', array($this, 'test_ajax_connectivity'));
+        add_action('wp_ajax_nopriv_test_ajax_connectivity', array($this, 'test_ajax_connectivity'));
+        
+        // Script enqueuing is handled by theme-assets.php to avoid conflicts
+        // add_action('wp_enqueue_scripts', array($this, 'enqueue_contact_scripts'));
+    }
+    
+    /**
+     * Test AJAX connectivity
+     */
+    public function test_ajax_connectivity() {
+        wp_send_json_success(array('message' => 'AJAX connectivity test passed'));
     }
     
     /**

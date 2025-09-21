@@ -1,0 +1,130 @@
+/* ================================================
+   QUICK ACTIONS SIDEBAR ENHANCEMENTS
+   Specific styling for the sidebar quick action buttons
+   ================================================ */
+
+/* Override default quick actions for sidebar grid layout */
+.hph-listing-sidebar-wrapper .hph-quick-actions {
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+}
+
+/* Enhanced action button styling for grid layout */
+.hph-listing-sidebar-wrapper .hph-quick-actions .hph-action-btn {
+    width: auto;
+    margin-bottom: 0;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    min-height: 80px;
+    text-align: center;
+    border: 1px solid var(--hph-gray-300);
+    background: var(--hph-white);
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Icon container styling */
+.hph-listing-sidebar-wrapper .hph-quick-actions .hph-action-btn > div {
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+/* Text styling */
+.hph-listing-sidebar-wrapper .hph-quick-actions .hph-action-btn span {
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.2;
+    transition: all 0.2s ease;
+}
+
+/* Hover effects with specific colors */
+.hph-listing-sidebar-wrapper .hph-quick-actions .hph-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Focus states for accessibility */
+.hph-listing-sidebar-wrapper .hph-quick-actions .hph-action-btn:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Active state */
+.hph-listing-sidebar-wrapper .hph-quick-actions .hph-action-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Color-specific hover states are already handled inline with utility classes */
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hph-listing-sidebar-wrapper .hph-quick-actions {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .hph-listing-sidebar-wrapper .hph-quick-actions .hph-action-btn {
+        padding: 0.75rem 0.5rem;
+        min-height: 70px;
+    }
+    
+    .hph-listing-sidebar-wrapper .hph-quick-actions .hph-action-btn > div {
+        width: 1.75rem;
+        height: 1.75rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .hph-listing-sidebar-wrapper .hph-quick-actions .hph-action-btn span {
+        font-size: 0.625rem;
+    }
+}
+
+/* Toast notification styles */
+.hph-toast {
+    max-width: 300px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+}
+
+/* Print media query to hide quick actions when printing */
+@media print {
+    .hph-quick-actions {
+        display: none !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .hph-listing-sidebar-wrapper .hph-quick-actions .hph-action-btn {
+        border-width: 2px;
+        border-color: var(--hph-gray-600);
+    }
+    
+    .hph-listing-sidebar-wrapper .hph-quick-actions .hph-action-btn:hover {
+        border-color: var(--hph-gray-900);
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .hph-listing-sidebar-wrapper .hph-quick-actions .hph-action-btn,
+    .hph-listing-sidebar-wrapper .hph-quick-actions .hph-action-btn > div,
+    .hph-listing-sidebar-wrapper .hph-quick-actions .hph-action-btn span,
+    .hph-toast {
+        transition: none;
+    }
+    
+    .hph-listing-sidebar-wrapper .hph-quick-actions .hph-action-btn:hover,
+    .hph-listing-sidebar-wrapper .hph-quick-actions .hph-action-btn:focus,
+    .hph-listing-sidebar-wrapper .hph-quick-actions .hph-action-btn:active {
+        transform: none;
+    }
+}

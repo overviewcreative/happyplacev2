@@ -11,6 +11,8 @@
 
 get_header();
 
+// Framework handles sidebar styling automatically
+
 // Get the listing ID
 $listing_id = get_the_ID();
 
@@ -53,118 +55,76 @@ $status_color = $status_colors[$listing_status] ?? 'gray';
     <?php get_template_part('template-parts/listing/hero', null, [
         'listing_id' => $listing_id,
         'layout' => 'full-width',
-        'show_gallery' => true,
+        'show_gallery' => true,  // Disable gallery in hero since we have media hero
         'show_price' => true,
         'show_stats' => true,
         'show_share' => true,
         'show_save' => true
     ]); ?>
     
-    <!-- Gallery Strip -->
-    <section class="hph-gallery-strip hph-bg-white hph-py-lg hph-border-b hph-border-gray-200">
-        <div class="hph-container">
-            <div class="hph-gallery-thumbnails hph-flex hph-gap-md hph-overflow-x-auto">
+    <!-- Main Content Area with Sidebar - Framework Layout -->
+    <section class="hph-listing-content">
+        <div class="hph-listing-layout layout-with-sidebar">
+            
+            <!-- Main Body Content -->
+            <main class="hph-listing-main main-content">
+                
+                <!-- Include main body template part for all property details -->
+                <?php get_template_part('template-parts/listing/main-body', null, ['listing_id' => $listing_id]); ?>
+                
+                <!-- Map Section -->
                 <?php 
-                $max_thumbnails = 5;
+                // Check if coordinates exist for map display
+                $coordinates = null;
+                if (function_exists('hpt_get_listing_coordinates')) {
+                    try {
+                        $coordinates = hpt_get_listing_coordinates($listing_id);
+                    } catch (Exception $e) {
+                        $lat = get_field('latitude', $listing_id);
+                        $lng = get_field('longitude', $listing_id);
+                        $coordinates = ($lat && $lng) ? ['lat' => $lat, 'lng' => $lng] : null;
+                    }
+                } else {
+                    $lat = get_field('latitude', $listing_id);
+                    $lng = get_field('longitude', $listing_id);
+                    $coordinates = ($lat && $lng) ? ['lat' => $lat, 'lng' => $lng] : null;
+                }
                 
-                foreach (array_slice($gallery_images, 0, $max_thumbnails) as $index => $image) : ?>
-                    <div class="hph-gallery-thumb hph-flex-shrink-0 hph-w-32 hph-h-20 hph-rounded-lg hph-overflow-hidden hph-cursor-pointer hover:hph-scale-105 hph-transition-transform"
-                         data-index="<?php echo esc_attr($index); ?>">
-                        <img src="<?php echo esc_url($image['sizes']['thumbnail'] ?? $image['url']); ?>" 
-                             alt="<?php echo esc_attr($image['alt'] ?? 'Property photo'); ?>"
-                             class="hph-w-full hph-h-full hph-object-cover">
-                    </div>
-                <?php endforeach; ?>
-                
-                <?php if (count($gallery_images) > $max_thumbnails) : ?>
-                    <button class="hph-view-all-photos hph-flex hph-items-center hph-justify-center hph-min-w-32 hph-px-md hph-bg-primary hph-text-white hph-rounded-lg hph-font-semibold hph-cursor-pointer hover:hph-bg-primary-dark hph-transition-colors"
-                            onclick="openGalleryLightbox()">
-                        <i class="fas fa-images hph-mr-sm"></i>
-                        +<?php echo count($gallery_images) - $max_thumbnails; ?> Photos
-                    </button>
+                if ($coordinates && $coordinates['lat'] && $coordinates['lng']) : ?>
+                    <?php get_template_part('template-parts/listing/simple-map', null, ['listing_id' => $listing_id]); ?>
                 <?php endif; ?>
-            </div>
+                
+                <!-- City/Community Information Card -->
+                <?php get_template_part('template-parts/listing/city-community-card', null, ['listing_id' => $listing_id]); ?>
+                
+                <!-- Neighborhood Section -->
+                <?php // get_template_part('template-parts/listing/neighborhood-section', null, ['listing_id' => $listing_id]); ?>
+                
+            </main>
+            
+            <!-- Framework Sidebar -->
+            <aside class="hph-listing-sidebar-wrapper sidebar">
+                
+                <!-- Agent Sidebar (includes collapsible contact form) -->
+                <?php get_template_part('template-parts/listing/sidebar-agent', null, ['listing_id' => $listing_id]); ?>
+                
+                <!-- Mortgage Calculator Widget (collapsible, collapsed by default) -->
+                <?php get_template_part('template-parts/listing/sidebar-mortgage-calculator', null, ['listing_id' => $listing_id]); ?>
+                
+                <!-- Open Houses Widget -->
+                <?php get_template_part('template-parts/listing/sidebar-open-houses', null, ['listing_id' => $listing_id]); ?>
+                
+            </aside>
+            
         </div>
     </section>
-    
-    <!-- Main Content Area -->
-    <section class="hph-listing-content hph-py-3xl">
-        <div class="hph-container">
-            <div class="hph-content-grid hph-grid hph-grid-cols-1 hph-lg:hph-grid-cols-[1fr_380px] hph-gap-3xl">
-                
-                <!-- Main Body Content -->
-                <div class="hph-main-body">
-                    
-                    <!-- Include main body template part for all property details -->
-                    <?php get_template_part('template-parts/listing/main-body', null, ['listing_id' => $listing_id]); ?>
-                    
-                </div>
-                
-                <!-- Sidebar -->
-                <aside class="hph-listing-sidebar hph-lg:hph-sticky hph-lg:hph-top-24">
-                    
-                    <!-- Agent Sidebar -->
-                    <?php get_template_part('template-parts/listing/sidebar-agent', null, ['listing_id' => $listing_id]); ?>
-                    
-                    <!-- Open Houses Widget -->
-                    <?php get_template_part('template-parts/listing/sidebar-open-houses', null, ['listing_id' => $listing_id]); ?>
-                    
-                    <!-- Mortgage Calculator Widget -->
-                    <?php get_template_part('template-parts/listing/sidebar-mortgage-calculator', null, ['listing_id' => $listing_id]); ?>
-                    
-                </aside>
-                
-            </div>
-        </div>
-    </section>
-    
-    <!-- Full Width Gallery (Hidden by default, shown via JavaScript) -->
-    <?php get_template_part('template-parts/listing/gallery', null, [
-        'listing_id' => $listing_id,
-        'style' => 'grid',
-        'columns' => 3,
-        'show_thumbnails' => true,
-        'lightbox' => true,
-        'show_count' => true
-    ]); ?>
-    
-    <!-- Map Section -->
-    <?php 
-    $coordinates = null;
-    if (function_exists('hpt_get_listing_coordinates')) {
-        try {
-            $coordinates = hpt_get_listing_coordinates($listing_id);
-        } catch (Exception $e) {
-            $lat = get_field('latitude', $listing_id);
-            $lng = get_field('longitude', $listing_id);
-            $coordinates = ($lat && $lng) ? ['lat' => $lat, 'lng' => $lng] : null;
-        }
-    } else {
-        $lat = get_field('latitude', $listing_id);
-        $lng = get_field('longitude', $listing_id);
-        $coordinates = ($lat && $lng) ? ['lat' => $lat, 'lng' => $lng] : null;
-    }
-    
-    if ($coordinates && $coordinates['lat'] && $coordinates['lng']) : ?>
-        <?php get_template_part('template-parts/listing/map-section', null, ['listing_id' => $listing_id]); ?>
-    <?php endif; ?>
-    
-    <!-- Neighborhood Section -->
-    <?php get_template_part('template-parts/listing/neighborhood-section', null, ['listing_id' => $listing_id]); ?>
+
     
     <!-- Virtual Tour Section -->
-    <?php 
-    $virtual_tour_url = get_field('virtual_tour_url', $listing_id);
-    $video_tour_url = get_field('video_tour_url', $listing_id);
+    <?php get_template_part('template-parts/listing/virtual-tour', null, ['listing_id' => $listing_id]); ?>
     
-    if ($virtual_tour_url || $video_tour_url) : ?>
-        <?php get_template_part('template-parts/listing/virtual-tour', null, ['listing_id' => $listing_id]); ?>
-    <?php endif; ?>
+    <!-- Full Width Similar Listings Section -->
     
-    <!-- Similar Listings -->
-    <?php get_template_part('template-parts/listing/similar-listings', null, [
-        'listing_id' => $listing_id
-    ]); ?>
     
     <?php endwhile; ?>
     

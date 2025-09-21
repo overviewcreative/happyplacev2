@@ -252,7 +252,7 @@ $gallery_id = 'listing-gallery-' . $listing_id;
 
 .thumbnail-item.active,
 .thumbnail-item:hover {
-    border-color: #3b82f6;
+    border-color: var(--hph-primary);
 }
 
 .thumbnail-image {
@@ -290,9 +290,9 @@ $gallery_id = 'listing-gallery-' . $listing_id;
 }
 
 .gallery-btn--view-all {
-    background: #3b82f6;
+    background: var(--hph-primary);
     color: white;
-    border-color: #3b82f6;
+    border-color: var(--hph-primary);
 }
 
 .gallery-btn--view-all:hover {

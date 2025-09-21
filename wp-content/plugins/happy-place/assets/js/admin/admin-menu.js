@@ -170,54 +170,6 @@
             });
         });
         
-        // FollowUp Boss Connection Test
-        $('.hp-test-followup-boss-connection').on('click', function(e) {
-            e.preventDefault();
-            const $btn = $(this);
-            const $status = $btn.siblings('.hp-connection-status');
-            
-            $btn.prop('disabled', true).text('Testing...');
-            $status.html('<span style="color: #666;">Testing connection...</span>');
-            
-            $.post(ajaxurl, {
-                action: 'hp_test_followup_boss_connection',
-                nonce: hp_admin.nonce,
-                api_key: $('input[name="hp_followup_boss_api_key"]').val(),
-                api_secret: $('input[name="hp_followup_boss_api_secret"]').val()
-            })
-            .done(function(response) {
-                if (response.success) {
-                    $status.html('<span style="color: #46b450;">✓ Connection successful!</span>');
-                    showNotice('FollowUp Boss connection successful!', 'success');
-                    
-                    // Update agent dropdown if agents were returned
-                    if (response.data && response.data.agents) {
-                        updateAgentDropdown(response.data.agents);
-                    }
-                } else {
-                    $status.html('<span style="color: #dc3232;">✗ Connection failed</span>');
-                    showNotice('FollowUp Boss connection failed: ' + (response.data || 'Unknown error'), 'error');
-                }
-            })
-            .fail(function() {
-                $status.html('<span style="color: #dc3232;">✗ Connection failed</span>');
-                showNotice('Failed to test FollowUp Boss connection. Please try again.', 'error');
-            })
-            .always(function() {
-                $btn.prop('disabled', false).text('Test Connection');
-            });
-        });
-        
-        // Copy Webhook URL
-        $('.hp-copy-webhook-url').on('click', function(e) {
-            e.preventDefault();
-            const $input = $(this).siblings('input[name="hp_followup_boss_webhook_url"]');
-            
-            $input.select();
-            document.execCommand('copy');
-            
-            showNotice('Webhook URL copied to clipboard!', 'success');
-        });
     }
     
     /**
@@ -365,29 +317,6 @@
         }
     }
     
-    /**
-     * Update agent dropdown with fresh data from FollowUp Boss
-     */
-    function updateAgentDropdown(agents) {
-        const $dropdown = $('select[name="hp_followup_boss_auto_assign"]');
-        const currentValue = $dropdown.val();
-        
-        // Clear existing options except the first one
-        $dropdown.find('option:not(:first)').remove();
-        
-        // Add new agent options
-        $.each(agents, function(id, name) {
-            const $option = $('<option></option>')
-                .attr('value', id)
-                .text(name);
-            
-            if (id === currentValue) {
-                $option.prop('selected', true);
-            }
-            
-            $dropdown.append($option);
-        });
-    }
     
     /**
      * Initialize role management functionality

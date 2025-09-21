@@ -6,10 +6,55 @@
  */
 
 /* ================================================
+   LISTING GALLERY SPECIFIC STYLES
+   ================================================ */
+
+/* Compact gallery section - override default section padding */
+.hph-listing-gallery.hph-section {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+/* Compact gallery grid spacing */
+.hph-listing-gallery .hph-gallery__main-grid {
+    gap: 0.5rem;
+}
+
+/* Compact image minimum heights */
+.hph-listing-gallery .hph-gallery__image-wrapper {
+    min-height: 120px;
+}
+
+/* First image in grid - slightly larger but still compact */
+.hph-listing-gallery .hph-gallery__item:first-child .hph-gallery__image-wrapper {
+    min-height: 200px;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .hph-listing-gallery.hph-section {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+    
+    .hph-listing-gallery .hph-gallery__main-grid {
+        gap: 0.375rem;
+    }
+    
+    .hph-listing-gallery .hph-gallery__image-wrapper {
+        min-height: 100px;
+    }
+    
+    .hph-listing-gallery .hph-gallery__item:first-child .hph-gallery__image-wrapper {
+        min-height: 150px;
+    }
+}
+
+/* ================================================
    PROPERTY GALLERY BASE
    ================================================ */
 .hph-property-gallery {
-    padding: 4rem 0;
+    padding: 2rem 0;
     background: var(--hph-white);
     font-family: var(--hph-font-primary);
 }
@@ -27,7 +72,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     flex-wrap: wrap;
     gap: 1rem;
 }
@@ -152,7 +197,7 @@
    CATEGORY FILTER
    ================================================ */
 .hph-gallery-filter {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 }
@@ -208,7 +253,7 @@
    ================================================ */
 .hph-gallery-views {
     position: relative;
-    min-height: 400px;
+    min-height: 300px;
 }
 
 .hph-gallery-view {

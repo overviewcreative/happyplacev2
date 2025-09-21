@@ -31,7 +31,7 @@ $defaults = array(
     'section_id' => ''
 );
 
-// Merge with provided args
+// Merge with provided args - use consistent null coalescing
 $config = wp_parse_args($args ?? array(), $defaults);
 extract($config);
 
@@ -169,6 +169,7 @@ if ($layout === 'grid' || $layout === 'cards') {
 }
 
 // Icon wrapper styles based on icon_style
+if (!function_exists('getIconStyles')) {
 function getIconStyles($icon_style) {
     $styles = array(
         'display: inline-flex',
@@ -205,6 +206,7 @@ function getIconStyles($icon_style) {
     }
     
     return implode('; ', $styles);
+}
 }
 ?>
 
@@ -268,10 +270,17 @@ function getIconStyles($icon_style) {
                     'icon' => '',
                     'title' => '',
                     'content' => '',
+                    'description' => '', // Alias for content
+                    'button' => null,
                     'link' => null,
                     'image' => null
                 );
                 $feature = wp_parse_args($feature, $feature_defaults);
+                
+                // Handle 'description' as alias for 'content'
+                if (!empty($feature['description']) && empty($feature['content'])) {
+                    $feature['content'] = $feature['description'];
+                }
                 
                 // Build feature item styles
                 $item_styles = array();
@@ -322,12 +331,15 @@ function getIconStyles($icon_style) {
                 <?php if ($layout === 'alternating' && isset($feature['image']) && !empty($feature['image']) && !empty($feature['image']['url'])): ?>
                 <!-- Alternating Layout - Image -->
                 <div style="<?php echo $index % 2 !== 0 ? 'direction: ltr;' : ''; ?>">
-                    <img 
-                        src="<?php echo esc_url($feature['image']['url']); ?>" 
-                        alt="<?php echo esc_attr($feature['image']['alt'] ?? $feature['title']); ?>"
-                        style="width: 100%; height: auto; border-radius: var(--hph-radius-lg); box-shadow: 0 10px 30px rgba(0,0,0,0.1);"
-                        loading="lazy"
-                    >
+                    <div class="hph-feature-image-container" style="position: relative; overflow: hidden; border-radius: var(--hph-radius-lg);">
+                        <img 
+                            src="<?php echo esc_url($feature['image']['url']); ?>" 
+                            alt="<?php echo esc_attr($feature['image']['alt'] ?? $feature['title']); ?>"
+                            class="hph-feature-image"
+                            style="width: 100%; height: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);"
+                            loading="lazy"
+                        >
+                    </div>
                 </div>
                 <?php endif; ?>
                 
@@ -362,6 +374,115 @@ function getIconStyles($icon_style) {
                     <p style="color: var(--hph-gray-600); line-height: var(--hph-leading-relaxed); margin-bottom: var(--hph-margin-lg);">
                         <?php echo wp_kses_post($feature['content']); ?>
                     </p>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($feature['button'])): ?>
+                    <!-- Button -->
+                    <div style="margin-bottom: var(--hph-margin-md);">
+                        <?php
+                        $button = wp_parse_args($feature['button'], array(
+                            'text' => 'Learn More',
+                            'url' => '#',
+                            'style' => 'primary',
+                            'size' => 'md',
+                            'icon' => '',
+                            'target' => '_self'
+                        ));
+                        
+                        // Button style classes
+                        $button_styles = array(
+                            'display: inline-flex',
+                            'align-items: center',
+                            'gap: var(--hph-gap-sm)',
+                            'text-decoration: none',
+                            'border-radius: var(--hph-radius-md)',
+                            'font-weight: var(--hph-font-medium)',
+                            'transition: all 0.3s ease',
+                            'border: 2px solid transparent'
+                        );
+                        
+                        // Size styles
+                        switch ($button['size']) {
+                            case 'sm':
+                                $button_styles[] = 'padding: var(--hph-padding-sm) var(--hph-padding-md)';
+                                $button_styles[] = 'font-size: var(--hph-text-sm)';
+                                break;
+                            case 'lg':
+                                $button_styles[] = 'padding: var(--hph-padding-lg) var(--hph-padding-xl)';
+                                $button_styles[] = 'font-size: var(--hph-text-lg)';
+                                break;
+                            case 'md':
+                            default:
+                                $button_styles[] = 'padding: var(--hph-padding-md) var(--hph-padding-lg)';
+                                $button_styles[] = 'font-size: var(--hph-text-base)';
+                                break;
+                        }
+                        
+                        // Style variations
+                        switch ($button['style']) {
+                            case 'secondary':
+                                $button_styles[] = 'background-color: var(--hph-secondary)';
+                                $button_styles[] = 'color: var(--hph-white)';
+                                $hover_bg = 'var(--hph-secondary-dark)';
+                                break;
+                            case 'outline':
+                                $button_styles[] = 'background-color: transparent';
+                                $button_styles[] = 'color: var(--hph-primary)';
+                                $button_styles[] = 'border-color: var(--hph-primary)';
+                                $hover_bg = 'var(--hph-primary)';
+                                $hover_color = 'var(--hph-white)';
+                                break;
+                            case 'outline-secondary':
+                                $button_styles[] = 'background-color: transparent';
+                                $button_styles[] = 'color: var(--hph-secondary)';
+                                $button_styles[] = 'border-color: var(--hph-secondary)';
+                                $hover_bg = 'var(--hph-secondary)';
+                                $hover_color = 'var(--hph-white)';
+                                break;
+                            case 'text':
+                                $button_styles[] = 'background-color: transparent';
+                                $button_styles[] = 'color: var(--hph-primary)';
+                                $button_styles[] = 'padding: var(--hph-padding-sm) 0';
+                                $hover_color = 'var(--hph-primary-dark)';
+                                break;
+                            case 'primary':
+                            default:
+                                $button_styles[] = 'background-color: var(--hph-primary)';
+                                $button_styles[] = 'color: var(--hph-white)';
+                                $hover_bg = 'var(--hph-primary-dark)';
+                                break;
+                        }
+                        ?>
+                        <a 
+                            href="<?php echo esc_url($button['url']); ?>" 
+                            style="<?php echo implode('; ', $button_styles); ?>"
+                            <?php if ($button['target'] !== '_self'): ?>target="<?php echo esc_attr($button['target']); ?>"<?php endif; ?>
+                            onmouseover="
+                                <?php if (isset($hover_bg)): ?>this.style.backgroundColor='<?php echo $hover_bg; ?>';<?php endif; ?>
+                                <?php if (isset($hover_color)): ?>this.style.color='<?php echo $hover_color; ?>';<?php endif; ?>
+                                this.style.transform='translateY(-1px)';
+                                this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)';
+                            "
+                            onmouseout="
+                                <?php if ($button['style'] === 'outline' || $button['style'] === 'outline-secondary'): ?>
+                                    this.style.backgroundColor='transparent';
+                                    this.style.color='<?php echo $button['style'] === 'outline' ? 'var(--hph-primary)' : 'var(--hph-secondary)'; ?>';
+                                <?php elseif ($button['style'] === 'text'): ?>
+                                    this.style.color='var(--hph-primary)';
+                                <?php else: ?>
+                                    this.style.backgroundColor='<?php echo $button['style'] === 'secondary' ? 'var(--hph-secondary)' : 'var(--hph-primary)'; ?>';
+                                    this.style.color='var(--hph-white)';
+                                <?php endif; ?>
+                                this.style.transform='translateY(0)';
+                                this.style.boxShadow='none';
+                            "
+                        >
+                            <?php if (!empty($button['icon'])): ?>
+                            <i class="<?php echo esc_attr($button['icon']); ?>"></i>
+                            <?php endif; ?>
+                            <?php echo esc_html($button['text']); ?>
+                        </a>
+                    </div>
                     <?php endif; ?>
                     
                     <?php if (!empty($feature['link']) && !empty($feature['link']['url'])): ?>
@@ -411,3 +532,68 @@ function getIconStyles($icon_style) {
 }
 </style>
 <?php endif; ?>
+
+<style>
+/* HPH Features - Duotone Effects for Images */
+.hph-features-section .hph-feature-image-container {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hph-features-section .hph-feature-image {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Simple blue overlay with minimal opacity for alternating layout images */
+.hph-features-section .hph-feature-image-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--hph-primary);
+    opacity: 0.15;
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+}
+
+/* Hover Effects for alternating layout - Fade away the blue overlay */
+.hph-features-section .hph-feature-image-container:hover {
+    transform: scale(1.02);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2) !important;
+}
+
+.hph-features-section .hph-feature-image-container:hover::before {
+    opacity: 0;
+}
+
+.hph-features-section .hph-feature-image-container:hover .hph-feature-image {
+    transform: scale(1.03);
+}
+
+/* Focus states for accessibility */
+.hph-features-section .hph-feature-image-container:focus-within {
+    outline: 2px solid var(--hph-primary);
+    outline-offset: 2px;
+    transform: scale(1.02);
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .hph-features-section .hph-feature-image-container,
+    .hph-features-section .hph-feature-image,
+    .hph-features-section .hph-feature-image-container::before {
+        transition: none;
+    }
+    
+    .hph-features-section .hph-feature-image-container:hover {
+        transform: none;
+    }
+    
+    .hph-features-section .hph-feature-image-container:hover .hph-feature-image {
+        transform: none;
+    }
+}
+</style>

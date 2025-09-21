@@ -9,7 +9,7 @@ $is_agent = $args['is_agent'] ?? false;
 $current_section = $_GET['section'] ?? 'overview';
 ?>
 
-<aside class="hph-dashboard-sidebar" id="dashboardSidebar">
+<aside class="hph-dashboard-sidebar" id="nav-dashboardSidebar">
     
     <!-- Sidebar Header -->
     <div class="hph-sidebar-header">
@@ -64,18 +64,44 @@ $current_section = $_GET['section'] ?? 'overview';
                         <?php echo $is_agent ? __('My Listings', 'happy-place-theme') : __('Saved Properties', 'happy-place-theme'); ?>
                     </span>
                     <?php if ($is_agent): ?>
-                        <span class="hph-nav-count" id="listingsCount">-</span>
+                        <span class="hph-nav-count" id="nav-listingsCount">-</span>
                     <?php endif; ?>
                 </a>
             </li>
 
             <?php if ($is_agent): ?>
+                <!-- Open Houses Management (Agents Only) -->
+                <li class="hph-nav-item">
+                    <a href="?section=open-houses" class="hph-nav-link <?php echo $current_section === 'open-houses' ? 'active' : ''; ?>">
+                        <span class="hph-nav-icon hph-icon-home"></span>
+                        <span class="hph-nav-text"><?php _e('Open Houses', 'happy-place-theme'); ?></span>
+                        <span class="hph-nav-count" id="openHousesCount">-</span>
+                    </a>
+                </li>
+
+                <!-- Marketing Materials (Agents Only) -->
+                <li class="hph-nav-item">
+                    <a href="?section=marketing" class="hph-nav-link <?php echo $current_section === 'marketing' ? 'active' : ''; ?>">
+                        <span class="hph-nav-icon hph-icon-megaphone"></span>
+                        <span class="hph-nav-text"><?php _e('Marketing', 'happy-place-theme'); ?></span>
+                    </a>
+                </li>
+
                 <!-- Leads Management (Agents Only) -->
                 <li class="hph-nav-item">
                     <a href="?section=leads" class="hph-nav-link <?php echo $current_section === 'leads' ? 'active' : ''; ?>">
                         <span class="hph-nav-icon hph-icon-users"></span>
                         <span class="hph-nav-text"><?php _e('Leads', 'happy-place-theme'); ?></span>
                         <span class="hph-nav-count hph-nav-count-hot" id="hotLeadsCount">-</span>
+                    </a>
+                </li>
+
+                <!-- Appointments Management (Agents Only) -->
+                <li class="hph-nav-item">
+                    <a href="?section=appointments" class="hph-nav-link <?php echo $current_section === 'appointments' ? 'active' : ''; ?>">
+                        <span class="hph-nav-icon hph-icon-calendar"></span>
+                        <span class="hph-nav-text"><?php _e('Appointments', 'happy-place-theme'); ?></span>
+                        <span class="hph-nav-count" id="appointmentsCount">-</span>
                     </a>
                 </li>
 
@@ -121,7 +147,7 @@ $current_section = $_GET['section'] ?? 'overview';
             <div class="hph-sidebar-actions">
                 <h4 class="hph-sidebar-section-title"><?php _e('Quick Actions', 'happy-place-theme'); ?></h4>
                 <div class="hph-quick-actions-list">
-                    <button class="hph-quick-action-btn hph-btn-primary" id="quickAddBtn">
+                    <button class="hph-quick-action-btn hph-btn-primary" id="nav-quickAddListingBtn">
                         <span class="hph-btn-icon hph-icon-plus"></span>
                         <span class="hph-btn-text"><?php _e('Add Listing', 'happy-place-theme'); ?></span>
                     </button>

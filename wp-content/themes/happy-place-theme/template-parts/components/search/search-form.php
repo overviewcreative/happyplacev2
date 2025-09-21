@@ -72,6 +72,12 @@ $post_types = [
                     autocomplete="off"
                     data-autocomplete="enabled"
                 />
+                <?php get_template_part('template-parts/components/search/search-autocomplete', null, [
+                    'input_id' => 'search_query',
+                    'container_id' => 'search-form-autocomplete',
+                    'post_types' => ['listing', 'agent', 'city', 'community'],
+                    'max_suggestions' => 8
+                ]); ?>
                 <button type="submit" class="search-submit">
                     <span class="search-icon" aria-hidden="true">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">

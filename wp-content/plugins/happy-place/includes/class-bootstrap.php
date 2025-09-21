@@ -104,6 +104,10 @@ class Bootstrap {
         // Maybe flush rewrite rules
         add_action('init', [__CLASS__, 'maybe_flush_rewrite_rules'], 999);
         
+        // Register AJAX handlers for test suite
+        add_action('wp_ajax_run_user_system_migration', [__CLASS__, 'handle_migration_ajax']);
+        add_action('wp_ajax_clear_user_system_crons', [__CLASS__, 'handle_clear_crons_ajax']);
+        
         error_log('Happy Place: Hooks registered');
     }
     
@@ -128,6 +132,9 @@ class Bootstrap {
         // Initialize integrations after Configuration Manager
         self::init_integrations();
         
+        // Run database migrations
+        self::run_migrations();
+        
         // Initialize Post Types
         if (class_exists('HappyPlace\\Core\\PostTypes')) {
             $post_types = \HappyPlace\Core\PostTypes::get_instance();
@@ -142,6 +149,12 @@ class Bootstrap {
             error_log('Happy Place: Taxonomies initialized');
         }
         
+        // Initialize Listing Title Automation (for auto-generating listing titles from address)
+        if (class_exists('HappyPlace\\Core\\ListingTitleAutomation')) {
+            \HappyPlace\Core\ListingTitleAutomation::get_instance();
+            error_log('Happy Place: Listing Title Automation initialized');
+        }
+        
         // Initialize Core Services
         self::init_services();
         
@@ -150,6 +163,12 @@ class Bootstrap {
             $admin_menu = \HappyPlace\Admin\AdminMenu::get_instance();
             $admin_menu->init();
             error_log('Happy Place: Admin menu initialized');
+        }
+        
+        // Initialize Email Settings Admin Page
+        if (is_admin() && class_exists('HappyPlace\\Admin\\EmailSettings')) {
+            new \HappyPlace\Admin\EmailSettings();
+            error_log('Happy Place: Email settings admin page initialized');
         }
         
         // Initialize Admin Service Test (only in debug mode)
@@ -243,11 +262,35 @@ class Bootstrap {
             error_log('Happy Place: Open House service initialized');
         }
         
+        // Initialize Address Intelligence Bridge (for auto-geocoding)
+        $address_intelligence_file = HP_INCLUDES_DIR . 'address-intelligence-bridge.php';
+        if (file_exists($address_intelligence_file)) {
+            require_once $address_intelligence_file;
+            if (class_exists('HPH_Address_Intelligence_Bridge')) {
+                new \HPH_Address_Intelligence_Bridge();
+                error_log('Happy Place: Address Intelligence Bridge initialized');
+            }
+        }
+        
         // Initialize Transaction Service
         if (class_exists('HappyPlace\\Services\\TransactionService')) {
             $transaction_service = new \HappyPlace\Services\TransactionService();
             $transaction_service->init();
             error_log('Happy Place: Transaction service initialized');
+        }
+        
+        // Initialize Marketing Service
+        if (class_exists('HappyPlace\\Services\\MarketingService')) {
+            $marketing_service = new \HappyPlace\Services\MarketingService();
+            $marketing_service->init();
+            error_log('Happy Place: Marketing service initialized');
+        }
+        
+        // Initialize Form Router (CRITICAL - handles all form submissions)
+        if (class_exists('HappyPlace\\Services\\FormRouter')) {
+            $form_router = new \HappyPlace\Services\FormRouter();
+            $form_router->init();
+            error_log('Happy Place: Form Router initialized');
         }
     }
     
@@ -337,6 +380,49 @@ class Bootstrap {
     }
     
     /**
+     * Run database migrations
+     */
+    private static function run_migrations(): void {
+        // Load the User System migration class if not already loaded
+        $migration_file = HP_INCLUDES_DIR . 'migrations/class-user-system-migration.php';
+        if (file_exists($migration_file) && !class_exists('HappyPlace\\Migrations\\UserSystemMigration')) {
+            require_once $migration_file;
+        }
+        
+        // Load the Marketing migration class if not already loaded
+        $marketing_migration_file = HP_INCLUDES_DIR . 'migrations/class-marketing-migration.php';
+        if (file_exists($marketing_migration_file) && !class_exists('HappyPlace\\Migrations\\MarketingMigration')) {
+            require_once $marketing_migration_file;
+        }
+        
+        // Run User System migrations if class exists
+        if (class_exists('HappyPlace\\Migrations\\UserSystemMigration')) {
+            try {
+                \HappyPlace\Migrations\UserSystemMigration::maybe_migrate();
+                error_log('Happy Place: User System migrations checked/completed');
+            } catch (Exception $e) {
+                error_log('Happy Place: User System migration error - ' . $e->getMessage());
+            }
+        } else {
+            error_log('Happy Place: User System migration class not found - skipping user system migrations');
+        }
+        
+        // Run Marketing migrations if class exists  
+        if (class_exists('HappyPlace\\Migrations\\MarketingMigration')) {
+            try {
+                if (\HappyPlace\Migrations\MarketingMigration::needs_migration()) {
+                    \HappyPlace\Migrations\MarketingMigration::run();
+                    error_log('Happy Place: Marketing migrations completed');
+                }
+            } catch (Exception $e) {
+                error_log('Happy Place: Marketing migration error - ' . $e->getMessage());
+            }
+        } else {
+            error_log('Happy Place: Marketing migration class not found - skipping marketing migrations');
+        }
+    }
+    
+    /**
      * Plugin activation
      */
     public static function activate(): void {
@@ -381,5 +467,53 @@ class Bootstrap {
         dbDelta($sql);
         
         error_log('Happy Place: Test table created');
+    }
+    
+    /**
+     * Handle migration AJAX request
+     */
+    public static function handle_migration_ajax(): void {
+        // Check permissions and nonce
+        if (!current_user_can('manage_options') || !wp_verify_nonce($_POST['nonce'], 'user_system_test')) {
+            wp_send_json_error('Access denied');
+            return;
+        }
+        
+        try {
+            // Load the migration class if not already loaded
+            $migration_file = HP_INCLUDES_DIR . 'migrations/class-user-system-migration.php';
+            if (file_exists($migration_file) && !class_exists('HappyPlace\\Migrations\\UserSystemMigration')) {
+                require_once $migration_file;
+            }
+            
+            if (class_exists('HappyPlace\\Migrations\\UserSystemMigration')) {
+                \HappyPlace\Migrations\UserSystemMigration::run_migration();
+                wp_send_json_success('Migration completed successfully');
+            } else {
+                wp_send_json_error('Migration class not found');
+            }
+        } catch (Exception $e) {
+            error_log('Happy Place Migration Error: ' . $e->getMessage());
+            wp_send_json_error('Migration failed: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Handle clear crons AJAX request
+     */
+    public static function handle_clear_crons_ajax(): void {
+        // Check permissions and nonce
+        if (!current_user_can('manage_options') || !wp_verify_nonce($_POST['nonce'], 'user_system_test')) {
+            wp_send_json_error('Access denied');
+            return;
+        }
+        
+        $hooks = ['hp_process_search_alerts', 'hp_analyze_user_engagement', 'hp_daily_search_digest', 'hp_cleanup_old_activities'];
+        
+        foreach ($hooks as $hook) {
+            wp_clear_scheduled_hook($hook);
+        }
+        
+        wp_send_json_success('Cron jobs cleared successfully');
     }
 }

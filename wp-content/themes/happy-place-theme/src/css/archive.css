@@ -1,35 +1,19 @@
 /**
  * Archive CSS Bundle
- * Archive page styles (listing archives, search results)
+ * Styles for listing archives, search results, and filtering
  */
 
-/* Basic archive styles */
-.hph-archive-layout {
-    min-height: 100vh;
-}
+/* Archive Layout */
+@import url('../../assets/css/framework/layout/archive.css');
+@import url('../../assets/css/framework/layout/grid.css');
 
-.hph-archive-controls {
-    padding: 1rem;
-    background: white;
-    border-bottom: 1px solid #e1e5e9;
-}
+/* Archive Components */
+@import url('../../assets/css/framework/components/molecules/pagination.css');
+@import url('../../assets/css/framework/components/molecules/filters.css');
+@import url('../../assets/css/framework/components/molecules/search.css');
 
-.hph-listings-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-    padding: 2rem;
-}
+/* Archive-specific Listing Components */
+@import url('../../assets/css/framework/features/listing/quick-actions-sidebar.css');
 
-.hph-listing-card {
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease;
-}
-
-.hph-listing-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-}
+/* Map fixes for archive pages */
+@import url('../../assets/css/archive-map-fixes.css');

@@ -265,14 +265,26 @@ section small {
   color: var(--hph-current-text-muted);
 }
 
-/* Links */
-[data-bg] a:not(.btn):not(.button),
-section a:not(.btn):not(.button) {
+/* Links - exclude buttons and anything inside buttons */
+[data-bg] a:not(.btn):not(.button):not(.hph-btn),
+section a:not(.btn):not(.button):not(.hph-btn) {
   color: var(--hph-current-link);
 }
 
-[data-bg] a:not(.btn):not(.button):hover,
-section a:not(.btn):not(.button):hover {
+/* Exclude links inside any button element */
+[data-bg] .btn a,
+[data-bg] .button a,
+[data-bg] .hph-btn a,
+[data-bg] button a,
+section .btn a,
+section .button a,
+section .hph-btn a,
+section button a {
+  color: inherit;
+}
+
+[data-bg] a:not(.btn):not(.button):not(.hph-btn):hover,
+section a:not(.btn):not(.button):not(.hph-btn):hover {
   color: var(--hph-current-link-hover);
 }
 
@@ -284,6 +296,56 @@ section .hph-badge {
   background-color: var(--hph-current-badge-bg);
   color: var(--hph-current-badge-text);
   border: 1px solid var(--hph-current-border);
+}
+
+/* Button content should inherit button colors, not section colors */
+.btn *, 
+.button *, 
+.hph-btn *,
+button * {
+  color: inherit !important;
+}
+
+/* Ensure button text and icons are not overridden */
+.btn a,
+.btn span,
+.btn i,
+.button a,
+.button span, 
+/* Button Content Inheritance */
+.button i,
+.hph-btn a,
+.hph-btn span,
+.hph-btn i,
+button a,
+button span,
+button i {
+  color: inherit !important;
+  text-decoration: none;
+}
+
+/* Font Awesome Icon Color Inheritance in Buttons */
+.button .fa,
+.button .fas,
+.button .far,
+.button .fal,
+.button .fab,
+.hph-btn .fa,
+.hph-btn .fas,
+.hph-btn .far,
+.hph-btn .fal,
+.hph-btn .fab,
+button .fa,
+button .fas,
+button .far,
+button .fal,
+button .fab,
+[class*="btn"] .fa,
+[class*="btn"] .fas,
+[class*="btn"] .far,
+[class*="btn"] .fal,
+[class*="btn"] .fab {
+  color: inherit !important;
 }
 
 /* Borders */
@@ -369,4 +431,37 @@ section .count {
   section h3 {
     color: var(--hph-primary-900) !important;
   }
+}
+
+/* Critical: Ensure button content always inherits button color - highest specificity */
+[data-bg] .btn *,
+[data-bg] .button *,
+[data-bg] .hph-btn *,
+[data-bg] button *,
+section .btn *,
+section .button *,
+section .hph-btn *,
+section button * {
+  color: inherit !important;
+}
+
+/* Override any link colors within buttons specifically in data-bg contexts */
+[data-bg] .btn a,
+[data-bg] .btn a *,
+[data-bg] .button a,
+[data-bg] .button a *,
+[data-bg] .hph-btn a,
+[data-bg] .hph-btn a *,
+[data-bg] button a,
+[data-bg] button a *,
+section .btn a,
+section .btn a *,
+section .button a,
+section .button a *,
+section .hph-btn a,
+section .hph-btn a *,
+section button a,
+section button a * {
+  color: inherit !important;
+  text-decoration: none;
 }

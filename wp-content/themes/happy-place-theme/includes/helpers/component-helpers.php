@@ -342,6 +342,301 @@ if (!function_exists('hph_get_arg')) {
 }
 
 /**
+ * Main component renderer function
+ * 
+ * @param string $component Component type
+ * @param array $args Component arguments
+ * @return void Echoes the rendered component
+ */
+if (!function_exists('hph_component')) {
+    function hph_component($component, $args = []) {
+        switch ($component) {
+            case 'button':
+                hph_render_button($args);
+                break;
+            case 'badge':
+                hph_render_badge($args);
+                break;
+            case 'dropdown':
+                hph_render_dropdown($args);
+                break;
+            case 'card':
+                hph_render_card($args);
+                break;
+            case 'empty-state':
+                hph_render_empty_state($args);
+                break;
+            case 'pagination':
+                hph_render_pagination($args);
+                break;
+            default:
+                echo '<!-- Unknown component: ' . esc_html($component) . ' -->';
+                break;
+        }
+    }
+}
+
+/**
+ * Render button component
+ */
+if (!function_exists('hph_render_button')) {
+    function hph_render_button($args = []) {
+        $defaults = [
+            'text' => 'Button',
+            'variant' => 'primary',
+            'size' => 'md',
+            'href' => '',
+            'target' => '',
+            'icon' => '',
+            'disabled' => false,
+            'attributes' => [],
+            'class' => ''
+        ];
+        
+        $args = wp_parse_args($args, $defaults);
+        
+        $classes = [
+            'hph-btn',
+            'hph-btn-' . $args['variant'],
+            'hph-btn-' . $args['size']
+        ];
+        
+        if ($args['class']) {
+            $classes[] = $args['class'];
+        }
+        
+        if ($args['disabled']) {
+            $classes[] = 'hph-btn-disabled';
+        }
+        
+        $tag = $args['href'] ? 'a' : 'button';
+        
+        echo '<' . $tag . ' class="' . esc_attr(implode(' ', $classes)) . '"';
+        
+        if ($args['href']) {
+            echo ' href="' . esc_url($args['href']) . '"';
+        }
+        if ($args['target']) {
+            echo ' target="' . esc_attr($args['target']) . '"';
+        }
+        if ($args['disabled'] && $tag === 'button') {
+            echo ' disabled';
+        }
+        
+        foreach ($args['attributes'] as $key => $value) {
+            echo ' ' . esc_attr($key) . '="' . esc_attr($value) . '"';
+        }
+        
+        echo '>';
+        
+        if ($args['icon']) {
+            echo '<i class="fas fa-' . esc_attr($args['icon']) . '"></i> ';
+        }
+        
+        echo esc_html($args['text']);
+        
+        echo '</' . $tag . '>';
+    }
+}
+
+/**
+ * Render badge component
+ */
+if (!function_exists('hph_render_badge')) {
+    function hph_render_badge($args = []) {
+        $defaults = [
+            'text' => 'Badge',
+            'variant' => 'default',
+            'size' => 'sm'
+        ];
+        
+        $args = wp_parse_args($args, $defaults);
+        
+        $classes = [
+            'hph-badge',
+            'hph-badge-' . $args['variant'],
+            'hph-badge-' . $args['size']
+        ];
+        
+        echo '<span class="' . esc_attr(implode(' ', $classes)) . '">';
+        echo esc_html($args['text']);
+        echo '</span>';
+    }
+}
+
+/**
+ * Render dropdown component
+ */
+if (!function_exists('hph_render_dropdown')) {
+    function hph_render_dropdown($args = []) {
+        $defaults = [
+            'trigger' => 'Menu',
+            'placement' => 'bottom-start',
+            'items' => []
+        ];
+        
+        $args = wp_parse_args($args, $defaults);
+        $dropdown_id = 'dropdown-' . uniqid();
+        
+        echo '<div class="hph-dropdown">';
+        echo '<button class="hph-dropdown-trigger" data-dropdown="' . esc_attr($dropdown_id) . '">';
+        echo wp_kses_post($args['trigger']);
+        echo '</button>';
+        echo '<div class="hph-dropdown-menu" id="' . esc_attr($dropdown_id) . '">';
+        
+        foreach ($args['items'] as $item) {
+            if (isset($item['divider']) && $item['divider']) {
+                echo '<div class="hph-dropdown-divider"></div>';
+                continue;
+            }
+            
+            $item_defaults = [
+                'text' => '',
+                'icon' => '',
+                'href' => '#',
+                'target' => '',
+                'data' => []
+            ];
+            $item = wp_parse_args($item, $item_defaults);
+            
+            echo '<a class="hph-dropdown-item" href="' . esc_url($item['href']) . '"';
+            if ($item['target']) {
+                echo ' target="' . esc_attr($item['target']) . '"';
+            }
+            foreach ($item['data'] as $key => $value) {
+                echo ' data-' . esc_attr($key) . '="' . esc_attr($value) . '"';
+            }
+            echo '>';
+            
+            if ($item['icon']) {
+                echo '<i class="fas fa-' . esc_attr($item['icon']) . '"></i> ';
+            }
+            
+            echo esc_html($item['text']);
+            echo '</a>';
+        }
+        
+        echo '</div>';
+        echo '</div>';
+    }
+}
+
+/**
+ * Render card component
+ */
+if (!function_exists('hph_render_card')) {
+    function hph_render_card($args = []) {
+        $defaults = [
+            'title' => '',
+            'content' => '',
+            'variant' => 'default',
+            'class' => ''
+        ];
+        
+        $args = wp_parse_args($args, $defaults);
+        
+        $classes = [
+            'hph-card',
+            'hph-card-' . $args['variant']
+        ];
+        
+        if ($args['class']) {
+            $classes[] = $args['class'];
+        }
+        
+        echo '<div class="' . esc_attr(implode(' ', $classes)) . '">';
+        
+        if ($args['title']) {
+            echo '<div class="hph-card-header">';
+            echo '<h3 class="hph-card-title">' . esc_html($args['title']) . '</h3>';
+            echo '</div>';
+        }
+        
+        if ($args['content']) {
+            echo '<div class="hph-card-content">';
+            echo wp_kses_post($args['content']);
+            echo '</div>';
+        }
+        
+        echo '</div>';
+    }
+}
+
+/**
+ * Render empty state component
+ */
+if (!function_exists('hph_render_empty_state')) {
+    function hph_render_empty_state($args = []) {
+        $defaults = [
+            'title' => 'No items found',
+            'message' => '',
+            'icon' => 'inbox',
+            'action' => []
+        ];
+        
+        $args = wp_parse_args($args, $defaults);
+        
+        echo '<div class="hph-empty-state">';
+        echo '<div class="hph-empty-state-icon">';
+        echo '<i class="fas fa-' . esc_attr($args['icon']) . '"></i>';
+        echo '</div>';
+        echo '<h3 class="hph-empty-state-title">' . esc_html($args['title']) . '</h3>';
+        if ($args['message']) {
+            echo '<p class="hph-empty-state-message">' . esc_html($args['message']) . '</p>';
+        }
+        if (!empty($args['action'])) {
+            echo '<div class="hph-empty-state-action">';
+            hph_render_button($args['action']);
+            echo '</div>';
+        }
+        echo '</div>';
+    }
+}
+
+/**
+ * Render pagination component
+ */
+if (!function_exists('hph_render_pagination')) {
+    function hph_render_pagination($args = []) {
+        $defaults = [
+            'current_page' => 1,
+            'total_pages' => 1,
+            'base_url' => '',
+            'show_ends' => true
+        ];
+        
+        $args = wp_parse_args($args, $defaults);
+        
+        if ($args['total_pages'] <= 1) {
+            return;
+        }
+        
+        echo '<div class="hph-pagination">';
+        
+        // Previous button
+        if ($args['current_page'] > 1) {
+            $prev_url = $args['base_url'] . '&page=' . ($args['current_page'] - 1);
+            echo '<a href="' . esc_url($prev_url) . '" class="hph-pagination-prev">Previous</a>';
+        }
+        
+        // Page numbers
+        for ($i = 1; $i <= $args['total_pages']; $i++) {
+            $page_url = $args['base_url'] . '&page=' . $i;
+            $class = $i === $args['current_page'] ? 'hph-pagination-current' : 'hph-pagination-page';
+            echo '<a href="' . esc_url($page_url) . '" class="' . esc_attr($class) . '">' . $i . '</a>';
+        }
+        
+        // Next button
+        if ($args['current_page'] < $args['total_pages']) {
+            $next_url = $args['base_url'] . '&page=' . ($args['current_page'] + 1);
+            echo '<a href="' . esc_url($next_url) . '" class="hph-pagination-next">Next</a>';
+        }
+        
+        echo '</div>';
+    }
+}
+
+/**
  * Render HTML attributes helper
  */
 if (!function_exists('hph_render_attributes')) {

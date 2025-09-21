@@ -46,7 +46,7 @@ if (!$listing_data) {
             <?php if (!empty($listing_data['property_type'])): ?>
             <div class="detail-item">
                 <span class="detail-label">Property Type</span>
-                <span class="detail-value"><?php echo esc_html($listing_data['property_type']); ?></span>
+                <span class="detail-value"><?php echo esc_html(hph_format_property_value($listing_data['property_type'])); ?></span>
             </div>
             <?php endif; ?>
             

@@ -1,201 +1,201 @@
 <?php
 /**
- * Dashboard Header Component
+ * Dashboard Sidebar Navigation - Modern Design
  * 
  * @package HappyPlaceTheme
  */
 
-$user = $args['user'] ?? wp_get_current_user();
 $is_agent = $args['is_agent'] ?? false;
+$is_admin = $args['is_admin'] ?? false;
+$user_role = $args['user_role'] ?? 'user';
 $current_section = $_GET['section'] ?? 'overview';
+$user = wp_get_current_user();
 
-// Define section titles
-$section_titles = [
-    'overview' => __('Dashboard Overview', 'happy-place-theme'),
-    'listings' => $is_agent ? __('My Listings', 'happy-place-theme') : __('Saved Listings', 'happy-place-theme'),
-    'leads' => __('Lead Management', 'happy-place-theme'),
-    'analytics' => __('Analytics & Reports', 'happy-place-theme'),
-    'favorites' => __('Favorite Listings', 'happy-place-theme'),
-    'searches' => __('Saved Searches', 'happy-place-theme'),
-    'profile' => __('Profile Settings', 'happy-place-theme')
+// Navigation items with role-based filtering
+$nav_items = [
+    'overview' => [
+        'label' => 'Overview',
+        'icon' => 'chart-line',
+        'badge' => null,
+        'roles' => ['all']
+    ],
+    'listings' => [
+        'label' => $is_agent ? 'My Listings' : 'Saved Properties',
+        'icon' => 'home',
+        'badge' => $is_agent ? '12' : '5',
+        'badge_type' => 'default',
+        'roles' => ['all']
+    ],
+    'open-houses' => [
+        'label' => 'Open Houses',
+        'icon' => 'calendar-check',
+        'badge' => '3',
+        'badge_type' => 'primary',
+        'roles' => ['agent']
+    ],
+    'marketing' => [
+        'label' => 'Marketing',
+        'icon' => 'bullhorn',
+        'badge' => null,
+        'roles' => ['agent']
+    ],
+    'leads' => [
+        'label' => 'Leads',
+        'icon' => 'users',
+        'badge' => '7',
+        'badge_type' => 'danger',
+        'roles' => ['agent']
+    ],
+    'analytics' => [
+        'label' => 'Analytics',
+        'icon' => 'chart-bar',
+        'badge' => null,
+        'roles' => ['agent']
+    ],
+    'favorites' => [
+        'label' => 'Favorites',
+        'icon' => 'heart',
+        'badge' => '8',
+        'badge_type' => 'default',
+        'roles' => ['all']
+    ],
+    'searches' => [
+        'label' => 'Saved Searches',
+        'icon' => 'bookmark',
+        'badge' => '4',
+        'badge_type' => 'default',
+        'roles' => ['all']
+    ],
+    'profile' => [
+        'label' => 'Profile',
+        'icon' => 'user-cog',
+        'badge' => null,
+        'roles' => ['all']
+    ]
 ];
-
-$page_title = $section_titles[$current_section] ?? __('Dashboard', 'happy-place-theme');
 ?>
 
-<header class="hph-dashboard-header">
+<aside class="dashboard-sidebar" id="header-dashboardSidebar">
+    <!-- Sidebar Brand -->
+    <div class="sidebar-brand">
+        <a href="<?php echo home_url(); ?>" class="hph-flex hph-items-center hph-gap-3">
+            <?php if (has_custom_logo()): ?>
+                <?php 
+                $custom_logo_id = get_theme_mod('custom_logo');
+                $logo = wp_get_attachment_image_src($custom_logo_id, 'full');
+                ?>
+                <img src="<?php echo esc_url($logo[0]); ?>" alt="<?php bloginfo('name'); ?>" class="hph-h-8">
+            <?php else: ?>
+                <span class="hph-text-xl hph-font-bold hph-text-primary">
+                    <?php bloginfo('name'); ?>
+                </span>
+            <?php endif; ?>
+        </a>
+        
+        <!-- Sidebar Toggle (Desktop) -->
+        <button class="hph-ml-auto hph-hidden lg:hph-block hph-text-gray-500 hover:hph-text-gray-700" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
     
-    <!-- Header Top -->
-    <div class="hph-header-top">
-        <div class="hph-header-left">
-            <h1 class="hph-page-title"><?php echo esc_html($page_title); ?></h1>
-            <nav class="hph-breadcrumb" aria-label="<?php _e('Breadcrumb', 'happy-place-theme'); ?>">
-                <ol class="hph-breadcrumb-list">
-                    <li class="hph-breadcrumb-item">
-                        <a href="?section=overview" class="hph-breadcrumb-link"><?php _e('Dashboard', 'happy-place-theme'); ?></a>
-                    </li>
-                    <?php if ($current_section !== 'overview'): ?>
-                        <li class="hph-breadcrumb-separator">/</li>
-                        <li class="hph-breadcrumb-item hph-breadcrumb-current" aria-current="page">
-                            <?php echo esc_html($page_title); ?>
-                        </li>
-                    <?php endif; ?>
-                </ol>
-            </nav>
+    <!-- User Profile Summary -->
+    <div class="hph-p-6 hph-border-b hph-border-gray-100">
+        <div class="hph-flex hph-items-center hph-gap-3">
+            <?php echo get_avatar($user->ID, 48, '', '', ['class' => 'hph-rounded-full hph-border-2 hph-border-primary-100']); ?>
+            <div class="sidebar-profile-info">
+                <div class="hph-font-medium hph-text-gray-900">
+                    <?php echo esc_html($user->display_name); ?>
+                </div>
+                <div class="hph-text-xs hph-text-gray-600">
+                    <?php 
+                    if ($is_admin) {
+                        echo 'Administrator';
+                    } elseif ($is_agent) {
+                        echo 'Real Estate Agent';
+                    } else {
+                        echo 'Member';
+                    }
+                    ?>
+                </div>
+            </div>
         </div>
         
-        <div class="hph-header-right">
-            
-            <!-- Search Bar -->
-            <div class="hph-header-search">
-                <form class="hph-search-form" role="search">
-                    <div class="hph-search-input-group">
-                        <input type="search" 
-                               class="hph-search-input" 
-                               placeholder="<?php _e('Search properties, leads, etc...', 'happy-place-theme'); ?>"
-                               aria-label="<?php _e('Search dashboard content', 'happy-place-theme'); ?>">
-                        <button type="submit" class="hph-search-btn" aria-label="<?php _e('Search', 'happy-place-theme'); ?>">
-                            <span class="hph-icon-search"></span>
-                        </button>
-                    </div>
-                </form>
+        <!-- Quick Stats -->
+        <?php if ($is_agent || $is_admin): ?>
+        <div class="hph-grid hph-grid-cols-3 hph-gap-2 hph-mt-4">
+            <div class="hph-text-center hph-p-2 hph-bg-gray-50 hph-rounded-lg">
+                <div class="hph-text-lg hph-font-semibold hph-text-primary">12</div>
+                <div class="hph-text-xs hph-text-gray-600">Active</div>
             </div>
-
-            <!-- Header Actions -->
-            <div class="hph-header-actions">
+            <div class="hph-text-center hph-p-2 hph-bg-gray-50 hph-rounded-lg">
+                <div class="hph-text-lg hph-font-semibold hph-text-success">5</div>
+                <div class="hph-text-xs hph-text-gray-600">Sold</div>
+            </div>
+            <div class="hph-text-center hph-p-2 hph-bg-gray-50 hph-rounded-lg">
+                <div class="hph-text-lg hph-font-semibold hph-text-warning">7</div>
+                <div class="hph-text-xs hph-text-gray-600">Leads</div>
+            </div>
+        </div>
+        <?php endif; ?>
+    </div>
+    
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+        <ul class="hph-space-y-1">
+            <?php foreach ($nav_items as $key => $item): ?>
+                <?php 
+                // Check role permissions (admins see everything)
+                if ($item['roles'] !== ['all'] && !$is_admin && !$is_agent && in_array('agent', $item['roles'])) {
+                    continue;
+                }
                 
-                <!-- Notifications -->
-                <div class="hph-header-action hph-notifications" id="notificationsDropdown">
-                    <button class="hph-action-btn" aria-label="<?php _e('Notifications', 'happy-place-theme'); ?>">
-                        <span class="hph-icon-bell"></span>
-                        <span class="hph-notification-badge" id="notificationCount">3</span>
-                    </button>
-                    <div class="hph-dropdown-menu hph-notifications-menu">
-                        <div class="hph-dropdown-header">
-                            <h3 class="hph-dropdown-title"><?php _e('Notifications', 'happy-place-theme'); ?></h3>
-                            <a href="#" class="hph-mark-read-all"><?php _e('Mark all read', 'happy-place-theme'); ?></a>
-                        </div>
-                        <div class="hph-notifications-list" id="notificationsList">
-                            <!-- Notifications loaded via AJAX -->
-                        </div>
-                        <div class="hph-dropdown-footer">
-                            <a href="#" class="hph-view-all-link"><?php _e('View all notifications', 'happy-place-theme'); ?></a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- User Profile Dropdown -->
-                <div class="hph-header-action hph-user-menu" id="userMenuDropdown">
-                    <button class="hph-user-btn" aria-label="<?php _e('User menu', 'happy-place-theme'); ?>">
-                        <div class="hph-user-avatar">
-                            <?php echo get_avatar($user->ID, 36, '', '', ['class' => 'hph-avatar-small']); ?>
-                        </div>
-                        <div class="hph-user-info">
-                            <span class="hph-user-name"><?php echo esc_html($user->display_name); ?></span>
-                            <span class="hph-user-role">
-                                <?php echo $is_agent ? __('Agent', 'happy-place-theme') : __('Member', 'happy-place-theme'); ?>
+                $is_active = ($current_section === $key);
+                ?>
+                <li class="sidebar-nav-item">
+                    <a href="?section=<?php echo esc_attr($key); ?>" 
+                       class="sidebar-nav-link <?php echo $is_active ? 'active' : ''; ?>">
+                        <i class="fas fa-<?php echo esc_attr($item['icon']); ?> sidebar-nav-icon"></i>
+                        <span class="sidebar-nav-text"><?php echo esc_html($item['label']); ?></span>
+                        <?php if ($item['badge']): ?>
+                            <span class="sidebar-nav-badge <?php echo esc_attr($item['badge_type'] ?? ''); ?>">
+                                <?php echo esc_html($item['badge']); ?>
                             </span>
-                        </div>
-                        <span class="hph-dropdown-arrow hph-icon-chevron-down"></span>
-                    </button>
-                    
-                    <div class="hph-dropdown-menu hph-user-dropdown">
-                        <div class="hph-dropdown-header">
-                            <div class="hph-user-profile-summary">
-                                <?php echo get_avatar($user->ID, 48, '', '', ['class' => 'hph-avatar-medium']); ?>
-                                <div class="hph-user-details">
-                                    <h4 class="hph-user-display-name"><?php echo esc_html($user->display_name); ?></h4>
-                                    <p class="hph-user-email"><?php echo esc_html($user->user_email); ?></p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <nav class="hph-dropdown-nav">
-                            <a href="?section=profile" class="hph-dropdown-link">
-                                <span class="hph-link-icon hph-icon-user"></span>
-                                <?php _e('Edit Profile', 'happy-place-theme'); ?>
-                            </a>
-                            <a href="#" class="hph-dropdown-link">
-                                <span class="hph-link-icon hph-icon-settings"></span>
-                                <?php _e('Account Settings', 'happy-place-theme'); ?>
-                            </a>
-                            <?php if ($is_agent): ?>
-                                <a href="#" class="hph-dropdown-link">
-                                    <span class="hph-link-icon hph-icon-chart"></span>
-                                    <?php _e('Performance', 'happy-place-theme'); ?>
-                                </a>
-                            <?php endif; ?>
-                        </nav>
-                        
-                        <div class="hph-dropdown-footer">
-                            <a href="<?php echo home_url(); ?>" class="hph-dropdown-link">
-                                <span class="hph-link-icon hph-icon-arrow-left"></span>
-                                <?php _e('Back to Website', 'happy-place-theme'); ?>
-                            </a>
-                            <a href="<?php echo wp_logout_url(home_url()); ?>" class="hph-dropdown-link hph-logout-link">
-                                <span class="hph-link-icon hph-icon-logout"></span>
-                                <?php _e('Logout', 'happy-place-theme'); ?>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+                        <?php endif; ?>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </nav>
+    
+    <?php if ($is_agent || $is_admin): ?>
+    <!-- Quick Actions -->
+    <div class="hph-p-6 hph-border-t hph-border-gray-100">
+        <h4 class="hph-text-xs hph-font-semibold hph-text-gray-500 hph-uppercase hph-tracking-wider hph-mb-3">
+            Quick Actions
+        </h4>
+        <div class="hph-space-y-2">
+            <button id="header-quickAddListingBtn" class="hph-btn hph-btn-primary hph-btn-sm hph-w-full">
+                <i class="fas fa-plus hph-mr-2"></i>
+                Add Listing
+            </button>
+            <button class="hph-btn hph-btn-outline hph-btn-sm hph-w-full">
+                <i class="fas fa-user-plus hph-mr-2"></i>
+                Add Lead
+            </button>
         </div>
     </div>
-
-    <!-- Header Bottom (Context Actions) -->
-    <?php if ($is_agent && in_array($current_section, ['listings', 'leads'])): ?>
-        <div class="hph-header-bottom">
-            <div class="hph-context-actions">
-                
-                <?php if ($current_section === 'listings'): ?>
-                    <div class="hph-action-group">
-                        <button class="hph-btn hph-btn-primary" id="addListingBtn">
-                            <span class="hph-btn-icon hph-icon-plus"></span>
-                            <span class="hph-btn-text"><?php _e('Add New Listing', 'happy-place-theme'); ?></span>
-                        </button>
-                        <button class="hph-btn hph-btn-secondary" id="importListingsBtn">
-                            <span class="hph-btn-icon hph-icon-upload"></span>
-                            <span class="hph-btn-text"><?php _e('Import Listings', 'happy-place-theme'); ?></span>
-                        </button>
-                    </div>
-                    
-                    <div class="hph-filter-group">
-                        <select class="hph-select" id="listingStatusFilter">
-                            <option value="all"><?php _e('All Status', 'happy-place-theme'); ?></option>
-                            <option value="active"><?php _e('Active', 'happy-place-theme'); ?></option>
-                            <option value="pending"><?php _e('Pending', 'happy-place-theme'); ?></option>
-                            <option value="sold"><?php _e('Sold', 'happy-place-theme'); ?></option>
-                            <option value="draft"><?php _e('Draft', 'happy-place-theme'); ?></option>
-                        </select>
-                        <button class="hph-btn hph-btn-ghost" id="viewToggleBtn" title="<?php _e('Toggle view', 'happy-place-theme'); ?>">
-                            <span class="hph-icon-grid"></span>
-                        </button>
-                    </div>
-                <?php endif; ?>
-
-                <?php if ($current_section === 'leads'): ?>
-                    <div class="hph-action-group">
-                        <button class="hph-btn hph-btn-primary" id="addLeadBtn">
-                            <span class="hph-btn-icon hph-icon-user-plus"></span>
-                            <span class="hph-btn-text"><?php _e('Add Lead', 'happy-place-theme'); ?></span>
-                        </button>
-                    </div>
-                    
-                    <div class="hph-filter-group">
-                        <select class="hph-select" id="leadStatusFilter">
-                            <option value="all"><?php _e('All Leads', 'happy-place-theme'); ?></option>
-                            <option value="hot"><?php _e('Hot Leads', 'happy-place-theme'); ?></option>
-                            <option value="warm"><?php _e('Warm Leads', 'happy-place-theme'); ?></option>
-                            <option value="cold"><?php _e('Cold Leads', 'happy-place-theme'); ?></option>
-                            <option value="converted"><?php _e('Converted', 'happy-place-theme'); ?></option>
-                        </select>
-                    </div>
-                <?php endif; ?>
-
-            </div>
-        </div>
     <?php endif; ?>
+    
+    <!-- Sidebar Footer -->
+    <div class="hph-mt-auto hph-p-6 hph-border-t hph-border-gray-100">
+        <a href="<?php echo home_url(); ?>" class="hph-flex hph-items-center hph-gap-3 hph-text-sm hph-text-gray-600 hover:hph-text-gray-900 hph-transition hph-mb-3">
+            <i class="fas fa-arrow-left"></i>
+            <span class="sidebar-nav-text">Back to Website</span>
+        </a>
+        <a href="<?php echo wp_logout_url(home_url()); ?>" class="hph-flex hph-items-center hph-gap-3 hph-text-sm hph-text-danger hover:hph-text-danger-dark hph-transition">
+            <i class="fas fa-sign-out-alt"></i>
+            <span class="sidebar-nav-text">Logout</span>
+        </a>
+    </div>
+</aside>
 
-</header>

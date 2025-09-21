@@ -1,10 +1,14 @@
 <?php
 /**
- * Dashboard Overview Component
- * Main dashboard content with stats, recent activity, and quick actions
+ * Dashboard Overview Component - UNIFIED SYSTEM
+ * Uses ONLY main theme components for perfect consistency
  * 
  * @package HappyPlaceTheme
+ * @version UNIFIED-1.0.0
  */
+
+// Include unified components
+require_once get_template_directory() . '/template-parts/dashboard/unified-components.php';
 
 $user = $args['user'] ?? wp_get_current_user();
 $is_agent = $args['is_agent'] ?? false;
@@ -49,18 +53,13 @@ if ($is_agent) {
         'posts_per_page' => -1
     ]);
     
-    $hot_leads = get_posts([
-        'post_type' => 'lead',
-        'post_status' => 'publish',
-        'author' => $user->ID,
-        'meta_query' => [
-            [
-                'key' => 'lead_status',
-                'value' => 'hot'
-            ]
-        ],
-        'posts_per_page' => -1
-    ]);
+    // Prepare stats data
+    $stats_data = [
+        'total_listings' => count($active_listings) + count($sold_listings),
+        'active_listings' => count($active_listings), 
+        'pending_listings' => 0, // Will be populated via AJAX
+        'total_leads' => count($leads_count)
+    ];
     
 } else {
     // Regular user stats
@@ -72,6 +71,13 @@ if ($is_agent) {
     
     $recent_views = get_user_meta($user->ID, 'recent_listing_views', true);
     $recent_views = is_array($recent_views) ? array_slice($recent_views, 0, 5) : [];
+    
+    $stats_data = [
+        'saved_properties' => count($saved_listings),
+        'saved_searches' => count($saved_searches), 
+        'recent_views' => count($recent_views),
+        'new_matches' => 3 // Example - would come from real data
+    ];
 }
 
 // Get recent activity
@@ -84,521 +90,326 @@ $recent_listings = get_posts([
 ]);
 ?>
 
-<section class="d-flex flex-column hph-gap-lg hph-p-lg">
+<div class="dashboard-content unified-system-active">
     
     <!-- Welcome Section -->
-    <header class="d-flex align-items-start justify-content-between hph-gap-md">
-        <div class="flex-1">
-            <h2 class="hph-text-3xl hph-font-bold hph-text-gray-900 hph-m-0 hph-mb-sm hph-leading-tight">
-                <?php 
-                printf(
-                    __('Welcome back, %s!', 'happy-place-theme'),
-                    esc_html($user->display_name)
-                );
-                ?>
-            </h2>
-            <p class="hph-text-lg hph-text-gray-600 hph-m-0 hph-leading-relaxed">
+    <header class="hph-section-header">
+        <div class="hph-flex hph-justify-between hph-items-start hph-gap-lg">
+            <div class="hph-flex-1">
+                <h2 class="hph-section-title">
+                    <i class="fas fa-home"></i>
+                    <?php 
+                    printf(
+                        __('Welcome back, %s!', 'happy-place-theme'),
+                        esc_html($user->display_name)
+                    );
+                    ?>
+                </h2>
+                <p class="hph-section-description">
+                    <?php if ($is_agent): ?>
+                        <?php _e('Here\'s an overview of your real estate business.', 'happy-place-theme'); ?>
+                    <?php else: ?>
+                        <?php _e('Track your property searches and saved listings.', 'happy-place-theme'); ?>
+                    <?php endif; ?>
+                </p>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="hph-flex-shrink-0 hph-hidden lg:hph-block">
                 <?php if ($is_agent): ?>
-                    <?php _e('Here\'s an overview of your real estate business.', 'happy-place-theme'); ?>
+                    <button id="overview-quickAddListingBtn-header" class="hph-btn hph-btn--primary">
+                        <i class="fas fa-plus"></i>
+                        <?php _e('Add Listing', 'happy-place-theme'); ?>
+                    </button>
                 <?php else: ?>
-                    <?php _e('Track your property searches and saved listings.', 'happy-place-theme'); ?>
+                    <a href="<?php echo home_url('/listings/'); ?>" class="hph-btn hph-btn--primary">
+                        <i class="fas fa-search"></i>
+                        <?php _e('Search Properties', 'happy-place-theme'); ?>
+                    </a>
                 <?php endif; ?>
-            </p>
-        </div>
-        
-        <!-- Quick Actions -->
-        <div class="flex-shrink-0">
-            <?php if ($is_agent): ?>
-                <?php 
-                hph_component('button', [
-                    'text' => __('Add Listing', 'happy-place-theme'),
-                    'variant' => 'primary',
-                    'size' => 'md',
-                    'icon' => 'plus',
-                    'attributes' => ['id' => 'quickAddListingBtn']
-                ]);
-                ?>
-            <?php else: ?>
-                <?php 
-                hph_component('button', [
-                    'text' => __('Search Properties', 'happy-place-theme'),
-                    'variant' => 'primary',
-                    'size' => 'md',
-                    'icon' => 'search',
-                    'href' => home_url('/listings/')
-                ]);
-                ?>
-            <?php endif; ?>
+            </div>
         </div>
     </header>
 
-    <!-- Stats Cards -->
-    <div class="hph-grid hph-grid-auto-fit hph-grid-min-240 hph-gap-md">
-        
-        <?php if ($is_agent): ?>
-            <!-- Agent Stats -->
-            <?php 
-            hph_component('card', [
-                'variant' => 'elevated',
-                'layout' => 'horizontal',
-                'size' => 'md',
-                'hover_effect' => 'lift',
-                'title' => [
-                    'text' => count($active_listings),
-                    'tag' => 'div'
-                ],
-                'description' => __('Active Listings', 'happy-place-theme'),
-                'meta_items' => [[
-                    'icon' => 'home',
-                    'text' => ''
-                ]],
-                'class' => 'hph-stat-card hph-stat-primary'
-            ]);
-            ?>
-            
-            <?php 
-            hph_component('card', [
-                'variant' => 'elevated',
-                'layout' => 'horizontal', 
-                'size' => 'md',
-                'hover_effect' => 'lift',
-                'title' => [
-                    'text' => count($sold_listings),
-                    'tag' => 'div'
-                ],
-                'description' => __('Sold This Month', 'happy-place-theme'),
-                'meta_items' => [[
-                    'icon' => 'check-circle',
-                    'text' => ''
-                ]],
-                'class' => 'hph-stat-card hph-stat-success'
-            ]);
-            ?>
-            
-            <?php 
-            hph_component('card', [
-                'variant' => 'elevated',
-                'layout' => 'horizontal',
-                'size' => 'md', 
-                'hover_effect' => 'lift',
-                'title' => [
-                    'text' => count($hot_leads),
-                    'tag' => 'div'
-                ],
-                'description' => __('Hot Leads', 'happy-place-theme'),
-                'meta_items' => [[
-                    'icon' => 'fire',
-                    'text' => ''
-                ]],
-                'class' => 'hph-stat-card hph-stat-warning'
-            ]);
-            ?>
-            
-            <?php 
-            hph_component('card', [
-                'variant' => 'elevated',
-                'layout' => 'horizontal',
-                'size' => 'md',
-                'hover_effect' => 'lift', 
-                'title' => [
-                    'text' => count($leads_count),
-                    'tag' => 'div'
-                ],
-                'description' => __('Total Leads', 'happy-place-theme'),
-                'meta_items' => [[
-                    'icon' => 'users',
-                    'text' => ''
-                ]],
-                'class' => 'hph-stat-card hph-stat-info'
-            ]);
-            ?>
-            
-        <?php else: ?>
-            <!-- User Stats -->
-            <?php 
-            hph_component('card', [
-                'variant' => 'elevated',
-                'layout' => 'horizontal',
-                'size' => 'md',
-                'hover_effect' => 'lift',
-                'title' => [
-                    'text' => count($saved_listings),
-                    'tag' => 'div'
-                ],
-                'description' => __('Saved Properties', 'happy-place-theme'),
-                'meta_items' => [[
-                    'icon' => 'heart',
-                    'text' => ''
-                ]],
-                'class' => 'hph-stat-card hph-stat-primary'
-            ]);
-            ?>
-            
-            <?php 
-            hph_component('card', [
-                'variant' => 'elevated',
-                'layout' => 'horizontal',
-                'size' => 'md',
-                'hover_effect' => 'lift',
-                'title' => [
-                    'text' => count($saved_searches),
-                    'tag' => 'div'
-                ],
-                'description' => __('Saved Searches', 'happy-place-theme'),
-                'meta_items' => [[
-                    'icon' => 'bookmark',
-                    'text' => ''
-                ]],
-                'class' => 'hph-stat-card hph-stat-info'
-            ]);
-            ?>
-            
-            <?php 
-            hph_component('card', [
-                'variant' => 'elevated', 
-                'layout' => 'horizontal',
-                'size' => 'md',
-                'hover_effect' => 'lift',
-                'title' => [
-                    'text' => count($recent_views),
-                    'tag' => 'div'
-                ],
-                'description' => __('Recent Views', 'happy-place-theme'),
-                'meta_items' => [[
-                    'icon' => 'eye',
-                    'text' => ''
-                ]],
-                'class' => 'hph-stat-card hph-stat-success'
-            ]);
-            ?>
-            
-            <?php 
-            hph_component('card', [
-                'variant' => 'elevated',
-                'layout' => 'horizontal',
-                'size' => 'md',
-                'hover_effect' => 'lift',
-                'title' => [
-                    'text' => '3',
-                    'tag' => 'div'
-                ],
-                'description' => __('New Alerts', 'happy-place-theme'),
-                'meta_items' => [[
-                    'icon' => 'bell',
-                    'text' => ''
-                ]],
-                'class' => 'hph-stat-card hph-stat-warning'
-            ]);
-            ?>
-        <?php endif; ?>
-    </div>
+    <!-- Stats Section - Uses Unified Components -->
+    <?php HPH_Unified_Dashboard_Components::stats_overview($stats_data); ?>
 
-    <!-- Dashboard Content Grid -->
-    <div class="hph-grid hph-grid-auto-fit hph-grid-min-350 hph-gap-lg hph-mt-lg">
+    <!-- Main Content Grid -->
+    <div class="hph-dashboard-grid">
         
-        <!-- Recent Activity -->
-        <?php 
-        // Prepare recent activity content
-        ob_start();
-        ?>
-        <?php if ($is_agent && !empty($active_listings)): ?>
-            <div class="d-flex flex-column hph-gap-sm">
-                <?php foreach (array_slice($active_listings, 0, 5) as $listing): ?>
-                    <div class="d-flex align-items-center hph-gap-sm hph-p-sm hph-rounded hph-transition-colors hph-hover-bg-gray-50">
-                        <div class="hph-w-10 hph-h-10 hph-bg-primary-100 hph-text-primary-600 hph-rounded d-flex align-items-center justify-content-center hph-text-lg flex-shrink-0"><i class="fas fa-home"></i></div>
-                        <div class="flex-1 hph-min-w-0">
-                            <div class="hph-font-medium hph-text-gray-900 hph-mb-xs hph-truncate"><?php echo esc_html($listing->post_title); ?></div>
-                            <div class="hph-text-sm hph-text-gray-600 d-flex align-items-center hph-gap-xs">
-                                <?php 
-                                $price = get_field('price', $listing->ID);
-                                if ($price) {
-                                    echo '$' . number_format($price);
-                                }
-                                ?>
-                                <span>•</span>
-                                <span><?php echo human_time_diff(strtotime($listing->post_date), current_time('timestamp')) . ' ago'; ?></span>
+        <!-- Recent Activity Section -->
+        <div class="hph-card">
+            <div class="hph-card__header">
+                <h3 class="hph-card__title">
+                    <?php echo $is_agent ? __('Recent Listings', 'happy-place-theme') : __('Recently Viewed', 'happy-place-theme'); ?>
+                </h3>
+                <a href="<?php echo $is_agent ? '?section=listings' : '?section=favorites'; ?>" class="hph-btn hph-btn--link hph-btn--sm">
+                    <?php _e('View All', 'happy-place-theme'); ?>
+                </a>
+            </div>
+            
+            <div class="hph-card__content">
+                <div class="hph-dashboard-list" id="recentActivityContent">
+                    <?php if (!empty($recent_listings)): ?>
+                        <?php foreach (array_slice($recent_listings, 0, 3) as $listing): ?>
+                            <?php 
+                            $listing_data = [
+                                'id' => $listing->ID,
+                                'title' => $listing->post_title,
+                                'excerpt' => wp_trim_words($listing->post_excerpt, 15),
+                                'price' => get_post_meta($listing->ID, 'listing_price', true),
+                                'location' => get_post_meta($listing->ID, 'listing_location', true),
+                                'status' => get_post_meta($listing->ID, 'listing_status', true),
+                                'featured_image' => get_the_post_thumbnail_url($listing->ID, 'thumbnail'),
+                                'permalink' => get_permalink($listing->ID)
+                            ];
+                            HPH_Unified_Dashboard_Components::listing_card($listing_data); 
+                            ?>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="hph-text-center hph-py-lg">
+                            <i class="fas fa-home hph-text-4xl hph-text-gray-300 hph-mb-md"></i>
+                            <p class="hph-text-secondary">
+                                <?php echo $is_agent ? __('No listings yet. Create your first listing!', 'happy-place-theme') : __('Start exploring properties to see them here.', 'happy-place-theme'); ?>
+                            </p>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Card -->
+        <div class="hph-card">
+            <div class="hph-card__header">
+                <h3 class="hph-card__title">
+                    <?php _e('Quick Actions', 'happy-place-theme'); ?>
+                </h3>
+            </div>
+            
+            <div class="hph-card__content">
+                <div class="hph-dashboard-list">
+                    <?php if ($is_agent): ?>
+                        <a href="?section=create-listing" class="hph-btn hph-btn--secondary hph-btn--full">
+                            <i class="fas fa-plus"></i>
+                            <?php _e('Create New Listing', 'happy-place-theme'); ?>
+                        </a>
+                        <a href="?section=leads" class="hph-btn hph-btn--secondary hph-btn--full">
+                            <i class="fas fa-users"></i>
+                            <?php _e('Manage Leads', 'happy-place-theme'); ?>
+                        </a>
+                        <a href="?section=analytics" class="hph-btn hph-btn--secondary hph-btn--full">
+                            <i class="fas fa-chart-bar"></i>
+                            <?php _e('View Analytics', 'happy-place-theme'); ?>
+                        </a>
+                    <?php else: ?>
+                        <a href="/listings/" class="hph-btn hph-btn--secondary hph-btn--full">
+                            <i class="fas fa-search"></i>
+                            <?php _e('Search Properties', 'happy-place-theme'); ?>
+                        </a>
+                        <a href="?section=favorites" class="hph-btn hph-btn--secondary hph-btn--full">
+                            <i class="fas fa-heart"></i>
+                            <?php _e('Saved Properties', 'happy-place-theme'); ?>
+                        </a>
+                        <a href="?section=searches" class="hph-btn hph-btn--secondary hph-btn--full">
+                            <i class="fas fa-bookmark"></i>
+                            <?php _e('Saved Searches', 'happy-place-theme'); ?>
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- Market Trends or Recent Matches -->
+        <div class="hph-card">
+            <div class="hph-card__header">
+                <h3 class="hph-card__title">
+                    <?php echo $is_agent ? __('Market Insights', 'happy-place-theme') : __('New Matches', 'happy-place-theme'); ?>
+                </h3>
+            </div>
+            
+            <div class="hph-card__content">
+                <?php if ($is_agent): ?>
+                    <div class="hph-text-center hph-py-lg">
+                        <i class="fas fa-chart-line hph-text-4xl hph-text-primary hph-mb-md"></i>
+                        <p class="hph-text-secondary hph-mb-md">
+                            <?php _e('Market data will be available soon', 'happy-place-theme'); ?>
+                        </p>
+                        <button class="hph-btn hph-btn--primary hph-btn--sm">
+                            <?php _e('Learn More', 'happy-place-theme'); ?>
+                        </button>
+                    </div>
+                <?php else: ?>
+                    <div class="hph-text-center hph-py-lg">
+                        <i class="fas fa-bell hph-text-4xl hph-text-secondary hph-mb-md"></i>
+                        <p class="hph-text-secondary hph-mb-md">
+                            <?php _e('We\'ll notify you when new properties match your searches', 'happy-place-theme'); ?>
+                        </p>
+                        <a href="?section=searches" class="hph-btn hph-btn--primary hph-btn--sm">
+                            <?php _e('Manage Alerts', 'happy-place-theme'); ?>
+                        </a>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+                        <div class="hph-loading-spinner">
+                            <i class="fas fa-spinner fa-spin hph-text-2xl hph-text-gray-400"></i>
+                            <p class="hph-text-gray-500 hph-mt-2"><?php _e('Loading recent activity...', 'happy-place-theme'); ?></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- New Listings Card -->
+            <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                    <h3 class="dashboard-card-title"><?php _e('New Listings', 'happy-place-theme'); ?></h3>
+                    <a href="<?php echo home_url('/listings/'); ?>" class="hph-text-sm hph-text-primary hover:hph-underline">
+                        <?php _e('View All', 'happy-place-theme'); ?>
+                    </a>
+                </div>
+                
+                <?php if (!empty($recent_listings)): ?>
+                    <div class="hph-grid hph-grid-cols-1 md:hph-grid-cols-2 hph-gap-md">
+                        <?php foreach ($recent_listings as $listing): ?>
+                            <?php
+                            $listing_title = get_the_title($listing->ID);
+                            $price = get_field('price', $listing->ID);
+                            $bedrooms = get_field('bedrooms', $listing->ID);
+                            $bathrooms = get_field('bathrooms_full', $listing->ID);
+                            $featured_image = has_post_thumbnail($listing->ID) ? get_the_post_thumbnail_url($listing->ID, 'thumbnail') : '';
+                            ?>
+                            <a href="<?php echo get_permalink($listing->ID); ?>" class="hph-block hph-p-3 hph-bg-gray-50 hph-rounded-lg hover:hph-bg-gray-100 hph-transition hph-no-underline">
+                                <?php if ($featured_image): ?>
+                                    <img src="<?php echo esc_url($featured_image); ?>" alt="<?php echo esc_attr($listing_title); ?>" class="hph-w-full hph-h-32 hph-object-cover hph-rounded-lg hph-mb-3">
+                                <?php endif; ?>
+                                <h4 class="hph-font-medium hph-text-gray-900 hph-mb-1"><?php echo esc_html($listing_title); ?></h4>
+                                <div class="hph-text-lg hph-font-semibold hph-text-primary hph-mb-2">
+                                    <?php echo $price ? '$' . number_format($price) : __('Contact for Price', 'happy-place-theme'); ?>
+                                </div>
+                                <div class="hph-text-sm hph-text-gray-600">
+                                    <?php if ($bedrooms): ?><?php echo $bedrooms; ?> bed<?php endif; ?>
+                                    <?php if ($bedrooms && $bathrooms): ?> • <?php endif; ?>
+                                    <?php if ($bathrooms): ?><?php echo $bathrooms; ?> bath<?php endif; ?>
+                                </div>
+                            </a>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <div class="empty-state-title"><?php _e('No New Listings', 'happy-place-theme'); ?></div>
+                        <div class="empty-state-description"><?php _e('No new listings available.', 'happy-place-theme'); ?></div>
+                    </div>
+                <?php endif; ?>
+            </div>
+            
+            <?php if ($is_agent): ?>
+                <!-- Hot Leads Widget - AJAX Powered -->
+                <div class="dashboard-card">
+                    <div class="dashboard-card-header">
+                        <h3 class="dashboard-card-title"><?php _e('Hot Leads', 'happy-place-theme'); ?></h3>
+                        <a href="?section=leads" class="hph-text-sm hph-text-primary hover:hph-underline">
+                            <?php _e('Manage Leads', 'happy-place-theme'); ?>
+                        </a>
+                    </div>
+                    
+                    <!-- Hot leads content will be populated via AJAX -->
+                    <div id="hotLeadsContent">
+                        <div class="hph-text-center hph-py-8">
+                            <div class="hph-loading-spinner">
+                                <i class="fas fa-spinner fa-spin hph-text-2xl hph-text-gray-400"></i>
+                                <p class="hph-text-gray-500 hph-mt-2"><?php _e('Loading hot leads...', 'happy-place-theme'); ?></p>
                             </div>
                         </div>
                     </div>
-                <?php endforeach; ?>
-            </div>
-        <?php elseif (!$is_agent && !empty($recent_views)): ?>
-            <div class="d-flex flex-column hph-gap-sm">
-                <?php foreach ($recent_views as $listing_id): ?>
-                    <?php $listing = get_post($listing_id); ?>
-                    <?php if ($listing): ?>
-                        <div class="d-flex align-items-center hph-gap-sm hph-p-sm hph-rounded hph-transition-colors hph-hover-bg-gray-50">
-                            <div class="hph-w-10 hph-h-10 hph-bg-success-light hph-text-success hph-rounded d-flex align-items-center justify-content-center hph-text-lg flex-shrink-0"><i class="fas fa-eye"></i></div>
-                            <div class="flex-1 hph-min-w-0">
-                                <div class="hph-font-medium hph-text-gray-900 hph-mb-xs hph-truncate"><?php echo esc_html($listing->post_title); ?></div>
-                                <div class="hph-text-sm hph-text-gray-600">
-                                    <?php 
-                                    $price = get_field('price', $listing->ID);
-                                    if ($price) {
-                                        echo '$' . number_format($price);
-                                    }
-                                    ?>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-                <?php endforeach; ?>
-            </div>
-        <?php else: ?>
-            <?php 
-            hph_component('empty-state', [
-                'title' => $is_agent ? __('No Recent Activity', 'happy-place-theme') : __('No Recent Views', 'happy-place-theme'),
-                'description' => $is_agent ? __('No recent listing activity.', 'happy-place-theme') : __('No recently viewed properties.', 'happy-place-theme'),
-                'icon' => 'inbox'
-            ]);
-            ?>
-        <?php endif; ?>
-        <?php
-        $activity_content = ob_get_clean();
-        
-        // Render recent activity card
-        hph_component('card', [
-            'variant' => 'default',
-            'size' => 'lg',
-            'title' => [
-                'text' => $is_agent ? __('Recent Listing Activity', 'happy-place-theme') : __('Recently Viewed Properties', 'happy-place-theme'),
-                'tag' => 'h3'
-            ],
-            'actions' => [[
-                'text' => __('View All', 'happy-place-theme'),
-                'href' => $is_agent ? '?section=listings' : '?section=favorites',
-                'variant' => 'outline',
-                'size' => 'sm'
-            ]],
-            'description' => $activity_content
-        ]);
-        ?>
-
-        <!-- New Listings -->
-        <?php 
-        // Prepare new listings content
-        ob_start();
-        if (!empty($recent_listings)): 
-        ?>
-            <div class="hph-grid hph-grid-auto-fit hph-grid-min-280 hph-gap-md">
-                <?php foreach ($recent_listings as $listing): ?>
-                    <?php
-                    // Create simple listing card for recent listings
-                    $listing_title = get_the_title($listing->ID);
-                    $price = get_field('price', $listing->ID);
-                    $bedrooms = get_field('bedrooms', $listing->ID);
-                    $bathrooms = get_field('bathrooms_full', $listing->ID);
-                    $featured_image = '';
-                    
-                    if (has_post_thumbnail($listing->ID)) {
-                        $featured_image = get_the_post_thumbnail_url($listing->ID, 'thumbnail');
-                    }
-                    
-                    // Build property details
-                    $property_details = [];
-                    if ($bedrooms) $property_details[] = $bedrooms . ' bed';
-                    if ($bathrooms) $property_details[] = $bathrooms . ' bath';
-                    
-                    hph_component('card', [
-                        'variant' => 'default',
-                        'size' => 'sm',
-                        'layout' => 'vertical',
-                        'image' => [
-                            'src' => $featured_image,
-                            'alt' => $listing_title,
-                            'ratio' => 'landscape'
-                        ],
-                        'title' => [
-                            'text' => $listing_title,
-                            'tag' => 'h4',
-                            'link' => get_permalink($listing->ID)
-                        ],
-                        'subtitle' => $price ? '$' . number_format($price) : __('Contact for Price', 'happy-place-theme'),
-                        'description' => implode(' • ', $property_details),
-                        'class' => 'hph-recent-listing-card'
-                    ]);
-                    ?>
-                <?php endforeach; ?>
-            </div>
-        <?php else: ?>
-            <?php 
-            hph_component('empty-state', [
-                'title' => __('No New Listings', 'happy-place-theme'),
-                'description' => __('No new listings available.', 'happy-place-theme'),
-                'icon' => 'home'
-            ]);
-            ?>
-        <?php 
-        endif;
-        $listings_content = ob_get_clean();
-        
-        // Render new listings card
-        hph_component('card', [
-            'variant' => 'default',
-            'size' => 'lg',
-            'title' => [
-                'text' => __('New Listings', 'happy-place-theme'),
-                'tag' => 'h3'
-            ],
-            'actions' => [[
-                'text' => __('View All', 'happy-place-theme'),
-                'href' => home_url('/listings/'),
-                'variant' => 'outline',
-                'size' => 'sm'
-            ]],
-            'description' => $listings_content
-        ]);
-        ?>
-
-        <?php if ($is_agent): ?>
-            <!-- Lead Management Widget -->
-            <?php 
-            // Prepare leads content
-            ob_start();
-            if (!empty($hot_leads)): 
-            ?>
-                <div class="d-flex flex-column hph-gap-sm">
-                    <?php foreach (array_slice($hot_leads, 0, 3) as $lead): ?>
-                        <div class="d-flex align-items-center hph-gap-sm hph-p-sm hph-border hph-border-gray-200 hph-rounded hph-transition-all hph-hover-border-primary hph-hover-shadow-sm">
-                            <?php 
-                            hph_component('badge', [
-                                'text' => 'HOT',
-                                'variant' => 'warning',
-                                'size' => 'sm'
-                            ]);
-                            ?>
-                            <div class="flex-1 hph-min-w-0">
-                                <div class="hph-font-medium hph-text-gray-900 hph-mb-xs"><?php echo esc_html($lead->post_title); ?></div>
-                                <div class="hph-text-sm hph-text-gray-600">
-                                    <?php 
-                                    $phone = get_field('lead_phone', $lead->ID);
-                                    $email = get_field('lead_email', $lead->ID);
-                                    if ($phone) echo esc_html($phone);
-                                    if ($phone && $email) echo ' • ';
-                                    if ($email) echo esc_html($email);
-                                    ?>
-                                </div>
-                            </div>
-                            <?php 
-                            hph_component('button', [
-                                'text' => __('Contact', 'happy-place-theme'),
-                                'variant' => 'outline',
-                                'size' => 'sm'
-                            ]);
-                            ?>
-                        </div>
-                    <?php endforeach; ?>
                 </div>
-            <?php else: ?>
-                <?php 
-                hph_component('empty-state', [
-                    'title' => __('No Active Leads', 'happy-place-theme'),
-                    'description' => __('No active leads at this time.', 'happy-place-theme'),
-                    'icon' => 'users'
-                ]);
-                ?>
-            <?php 
-            endif;
-            $leads_content = ob_get_clean();
-            
-            // Render leads card
-            hph_component('card', [
-                'variant' => 'default',
-                'size' => 'lg',
-                'title' => [
-                    'text' => __('Recent Leads', 'happy-place-theme'),
-                    'tag' => 'h3'
-                ],
-                'actions' => [[
-                    'text' => __('Manage Leads', 'happy-place-theme'),
-                    'href' => '?section=leads',
-                    'variant' => 'outline',
-                    'size' => 'sm'
-                ]],
-                'description' => $leads_content
-            ]);
-            ?>
-        <?php endif; ?>
-
-        <!-- Quick Actions Widget -->
-        <?php 
-        // Prepare quick actions content
-        ob_start();
-        ?>
-        <div class="d-flex flex-column hph-gap-sm">
-            <?php if ($is_agent): ?>
-                <?php 
-                hph_component('button', [
-                    'text' => __('Add New Listing', 'happy-place-theme'),
-                    'variant' => 'primary',
-                    'size' => 'md',
-                    'icon' => 'plus',
-                    'attributes' => ['id' => 'quickAddListing'],
-                    'class' => 'hph-full-width'
-                ]);
-                
-                hph_component('button', [
-                    'text' => __('Add New Lead', 'happy-place-theme'),
-                    'variant' => 'outline',
-                    'size' => 'md',
-                    'icon' => 'user-plus',
-                    'href' => '?section=leads',
-                    'class' => 'hph-full-width'
-                ]);
-                
-                hph_component('button', [
-                    'text' => __('View Analytics', 'happy-place-theme'),
-                    'variant' => 'outline',
-                    'size' => 'md',
-                    'icon' => 'chart-line',
-                    'href' => '?section=analytics',
-                    'class' => 'hph-full-width'
-                ]);
-                ?>
-            <?php else: ?>
-                <?php 
-                hph_component('button', [
-                    'text' => __('Search Properties', 'happy-place-theme'),
-                    'variant' => 'primary',
-                    'size' => 'md',
-                    'icon' => 'search',
-                    'href' => home_url('/listings/'),
-                    'class' => 'hph-full-width'
-                ]);
-                
-                hph_component('button', [
-                    'text' => __('Saved Searches', 'happy-place-theme'),
-                    'variant' => 'outline',
-                    'size' => 'md',
-                    'icon' => 'bookmark',
-                    'href' => '?section=searches',
-                    'class' => 'hph-full-width'
-                ]);
-                
-                hph_component('button', [
-                    'text' => __('View Favorites', 'happy-place-theme'),
-                    'variant' => 'outline',
-                    'size' => 'md',
-                    'icon' => 'heart',
-                    'href' => '?section=favorites',
-                    'class' => 'hph-full-width'
-                ]);
-                ?>
             <?php endif; ?>
         </div>
-        <?php
-        $actions_content = ob_get_clean();
-        
-        // Render quick actions card
-        hph_component('card', [
-            'variant' => 'default',
-            'size' => 'lg',
-            'title' => [
-                'text' => __('Quick Actions', 'happy-place-theme'),
-                'tag' => 'h3'
-            ],
-            'description' => $actions_content
-        ]);
-        ?>
+
+        <!-- Right Column - Takes 1 column on large screens -->
+        <div class="lg:hph-col-span-1 hph-flex hph-flex-col hph-gap-lg">
+            
+            <!-- Quick Actions Widget -->
+            <div class="dashboard-card">
+                <h3 class="dashboard-card-title hph-mb-4"><?php _e('Quick Actions', 'happy-place-theme'); ?></h3>
+                
+                <div class="hph-flex hph-flex-col hph-gap-sm">
+                    <?php if ($is_agent): ?>
+                        <button id="overview-quickAddListingBtn-actions" class="hph-btn hph-btn-primary hph-btn-md hph-w-full">
+                            <i class="fas fa-plus hph-mr-2"></i>
+                            <?php _e('Add New Listing', 'happy-place-theme'); ?>
+                        </button>
+                        
+                        <a href="?section=leads" class="hph-btn hph-btn-outline hph-btn-md hph-w-full">
+                            <i class="fas fa-user-plus hph-mr-2"></i>
+                            <?php _e('Add New Lead', 'happy-place-theme'); ?>
+                        </a>
+                        
+                        <a href="?section=analytics" class="hph-btn hph-btn-outline hph-btn-md hph-w-full">
+                            <i class="fas fa-chart-line hph-mr-2"></i>
+                            <?php _e('View Analytics', 'happy-place-theme'); ?>
+                        </a>
+                    <?php else: ?>
+                        <a href="<?php echo home_url('/listings/'); ?>" class="hph-btn hph-btn-primary hph-btn-md hph-w-full">
+                            <i class="fas fa-search hph-mr-2"></i>
+                            <?php _e('Search Properties', 'happy-place-theme'); ?>
+                        </a>
+                        
+                        <a href="?section=searches" class="hph-btn hph-btn-outline hph-btn-md hph-w-full">
+                            <i class="fas fa-bookmark hph-mr-2"></i>
+                            <?php _e('Saved Searches', 'happy-place-theme'); ?>
+                        </a>
+                        
+                        <a href="?section=favorites" class="hph-btn hph-btn-outline hph-btn-md hph-w-full">
+                            <i class="fas fa-heart hph-mr-2"></i>
+                            <?php _e('View Favorites', 'happy-place-theme'); ?>
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </div>
+            
+            <!-- Market Chart (Placeholder) -->
+            <div class="dashboard-card">
+                <div class="dashboard-card-header">
+                    <h3 class="dashboard-card-title">
+                        <?php echo $is_agent ? __('Performance', 'happy-place-theme') : __('Market Trends', 'happy-place-theme'); ?>
+                    </h3>
+                    <select class="hph-form-select hph-w-auto">
+                        <option><?php _e('Last 30 days', 'happy-place-theme'); ?></option>
+                        <option><?php _e('Last 3 months', 'happy-place-theme'); ?></option>
+                        <option><?php _e('Last year', 'happy-place-theme'); ?></option>
+                    </select>
+                </div>
+                <div class="hph-h-64 hph-flex hph-items-center hph-justify-center hph-bg-gray-50 hph-rounded-lg">
+                    <span class="hph-text-gray-400"><?php _e('Chart placeholder', 'happy-place-theme'); ?></span>
+                </div>
+            </div>
+            
+            <?php if ($is_agent): ?>
+                <!-- Upcoming Events - AJAX Powered -->
+                <div class="dashboard-card">
+                    <div class="dashboard-card-header">
+                        <h3 class="dashboard-card-title"><?php _e('Upcoming Events', 'happy-place-theme'); ?></h3>
+                        <a href="?section=open-houses" class="hph-text-sm hph-text-primary hover:hph-underline">
+                            <?php _e('View All', 'happy-place-theme'); ?>
+                        </a>
+                    </div>
+                    
+                    <!-- Events content will be populated via AJAX -->
+                    <div id="upcomingEventsContent">
+                        <div class="hph-text-center hph-py-8">
+                            <div class="hph-loading-spinner">
+                                <i class="fas fa-spinner fa-spin hph-text-2xl hph-text-gray-400"></i>
+                                <p class="hph-text-gray-500 hph-mt-2"><?php _e('Loading upcoming events...', 'happy-place-theme'); ?></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
     </div>
-</section>
+
+</div> <!-- End dashboard-content -->

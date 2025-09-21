@@ -80,7 +80,7 @@
 
             // Search input focus/blur styling
             $(document).on('focus.searchFilters', '.hph-search-input, input[name="s"]', function() {
-                $(this).css('border-color', 'var(--hph-primary, #3B82F6)');
+                $(this).css('border-color', 'var(--hph-primary)');
                 $(this).closest('.search-input-wrapper').addClass('focused');
             });
 
@@ -343,15 +343,12 @@
                 $input.removeAttr('onfocus').removeAttr('onblur');
             });
 
-            // Add proper hover effects for buttons
-            $('.hph-button, .search-button').hover(
-                function() {
-                    $(this).addClass('hover');
-                },
-                function() {
-                    $(this).removeClass('hover');
-                }
-            );
+            // Add proper hover effects for buttons using modern event listeners
+            $('.hph-button, .search-button').on('mouseenter', function() {
+                $(this).addClass('hover');
+            }).on('mouseleave', function() {
+                $(this).removeClass('hover');
+            });
         },
 
         /**

@@ -18,7 +18,8 @@
 /* 5. Feature Modules */
 @import url('features/listing/index.css');
 @import url('features/agent/index.css'); 
-@import url('features/dashboard/index.css');
+@import url('features/search/index.css');
+/* Dashboard styles loaded conditionally via PHP - not globally */
 @import url('features/marketing/index.css');
 
 /* 6. Utilities */

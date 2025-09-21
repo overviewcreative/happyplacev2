@@ -1,416 +1,505 @@
 <?php
 /**
- * Enhanced Simple Listing Archive Template
- * Using theme's CSS variables and utility classes properly
- * 
- * @package HappyPlaceTheme
+ * Enhanced Listing Archive Template
+ * Features: Multiple view modes, enhanced filtering, map integration
  */
 
+// Enqueue archive-specific assets BEFORE wp_head() runs
+wp_enqueue_style('hph-archive-enhanced', get_template_directory_uri() . '/assets/css/framework/features/listing/archive-enhanced.css', ['hph-framework'], '1.0.0');
+wp_enqueue_style('hph-archive-map-fixes', get_template_directory_uri() . '/assets/css/archive-map-fixes.css', ['hph-framework'], filemtime(get_template_directory() . '/assets/css/archive-map-fixes.css'));
+wp_enqueue_script('hph-archive-enhanced', get_template_directory_uri() . '/assets/js/pages/archive-listing-enhanced.js', ['hph-framework'], '1.0.0', true);
+
+// Enqueue HPH Map component for map view
+wp_enqueue_script('hph-map-component', get_template_directory_uri() . '/assets/js/components/hph-map.js', ['hph-framework'], '1.0.0', true);
+
+// Enqueue Mapbox GL JS if we have a token
+$mapbox_token = '';
+if (function_exists('hp_get_mapbox_token')) {
+    $mapbox_token = hp_get_mapbox_token();
+} else if (defined('HP_MAPBOX_ACCESS_TOKEN')) {
+    $mapbox_token = HP_MAPBOX_ACCESS_TOKEN;
+}
+
+if (!empty($mapbox_token)) {
+    wp_enqueue_style('mapbox-gl-css', 'https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css', [], '2.15.0');
+    wp_enqueue_script('mapbox-gl-js', 'https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js', [], '2.15.0', false);
+}
+
+// Add body class for archive page styling - this enables our CSS modifiers
+add_filter('body_class', function($classes) {
+    $classes[] = 'archive-listing';
+    return $classes;
+});
+
+// Use standard header with archive modifiers instead of custom header
 get_header();
 
-// Get filter parameters from URL
-$search_query = sanitize_text_field($_GET['s'] ?? '');
-$property_type = sanitize_text_field($_GET['property_type'] ?? '');
-$min_price = intval($_GET['min_price'] ?? 0);
-$max_price = intval($_GET['max_price'] ?? 0);
-$bedrooms = intval($_GET['bedrooms'] ?? 0);
-$bathrooms = intval($_GET['bathrooms'] ?? 0);
-$status = sanitize_text_field($_GET['status'] ?? '');
-$feature = sanitize_text_field($_GET['feature'] ?? '');
-$view = sanitize_text_field($_GET['view'] ?? 'grid');
-$sort = sanitize_text_field($_GET['sort'] ?? 'date_desc');
+// Add script to disable header scroll behavior for archive mode and expand search
+add_action('wp_footer', function() {
+    echo '<script>
+        // Disable header scroll handlers for archive mode
+        window.hphArchiveMode = true;
+        
+        // Override any header scroll functionality
+        if (typeof window.hphHeader !== "undefined" && window.hphHeader.destroy) {
+            window.hphHeader.destroy();
+        }
+        
+        // Remove any scroll event listeners that might interfere
+        document.addEventListener("DOMContentLoaded", function() {
+            window.removeEventListener("scroll", window.hphHeaderScroll);
+            
+            // Auto-expand header search on archive pages
+            setTimeout(function() {
+                const searchToggle = document.querySelector(".hph-search-toggle");
+                const searchBar = document.querySelector(".hph-search-bar[data-search-bar]");
+                
+                if (searchToggle && searchBar) {
+                    // Check if search is not already expanded
+                    if (!searchBar.classList.contains("active") && !searchBar.style.display === "block") {
+                        searchToggle.click();
+                        searchBar.classList.add("archive-auto-expanded");
+                        console.log("Archive: Header search auto-expanded");
+                    }
+                }
+            }, 100);
+        });
+    </script>';
+});
 
-// Build query args
+// Get Mapbox token for map functionality
+$mapbox_token = '';
+if (defined('HP_MAPBOX_ACCESS_TOKEN')) {
+    $mapbox_token = HP_MAPBOX_ACCESS_TOKEN;
+} else if (class_exists('\HappyPlace\Core\ConfigurationManager')) {
+    // Try to get from plugin configuration manager
+    $config_manager = \HappyPlace\Core\ConfigurationManager::get_instance();
+    $mapbox_token = $config_manager->get('mapbox_access_token', '');
+}
+
+// Set Mapbox configuration for HPH Map component
+if (!empty($mapbox_token)) {
+    wp_add_inline_script('hph-archive-enhanced', '
+        // Ensure Mapbox configuration is available for HPH Map component
+        window.hph_mapbox_config = window.hph_mapbox_config || {};
+        window.hph_mapbox_config.access_token = "' . esc_js($mapbox_token) . '";
+        
+        console.log("Archive: Mapbox token set for HPH Map component:", window.hph_mapbox_config.access_token ? window.hph_mapbox_config.access_token.substring(0, 20) + "..." : "NOT SET");
+    ', 'before');
+}
+
+// Get filter parameters (supporting both header search and advanced search formats)
+$search = sanitize_text_field($_GET['s'] ?? $_GET['search'] ?? '');
+
+// Handle price range from header search (format: "min-max") or advanced search (separate fields)
+$price_range = sanitize_text_field($_GET['price_range'] ?? '');
+$min_price = 0;
+$max_price = 0;
+
+if (!empty($price_range) && strpos($price_range, '-') !== false) {
+    list($min_price, $max_price) = explode('-', $price_range);
+    $min_price = intval($min_price);
+    $max_price = intval($max_price);
+} else {
+    $min_price = intval($_GET['min_price'] ?? 0);
+    $max_price = intval($_GET['max_price'] ?? 0);
+}
+
+$bedrooms = sanitize_text_field($_GET['bedrooms'] ?? '');
+$bathrooms = sanitize_text_field($_GET['bathrooms'] ?? '');
+$property_type = sanitize_text_field($_GET['property_type'] ?? '');
+$zip_code = sanitize_text_field($_GET['zip_code'] ?? '');
+
+// Build query
+$paged = get_query_var('paged') ? get_query_var('paged') : 1;
 $args = [
     'post_type' => 'listing',
-    'post_status' => 'publish',
+    'post_status' => 'publish', 
     'posts_per_page' => 12,
-    'paged' => get_query_var('paged') ?: 1,
-    'meta_query' => ['relation' => 'AND']
+    'paged' => $paged
 ];
 
 // Add search
-if (!empty($search_query)) {
-    $args['s'] = $search_query;
+if (!empty($search)) {
+    $args['s'] = $search;
+}
+
+// Initialize meta_query only if we need it
+$meta_queries = [];
+
+// Add price range filter
+if ($min_price || $max_price) {
+    $price_query = [
+        'key' => 'listing_price',
+        'type' => 'NUMERIC'
+    ];
+    
+    if ($min_price && $max_price) {
+        $price_query['value'] = [$min_price, $max_price];
+        $price_query['compare'] = 'BETWEEN';
+    } elseif ($min_price) {
+        $price_query['value'] = $min_price;
+        $price_query['compare'] = '>=';
+    } elseif ($max_price) {
+        $price_query['value'] = $max_price;
+        $price_query['compare'] = '<=';
+    }
+    
+    $meta_queries[] = $price_query;
+}
+
+// Add bedrooms filter
+if (!empty($bedrooms)) {
+    $bedroom_value = intval($bedrooms);
+    if ($bedrooms === '4+' || $bedroom_value >= 4) {
+        $meta_queries[] = [
+            'key' => 'bedrooms',
+            'value' => 4,
+            'type' => 'NUMERIC',
+            'compare' => '>='
+        ];
+    } else {
+        $meta_queries[] = [
+            'key' => 'bedrooms',
+            'value' => $bedroom_value,
+            'type' => 'NUMERIC',
+            'compare' => '>='
+        ];
+    }
+}
+
+// Add bathrooms filter
+if (!empty($bathrooms)) {
+    $bathroom_value = intval($bathrooms);
+    if ($bathrooms === '3+' || $bathroom_value >= 3) {
+        $meta_queries[] = [
+            'key' => 'bathrooms_full',
+            'value' => 3,
+            'type' => 'NUMERIC',
+            'compare' => '>='
+        ];
+    } else {
+        $meta_queries[] = [
+            'key' => 'bathrooms_full',
+            'value' => $bathroom_value,
+            'type' => 'NUMERIC',
+            'compare' => '>='
+        ];
+    }
 }
 
 // Add property type filter
 if (!empty($property_type)) {
-    $args['meta_query'][] = [
+    $meta_queries[] = [
         'key' => 'property_type',
         'value' => $property_type,
         'compare' => '='
     ];
 }
 
-// Add price filters
-if ($min_price > 0) {
-    $args['meta_query'][] = [
-        'key' => 'price',
-        'value' => $min_price,
-        'compare' => '>=',
-        'type' => 'NUMERIC'
-    ];
-}
-if ($max_price > 0) {
-    $args['meta_query'][] = [
-        'key' => 'price',
-        'value' => $max_price,
-        'compare' => '<=',
-        'type' => 'NUMERIC'
-    ];
-}
-
-// Add bedrooms filter
-if ($bedrooms > 0) {
-    $args['meta_query'][] = [
-        'key' => 'bedrooms',
-        'value' => $bedrooms,
-        'compare' => '>=',
-        'type' => 'NUMERIC'
-    ];
-}
-
-// Add bathrooms filter
-if ($bathrooms > 0) {
-    $args['meta_query'][] = [
-        'key' => 'bathrooms_full',
-        'value' => $bathrooms,
-        'compare' => '>=',
-        'type' => 'NUMERIC'
-    ];
-}
-
-// Add status filter
-if (!empty($status) && $status !== 'all') {
-    $args['meta_query'][] = [
-        'key' => 'listing_status',
-        'value' => $status,
+// Add zip code filter
+if (!empty($zip_code)) {
+    $meta_queries[] = [
+        'key' => 'zip_code',
+        'value' => $zip_code,
         'compare' => '='
     ];
 }
 
-// Add feature filter
-if (!empty($feature)) {
-    $args['meta_query'][] = [
-        'key' => $feature,
-        'value' => '1',
-        'compare' => '='
-    ];
+// Add meta_query to args only if we have filters
+if (!empty($meta_queries)) {
+    $args['meta_query'] = $meta_queries;
 }
 
-// Add sorting
-switch ($sort) {
-    case 'price_asc':
-        $args['meta_key'] = 'price';
-        $args['orderby'] = 'meta_value_num';
-        $args['order'] = 'ASC';
-        break;
-    case 'price_desc':
-        $args['meta_key'] = 'price';
-        $args['orderby'] = 'meta_value_num';
-        $args['order'] = 'DESC';
-        break;
-    case 'beds_desc':
-        $args['meta_key'] = 'bedrooms';
-        $args['orderby'] = 'meta_value_num';
-        $args['order'] = 'DESC';
-        break;
-    case 'newest':
-    default:
-        $args['orderby'] = 'date';
-        $args['order'] = 'DESC';
-        break;
-}
-
-// Execute query
-$listings_query = new WP_Query($args);
-
-// Helper function to build URL with params
-function build_filter_url($additional_params = []) {
-    $base_url = get_post_type_archive_link('listing');
-    $current_params = $_GET;
-    $params = array_merge($current_params, $additional_params);
-    
-    // Remove empty params
-    $params = array_filter($params, function($value) {
-        return $value !== '' && $value !== '0' && $value !== 0;
-    });
-    
-    if (!empty($params)) {
-        return $base_url . '?' . http_build_query($params);
-    }
-    return $base_url;
-}
+$listings = new WP_Query($args);
 ?>
 
-<!-- Hero Section -->
-<section class="hph-bg-gradient-primary hph-py-xl hph-mb-lg">
-    <div class="hph-container">
-        <div class="hph-max-w-3xl hph-mx-auto hph-text-center hph-text-white">
-            <h1 class="hph-text-4xl hph-font-bold hph-mb-md">Find Your Perfect Home</h1>
-            <p class="hph-text-lg hph-opacity-90">
-                <?php printf('%d listings available', $listings_query->found_posts); ?>
-            </p>
-        </div>
-    </div>
-</section>
+<div class="hph-listing-archive hph-clean-layout">
 
-<div class="hph-container hph-py-lg">
-    
-    <!-- Search & Filters Card -->
-    <div class="hph-bg-white hph-rounded-xl hph-shadow-md hph-p-lg hph-mb-lg">
-        <form method="get" id="filter-form">
-            <!-- Hidden fields for view and sort -->
-            <input type="hidden" name="view" value="<?php echo esc_attr($view); ?>">
-            <input type="hidden" name="sort" value="<?php echo esc_attr($sort); ?>">
-            
-            <div class="hph-grid hph-grid-cols-1 md:hph-grid-cols-4 hph-gap-md hph-mb-md">
+    <!-- Archive Hero Section - Hidden in Map View -->
+    <div class="hph-archive-hero-section" data-hide-in-views="map">
+        <?php 
+        // Get count of current listings
+        $total_listings = $listings->found_posts;
+        
+        // Build search terms display
+        $search_terms = [];
+        if ($search) $search_terms[] = "Search: \"$search\"";
+        if ($min_price || $max_price) {
+            if ($min_price && $max_price) {
+                $search_terms[] = "Price: $" . number_format($min_price) . " - $" . number_format($max_price);
+            } elseif ($min_price) {
+                $search_terms[] = "Min Price: $" . number_format($min_price);
+            } else {
+                $search_terms[] = "Max Price: $" . number_format($max_price);
+            }
+        }
+        if ($bedrooms) $search_terms[] = "Beds: $bedrooms" . ($bedrooms === '4+' ? '' : '+');
+        if ($bathrooms) $search_terms[] = "Baths: $bathrooms" . ($bathrooms === '3+' ? '' : '+');
+        if ($property_type) $search_terms[] = "Type: " . ucfirst(str_replace('-', ' ', $property_type));
+        if ($zip_code) $search_terms[] = "Zip: $zip_code";
+        
+        $subtitle = empty($search_terms) 
+            ? "Discover your perfect home from our extensive collection of properties" 
+            : "Found " . number_format($total_listings) . " properties matching: " . implode(', ', $search_terms);
+        
+        get_template_part('template-parts/sections/archive-hero', null, [
+            'style' => 'image',
+            'background_image' => get_template_directory_uri() . '/assets/images/hero-bg.jpg',
+            'height' => 'md',
+            'overlay' => 'dark',
+            'overlay_opacity' => '50',
+            'headline' => empty($search_terms) ? 'Browse All Properties' : 'Property Search Results',
+            'subheadline' => $subtitle,
+            'show_search' => false, // Hide search form since header search is expanded
+            'fade_in' => true,
+            'alignment' => 'center'
+        ]); 
+        ?>
+    </div>
+
+    <!-- Standard Views (Grid & List) - Hidden in Map View -->
+    <div class="hph-standard-views-container" data-hide-in-views="map">
+        <?php if ($listings->have_posts()) : ?>
+        <div class="hph-listings-container">
+            <div class="hph-container">
                 
-                <!-- Search Field -->
-                <div class="md:hph-col-span-2">
-                    <label class="hph-block hph-mb-xs hph-font-medium hph-text-gray-700">Search</label>
-                    <input type="text" name="s" value="<?php echo esc_attr($search_query); ?>" 
-                           placeholder="City, address, or MLS#"
-                           class="hph-w-full hph-px-md hph-py-sm hph-border-2 hph-border-gray-200 hph-rounded-lg focus:hph-border-primary focus:hph-outline-none">
+                <!-- Grid View -->
+                <div class="hph-listings-grid hph-view-content active" data-view-content="grid">
+                    <div class="hph-grid hph-grid-cols-1 md:hph-grid-cols-2 xl:hph-grid-cols-3 hph-gap-xl">
+                        <?php while ($listings->have_posts()) : $listings->the_post(); ?>
+                            <?php get_template_part('template-parts/listing-card-enhanced', null, ['listing_id' => get_the_ID()]); ?>
+                        <?php endwhile; ?>
+                    </div>
                 </div>
                 
-                <!-- Property Type -->
-                <div>
-                    <label class="hph-block hph-mb-xs hph-font-medium hph-text-gray-700">Property Type</label>
-                    <select name="property_type" class="hph-w-full hph-px-md hph-py-sm hph-border-2 hph-border-gray-200 hph-rounded-lg focus:hph-border-primary focus:hph-outline-none">
-                        <option value="">All Types</option>
-                        <option value="single-family" <?php selected($property_type, 'single-family'); ?>>Single Family</option>
-                        <option value="condo" <?php selected($property_type, 'condo'); ?>>Condo</option>
-                        <option value="townhome" <?php selected($property_type, 'townhome'); ?>>Townhome</option>
-                        <option value="land" <?php selected($property_type, 'land'); ?>>Land</option>
-                    </select>
-                </div>
-                
-                <!-- Status -->
-                <div>
-                    <label class="hph-block hph-mb-xs hph-font-medium hph-text-gray-700">Status</label>
-                    <select name="status" class="hph-w-full hph-px-md hph-py-sm hph-border-2 hph-border-gray-200 hph-rounded-lg focus:hph-border-primary focus:hph-outline-none">
-                        <option value="">All Status</option>
-                        <option value="active" <?php selected($status, 'active'); ?>>Active</option>
-                        <option value="pending" <?php selected($status, 'pending'); ?>>Pending</option>
-                        <option value="sold" <?php selected($status, 'sold'); ?>>Sold</option>
-                    </select>
-                </div>
-                
-                <!-- Bedrooms -->
-                <div>
-                    <label class="hph-block hph-mb-xs hph-font-medium hph-text-gray-700">Bedrooms</label>
-                    <select name="bedrooms" class="hph-w-full hph-px-md hph-py-sm hph-border-2 hph-border-gray-200 hph-rounded-lg focus:hph-border-primary focus:hph-outline-none">
-                        <option value="0">Any</option>
-                        <option value="1" <?php selected($bedrooms, 1); ?>>1+</option>
-                        <option value="2" <?php selected($bedrooms, 2); ?>>2+</option>
-                        <option value="3" <?php selected($bedrooms, 3); ?>>3+</option>
-                        <option value="4" <?php selected($bedrooms, 4); ?>>4+</option>
-                    </select>
-                </div>
-                
-                <!-- Min Price -->
-                <div>
-                    <label class="hph-block hph-mb-xs hph-font-medium hph-text-gray-700">Min Price</label>
-                    <select name="min_price" class="hph-w-full hph-px-md hph-py-sm hph-border-2 hph-border-gray-200 hph-rounded-lg focus:hph-border-primary focus:hph-outline-none">
-                        <option value="0">No Min</option>
-                        <option value="100000" <?php selected($min_price, 100000); ?>>$100,000</option>
-                        <option value="200000" <?php selected($min_price, 200000); ?>>$200,000</option>
-                        <option value="300000" <?php selected($min_price, 300000); ?>>$300,000</option>
-                        <option value="500000" <?php selected($min_price, 500000); ?>>$500,000</option>
-                    </select>
-                </div>
-                
-                <!-- Max Price -->
-                <div>
-                    <label class="hph-block hph-mb-xs hph-font-medium hph-text-gray-700">Max Price</label>
-                    <select name="max_price" class="hph-w-full hph-px-md hph-py-sm hph-border-2 hph-border-gray-200 hph-rounded-lg focus:hph-border-primary focus:hph-outline-none">
-                        <option value="0">No Max</option>
-                        <option value="300000" <?php selected($max_price, 300000); ?>>$300,000</option>
-                        <option value="500000" <?php selected($max_price, 500000); ?>>$500,000</option>
-                        <option value="750000" <?php selected($max_price, 750000); ?>>$750,000</option>
-                        <option value="1000000" <?php selected($max_price, 1000000); ?>>$1,000,000</option>
-                    </select>
-                </div>
-                
-                <!-- Submit Button -->
-                <div class="hph-flex hph-items-end">
-                    <button type="submit" class="hph-btn hph-btn-primary hph-w-full">
-                        <i class="fas fa-search hph-mr-sm"></i> Search
-                    </button>
+                <!-- List View -->
+                <div class="hph-listings-list hph-view-content" data-view-content="list">
+                    <div class="hph-list-container">
+                        <?php $listings->rewind_posts(); while ($listings->have_posts()) : $listings->the_post(); ?>
+                            <?php get_template_part('template-parts/listing-card-list', null, ['listing_id' => get_the_ID()]); ?>
+                        <?php endwhile; ?>
+                    </div>
                 </div>
             </div>
+        </div>
+        <?php endif; ?>
+    </div>
+
+    <!-- Map View - Full Viewport (No Scroll) -->
+    <?php
+    // Build listings data for map BEFORE using it
+    $map_listings = [];
+    if ($listings->have_posts()) {
+        while ($listings->have_posts()) {
+            $listings->the_post();
+            $listing_id = get_the_ID();
             
-            <!-- Quick Filters -->
-            <div class="hph-flex hph-flex-wrap hph-gap-sm hph-pt-md hph-border-t">
-                <span class="hph-font-medium hph-text-gray-700 hph-mr-sm">Quick Filters:</span>
-                <a href="<?php echo build_filter_url(['feature' => 'waterfront']); ?>" 
-                   class="hph-px-md hph-py-xs hph-rounded-full hph-border-2 <?php echo $feature === 'waterfront' ? 'hph-bg-primary hph-text-white hph-border-primary' : 'hph-border-gray-300 hph-text-gray-700 hover:hph-border-primary'; ?>">
-                    <i class="fas fa-water"></i> Waterfront
-                </a>
-                <a href="<?php echo build_filter_url(['feature' => 'pool']); ?>"
-                   class="hph-px-md hph-py-xs hph-rounded-full hph-border-2 <?php echo $feature === 'pool' ? 'hph-bg-primary hph-text-white hph-border-primary' : 'hph-border-gray-300 hph-text-gray-700 hover:hph-border-primary'; ?>">
-                    <i class="fas fa-swimming-pool"></i> Pool
-                </a>
-                <a href="<?php echo build_filter_url(['feature' => 'garage']); ?>"
-                   class="hph-px-md hph-py-xs hph-rounded-full hph-border-2 <?php echo $feature === 'garage' ? 'hph-bg-primary hph-text-white hph-border-primary' : 'hph-border-gray-300 hph-text-gray-700 hover:hph-border-primary'; ?>">
-                    <i class="fas fa-warehouse"></i> Garage
-                </a>
-                <?php if($search_query || $property_type || $min_price || $max_price || $bedrooms || $status || $feature): ?>
-                    <a href="<?php echo get_post_type_archive_link('listing'); ?>" class="hph-px-md hph-py-xs hph-rounded-full hph-border-2 hph-border-danger hph-text-danger hover:hph-bg-danger hover:hph-text-white hph-ml-auto">
-                        <i class="fas fa-times"></i> Clear All
-                    </a>
+            // Get coordinates
+            $coordinates = null;
+            if (function_exists('hpt_get_listing_coordinates')) {
+                try {
+                    $coordinates = hpt_get_listing_coordinates($listing_id);
+                } catch (Exception $e) {
+                    $lat = get_field('latitude', $listing_id);
+                    $lng = get_field('longitude', $listing_id);
+                    $coordinates = ($lat && $lng) ? ['lat' => floatval($lat), 'lng' => floatval($lng)] : null;
+                }
+            } else {
+                $lat = get_field('latitude', $listing_id);
+                $lng = get_field('longitude', $listing_id);
+                $coordinates = ($lat && $lng) ? ['lat' => floatval($lat), 'lng' => floatval($lng)] : null;
+            }
+            
+            if ($coordinates && $coordinates['lat'] && $coordinates['lng']) {
+                // Build listing data for map
+                $listing_data = [
+                    'id' => $listing_id,
+                    'title' => get_the_title($listing_id),
+                    'latitude' => $coordinates['lat'],
+                    'longitude' => $coordinates['lng'],
+                    'permalink' => get_permalink($listing_id),
+                    'status' => get_field('listing_status', $listing_id) ?: 'active',
+                    'featured_image' => get_the_post_thumbnail_url($listing_id, 'medium')
+                ];
+                
+                // Add price
+                if (function_exists('hpt_get_listing_price')) {
+                    try {
+                        $listing_data['price'] = hpt_get_listing_price($listing_id);
+                    } catch (Exception $e) {
+                        $listing_data['price'] = get_field('price', $listing_id);
+                    }
+                } else {
+                    $listing_data['price'] = get_field('price', $listing_id);
+                }
+                
+                // Add basic stats
+                $listing_data['bedrooms'] = get_field('bedrooms', $listing_id);
+                $listing_data['bathrooms'] = get_field('bathrooms_full', $listing_id);
+                $listing_data['square_feet'] = get_field('square_feet', $listing_id);
+                
+                // Add address
+                if (function_exists('hpt_get_listing_address')) {
+                    try {
+                        $address_data = hpt_get_listing_address($listing_id);
+                        $listing_data['street_address'] = $address_data['street_address'] ?? '';
+                        $listing_data['city'] = $address_data['city'] ?? '';
+                        $listing_data['state'] = $address_data['state'] ?? '';
+                        $listing_data['zip_code'] = $address_data['zip_code'] ?? '';
+                    } catch (Exception $e) {
+                        $listing_data['street_address'] = trim((get_field('street_number', $listing_id) ?: '') . ' ' . (get_field('street_name', $listing_id) ?: '') . ' ' . (get_field('street_type', $listing_id) ?: ''));
+                        $listing_data['city'] = get_field('city', $listing_id);
+                        $listing_data['state'] = get_field('state', $listing_id);
+                        $listing_data['zip_code'] = get_field('zip_code', $listing_id);
+                    }
+                } else {
+                    $listing_data['street_address'] = trim((get_field('street_number', $listing_id) ?: '') . ' ' . (get_field('street_name', $listing_id) ?: '') . ' ' . (get_field('street_type', $listing_id) ?: ''));
+                    $listing_data['city'] = get_field('city', $listing_id);
+                    $listing_data['state'] = get_field('state', $listing_id);
+                    $listing_data['zip_code'] = get_field('zip_code', $listing_id);
+                }
+                
+                $map_listings[] = $listing_data;
+            }
+        }
+        wp_reset_postdata();
+    }
+    
+    // Calculate center point from all listings
+    $map_center = [-75.1398, 38.7816]; // Default to Delaware
+    if (!empty($map_listings)) {
+        $avg_lat = array_sum(array_column($map_listings, 'latitude')) / count($map_listings);
+        $avg_lng = array_sum(array_column($map_listings, 'longitude')) / count($map_listings);
+        $map_center = [$avg_lng, $avg_lat];
+    }
+    ?>
+    
+    <div class="hph-map-view-layout hph-view-content" data-view-content="map" style="display: none;">
+        
+        <!-- Map Container for Archive Enhanced System -->
+        <div id="mapbox-listings-map" 
+             class="hph-map-canvas"
+             data-map-center="<?php echo esc_attr(json_encode($map_center)); ?>"
+             data-map-zoom="12"
+             data-map-style="mapbox://styles/mapbox/light-v11"
+             data-map-listings="<?php echo esc_attr(json_encode($map_listings)); ?>"
+             <?php if (!empty($zip_code)) : ?>
+                data-zip-code="<?php echo esc_attr($zip_code); ?>"
+                data-show-zip-boundary="true"
+             <?php endif; ?>
+             style="height: 100vh; width: 100vw;">
+            <div class="hph-map-loading">
+                <div class="hph-map-spinner"></div>
+                <p>Loading map...</p>
+            </div>
+        </div>
+        
+        <!-- Floating sidebar panel -->
+        <div class="hph-map-panel">
+            <div class="hph-map-panel-header">
+                <div class="hph-map-panel-title">
+                    <?php if ($listings->have_posts()) : ?>
+                        <strong><?php echo number_format($listings->found_posts); ?></strong> 
+                        propert<?php echo $listings->found_posts != 1 ? 'ies' : 'y'; ?> found
+                    <?php else : ?>
+                        No properties found
+                    <?php endif; ?>
+                </div>
+                <button class="hph-map-panel-close" aria-label="Close map view">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="hph-map-panel-content">
+                <?php if ($listings->have_posts()) : ?>
+                    <div class="hph-map-listings">
+                        <?php $listings->rewind_posts(); while ($listings->have_posts()) : $listings->the_post(); ?>
+                            <?php get_template_part('template-parts/listing-card-map', null, ['listing_id' => get_the_ID()]); ?>
+                        <?php endwhile; ?>
+                    </div>
+                <?php else : ?>
+                    <div class="hph-map-empty">
+                        <p>No properties to display on the map.</p>
+                    </div>
                 <?php endif; ?>
             </div>
-        </form>
-    </div>
-    
-    <!-- Controls Bar -->
-    <div class="hph-bg-white hph-rounded-lg hph-shadow-sm hph-p-md hph-mb-lg">
-        <div class="hph-flex hph-justify-between hph-items-center hph-flex-wrap hph-gap-md">
-            
-            <!-- Results Count -->
-            <div class="hph-text-gray-600">
-                <span class="hph-font-semibold hph-text-gray-900"><?php echo $listings_query->found_posts; ?></span> 
-                listings found
-            </div>
-            
-            <!-- View & Sort Controls -->
-            <div class="hph-flex hph-items-center hph-gap-md">
-                
-                <!-- View Switcher -->
-                <div class="hph-btn-group">
-                    <a href="<?php echo build_filter_url(['view' => 'grid']); ?>" 
-                       class="hph-btn-sm <?php echo $view === 'grid' ? 'hph-btn-primary' : 'hph-btn-outline'; ?>">
-                        <i class="fas fa-th"></i> Grid
-                    </a>
-                    <a href="<?php echo build_filter_url(['view' => 'list']); ?>" 
-                       class="hph-btn-sm <?php echo $view === 'list' ? 'hph-btn-primary' : 'hph-btn-outline'; ?>">
-                        <i class="fas fa-list"></i> List
-                    </a>
-                </div>
-                
-                <!-- Sort Dropdown -->
-                <select onchange="window.location.href=this.value" class="hph-px-md hph-py-sm hph-border-2 hph-border-gray-200 hph-rounded-lg">
-                    <option value="<?php echo build_filter_url(['sort' => 'newest']); ?>" <?php selected($sort, 'newest'); ?>>Newest First</option>
-                    <option value="<?php echo build_filter_url(['sort' => 'price_asc']); ?>" <?php selected($sort, 'price_asc'); ?>>Price: Low to High</option>
-                    <option value="<?php echo build_filter_url(['sort' => 'price_desc']); ?>" <?php selected($sort, 'price_desc'); ?>>Price: High to Low</option>
-                    <option value="<?php echo build_filter_url(['sort' => 'beds_desc']); ?>" <?php selected($sort, 'beds_desc'); ?>>Most Bedrooms</option>
-                </select>
-            </div>
         </div>
     </div>
-    
-    <!-- Listings -->
-    <?php if ($listings_query->have_posts()): ?>
-        
-        <!-- Grid/List Container -->
-        <div class="<?php echo $view === 'list' ? 'hph-space-y-md' : 'hph-grid hph-grid-cols-1 md:hph-grid-cols-2 lg:hph-grid-cols-3 hph-gap-lg'; ?>">
-            <?php while ($listings_query->have_posts()): $listings_query->the_post(); ?>
-                <?php 
-                // Use the simple card template
-                get_template_part('template-parts/listing-card', $view, ['listing_id' => get_the_ID()]); 
-                ?>
-            <?php endwhile; ?>
-        </div>
-        
-        <!-- Pagination -->
-        <?php if ($listings_query->max_num_pages > 1): ?>
-            <nav class="hph-mt-xl hph-flex hph-justify-center">
-                <div class="hph-pagination">
-                    <?php
-                    echo paginate_links([
-                        'total' => $listings_query->max_num_pages,
-                        'current' => max(1, get_query_var('paged')),
-                        'format' => '?paged=%#%',
-                        'base' => build_filter_url() . '%_%',
-                        'add_args' => false,
-                        'prev_text' => '<i class="fas fa-chevron-left"></i>',
-                        'next_text' => '<i class="fas fa-chevron-right"></i>',
-                        'type' => 'list',
-                        'end_size' => 2,
-                        'mid_size' => 1
-                    ]);
-                    ?>
+
+    <?php if ($listings->have_posts()) : ?>
+
+        <!-- Pagination Section -->
+        <?php if ($listings->max_num_pages > 1) : ?>
+            <div class="hph-pagination-section">
+                <div class="hph-container">
+                    <nav class="hph-pagination-nav" aria-label="Listings pagination">
+                        <?php
+                        $pagination_links = paginate_links([
+                            'total' => $listings->max_num_pages,
+                            'current' => $paged,
+                            'prev_text' => '<i class="fas fa-chevron-left"></i><span>Previous</span>',
+                            'next_text' => '<span>Next</span><i class="fas fa-chevron-right"></i>',
+                            'type' => 'array',
+                            'before_page_number' => '<span class="page-number">',
+                            'after_page_number' => '</span>'
+                        ]);
+                        
+                        if (is_array($pagination_links)) {
+                            echo '<div class="hph-pagination-container">';
+                            foreach ($pagination_links as $link) {
+                                echo $link;
+                            }
+                            echo '</div>';
+                        }
+                        ?>
+                    </nav>
+                    
+                    <!-- Results Summary -->
+                    <div class="hph-pagination-summary">
+                        <span>
+                            Showing 
+                            <strong><?php echo (($paged - 1) * 12) + 1; ?></strong>
+                            to 
+                            <strong><?php echo min($paged * 12, $listings->found_posts); ?></strong>
+                            of 
+                            <strong><?php echo number_format($listings->found_posts); ?></strong>
+                            properties
+                        </span>
+                    </div>
                 </div>
-            </nav>
+            </div>
         <?php endif; ?>
-        
-    <?php else: ?>
-        
-        <!-- No Results -->
-        <div class="hph-text-center hph-py-xl">
-            <div class="hph-mb-lg">
-                <i class="fas fa-home hph-text-gray-300 hph-text-6xl"></i>
+
+    <?php else : ?>
+        <!-- Empty State -->
+        <div class="hph-empty-state">
+            <div class="hph-container">
+                <div class="hph-empty-content">
+                    <div class="hph-empty-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h2 class="hph-empty-title">No Properties Found</h2>
+                    <p class="hph-empty-description">
+                        We couldn't find any properties matching your criteria. 
+                        Try adjusting your filters or <a href="<?php echo get_post_type_archive_link('listing'); ?>">browse all properties</a>.
+                    </p>
+                    <div class="hph-empty-actions">
+                        <a href="<?php echo get_post_type_archive_link('listing'); ?>" class="hph-btn hph-btn-primary">
+                            <i class="fas fa-home"></i>
+                            View All Properties
+                        </a>
+                        <button type="button" class="hph-btn hph-btn-ghost" onclick="document.querySelector('[data-filter-toggle]')?.click()">
+                            <i class="fas fa-filter"></i>
+                            Modify Filters
+                        </button>
+                    </div>
+                </div>
             </div>
-            <h3 class="hph-text-2xl hph-font-semibold hph-mb-md">No Listings Found</h3>
-            <p class="hph-text-gray-600 hph-mb-lg">
-                Try adjusting your search criteria or removing some filters.
-            </p>
-            <a href="<?php echo get_post_type_archive_link('listing'); ?>" class="hph-btn hph-btn-primary">
-                View All Listings
-            </a>
         </div>
-        
     <?php endif; ?>
-    
+
 </div>
-
-<!-- Simple CSS for pagination styling -->
-<style>
-.hph-pagination ul {
-    display: flex;
-    gap: var(--hph-gap-sm);
-    list-style: none;
-    padding: 0;
-}
-
-.hph-pagination a,
-.hph-pagination .current {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 40px;
-    height: 40px;
-    padding: 0 var(--hph-padding-md);
-    border: 2px solid var(--hph-gray-300);
-    border-radius: var(--hph-radius-md);
-    color: var(--hph-gray-700);
-    text-decoration: none;
-    transition: var(--hph-transition-fast);
-}
-
-.hph-pagination a:hover {
-    border-color: var(--hph-primary);
-    color: var(--hph-primary);
-}
-
-.hph-pagination .current {
-    background: var(--hph-primary);
-    color: var(--hph-white);
-    border-color: var(--hph-primary);
-}
-
-.hph-btn-group {
-    display: inline-flex;
-    border-radius: var(--hph-radius-md);
-    overflow: hidden;
-}
-
-.hph-btn-group .hph-btn-sm {
-    border-radius: 0;
-    margin: 0;
-}
-
-.hph-btn-group .hph-btn-sm:first-child {
-    border-radius: var(--hph-radius-md) 0 0 var(--hph-radius-md);
-}
-
-.hph-btn-group .hph-btn-sm:last-child {
-    border-radius: 0 var(--hph-radius-md) var(--hph-radius-md) 0;
-}
-</style>
 
 <?php
 wp_reset_postdata();

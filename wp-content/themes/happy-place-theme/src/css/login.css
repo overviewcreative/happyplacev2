@@ -1,22 +1,24 @@
 /* ================================================
-   CUSTOM LOGIN PAGE STYLES
+   CUSTOM LOGIN & REGISTRATION PAGE STYLES
    Using HPH Framework Variables and Utilities
    ================================================ */
 
 /* ================================================
    LOGIN PAGE LAYOUT
    ================================================ */
-.hph-login-page {
+.hph-login-page,
+.hph-registration-page {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
 /* ================================================
-   LOGIN HERO SECTION
+   HERO SECTION
    ================================================ */
-.hph-login-hero {
-    background: linear-gradient(135deg, var(--hph-primary) 0%, var(--hph-primary-dark, #0056b3) 100%);
+.hph-login-hero,
+.hph-registration-hero {
+    background: linear-gradient(135deg, var(--hph-primary) 0%, var(--hph-primary-dark, #005a9a) 100%);
     position: relative;
     overflow: hidden;
 }
@@ -27,13 +29,14 @@
 }
 
 /* ================================================
-   LOGIN FORM SECTION
+   FORM SECTION
    ================================================ */
-.hph-login-form-section {
+.hph-login-form-section,
+.hph-registration-form-section {
     flex: 1;
     display: flex;
     align-items: center;
-    background-color: var(--hph-gray-50);
+    background-color: var(--hph-gray-100);
     background-image: 
         radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.03) 0%, transparent 50%),
         radial-gradient(circle at 80% 20%, rgba(120, 119, 198, 0.03) 0%, transparent 50%),
@@ -41,9 +44,10 @@
 }
 
 /* ================================================
-   LOGIN CARD
+   LOGIN & REGISTRATION CARDS
    ================================================ */
-.hph-login-card {
+.hph-login-card,
+.hph-registration-card {
     background: var(--hph-white);
     border-radius: var(--hph-radius-lg, 0.5rem);
     box-shadow: 
@@ -53,7 +57,8 @@
     transition: all var(--hph-transition-base, 0.3s ease);
 }
 
-.hph-login-card:hover {
+.hph-login-card:hover,
+.hph-registration-card:hover {
     box-shadow: 
         0 20px 40px -10px rgba(0, 0, 0, 0.15),
         0 10px 20px -5px rgba(0, 0, 0, 0.08);
@@ -61,7 +66,7 @@
 }
 
 /* ================================================
-   LOGIN LOGO
+   LOGO STYLING
    ================================================ */
 .hph-login-logo {
     height: 3rem;
@@ -96,6 +101,197 @@
 
 .hph-password-toggle:hover {
     color: var(--hph-gray-600);
+}
+
+.hph-password-toggle:focus {
+    outline: 2px solid var(--hph-primary);
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+}
+
+/* ================================================
+   FORM INPUT ICONS
+   ================================================ */
+.hph-form-input-icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--hph-gray-400);
+    transition: color var(--hph-transition-fast, 0.15s ease);
+}
+
+.hph-form-input-icon-left {
+    left: 0.75rem;
+}
+
+.hph-form-input-icon-right {
+    right: 0.75rem;
+}
+
+/* ================================================
+   FORM VALIDATION STATES
+   ================================================ */
+.hph-form-input:focus + .hph-form-input-icon,
+.hph-form-input:not(:placeholder-shown) + .hph-form-input-icon {
+    color: var(--hph-primary);
+}
+
+.hph-form-input.is-invalid {
+    border-color: var(--hph-danger);
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.hph-form-input.is-invalid + .hph-form-input-icon {
+    color: var(--hph-danger);
+}
+
+.hph-form-input.is-valid {
+    border-color: var(--hph-success);
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+}
+
+.hph-form-input.is-valid + .hph-form-input-icon {
+    color: var(--hph-success);
+}
+
+/* ================================================
+   ALERT STYLES
+   ================================================ */
+.hph-alert {
+    padding: 0.75rem 1rem;
+    border-radius: var(--hph-radius, 0.375rem);
+    border: 1px solid transparent;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.hph-alert-success {
+    background-color: rgba(40, 167, 69, 0.1);
+    border-color: var(--hph-success);
+    color: var(--hph-success);
+}
+
+.hph-alert-danger {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-color: var(--hph-danger);
+    color: var(--hph-danger);
+}
+
+.hph-alert-warning {
+    background-color: rgba(255, 193, 7, 0.1);
+    border-color: var(--hph-warning);
+    color: #856404;
+}
+
+.hph-alert-info {
+    background-color: rgba(23, 162, 184, 0.1);
+    border-color: var(--hph-info);
+    color: var(--hph-info);
+}
+
+/* ================================================
+   CHECKBOX AND FORM CONTROLS
+   ================================================ */
+.hph-form-checkbox {
+    accent-color: var(--hph-primary);
+}
+
+.hph-form-checkbox:focus {
+    outline: 2px solid var(--hph-primary);
+    outline-offset: 2px;
+}
+
+/* ================================================
+   BUTTON ENHANCEMENTS
+   ================================================ */
+.hph-btn-block {
+    width: 100%;
+    display: block;
+}
+
+/* ================================================
+   LOADING STATES
+   ================================================ */
+.hph-login-form.is-loading .hph-btn,
+.hph-registration-form.is-loading .hph-btn {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+}
+
+.hph-login-form.is-loading .hph-btn::after,
+.hph-registration-form.is-loading .hph-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ================================================
+   RESPONSIVE DESIGN
+   ================================================ */
+@media (max-width: 768px) {
+    .hph-login-card,
+    .hph-registration-card {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .hph-login-hero h1,
+    .hph-registration-hero h1 {
+        font-size: 2rem;
+    }
+    
+    .hph-form-grid-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ================================================
+   ACCESSIBILITY ENHANCEMENTS
+   ================================================ */
+@media (prefers-reduced-motion: reduce) {
+    .hph-login-card,
+    .hph-registration-card,
+    .hph-form-input-focused,
+    .hph-password-toggle,
+    .hph-form-input-icon {
+        transition: none;
+    }
+    
+    .hph-login-card:hover,
+    .hph-registration-card:hover {
+        transform: none;
+    }
+    
+    @keyframes spin {
+        0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .hph-login-card,
+    .hph-registration-card {
+        border: 2px solid var(--hph-gray-900);
+    }
+    
+    .hph-form-input {
+        border-width: 2px;
+    }
 }
 
 /* ================================================

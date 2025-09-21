@@ -88,8 +88,8 @@
 
 /* Section wrapper - handles vertical spacing */
 .hph-section {
-  padding-top: var(--hph-section-padding-y, 4rem);
-  padding-bottom: var(--hph-section-padding-y, 4rem);
+  padding-top: 2rem;
+  padding-bottom: 2rem;
 }
 
 .hph-section-sm {
@@ -201,4 +201,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.hph-hero-section {
+  padding-top: 80px;
 }

@@ -194,8 +194,8 @@ if (!wp_style_is('hph-archive-controls', 'enqueued')) :
     border-right: 0;
 }
 .hph-archive-controls .hph-view-button.hph-active {
-    background-color: var(--hph-primary-500, #3b82f6);
-    border-color: var(--hph-primary-500, #3b82f6);
+    background-color: var(--hph-primary-500, var(--hph-primary));
+    border-color: var(--hph-primary-500, var(--hph-primary));
     color: white;
 }
 </style>

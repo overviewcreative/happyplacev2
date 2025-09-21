@@ -130,6 +130,26 @@ class HPH_Router implements HPH_Service {
      * Template routing
      */
     public function template_routing($template) {
+        // Skip custom routing for WordPress page templates
+        if (is_page()) {
+            $page_template = get_page_template_slug();
+            
+            // Allow dashboard and user system templates to use WordPress hierarchy
+            $excluded_templates = array(
+                'page-dashboard.php',
+                'page-user-dashboard.php', 
+                'page-test-dashboard.php',
+                'page-login.php',
+                'page-registration.php',
+                'page-contact.php'
+            );
+            
+            if (in_array($page_template, $excluded_templates)) {
+                return $template; // Let WordPress handle these templates normally
+            }
+        }
+        
+        // Process custom routes only for non-page requests or pages without excluded templates
         foreach ($this->routes as $key => $route) {
             if (get_query_var($route['query_var'])) {
                 // Check authentication if required

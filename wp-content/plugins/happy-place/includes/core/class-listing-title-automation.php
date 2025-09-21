@@ -136,7 +136,7 @@ class ListingTitleAutomation {
     public function build_listing_title($post_id): string {
         $street_number = get_field('street_number', $post_id);
         $street_name = get_field('street_name', $post_id);
-        $street_type = get_field('street_suffix', $post_id); // Note: using street_suffix field
+        $street_type = get_field('street_type', $post_id); // Corrected field name
         
         if (empty($street_number) || empty($street_name)) {
             return '';

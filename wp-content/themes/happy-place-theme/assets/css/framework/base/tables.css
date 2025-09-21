@@ -551,7 +551,7 @@
 }
 
 .hph-table-info {
-  background: rgba(59, 130, 246, 0.1) !important;
+  background: rgba(var(--hph-primary-rgb), 0.1) !important;
 }
 
 /* ================================================

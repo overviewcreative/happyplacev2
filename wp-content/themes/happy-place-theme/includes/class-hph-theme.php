@@ -49,20 +49,18 @@ class HPH_Theme {
      */
     private function define_constants() {
         // Asset paths
-        define('HPH_ASSETS_DIR', HPH_THEME_DIR . '/assets');
-        define('HPH_ASSETS_URI', HPH_THEME_URI . '/assets');
-        define('HPH_CSS_URI', HPH_ASSETS_URI . '/css');
-        define('HPH_JS_URI', HPH_ASSETS_URI . '/js');
-        define('HPH_IMAGES_URI', HPH_ASSETS_URI . '/images');
+        if (!defined('HPH_ASSETS_DIR')) define('HPH_ASSETS_DIR', HPH_THEME_DIR . '/assets');
+        if (!defined('HPH_ASSETS_URI')) define('HPH_ASSETS_URI', HPH_THEME_URI . '/assets');
+        if (!defined('HPH_CSS_URI')) define('HPH_CSS_URI', HPH_ASSETS_URI . '/css');
+        if (!defined('HPH_JS_URI')) define('HPH_JS_URI', HPH_ASSETS_URI . '/js');
+        if (!defined('HPH_IMAGES_URI')) define('HPH_IMAGES_URI', HPH_ASSETS_URI . '/images');
         
         // Include paths
-        define('HPH_INC_DIR', HPH_THEME_DIR . '/includes');
-        define('HPH_TEMPLATE_DIR', HPH_THEME_DIR . '/template-parts');
+        if (!defined('HPH_INC_DIR')) define('HPH_INC_DIR', HPH_THEME_DIR . '/includes');
+        if (!defined('HPH_TEMPLATE_DIR')) define('HPH_TEMPLATE_DIR', HPH_THEME_DIR . '/template-parts');
         
         // Configuration
-        if (!defined('HPH_GOOGLE_MAPS_KEY')) {
-            define('HPH_GOOGLE_MAPS_KEY', 'AIzaSyAg9FL1dH2oEPy-yWgR2LvMQweKO827Csw');
-        }
+        // HPH_GOOGLE_MAPS_KEY is now defined securely in wp-config.php
     }
     
     /**
@@ -123,8 +121,8 @@ class HPH_Theme {
         // Legacy template loader removed - using unified HPH_Component_Loader system
         // require_once HPH_INC_DIR . '/class-hph-template-loader.php';
         
-        // Load template part tracker
-        require_once HPH_INC_DIR . '/templates/template-part-tracker.php';
+        // Load template part tracker - file removed in cleanup
+        // require_once HPH_INC_DIR . '/templates/template-part-tracker.php';
 
         // Load block register
         require_once HPH_INC_DIR . '/services/class-hph-block-register.php';
@@ -144,11 +142,16 @@ class HPH_Theme {
         // Load integrations
         $this->load_integrations();
         
+        // Load agent user synchronization system
+        require_once HPH_INC_DIR . '/class-agent-user-sync.php';
+        
         // Load organized AJAX handlers (New organized system)
         require_once HPH_INC_DIR . '/ajax/contact-forms.php';
         require_once HPH_INC_DIR . '/ajax/user-interactions.php';
         require_once HPH_INC_DIR . '/ajax/search-ajax.php';
         require_once HPH_INC_DIR . '/ajax/archive-ajax.php';
+        require_once HPH_INC_DIR . '/ajax/dashboard-ajax.php';
+        require_once HPH_INC_DIR . '/ajax/listings-dashboard-ajax.php';
         
         // Load admin AJAX handlers only for admin users
         if (is_admin() || wp_doing_ajax()) {
@@ -165,6 +168,9 @@ class HPH_Theme {
         
         // Load theme settings helpers
         require_once HPH_INC_DIR . '/helpers/theme-settings-helpers.php';
+        
+        // Load contact form handler
+        require_once HPH_INC_DIR . '/handlers/contact-form-handler.php';
         
         // Load agent helpers
         require_once HPH_INC_DIR . '/helpers/agent-helpers.php';
@@ -184,18 +190,24 @@ class HPH_Theme {
         // Load image helpers
         require_once HPH_INC_DIR . '/helpers/image-helpers.php';
         
-        // Load debug helpers (development only)
+        // Load debug helpers (development only) - files removed in cleanup
         if (defined('WP_DEBUG') && WP_DEBUG) {
-            require_once HPH_INC_DIR . '/debug/asset-debug.php';
-            require_once HPH_INC_DIR . '/debug/asset-testing.php';
-            require_once HPH_INC_DIR . '/debug/file-audit.php';
+            if (file_exists(HPH_INC_DIR . '/debug/asset-debug.php')) {
+                require_once HPH_INC_DIR . '/debug/asset-debug.php';
+            }
+            if (file_exists(HPH_INC_DIR . '/debug/asset-testing.php')) {
+                require_once HPH_INC_DIR . '/debug/asset-testing.php';
+            }
+            if (file_exists(HPH_INC_DIR . '/debug/file-audit.php')) {
+                require_once HPH_INC_DIR . '/debug/file-audit.php';
+            }
         }
         
         // Load contact form handler
         require_once HPH_INC_DIR . '/handlers/contact-form-handler.php';
         
-        // Load template registration
-        require_once HPH_INC_DIR . '/templates/template-registration.php';
+        // Load template registration - file removed in cleanup
+        // require_once HPH_INC_DIR . '/templates/template-registration.php';
         
         // Load admin functionality
         if (is_admin()) {
@@ -310,7 +322,7 @@ class HPH_Theme {
             'menus'         => 'HPH_Menus',
             'customizer'    => 'HPH_Customizer',
             'query'         => 'HPH_Query_Manager',
-            'router'        => 'HPH_Router',
+            // 'router'        => 'HPH_Router', // TEMPORARILY DISABLED - Causes wp-admin redirect issues
             'dashboard'     => 'HPH_Dashboard',
             'ajax'          => 'HPH_Ajax_Handler',
             'shortcodes'    => 'HPH_Shortcodes',

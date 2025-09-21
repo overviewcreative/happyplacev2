@@ -1,0 +1,555 @@
+/**
+ * Media Hero Component CSS - Full Width Gallery with Tabs
+ * File: media-hero.css
+ * 
+ * Comprehensive styling for unified media hero section
+ * Combines gallery, virtual tours, and floor plans
+ * 
+ * @package HappyPlaceTheme
+ */
+
+/* ================================================
+   MEDIA HERO BASE
+   ================================================ */
+.hph-media-hero {
+    position: relative;
+    background: var(--hph-black);
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    overflow: hidden;
+}
+
+/* ================================================
+   MEDIA TABS NAVIGATION
+   ================================================ */
+.hph-media-tabs {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    z-index: 20;
+}
+
+.hph-media-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.75);
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: var(--hph-gray-900);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.hph-media-tab:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
+}
+
+.hph-media-tab--active {
+    background: rgba(255, 255, 255, 0.95) !important;
+    color: var(--hph-primary);
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.hph-media-tab i {
+    color: var(--hph-primary);
+}
+
+/* ================================================
+   STATUS BADGE
+   ================================================ */
+.hph-media-hero .hph-badge {
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ================================================
+   MEDIA ACTIONS
+   ================================================ */
+.hph-media-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.hph-media-actions .hph-action-btn {
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--hph-gray-900);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-size: 1rem;
+}
+
+.hph-media-actions .hph-action-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.1);
+    color: var(--hph-primary);
+}
+
+/* ================================================
+   MEDIA CONTENT SECTIONS
+   ================================================ */
+.hph-media-content {
+    position: relative;
+    width: 100%;
+}
+
+.hph-media-section {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.hph-media-section--active {
+    display: block;
+}
+
+/* ================================================
+   GALLERY CAROUSEL
+   ================================================ */
+.hph-gallery-carousel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.hph-carousel-viewport {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.hph-carousel-track {
+    display: flex;
+    height: 100%;
+    transition: transform 0.5s ease-in-out;
+}
+
+.hph-carousel-slide {
+    flex: 0 0 100%;
+    height: 100%;
+    position: relative;
+    cursor: pointer;
+}
+
+.hph-carousel-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.hph-carousel-slide:hover img {
+    transform: scale(1.02);
+}
+
+/* Carousel Navigation */
+.hph-carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 15;
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--hph-gray-900);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-size: 1rem;
+}
+
+.hph-carousel-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-50%) scale(1.1);
+    color: var(--hph-primary);
+}
+
+.hph-carousel-btn--prev {
+    left: 1rem;
+}
+
+.hph-carousel-btn--next {
+    right: 1rem;
+}
+
+/* ================================================
+   THUMBNAIL STRIP
+   ================================================ */
+.hph-thumbnail-strip {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+    padding: 3rem 1rem 1rem;
+    z-index: 10;
+}
+
+.hph-thumbnails-container {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+.hph-thumbnails-container::-webkit-scrollbar {
+    height: 4px;
+}
+
+.hph-thumbnails-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+}
+
+.hph-thumbnails-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+}
+
+.hph-thumbnail {
+    width: 4rem;
+    height: 3rem;
+    border-radius: 0.375rem;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0.6;
+    background: none;
+    padding: 0;
+}
+
+.hph-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hph-thumbnail:hover {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+.hph-thumbnail--active {
+    border-color: var(--hph-white);
+    opacity: 1;
+    box-shadow: 0 0 0 1px rgba(81, 186, 224, 0.5);
+}
+
+/* ================================================
+   FLOOR PLANS SECTION
+   ================================================ */
+.hph-floor-plans-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.hph-floor-plan-item {
+    background: var(--hph-white);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.hph-floor-plan-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.hph-floor-plan-item img {
+    width: 100%;
+    height: auto;
+    transition: transform 0.3s ease;
+}
+
+.hph-floor-plan-item:hover img {
+    transform: scale(1.02);
+}
+
+/* ================================================
+   LIGHTBOX MODAL
+   ================================================ */
+.hph-media-lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    backdrop-filter: blur(4px);
+}
+
+.hph-media-lightbox.hph-hidden {
+    display: none;
+}
+
+.hph-lightbox-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hph-lightbox-content img {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 0.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* Lightbox Navigation */
+.hph-lightbox-content button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    border-radius: 50%;
+    color: var(--hph-white);
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+}
+
+.hph-lightbox-content button:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* Close Button */
+.hph-media-lightbox .hph-absolute.hph-top-md.hph-right-md {
+    width: 48px;
+    height: 48px;
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    border-radius: 50%;
+    color: var(--hph-white);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+}
+
+.hph-media-lightbox .hph-absolute.hph-top-md.hph-right-md:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: scale(1.1);
+}
+
+/* ================================================
+   RESPONSIVE DESIGN
+   ================================================ */
+@media (max-width: 1024px) {
+    .hph-media-hero {
+        margin-left: calc(-50vw + 50%);
+    }
+    
+    .hph-media-content {
+        height: 60vh !important;
+        min-height: 400px !important;
+    }
+    
+    .hph-carousel-btn,
+    .hph-media-actions .hph-action-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .hph-media-hero {
+        margin-left: -1rem;
+        margin-right: -1rem;
+        width: calc(100% + 2rem);
+    }
+    
+    .hph-media-content {
+        height: 50vh !important;
+        min-height: 300px !important;
+        max-height: 400px !important;
+    }
+    
+    .hph-media-tabs {
+        flex-wrap: wrap;
+        gap: 0.375rem;
+    }
+    
+    .hph-media-tab {
+        font-size: 0.8125rem;
+        padding: 0.625rem 0.875rem;
+    }
+    
+    .hph-thumbnail-strip {
+        display: none !important;
+    }
+    
+    .hph-floor-plans-grid {
+        grid-template-columns: 1fr !important;
+        padding: 1rem;
+    }
+    
+    .hph-carousel-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 0.875rem;
+    }
+    
+    .hph-carousel-btn--prev {
+        left: 0.5rem;
+    }
+    
+    .hph-carousel-btn--next {
+        right: 0.5rem;
+    }
+    
+    .hph-media-actions .hph-action-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hph-media-tab span {
+        display: none;
+    }
+    
+    .hph-media-tab {
+        padding: 0.75rem;
+        min-width: 40px;
+        justify-content: center;
+    }
+    
+    .hph-lightbox-content img {
+        max-width: 95vw;
+        max-height: 85vh;
+    }
+}
+
+/* ================================================
+   PERFORMANCE OPTIMIZATIONS
+   ================================================ */
+.hph-carousel-slide {
+    will-change: transform;
+}
+
+.hph-carousel-track {
+    will-change: transform;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .hph-carousel-track,
+    .hph-carousel-slide img,
+    .hph-thumbnail,
+    .hph-media-tab,
+    .hph-action-btn {
+        transition: none;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .hph-media-tab {
+        background: rgba(255, 255, 255, 1);
+        border: 2px solid var(--hph-gray-900);
+    }
+    
+    .hph-media-tab--active {
+        background: var(--hph-primary);
+        color: var(--hph-white);
+    }
+}
+
+/* Print styles */
+@media print {
+    .hph-media-hero {
+        position: relative;
+        height: 300px;
+        page-break-inside: avoid;
+    }
+    
+    .hph-media-tabs,
+    .hph-media-actions,
+    .hph-carousel-btn,
+    .hph-thumbnail-strip {
+        display: none;
+    }
+    
+    .hph-carousel-slide {
+        position: relative;
+    }
+}
+
+/* ================================================
+   LOADING STATES
+   ================================================ */
+.hph-carousel-slide.loading {
+    background: var(--hph-gray-200);
+}
+
+.hph-carousel-slide.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--hph-gray-400);
+    border-top-color: var(--hph-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* File Location: /wp-content/themes/happy-place-theme/assets/css/framework/components/organisms/media-hero.css */

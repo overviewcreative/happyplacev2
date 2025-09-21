@@ -92,7 +92,7 @@ $breadcrumb_items[] = [
 
 <nav class="hph-breadcrumb hph-py-md hph-bg-gray-50" aria-label="Breadcrumb">
     <div class="hph-container">
-        <ol class="hph-breadcrumb__list hph-flex hph-flex-wrap hph-items-center hph-gap-xs hph-text-sm">
+        <ol class="hph-breadcrumb__list hph-flex hph-flex-wrap hph-items-center gap-responsive text-responsive-sm">
             
             <?php foreach ($breadcrumb_items as $index => $item) : ?>
             <li class="hph-breadcrumb__item hph-flex hph-items-center">
@@ -100,13 +100,14 @@ $breadcrumb_items[] = [
                 <?php if (!empty($item['current'])) : ?>
                 <!-- Current Page -->
                 <span class="hph-breadcrumb__current hph-text-gray-700 hph-font-medium" aria-current="page">
-                    <?php echo esc_html($item['label']); ?>
+                    <span class="hide-mobile"><?php echo esc_html($item['label']); ?></span>
+                    <span class="show-mobile"><?php echo esc_html(wp_trim_words($item['label'], 3)); ?></span>
                 </span>
                 
                 <?php else : ?>
                 <!-- Link -->
                 <a href="<?php echo esc_url($item['url']); ?>" 
-                   class="hph-breadcrumb__link hph-text-gray-600 hover:hph-text-primary hph-transition-colors hph-flex hph-items-center hph-gap-xs">
+                   class="hph-breadcrumb__link hph-text-gray-600 hover:hph-text-primary hph-transition-colors hph-flex hph-items-center gap-responsive">
                     <?php if (!empty($item['icon'])) : ?>
                     <i class="fas <?php echo esc_attr($item['icon']); ?>"></i>
                     <?php endif; ?>

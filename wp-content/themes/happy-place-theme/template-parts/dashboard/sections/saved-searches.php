@@ -1,325 +1,264 @@
 <?php
 /**
- * Dashboard Saved Searches Section
+ * Saved Searches Dashboard Section
  * 
  * @package HappyPlaceTheme
  */
 
 $user = wp_get_current_user();
-
-// Get user's saved searches (this would typically be stored in user meta or custom table)
-$saved_searches = get_user_meta($user->ID, 'saved_searches', true);
-if (!is_array($saved_searches)) {
-    $saved_searches = [];
-}
+$saved_searches = get_user_meta($user->ID, 'saved_property_searches', true) ?: [];
 ?>
 
-<div class="hph-dashboard-section hph-saved-searches-section">
+<div class="hph-dashboard-section hph-searches-section">
     
-    <!-- Saved Searches Header -->
-    <div class="hph-section-header">
+    <!-- Section Header -->
+    <div class="hph-section-header hph-mb-8">
         <h2 class="hph-section-title">
-            <i class="fas fa-search"></i>
-            Saved Searches
+            <i class="fas fa-search hph-mr-3"></i>
+            <?php _e('Saved Searches', 'happy-place-theme'); ?>
         </h2>
         <p class="hph-section-description">
-            Your personalized property searches with automatic notifications for new matches.
+            <?php _e('Manage your saved property searches and get instant notifications for new matches.', 'happy-place-theme'); ?>
         </p>
     </div>
 
-    <?php if (!empty($saved_searches)): ?>
-        
-        <!-- Searches Controls -->
-        <div class="hph-searches-controls">
-            <div class="hph-controls-left">
-                <span class="hph-results-count">
-                    <?php printf(_n('%d saved search', '%d saved searches', count($saved_searches), 'happy-place-theme'), count($saved_searches)); ?>
-                </span>
+    <!-- Quick Stats -->
+    <div class="hph-stats-grid hph-grid hph-grid-cols-1 sm:hph-grid-cols-2 lg:hph-grid-cols-4 hph-gap-lg hph-mb-8">
+        <div class="hph-stat-card primary">
+            <div class="hph-stat-card-icon">
+                <i class="fas fa-bookmark"></i>
             </div>
-            <div class="hph-controls-right">
-                <button type="button" class="hph-btn hph-btn-primary hph-btn-sm" id="newSearchBtn">
-                    <i class="fas fa-plus"></i>
-                    New Search
-                </button>
-            </div>
+            <div class="hph-stat-card-value"><?php echo count($saved_searches); ?></div>
+            <div class="hph-stat-card-label"><?php _e('Saved Searches', 'happy-place-theme'); ?></div>
         </div>
+        
+        <div class="hph-stat-card success">
+            <div class="hph-stat-card-icon">
+                <i class="fas fa-bell"></i>
+            </div>
+            <div class="hph-stat-card-value" id="activeAlertsCount">-</div>
+            <div class="hph-stat-card-label"><?php _e('Active Alerts', 'happy-place-theme'); ?></div>
+        </div>
+        
+        <div class="hph-stat-card warning">
+            <div class="hph-stat-card-icon">
+                <i class="fas fa-home"></i>
+            </div>
+            <div class="hph-stat-card-value" id="newMatchesCount">-</div>
+            <div class="hph-stat-card-label"><?php _e('New Matches', 'happy-place-theme'); ?></div>
+        </div>
+        
+        <div class="hph-stat-card info">
+            <div class="hph-stat-card-icon">
+                <i class="fas fa-eye"></i>
+            </div>
+            <div class="hph-stat-card-value" id="recentViewsCount">-</div>
+            <div class="hph-stat-card-label"><?php _e('Recent Views', 'happy-place-theme'); ?></div>
+        </div>
+    </div>
 
-        <!-- Saved Searches List -->
-        <div class="hph-searches-list">
-            <?php foreach ($saved_searches as $index => $search): ?>
-                <div class="hph-search-card" data-search-id="<?php echo esc_attr($index); ?>">
-                    
-                    <div class="hph-search-header">
-                        <div class="hph-search-info">
-                            <h3 class="hph-search-name">
-                                <?php echo esc_html($search['name'] ?? 'Untitled Search'); ?>
-                            </h3>
-                            <div class="hph-search-meta">
-                                <span class="hph-search-date">
-                                    Created: <?php echo esc_html(date('M j, Y', strtotime($search['created'] ?? 'now'))); ?>
-                                </span>
-                                <span class="hph-search-frequency">
-                                    Notifications: <?php echo esc_html($search['notification_frequency'] ?? 'Weekly'); ?>
-                                </span>
-                            </div>
-                        </div>
-                        
-                        <div class="hph-search-actions">
-                            <div class="hph-search-toggle">
-                                <input type="checkbox" 
-                                       id="search_active_<?php echo esc_attr($index); ?>" 
-                                       class="hph-toggle-input"
-                                       <?php checked($search['active'] ?? true); ?>>
-                                <label for="search_active_<?php echo esc_attr($index); ?>" class="hph-toggle-label">
-                                    <span class="hph-toggle-switch"></span>
-                                </label>
-                            </div>
-                            
-                            <div class="hph-search-menu">
-                                <button type="button" class="hph-menu-trigger">
-                                    <i class="fas fa-ellipsis-v"></i>
-                                </button>
-                                <div class="hph-menu-dropdown">
-                                    <button type="button" class="hph-menu-item" data-action="edit">
-                                        <i class="fas fa-edit"></i> Edit Search
-                                    </button>
-                                    <button type="button" class="hph-menu-item" data-action="duplicate">
-                                        <i class="fas fa-copy"></i> Duplicate
-                                    </button>
-                                    <button type="button" class="hph-menu-item" data-action="delete">
-                                        <i class="fas fa-trash"></i> Delete
-                                    </button>
+    <!-- Main Content -->
+    <div class="hph-card">
+        <div class="hph-card-header">
+            <h3 class="hph-card-title"><?php _e('Your Saved Searches', 'happy-place-theme'); ?></h3>
+            <a href="<?php echo home_url('/listings/'); ?>" class="hph-btn hph-btn-primary">
+                <i class="fas fa-plus hph-mr-2"></i>
+                <?php _e('Create New Search', 'happy-place-theme'); ?>
+            </a>
+        </div>
+        
+        <div class="hph-card-content">
+            <?php if (!empty($saved_searches)): ?>
+                <div class="hph-searches-list">
+                    <?php foreach ($saved_searches as $search_id => $search): ?>
+                        <div class="search-item" data-search-id="<?php echo esc_attr($search_id); ?>">
+                            <div class="search-info">
+                                <h4 class="search-title">
+                                    <?php echo esc_html($search['name'] ?? 'Untitled Search'); ?>
+                                </h4>
+                                <div class="search-criteria">
+                                    <?php
+                                    $criteria = [];
+                                    if (!empty($search['location'])) {
+                                        $criteria[] = $search['location'];
+                                    }
+                                    if (!empty($search['price_min']) || !empty($search['price_max'])) {
+                                        $price_range = '';
+                                        if (!empty($search['price_min'])) {
+                                            $price_range .= '$' . number_format($search['price_min']);
+                                        }
+                                        $price_range .= ' - ';
+                                        if (!empty($search['price_max'])) {
+                                            $price_range .= '$' . number_format($search['price_max']);
+                                        }
+                                        $criteria[] = $price_range;
+                                    }
+                                    if (!empty($search['bedrooms'])) {
+                                        $criteria[] = $search['bedrooms'] . '+ beds';
+                                    }
+                                    echo implode(' • ', $criteria);
+                                    ?>
+                                </div>
+                                <div class="search-meta">
+                                    <span class="search-date">
+                                        <?php _e('Created:', 'happy-place-theme'); ?>
+                                        <?php echo date('M j, Y', strtotime($search['created'] ?? 'now')); ?>
+                                    </span>
+                                    <span class="search-matches">
+                                        <i class="fas fa-home hph-mr-1"></i>
+                                        <?php echo $search['match_count'] ?? 0; ?> <?php _e('matches', 'happy-place-theme'); ?>
+                                    </span>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Search Criteria -->
-                    <div class="hph-search-criteria">
-                        <div class="hph-criteria-tags">
-                            <?php if (!empty($search['location'])): ?>
-                                <span class="hph-criteria-tag">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <?php echo esc_html($search['location']); ?>
-                                </span>
-                            <?php endif; ?>
                             
-                            <?php if (!empty($search['price_min']) || !empty($search['price_max'])): ?>
-                                <span class="hph-criteria-tag">
-                                    <i class="fas fa-dollar-sign"></i>
-                                    <?php if ($search['price_min'] && $search['price_max']): ?>
-                                        $<?php echo number_format($search['price_min']); ?> - $<?php echo number_format($search['price_max']); ?>
-                                    <?php elseif ($search['price_min']): ?>
-                                        $<?php echo number_format($search['price_min']); ?>+
-                                    <?php else: ?>
-                                        Up to $<?php echo number_format($search['price_max']); ?>
-                                    <?php endif; ?>
-                                </span>
-                            <?php endif; ?>
-                            
-                            <?php if (!empty($search['bedrooms'])): ?>
-                                <span class="hph-criteria-tag">
-                                    <i class="fas fa-bed"></i>
-                                    <?php echo esc_html($search['bedrooms']); ?>+ beds
-                                </span>
-                            <?php endif; ?>
-                            
-                            <?php if (!empty($search['bathrooms'])): ?>
-                                <span class="hph-criteria-tag">
-                                    <i class="fas fa-bath"></i>
-                                    <?php echo esc_html($search['bathrooms']); ?>+ baths
-                                </span>
-                            <?php endif; ?>
-                            
-                            <?php if (!empty($search['property_type'])): ?>
-                                <span class="hph-criteria-tag">
-                                    <i class="fas fa-home"></i>
-                                    <?php echo esc_html($search['property_type']); ?>
-                                </span>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-
-                    <!-- Search Results Summary -->
-                    <div class="hph-search-results">
-                        <div class="hph-results-summary">
-                            <div class="hph-result-stat">
-                                <span class="hph-stat-number">12</span>
-                                <span class="hph-stat-label">New matches</span>
-                            </div>
-                            <div class="hph-result-stat">
-                                <span class="hph-stat-number">45</span>
-                                <span class="hph-stat-label">Total listings</span>
-                            </div>
-                            <div class="hph-result-stat">
-                                <span class="hph-stat-number">3</span>
-                                <span class="hph-stat-label">Price drops</span>
+                            <div class="search-actions">
+                                <a href="<?php echo add_query_arg(array_merge(['search_id' => $search_id], $search), home_url('/listings/')); ?>" 
+                                   class="hph-btn hph-btn-outline hph-btn-sm">
+                                    <i class="fas fa-search"></i>
+                                    <?php _e('View Results', 'happy-place-theme'); ?>
+                                </a>
+                                
+                                <button class="hph-btn hph-btn-ghost hph-btn-sm edit-search" data-search-id="<?php echo esc_attr($search_id); ?>">
+                                    <i class="fas fa-edit"></i>
+                                    <?php _e('Edit', 'happy-place-theme'); ?>
+                                </button>
+                                
+                                <button class="hph-btn hph-btn-ghost hph-btn-sm text-danger delete-search" data-search-id="<?php echo esc_attr($search_id); ?>">
+                                    <i class="fas fa-trash"></i>
+                                    <?php _e('Delete', 'happy-place-theme'); ?>
+                                </button>
                             </div>
                         </div>
-                        
-                        <div class="hph-results-actions">
-                            <a href="/listings?search_id=<?php echo esc_attr($index); ?>" class="hph-btn hph-btn-outline hph-btn-sm">
-                                <i class="fas fa-eye"></i>
-                                View Results
-                            </a>
-                            <button type="button" class="hph-btn hph-btn-primary hph-btn-sm" data-action="run-search">
-                                <i class="fas fa-sync"></i>
-                                Run Search
-                            </button>
-                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <div class="hph-empty-state">
+                    <div class="hph-empty-state-icon">
+                        <i class="fas fa-search"></i>
                     </div>
-
+                    <h3 class="hph-empty-state-title"><?php _e('No Saved Searches', 'happy-place-theme'); ?></h3>
+                    <p class="hph-empty-state-description">
+                        <?php _e('Start searching for properties and save your searches to get notified of new matches.', 'happy-place-theme'); ?>
+                    </p>
+                    <a href="<?php echo home_url('/listings/'); ?>" class="hph-btn hph-btn-primary hph-btn-lg hph-mt-4">
+                        <i class="fas fa-search hph-mr-2"></i>
+                        <?php _e('Start Searching', 'happy-place-theme'); ?>
+                    </a>
                 </div>
-            <?php endforeach; ?>
-        </div>
-
-    <?php else: ?>
-        
-        <!-- Empty State -->
-        <div class="hph-empty-state">
-            <div class="hph-empty-content">
-                <i class="fas fa-search hph-empty-icon"></i>
-                <h3 class="hph-empty-title">No Saved Searches</h3>
-                <p class="hph-empty-description">
-                    Create personalized searches and get notified when new properties match your criteria.
-                </p>
-                <button type="button" class="hph-btn hph-btn-primary" id="createFirstSearch">
-                    <i class="fas fa-plus"></i>
-                    Create Your First Search
-                </button>
-            </div>
-        </div>
-        
-    <?php endif; ?>
-
-    <!-- Search Tips -->
-    <div class="hph-search-tips">
-        <div class="hph-tips-content">
-            <h3>Make the Most of Saved Searches</h3>
-            <div class="hph-tips-grid">
-                <div class="hph-tip-item">
-                    <i class="fas fa-bell hph-tip-icon"></i>
-                    <h4>Get Notified</h4>
-                    <p>Receive email alerts when new properties match your criteria.</p>
-                </div>
-                <div class="hph-tip-item">
-                    <i class="fas fa-sliders-h hph-tip-icon"></i>
-                    <h4>Refine Criteria</h4>
-                    <p>Adjust your search parameters to get better matches.</p>
-                </div>
-                <div class="hph-tip-item">
-                    <i class="fas fa-copy hph-tip-icon"></i>
-                    <h4>Multiple Searches</h4>
-                    <p>Create different searches for various neighborhoods or price ranges.</p>
-                </div>
-                <div class="hph-tip-item">
-                    <i class="fas fa-chart-line hph-tip-icon"></i>
-                    <h4>Track Market</h4>
-                    <p>Monitor price trends and new inventory in your areas of interest.</p>
-                </div>
-            </div>
+            <?php endif; ?>
         </div>
     </div>
-
+    
 </div>
 
-<!-- New Search Modal (placeholder) -->
-<div id="newSearchModal" class="hph-modal" style="display: none;">
-    <div class="hph-modal-content">
-        <div class="hph-modal-header">
-            <h3>Create New Search</h3>
-            <button type="button" class="hph-modal-close">&times;</button>
-        </div>
-        <div class="hph-modal-body">
-            <p>Search builder coming soon...</p>
-            <p>For now, use the main search page to find properties, then save your search from there.</p>
-        </div>
-        <div class="hph-modal-footer">
-            <button type="button" class="hph-btn hph-btn-outline" onclick="$('#newSearchModal').hide();">Close</button>
-            <a href="/listings" class="hph-btn hph-btn-primary">Go to Search</a>
-        </div>
-    </div>
-</div>
+<style>
+.search-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--hph-space-4);
+    border: 1px solid var(--hph-gray-200);
+    border-radius: var(--hph-radius-lg);
+    margin-bottom: var(--hph-space-4);
+    transition: all 0.2s ease;
+}
+
+.search-item:hover {
+    border-color: var(--hph-primary);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.search-info {
+    flex: 1;
+}
+
+.search-title {
+    font-size: var(--hph-text-lg);
+    font-weight: var(--hph-font-semibold);
+    color: var(--hph-gray-900);
+    margin-bottom: var(--hph-space-2);
+}
+
+.search-criteria {
+    color: var(--hph-gray-600);
+    font-size: var(--hph-text-sm);
+    margin-bottom: var(--hph-space-2);
+}
+
+.search-meta {
+    display: flex;
+    gap: var(--hph-space-4);
+    font-size: var(--hph-text-sm);
+    color: var(--hph-gray-500);
+}
+
+.search-actions {
+    display: flex;
+    gap: var(--hph-space-2);
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .search-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--hph-space-3);
+    }
+    
+    .search-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+</style>
 
 <script>
-// Saved searches functionality
 jQuery(document).ready(function($) {
+    'use strict';
     
-    // Toggle search active/inactive
-    $('.hph-toggle-input').on('change', function() {
-        const searchId = $(this).attr('id').replace('search_active_', '');
-        const isActive = $(this).is(':checked');
+    // Handle search deletion
+    $(document).on('click', '.delete-search', function(e) {
+        e.preventDefault();
         
-        // AJAX call to update search status
-        $.post(ajaxurl, {
-            action: 'toggle_saved_search',
-            search_id: searchId,
-            active: isActive,
-            nonce: '<?php echo wp_create_nonce("search_nonce"); ?>'
-        });
-    });
-    
-    // Menu actions
-    $('.hph-menu-item').on('click', function() {
-        const action = $(this).data('action');
-        const searchCard = $(this).closest('.hph-search-card');
-        const searchId = searchCard.data('search-id');
-        
-        switch(action) {
-            case 'edit':
-                // Open edit modal (placeholder)
-                alert('Edit functionality coming soon');
-                break;
-            case 'duplicate':
-                // Duplicate search (placeholder)
-                alert('Duplicate functionality coming soon');
-                break;
-            case 'delete':
-                if (confirm('Delete this saved search?')) {
-                    // AJAX call to delete search
-                    $.post(ajaxurl, {
-                        action: 'delete_saved_search',
-                        search_id: searchId,
-                        nonce: '<?php echo wp_create_nonce("search_nonce"); ?>'
-                    }, function(response) {
-                        if (response.success) {
-                            searchCard.fadeOut(300, function() {
-                                searchCard.remove();
-                            });
-                        }
-                    });
-                }
-                break;
+        if (!confirm('Are you sure you want to delete this saved search?')) {
+            return;
         }
-    });
-    
-    // New search buttons
-    $('#newSearchBtn, #createFirstSearch').on('click', function() {
-        $('#newSearchModal').show();
-    });
-    
-    // Run search
-    $('[data-action="run-search"]').on('click', function() {
-        const button = $(this);
-        const searchCard = button.closest('.hph-search-card');
-        const searchId = searchCard.data('search-id');
         
-        button.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Running...');
+        const searchId = $(this).data('search-id');
+        const $searchItem = $(this).closest('.search-item');
         
-        // AJAX call to run search
+        // AJAX call to delete search
         $.post(ajaxurl, {
-            action: 'run_saved_search',
+            action: 'hph_delete_saved_search',
             search_id: searchId,
-            nonce: '<?php echo wp_create_nonce("search_nonce"); ?>'
-        }, function(response) {
-            button.prop('disabled', false).html('<i class="fas fa-sync"></i> Run Search');
-            
+            nonce: $('#hph_dashboard_nonce').val()
+        })
+        .done(function(response) {
             if (response.success) {
-                // Update results summary
-                location.reload();
+                $searchItem.fadeOut(() => {
+                    $searchItem.remove();
+                    
+                    // Check if no more searches
+                    if (!$('.search-item').length) {
+                        location.reload();
+                    }
+                });
+            } else {
+                alert('Failed to delete search. Please try again.');
             }
+        })
+        .fail(function() {
+            alert('Network error. Please try again.');
         });
     });
     
+    // Handle search editing (placeholder)
+    $(document).on('click', '.edit-search', function(e) {
+        e.preventDefault();
+        
+        const searchId = $(this).data('search-id');
+        // TODO: Implement search editing modal
+        alert('Search editing coming soon!');
+    });
 });
 </script>

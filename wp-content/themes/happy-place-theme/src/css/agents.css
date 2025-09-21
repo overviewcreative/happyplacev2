@@ -1,47 +1,15 @@
 /**
  * Agents CSS Bundle
- * Agent pages and profiles
+ * Styles for agent profiles and agent-related functionality
  */
 
-/* Agent card styles */
-.agent-card {
-    background: var(--hph-white);
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
+/* Agent Features */
+@import url('../../assets/css/framework/features/agent/agent-card.css');
+@import url('../../assets/css/framework/features/agent/agent-profile.css');
+@import url('../../assets/css/framework/features/agent/agent-stats.css');
 
-.agent-photo {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin: 0 auto 1rem;
-}
-
-.agent-name {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-}
-
-.agent-title {
-    color: var(--hph-gray-600);
-    margin-bottom: 1rem;
-}
-
-.agent-contact {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.agent-contact a {
-    color: var(--hph-primary);
-    text-decoration: none;
-}
-
-.agent-contact a:hover {
-    text-decoration: underline;
-}
+/* Agent-specific Components */
+@import url('../../assets/css/framework/components/atoms/avatar.css');
+@import url('../../assets/css/framework/components/atoms/rating.css');
+@import url('../../assets/css/framework/components/molecules/contact-card.css');
+@import url('../../assets/css/framework/components/molecules/testimonial.css');

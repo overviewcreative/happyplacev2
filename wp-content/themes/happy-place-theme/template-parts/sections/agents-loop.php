@@ -49,8 +49,11 @@ $defaults = array(
     'query_args' => array()
 );
 
-// Merge with provided args using bridge function
-$config = wp_parse_args($args ?? array(), $defaults);
+// Merge with provided args - handle cases where $args might not be set
+if (!isset($args) || !is_array($args)) {
+    $args = array();
+}
+$config = wp_parse_args($args, $defaults);
 extract($config);
 
 // Get agents data with proper null handling using bridge functions

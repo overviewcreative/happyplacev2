@@ -75,13 +75,24 @@ $default_message = $default_messages[$args['form_type']] ?? $default_messages['i
         
         <div class="hph-card__content">
             
-            <form id="<?php echo esc_attr($form_id); ?>" class="hph-contact-form" method="post" action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>">
+            <form id="<?php echo esc_attr($form_id); ?>" 
+                  class="hph-contact-form hph-form" 
+                  method="post" 
+                  action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
+                  data-route-type="property_inquiry"
+                  data-form-context="listing_component"
+                  data-listing-id="<?php echo esc_attr($listing['id']); ?>">
                 
-                <?php echo $nonce_field; ?>
-                <input type="hidden" name="action" value="hpt_listing_contact">
+                <input type="hidden" name="action" value="hph_route_form">
+                <input type="hidden" name="route_type" value="property_inquiry">
+                <input type="hidden" name="form_type" value="listing_contact">
+                <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('hph_inquiry_form'); ?>">
                 <input type="hidden" name="listing_id" value="<?php echo esc_attr($listing['id']); ?>">
                 <input type="hidden" name="agent_id" value="<?php echo esc_attr($agent['id'] ?? ''); ?>">
-                <input type="hidden" name="form_type" value="<?php echo esc_attr($args['form_type']); ?>">
+                <input type="hidden" name="lead_type" value="<?php echo esc_attr($args['form_type']); ?>">
+                <input type="hidden" name="source" value="listing_contact_form">
+                <input type="hidden" name="source_url" value="<?php echo esc_url(get_permalink()); ?>">
+                <input type="hidden" name="source_page" value="<?php echo esc_attr(get_the_title()); ?>">
                 
                 <!-- Contact Information -->
                 <div class="hph-form-section hph-mb-6">
@@ -311,8 +322,8 @@ $default_message = $default_messages[$args['form_type']] ?? $default_messages['i
 .hph-form-textarea:focus,
 .hph-form-select:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: var(--hph-primary);
+    box-shadow: 0 0 0 3px rgba(var(--hph-primary-rgb), 0.1);
 }
 
 .hph-checkbox-item {
@@ -323,7 +334,7 @@ $default_message = $default_messages[$args['form_type']] ?? $default_messages['i
 .hph-checkbox {
     width: 1rem;
     height: 1rem;
-    accent-color: #3b82f6;
+    accent-color: var(--hph-primary);
 }
 
 .hph-checkbox-label {

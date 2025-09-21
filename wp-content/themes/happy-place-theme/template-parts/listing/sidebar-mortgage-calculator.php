@@ -47,102 +47,119 @@ if (!$listing_price) {
 }
 ?>
 
-<div class="hph-widget hph-widget--calculator hph-bg-white hph-rounded-lg hph-shadow-md hph-p-lg hph-mb-xl">
+<div class="hph-widget hph-widget--calculator hph-widget--collapsible hph-bg-white hph-rounded-lg hph-shadow-md hph-p-lg hph-mb-xl">
     
-    <div class="hph-widget__header hph-mb-lg">
-        <h3 class="hph-widget__title hph-text-xl hph-font-bold hph-flex hph-items-center hph-gap-sm">
-            <i class="fas fa-calculator hph-text-primary"></i>
-            Mortgage Calculator
-        </h3>
-        <p class="hph-text-sm hph-text-gray-600 hph-mt-xs">
-            Estimate your monthly payment
-        </p>
+    <div class="hph-widget__header hph-widget__header--collapsible hph-mb-lg" onclick="toggleMortgageCalculator()">
+        <div class="hph-widget__title-wrapper">
+            <h3 class="hph-widget__title hph-text-xl hph-font-bold hph-flex hph-items-center hph-gap-sm">
+                <i class="fas fa-calculator hph-text-primary"></i>
+                Mortgage Calculator
+            </h3>
+            <p class="hph-text-sm hph-text-gray-600 hph-mt-xs">
+                Estimate your monthly payment
+            </p>
+        </div>
+        <button type="button" 
+                class="hph-collapse-toggle hph-collapse-toggle--calculator"
+                aria-expanded="false"
+                aria-controls="mortgage-calculator-content"
+                aria-label="Toggle mortgage calculator">
+            <i class="fas fa-chevron-down"></i>
+        </button>
     </div>
+    
+    <div class="hph-widget__content hph-widget__content--collapsible" id="mortgage-calculator-content" style="display: none;">
     
     <form id="mortgage-calculator" class="hph-calculator-form">
         
         <!-- Home Price -->
-        <div class="hph-form-group hph-mb-md">
-            <label class="hph-form-label hph-text-sm hph-font-medium hph-text-gray-700 hph-mb-xs hph-block">
+        <div class="hph-form-group">
+            <label class="hph-form-label" for="home-price">
                 Home Price
             </label>
-            <div class="hph-input-group hph-relative">
-                <span class="hph-input-prefix hph-absolute hph-left-md hph-top-1/2 hph--translate-y-1/2 hph-text-gray-500">$</span>
+            <div class="hph-input-group">
+                <div class="hph-input-group-prepend">
+                    <span class="hph-input-group-text">$</span>
+                </div>
                 <input type="number" 
                        id="home-price" 
                        name="home_price" 
                        value="<?php echo esc_attr($listing_price); ?>"
-                       class="hph-form-control hph-w-full hph-pl-xl hph-pr-md hph-py-sm hph-border hph-border-gray-300 hph-rounded-md"
+                       class="hph-form-input"
                        min="0"
                        step="1000">
             </div>
         </div>
         
         <!-- Down Payment -->
-        <div class="hph-form-group hph-mb-md">
-            <label class="hph-form-label hph-text-sm hph-font-medium hph-text-gray-700 hph-mb-xs hph-block">
+        <div class="hph-form-group">
+            <label class="hph-form-label">
                 Down Payment
             </label>
-            <div class="hph-grid hph-grid-cols-2 hph-gap-sm">
-                <div class="hph-input-group hph-relative">
-                    <span class="hph-input-prefix hph-absolute hph-left-md hph-top-1/2 hph--translate-y-1/2 hph-text-gray-500">$</span>
+            <div class="hph-form-grid hph-form-grid-2">
+                <div class="hph-input-group">
+                    <div class="hph-input-group-prepend">
+                        <span class="hph-input-group-text">$</span>
+                    </div>
                     <input type="number" 
                            id="down-payment-amount" 
                            name="down_payment_amount" 
                            value="<?php echo esc_attr($default_down_payment); ?>"
-                           class="hph-form-control hph-w-full hph-pl-xl hph-pr-md hph-py-sm hph-border hph-border-gray-300 hph-rounded-md"
+                           class="hph-form-input"
                            min="0"
                            step="1000">
                 </div>
-                <div class="hph-input-group hph-relative">
+                <div class="hph-input-group">
                     <input type="number" 
                            id="down-payment-percent" 
                            name="down_payment_percent" 
                            value="<?php echo esc_attr($default_down_payment_percent); ?>"
-                           class="hph-form-control hph-w-full hph-px-md hph-py-sm hph-border hph-border-gray-300 hph-rounded-md"
+                           class="hph-form-input"
                            min="0"
                            max="100"
-                           step="1">
-                    <span class="hph-input-suffix hph-absolute hph-right-md hph-top-1/2 hph--translate-y-1/2 hph-text-gray-500">%</span>
+                           step="0.1">
+                    <div class="hph-input-group-append">
+                        <span class="hph-input-group-text">%</span>
+                    </div>
                 </div>
             </div>
         </div>
         
         <!-- Interest Rate -->
-        <div class="hph-form-group hph-mb-md">
-            <label class="hph-form-label hph-text-sm hph-font-medium hph-text-gray-700 hph-mb-xs hph-block">
+        <div class="hph-form-group">
+            <label class="hph-form-label" for="interest-rate">
                 Interest Rate
             </label>
-            <div class="hph-input-group hph-relative">
+            <div class="hph-input-group">
                 <input type="number" 
                        id="interest-rate" 
                        name="interest_rate" 
                        value="<?php echo esc_attr($default_interest_rate); ?>"
-                       class="hph-form-control hph-w-full hph-px-md hph-py-sm hph-border hph-border-gray-300 hph-rounded-md"
+                       class="hph-form-input"
                        min="0"
-                       max="20"
-                       step="0.1">
-                <span class="hph-input-suffix hph-absolute hph-right-md hph-top-1/2 hph--translate-y-1/2 hph-text-gray-500">%</span>
+                       max="50"
+                       step="0.01">
+                <div class="hph-input-group-append">
+                    <span class="hph-input-group-text">%</span>
+                </div>
             </div>
         </div>
         
         <!-- Loan Term -->
-        <div class="hph-form-group hph-mb-md">
-            <label class="hph-form-label hph-text-sm hph-font-medium hph-text-gray-700 hph-mb-xs hph-block">
+        <div class="hph-form-group">
+            <label class="hph-form-label" for="loan-term">
                 Loan Term
             </label>
             <select id="loan-term" 
                     name="loan_term" 
-                    class="hph-form-select hph-w-full hph-px-md hph-py-sm hph-border hph-border-gray-300 hph-rounded-md">
+                    class="hph-form-select">
                 <option value="15">15 years</option>
                 <option value="30" selected>30 years</option>
             </select>
-        </div>
-        
         <!-- Advanced Options Toggle -->
         <button type="button" 
                 id="toggle-advanced" 
-                class="hph-text-sm hph-text-primary hover:hph-text-primary-dark hph-mb-md hph-flex hph-items-center hph-gap-xs">
+                class="hph-btn hph-btn--link hph-text-primary hph-flex hph-items-center hph-gap-2 hph-mb-4">
             <i class="fas fa-chevron-down hph-transition-transform"></i>
             Advanced Options
         </button>
@@ -155,13 +172,15 @@ if (!$listing_price) {
                 <label class="hph-form-label hph-text-sm hph-font-medium hph-text-gray-700 hph-mb-xs hph-block">
                     Property Tax (Monthly)
                 </label>
-                <div class="hph-input-group hph-relative">
-                    <span class="hph-input-prefix hph-absolute hph-left-md hph-top-1/2 hph--translate-y-1/2 hph-text-gray-500">$</span>
+                <div class="hph-input-group">
+                    <div class="hph-input-group-prepend">
+                        <span class="hph-input-group-text">$</span>
+                    </div>
                     <input type="number" 
                            id="property-tax" 
                            name="property_tax" 
                            value="<?php echo esc_attr(round($monthly_taxes)); ?>"
-                           class="hph-form-control hph-w-full hph-pl-xl hph-pr-md hph-py-sm hph-border hph-border-gray-300 hph-rounded-md"
+                           class="hph-form-input"
                            min="0"
                            step="10">
                 </div>
@@ -172,13 +191,15 @@ if (!$listing_price) {
                 <label class="hph-form-label hph-text-sm hph-font-medium hph-text-gray-700 hph-mb-xs hph-block">
                     Home Insurance (Monthly)
                 </label>
-                <div class="hph-input-group hph-relative">
-                    <span class="hph-input-prefix hph-absolute hph-left-md hph-top-1/2 hph--translate-y-1/2 hph-text-gray-500">$</span>
+                <div class="hph-input-group">
+                    <div class="hph-input-group-prepend">
+                        <span class="hph-input-group-text">$</span>
+                    </div>
                     <input type="number" 
                            id="home-insurance" 
                            name="home_insurance" 
                            value="<?php echo esc_attr(round($monthly_insurance)); ?>"
-                           class="hph-form-control hph-w-full hph-pl-xl hph-pr-md hph-py-sm hph-border hph-border-gray-300 hph-rounded-md"
+                           class="hph-form-input"
                            min="0"
                            step="10">
                 </div>
@@ -190,13 +211,15 @@ if (!$listing_price) {
                 <label class="hph-form-label hph-text-sm hph-font-medium hph-text-gray-700 hph-mb-xs hph-block">
                     HOA Fees (Monthly)
                 </label>
-                <div class="hph-input-group hph-relative">
-                    <span class="hph-input-prefix hph-absolute hph-left-md hph-top-1/2 hph--translate-y-1/2 hph-text-gray-500">$</span>
+                <div class="hph-input-group">
+                    <div class="hph-input-group-prepend">
+                        <span class="hph-input-group-text">$</span>
+                    </div>
                     <input type="number" 
                            id="hoa-fees" 
                            name="hoa_fees" 
                            value="<?php echo esc_attr(round($monthly_hoa)); ?>"
-                           class="hph-form-control hph-w-full hph-pl-xl hph-pr-md hph-py-sm hph-border hph-border-gray-300 hph-rounded-md"
+                           class="hph-form-input"
                            min="0"
                            step="10">
                 </div>
@@ -208,13 +231,15 @@ if (!$listing_price) {
                 <label class="hph-form-label hph-text-sm hph-font-medium hph-text-gray-700 hph-mb-xs hph-block">
                     PMI (Monthly)
                 </label>
-                <div class="hph-input-group hph-relative">
-                    <span class="hph-input-prefix hph-absolute hph-left-md hph-top-1/2 hph--translate-y-1/2 hph-text-gray-500">$</span>
+                <div class="hph-input-group">
+                    <div class="hph-input-group-prepend">
+                        <span class="hph-input-group-text">$</span>
+                    </div>
                     <input type="number" 
                            id="pmi" 
                            name="pmi" 
                            value="0"
-                           class="hph-form-control hph-w-full hph-pl-xl hph-pr-md hph-py-sm hph-border hph-border-gray-300 hph-rounded-md"
+                           class="hph-form-input"
                            min="0"
                            step="10">
                 </div>
@@ -228,19 +253,19 @@ if (!$listing_price) {
     </form>
     
     <!-- Results Display -->
-    <div class="hph-calculator-results hph-bg-primary-50 hph-rounded-lg hph-p-lg hph-mt-lg">
+    <div class="hph-calculator-results hph-bg-primary-50 hph-rounded-lg hph-p-lg hph-mt-6">
         
-        <div class="hph-result-primary hph-text-center hph-mb-md">
-            <div class="hph-text-sm hph-text-gray-600 hph-mb-xs">Estimated Monthly Payment</div>
+        <div class="hph-result-primary hph-text-center hph-mb-6">
+            <div class="hph-text-sm hph-text-gray-600 hph-mb-2">Estimated Monthly Payment</div>
             <div id="monthly-payment" class="hph-text-3xl hph-font-bold hph-text-primary">$0</div>
         </div>
         
-        <div class="hph-result-breakdown hph-pt-md hph-border-t hph-border-primary-100">
-            <div class="hph-breakdown-title hph-text-sm hph-font-semibold hph-text-gray-700 hph-mb-sm">
+        <div class="hph-result-breakdown hph-pt-6 hph-border-t hph-border-primary-100">
+            <div class="hph-breakdown-title hph-text-sm hph-font-semibold hph-text-gray-700 hph-mb-4">
                 Payment Breakdown
             </div>
             
-            <div class="hph-breakdown-items hph-space-y-xs">
+            <div class="hph-breakdown-items hph-space-y-3">
                 
                 <div class="hph-breakdown-item hph-flex hph-justify-between hph-text-sm">
                     <span class="hph-text-gray-600">Principal & Interest</span>
@@ -273,8 +298,8 @@ if (!$listing_price) {
         </div>
         
         <!-- Loan Summary -->
-        <div class="hph-loan-summary hph-pt-md hph-mt-md hph-border-t hph-border-primary-100">
-            <div class="hph-summary-items hph-space-y-xs hph-text-xs hph-text-gray-600">
+        <div class="hph-loan-summary hph-pt-6 hph-mt-6 hph-border-t hph-border-primary-100">
+            <div class="hph-summary-items hph-space-y-3 hph-text-xs hph-text-gray-600">
                 <div class="hph-flex hph-justify-between">
                     <span>Loan Amount:</span>
                     <span id="loan-amount-display" class="hph-font-medium hph-text-gray-800">$0</span>
@@ -293,27 +318,51 @@ if (!$listing_price) {
     </div>
     
     <!-- Action Buttons -->
-    <div class="hph-calculator-actions hph-flex hph-gap-sm hph-mt-lg">
+    <div class="hph-form-actions hph-flex hph-gap-3 hph-mt-6">
         <button type="button" 
                 id="print-calculation" 
-                class="hph-btn hph-btn--secondary hph-btn--sm hph-flex-1 hph-flex hph-items-center hph-justify-center hph-gap-xs">
+                class="hph-calculator-action-btn hph-flex-1">
             <i class="fas fa-print"></i>
             <span>Print</span>
         </button>
         
-        <button type="button" 
-                id="share-calculation" 
-                class="hph-btn hph-btn--secondary hph-btn--sm hph-flex-1 hph-flex hph-items-center hph-justify-center hph-gap-xs">
-            <i class="fas fa-share"></i>
-            <span>Share</span>
-        </button>
-    </div>
+        <!-- Share button removed - not currently integrated -->
+        </div>
+    
+    </div> <!-- Close collapsible content -->
     
 </div>
 
 <script>
+// Toggle mortgage calculator visibility
+function toggleMortgageCalculator() {
+    const content = document.getElementById('mortgage-calculator-content');
+    const toggleBtn = document.querySelector('.hph-collapse-toggle--calculator');
+    
+    if (!content || !toggleBtn) return;
+    
+    const icon = toggleBtn.querySelector('i');
+    const isVisible = content.style.display !== 'none';
+    
+    if (isVisible) {
+        content.style.display = 'none';
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        if (icon) icon.className = 'fas fa-chevron-down';
+    } else {
+        content.style.display = 'block';
+        toggleBtn.setAttribute('aria-expanded', 'true');
+        if (icon) icon.className = 'fas fa-chevron-up';
+        
+        // Initialize calculator if first time opening
+        if (!window.calculatorInitialized && window.calculator) {
+            window.calculator.init();
+            window.calculatorInitialized = true;
+        }
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    const calculator = {
+    window.calculator = {
         // Form elements
         homePrice: document.getElementById('home-price'),
         downPaymentAmount: document.getElementById('down-payment-amount'),
@@ -365,8 +414,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Print button
             document.getElementById('print-calculation').addEventListener('click', () => this.print());
             
-            // Share button
-            document.getElementById('share-calculation').addEventListener('click', () => this.share());
+            // Share button event listener removed - not currently integrated
         },
         
         syncDownPayment(changed) {
@@ -452,31 +500,10 @@ document.addEventListener('DOMContentLoaded', function() {
             window.print();
         },
         
-        share() {
-            // Create shareable link or copy to clipboard
-            const data = {
-                price: this.homePrice.value,
-                down: this.downPaymentPercent.value,
-                rate: this.interestRate.value,
-                term: this.loanTerm.value
-            };
-            
-            const url = window.location.href + '?calc=' + btoa(JSON.stringify(data));
-            
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Mortgage Calculator',
-                    text: 'Check out this mortgage calculation',
-                    url: url
-                });
-            } else {
-                // Copy to clipboard
-                navigator.clipboard.writeText(url);
-                alert('Link copied to clipboard!');
-            }
-        }
+        // Share function removed - not currently integrated
     };
     
-    calculator.init();
+    // Don't auto-init calculator since it's hidden by default
+    // Will be initialized when user first opens it
 });
 </script>

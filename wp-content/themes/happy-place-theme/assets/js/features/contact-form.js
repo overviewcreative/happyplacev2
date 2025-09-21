@@ -1,10 +1,12 @@
 /**
- * Contact Form JavaScript
+ * Contact Form JavaScript - VALIDATION ONLY
  * 
- * Handles contact form submission and validation
+ * Provides enhanced validation for contact forms
+ * Form submission is handled by HPH.Forms unified system
  * 
  * @package HappyPlaceTheme
  * @since 3.0.0
+ * @version 2.0.0 - Validation Only (no submission handling)
  */
 
 (function($) {
@@ -21,8 +23,12 @@
         
         init() {
             if (this.form.length === 0) {
+                console.log('📝 HPH Contact Form: No .hph-contact-form found, skipping initialization');
                 return;
             }
+            
+            console.log('📝 HPH Contact Form: Validation-only mode initialized');
+            console.log('📧 Form submission handled by HPH.Forms unified system');
             
             this.bindEvents();
             this.setupValidation();
@@ -30,11 +36,8 @@
         }
         
         bindEvents() {
-            // Form submission
-            this.form.on('submit', (e) => {
-                e.preventDefault();
-                this.submitForm();
-            });
+            // Note: Form submission is handled by HPH.Forms unified system
+            // This class only provides validation enhancements
             
             // Real-time validation
             this.form.find('input, textarea, select').on('blur', (e) => {
@@ -50,29 +53,20 @@
         setupValidation() {
             // Add validation classes
             this.form.find('input[required], textarea[required], select[required]').each(function() {
-                $(this).closest('.hph-form-group').addClass('required');
+                $(this).addClass('hph-required-field');
             });
+            
+            // Add validation attributes for better UX
+            this.form.find('input[type="email"]').attr('data-validation', 'email');
+            this.form.find('input[type="tel"]').attr('data-validation', 'phone');
         }
         
         setupEnhancements() {
-            // Phone number formatting
-            this.form.find('input[type="tel"]').on('input', function() {
-                let value = this.value.replace(/\D/g, '');
-                if (value.length >= 6) {
-                    value = value.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
-                } else if (value.length >= 3) {
-                    value = value.replace(/(\d{3})(\d{0,3})/, '($1) $2');
-                }
-                this.value = value;
-            });
-            
-            // Character counter for textarea
-            const textarea = this.form.find('textarea[name="message"]');
-            if (textarea.length > 0) {
-                const maxLength = 1000;
-                const counter = $(`<div class="hph-char-counter hph-text-sm hph-text-gray-500 hph-mt-xs">
-                    <span class="current">0</span> / ${maxLength} characters
-                </div>`);
+            // Character counter for textareas
+            this.form.find('textarea[maxlength]').each(function() {
+                const textarea = $(this);
+                const maxLength = parseInt(textarea.attr('maxlength'));
+                const counter = $(`<div class="hph-character-counter"><span class="current">0</span> / <span class="max">${maxLength}</span></div>`);
                 
                 textarea.after(counter);
                 
@@ -96,14 +90,17 @@
                 });
                 
                 textarea.trigger('input');
-            }
+            });
             
             // Smooth scrolling for form anchors
             $('a[href="#contact-form"]').on('click', function(e) {
                 e.preventDefault();
-                $('html, body').animate({
-                    scrollTop: $('#contact-form').offset().top - 100
-                }, 800);
+                const target = $('#contact-form');
+                if (target.length) {
+                    $('html, body').animate({
+                        scrollTop: target.offset().top - 100
+                    }, 800);
+                }
             });
         }
         
@@ -133,62 +130,57 @@
             
             // Phone validation
             else if (fieldType === 'tel' && value !== '') {
-                const phoneRegex = /^\(\d{3}\) \d{3}-\d{4}$/;
-                if (!phoneRegex.test(value)) {
+                const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+                const cleanPhone = value.replace(/[\s\-\(\)\.]/g, '');
+                if (!phoneRegex.test(cleanPhone)) {
                     isValid = false;
                     errorMessage = 'Please enter a valid phone number';
                 }
             }
             
-            // Message length validation
-            else if (fieldName === 'message' && value.length > 0) {
-                if (value.length < 10) {
-                    isValid = false;
-                    errorMessage = 'Message must be at least 10 characters long';
-                } else if (value.length > 1000) {
-                    isValid = false;
-                    errorMessage = 'Message cannot exceed 1000 characters';
+            // URL validation
+            else if (fieldType === 'url' && value !== '') {
+                try {
+                    new URL(value);
+                } catch {
+                    if (!/^https?:\/\/.+/.test(value)) {
+                        isValid = false;
+                        errorMessage = 'Please enter a valid URL';
+                    }
                 }
+            }
+            
+            // Length validation
+            const minLength = field.attr('minlength');
+            const maxLength = field.attr('maxlength');
+            
+            if (minLength && value.length < parseInt(minLength)) {
+                isValid = false;
+                errorMessage = `Please enter at least ${minLength} characters`;
+            }
+            
+            if (maxLength && value.length > parseInt(maxLength)) {
+                isValid = false;
+                errorMessage = `Please enter no more than ${maxLength} characters`;
             }
             
             this.setFieldValidation(field, isValid, errorMessage);
+            
             return isValid;
-        }
-        
-        setFieldValidation(field, isValid, errorMessage = '') {
-            const formGroup = field.closest('.hph-form-group');
-            
-            // Remove existing validation classes and messages
-            formGroup.removeClass('error success');
-            formGroup.find('.hph-form-error, .hph-form-success').remove();
-            
-            if (isValid) {
-                formGroup.addClass('success');
-                field.removeClass('error').addClass('success');
-            } else {
-                formGroup.addClass('error');
-                field.removeClass('success').addClass('error');
-                
-                if (errorMessage) {
-                    field.after(`<span class="hph-form-error">${errorMessage}</span>`);
-                }
-            }
-        }
-        
-        clearFieldValidation(field) {
-            const formGroup = field.closest('.hph-form-group');
-            formGroup.removeClass('error success');
-            field.removeClass('error success');
-            formGroup.find('.hph-form-error, .hph-form-success').remove();
         }
         
         validateForm() {
             let isValid = true;
             
-            // Validate all fields
-            this.form.find('input, textarea, select').each((index, element) => {
-                const field = $(element);
-                if (!this.validateField(field)) {
+            this.form.find('input[required], textarea[required], select[required]').each((index, element) => {
+                if (!this.validateField($(element))) {
+                    isValid = false;
+                }
+            });
+            
+            // Validate non-required fields that have values
+            this.form.find('input[type="email"], input[type="tel"], input[type="url"]').each((index, element) => {
+                if ($(element).val().trim() !== '' && !this.validateField($(element))) {
                     isValid = false;
                 }
             });
@@ -196,119 +188,72 @@
             return isValid;
         }
         
-        submitForm() {
-            // Clear any existing messages
-            this.clearMessages();
+        setFieldValidation(field, isValid, errorMessage = '') {
+            const formGroup = field.closest('.form-group, .hph-form-group');
             
-            // Validate form
-            if (!this.validateForm()) {
-                this.showMessage('Please fix the errors above and try again.', 'error');
-                return;
-            }
+            // Remove existing validation classes and messages
+            field.removeClass('is-invalid is-valid');
+            formGroup.find('.invalid-feedback, .hph-field-error').remove();
             
-            // Show loading state
-            this.setLoadingState(true);
-            
-            // Prepare form data
-            const formData = new FormData(this.form[0]);
-            formData.append('action', 'hph_contact_form');
-            formData.append('nonce', hphContact.nonce);
-            
-            // Submit form
-            $.ajax({
-                url: hphContact.ajaxUrl,
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: (response) => {
-                    this.setLoadingState(false);
+            if (isValid) {
+                field.addClass('is-valid');
+            } else {
+                field.addClass('is-invalid');
+                
+                // Add error message
+                if (errorMessage) {
+                    const errorElement = $('<div class="invalid-feedback hph-field-error"></div>').text(errorMessage);
                     
-                    if (response.success) {
-                        this.showMessage(response.data.message, 'success');
-                        this.form[0].reset();
-                        this.clearAllValidation();
-                        
-                        // Track conversion (if analytics is available)
-                        if (typeof gtag !== 'undefined') {
-                            gtag('event', 'form_submit', {
-                                event_category: 'Contact',
-                                event_label: 'Contact Form'
-                            });
-                        }
-                        
+                    if (formGroup.length) {
+                        formGroup.append(errorElement);
                     } else {
-                        this.showMessage(response.data.message, 'error');
-                        
-                        // Highlight problematic fields if provided
-                        if (response.data.fields) {
-                            response.data.fields.forEach(fieldName => {
-                                const field = this.form.find(`[name="${fieldName}"]`);
-                                this.setFieldValidation(field, false, 'Please check this field');
-                            });
-                        }
+                        field.after(errorElement);
                     }
-                },
-                error: (xhr, status, error) => {
-                    this.setLoadingState(false);
-                    this.showMessage('There was a network error. Please try again.', 'error');
-                    console.error('Contact form error:', error);
                 }
-            });
+            }
+        }
+        
+        clearFieldValidation(field) {
+            const formGroup = field.closest('.form-group, .hph-form-group');
+            
+            field.removeClass('is-invalid is-valid');
+            formGroup.find('.invalid-feedback, .hph-field-error').remove();
+        }
+        
+        clearValidation() {
+            this.form.find('input, textarea, select').removeClass('is-invalid is-valid');
+            this.form.find('.invalid-feedback, .hph-field-error').remove();
+        }
+        
+        // Legacy compatibility methods (deprecated)
+        submitForm() {
+            console.warn('🚨 HPHContactForm.submitForm() is DEPRECATED and disabled');
+            console.warn('📧 Form submission is now handled by HPH.Forms to prevent duplicate emails');
+            return false;
         }
         
         setLoadingState(loading) {
-            if (loading) {
-                this.form.addClass('loading');
-                this.submitBtn.prop('disabled', true);
-                this.submitBtn.html('<i class="fas fa-spinner fa-spin hph-mr-sm"></i>Sending...');
-            } else {
-                this.form.removeClass('loading');
-                this.submitBtn.prop('disabled', false);
-                this.submitBtn.html(this.originalBtnText);
-            }
+            console.warn('🚨 HPHContactForm.setLoadingState() is DEPRECATED');
+            console.warn('📧 Loading states are now handled by HPH.Forms');
         }
         
-        showMessage(message, type = 'info') {
-            const alertClass = type === 'success' ? 'hph-alert-success' : 'hph-alert-error';
-            const iconClass = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
-            
-            const messageHtml = `
-                <div class="hph-form-message ${alertClass} hph-p-lg hph-mb-lg hph-rounded-lg hph-flex hph-items-center hph-gap-md">
-                    <i class="fas ${iconClass} hph-text-lg"></i>
-                    <span>${message}</span>
-                </div>
-            `;
-            
-            this.form.prepend(messageHtml);
-            
-            // Scroll to message
-            $('html, body').animate({
-                scrollTop: this.form.offset().top - 100
-            }, 500);
-            
-            // Auto-hide success messages after 5 seconds
-            if (type === 'success') {
-                setTimeout(() => {
-                    this.clearMessages();
-                }, 5000);
-            }
+        showMessage(message, type) {
+            console.warn('🚨 HPHContactForm.showMessage() is DEPRECATED');
+            console.warn('📧 Messages are now handled by HPH.Forms');
         }
         
         clearMessages() {
-            this.form.find('.hph-form-message').remove();
-        }
-        
-        clearAllValidation() {
-            this.form.find('.hph-form-group').removeClass('error success');
-            this.form.find('input, textarea, select').removeClass('error success');
-            this.form.find('.hph-form-error, .hph-form-success').remove();
+            console.warn('🚨 HPHContactForm.clearMessages() is DEPRECATED');
+            console.warn('📧 Messages are now handled by HPH.Forms');
         }
     }
     
-    // Initialize when document is ready
+    // Initialize contact form validation when document is ready
     $(document).ready(function() {
         new HPHContactForm();
     });
     
+    // Legacy compatibility
+    window.HPHContactForm = HPHContactForm;
+
 })(jQuery);

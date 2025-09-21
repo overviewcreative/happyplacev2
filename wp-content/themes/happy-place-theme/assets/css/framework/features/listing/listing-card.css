@@ -396,7 +396,7 @@
 }
 
 .hph-badge--info {
-    background: rgba(59, 130, 246, 0.9);
+    background: rgba(var(--hph-primary-rgb), 0.9);
     color: var(--hph-white);
 }
 
@@ -822,9 +822,9 @@
 
 .hph-badge--info,
 .hph-badge--coming-soon {
-    background: rgba(59, 130, 246, 0.95);
+    background: rgba(var(--hph-primary-rgb), 0.95);
     color: var(--hph-white);
-    border: 1px solid rgba(59, 130, 246, 0.3);
+    border: 1px solid rgba(var(--hph-primary-rgb), 0.3);
 }
 
 .hph-badge--featured {
@@ -3094,6 +3094,7 @@
 .hph-detail-item {
     display: flex;
     align-items: center;
+    flex-direction: column;
     gap: 0.375rem;
     font-size: 0.875rem;
     color: var(--hph-gray-700);
@@ -3135,11 +3136,14 @@
 }
 
 .hph-agent-photo {
-    width: 100%;
-    height: 100%;
-    margin-top: -35%;
+    width: 75%;
+    height: 75%;
+    overflow: visible;
+    aspect-ratio: 1/1;
     border-radius: 50%;
     object-fit: cover;
+    background: var(--hph-primary-200);
+    z-index: 999;
 }
 
 .hph-agent-info {

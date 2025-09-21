@@ -232,10 +232,10 @@ jQuery(document).ready(function($) {
         
         if (confirm('Remove this property from your favorites?')) {
             // AJAX call to remove favorite
-            $.post(ajaxurl, {
+            $.post(hphDashboard.ajaxurl || ajaxurl, {
                 action: 'remove_favorite',
                 listing_id: listingId,
-                nonce: '<?php echo wp_create_nonce("favorite_nonce"); ?>'
+                nonce: hphDashboard.nonce || '<?php echo wp_create_nonce("hph_dashboard_nonce"); ?>'
             }, function(response) {
                 if (response.success) {
                     card.fadeOut(300, function() {
@@ -255,9 +255,9 @@ jQuery(document).ready(function($) {
     $('#clearAllFavorites').on('click', function() {
         if (confirm('Remove all properties from your favorites? This action cannot be undone.')) {
             // AJAX call to clear all favorites
-            $.post(ajaxurl, {
+            $.post(hphDashboard.ajaxurl || ajaxurl, {
                 action: 'clear_all_favorites',
-                nonce: '<?php echo wp_create_nonce("favorite_nonce"); ?>'
+                nonce: hphDashboard.nonce || '<?php echo wp_create_nonce("hph_dashboard_nonce"); ?>'
             }, function(response) {
                 if (response.success) {
                     location.reload();

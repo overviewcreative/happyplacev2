@@ -1,109 +1,27 @@
 /**
  * Listings CSS Bundle
- * All listing-related styles
+ * All listing-related styles for single and archive pages
  */
 
-/* Listing card styles */
-.hph-listing-card {
-    background: var(--hph-white);
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
+/* Listing Features */
+@import url('../../assets/css/framework/features/listing/listing-card.css');
+@import url('../../assets/css/framework/features/listing/listing-details.css');
+@import url('../../assets/css/framework/features/listing/listing-gallery.css');
+@import url('../../assets/css/framework/features/listing/listing-hero.css');
+@import url('../../assets/css/framework/features/listing/listing-map.css');
+@import url('../../assets/css/framework/features/listing/listing-contact.css');
+@import url('../../assets/css/framework/features/listing/single-listing.css');
+@import url('../../assets/css/framework/features/listing/archive-enhanced.css');
 
-.hph-listing-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-}
+/* Map Components */
+@import url('../../assets/css/framework/components/organisms/map.css');
+@import url('../../assets/css/framework/features/listing/neighborhood-map.css');
+@import url('../../assets/css/framework/features/listing/listing-map-card.css');
 
-.hph-card-image {
-    position: relative;
-    width: 100%;
-    height: 250px;
-    overflow: hidden;
-}
+/* Form Components for Listings */
+@import url('../../assets/css/framework/components/molecules/accordion.css');
 
-.hph-card-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-
-.hph-card-image:hover img {
-    transform: scale(1.05);
-}
-
-.hph-card-content {
-    padding: 1.5rem;
-}
-
-.hph-price {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--hph-primary);
-    margin-bottom: 0.5rem;
-}
-
-.hph-title {
-    font-size: 1.125rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    line-height: 1.4;
-}
-
-.hph-title a {
-    text-decoration: none;
-    color: inherit;
-}
-
-.hph-title a:hover {
-    color: var(--hph-primary);
-}
-
-.hph-address {
-    color: var(--hph-gray-600);
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.hph-features {
-    display: flex;
-    gap: 1rem;
-    color: var(--hph-gray-700);
-    font-size: 0.875rem;
-}
-
-.hph-features span {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-}
-
-/* Single listing styles */
-.single-listing-header {
-    margin-bottom: 2rem;
-}
-
-.listing-gallery {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-
-.listing-details {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 2rem;
-}
-
-.listing-description {
-    background: var(--hph-white);
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-}
+/* Responsive Enhancements */
+@import url('../../assets/css/framework/features/listing/mobile-optimizations.css');
+@import url('../../assets/css/framework/features/listing/responsive-enhancements.css');
+@import url('../../assets/css/framework/features/listing/mobile-single-listing.css');

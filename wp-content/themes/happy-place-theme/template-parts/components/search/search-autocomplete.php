@@ -19,31 +19,24 @@ $enable_popular = $config['enable_popular'] ?? true;
 ?>
 
 <div 
-    class="hph-search-autocomplete" 
+    class="hph-search-results" 
     id="<?php echo esc_attr($container_id); ?>"
     data-input-id="<?php echo esc_attr($input_id); ?>"
     data-max-suggestions="<?php echo esc_attr($max_suggestions); ?>"
     style="display: none;"
 >
-    <ul class="autocomplete-list" role="listbox" id="<?php echo esc_attr($container_id); ?>-list">
+    <div class="hph-search-results-content" role="listbox" id="<?php echo esc_attr($container_id); ?>-list">
         <!-- Suggestions will be populated by JavaScript -->
-    </ul>
+    </div>
     
     <!-- Loading indicator -->
-    <div class="autocomplete-loading" style="display: none;">
-        <div class="loading-item">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" class="spin">
-                <path d="M8 0a8 8 0 1 1 0 16v-2a6 6 0 1 0 0-12V0z"/>
-            </svg>
-            <span><?php _e('Searching...', 'happy-place-theme'); ?></span>
-        </div>
+    <div class="hph-search-loading" style="display: none;">
+        <span><?php _e('Searching...', 'happy-place-theme'); ?></span>
     </div>
     
     <!-- No results message -->
-    <div class="autocomplete-no-results" style="display: none;">
-        <div class="no-results-item">
-            <span><?php _e('No suggestions found', 'happy-place-theme'); ?></span>
-        </div>
+    <div class="hph-search-no-results" style="display: none;">
+        <span><?php _e('No suggestions found', 'happy-place-theme'); ?></span>
     </div>
 </div>
 
@@ -51,9 +44,9 @@ $enable_popular = $config['enable_popular'] ?? true;
 document.addEventListener('DOMContentLoaded', function() {
     const autocompleteContainer = document.getElementById('<?php echo esc_js($container_id); ?>');
     const searchInput = document.getElementById('<?php echo esc_js($input_id); ?>');
-    const suggestionsList = autocompleteContainer.querySelector('.autocomplete-list');
-    const loadingIndicator = autocompleteContainer.querySelector('.autocomplete-loading');
-    const noResultsMessage = autocompleteContainer.querySelector('.autocomplete-no-results');
+    const suggestionsList = autocompleteContainer.querySelector('.hph-search-results-content');
+    const loadingIndicator = autocompleteContainer.querySelector('.hph-search-loading');
+    const noResultsMessage = autocompleteContainer.querySelector('.hph-search-no-results');
     
     let currentQuery = '';
     let searchTimeout;
@@ -209,38 +202,50 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         suggestionList.forEach((suggestion, index) => {
-            const li = document.createElement('li');
-            li.className = 'autocomplete-item';
+            const li = document.createElement('a');
+            li.className = 'hph-search-result-item listing-result';
             li.setAttribute('role', 'option');
             li.setAttribute('data-index', index);
+            li.setAttribute('href', suggestion.url || '#');
             
-            // Build suggestion HTML
-            let iconHtml = '';
+            // Build suggestion HTML using new CSS structure
+            let iconHtml = '<i class="fas fa-home"></i>';
             switch (suggestion.type) {
                 case 'listing':
-                    iconHtml = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5ZM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5 5 5Z"/></svg>';
+                    iconHtml = '<i class="fas fa-home"></i>';
                     break;
                 case 'agent':
-                    iconHtml = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 1a6 6 0 0 0-6 6v1h12v-1a6 6 0 0 0-6-6z"/></svg>';
+                    iconHtml = '<i class="fas fa-user"></i>';
                     break;
                 case 'city':
-                    iconHtml = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1z"/><path d="M3 0a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h3v-3.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5V16h3a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1H3z"/></svg>';
+                    iconHtml = '<i class="fas fa-map-marker-alt"></i>';
                     break;
                 case 'community':
-                    iconHtml = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2 13.5V7h1v6.5a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5V7h1v6.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5zm11-11V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"/><path d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z"/></svg>';
+                    iconHtml = '<i class="fas fa-building"></i>';
                     break;
                 default:
-                    iconHtml = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>';
+                    iconHtml = '<i class="fas fa-search"></i>';
             }
             
-            li.innerHTML = `
-                <div class="suggestion-icon">${iconHtml}</div>
-                <div class="suggestion-content">
-                    <div class="suggestion-title">${highlightMatch(suggestion.title, currentQuery)}</div>
-                    ${suggestion.subtitle ? `<div class="suggestion-subtitle">${suggestion.subtitle}</div>` : ''}
-                </div>
-                <div class="suggestion-type">${suggestion.type_label || suggestion.type}</div>
-            `;
+            // Use the new CSS structure that matches the screenshot
+            if (suggestion.type === 'listing') {
+                li.innerHTML = `
+                    <div class="hph-search-result-icon">${iconHtml}</div>
+                    <div class="hph-search-result-content">
+                        <div class="hph-search-result-price">${suggestion.price || ''}</div>
+                        <div class="hph-search-result-address">${highlightMatch(suggestion.title, currentQuery)}</div>
+                        <div class="hph-search-result-details">${suggestion.subtitle || ''}</div>
+                    </div>
+                `;
+            } else {
+                li.innerHTML = `
+                    <div class="hph-search-result-icon">${iconHtml}</div>
+                    <div class="hph-search-result-content">
+                        <div class="hph-search-result-title">${highlightMatch(suggestion.title, currentQuery)}</div>
+                        <div class="hph-search-result-meta">${suggestion.subtitle || ''}</div>
+                    </div>
+                `;
+            }
             
             li.addEventListener('click', () => selectSuggestion(suggestion));
             li.addEventListener('mouseenter', () => {
@@ -302,18 +307,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function updateSelection() {
-        const items = suggestionsList.querySelectorAll('.autocomplete-item');
+        const items = suggestionsList.querySelectorAll('.hph-search-result-item');
         items.forEach((item, index) => {
-            item.classList.toggle('selected', index === selectedIndex);
+            item.classList.toggle('highlighted', index === selectedIndex);
         });
     }
     
     function showAutocomplete() {
+        autocompleteContainer.classList.add('active');
         autocompleteContainer.style.display = 'block';
         noResultsMessage.style.display = 'none';
     }
     
     function hideAutocomplete() {
+        autocompleteContainer.classList.remove('active');
         autocompleteContainer.style.display = 'none';
         selectedIndex = -1;
     }
@@ -367,110 +374,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<style>
-.hph-search-autocomplete {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-top: none;
-    border-radius: 0 0 8px 8px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    max-height: 400px;
-    overflow-y: auto;
-}
-
-.autocomplete-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.autocomplete-item {
-    display: flex;
-    align-items: center;
-    padding: 12px 16px;
-    cursor: pointer;
-    transition: background-color 0.15s ease;
-    border-bottom: 1px solid #f1f5f9;
-}
-
-.autocomplete-item:last-child {
-    border-bottom: none;
-}
-
-.autocomplete-item:hover,
-.autocomplete-item.selected {
-    background-color: #f8fafc;
-}
-
-.suggestion-icon {
-    flex-shrink: 0;
-    width: 16px;
-    height: 16px;
-    margin-right: 12px;
-    opacity: 0.7;
-}
-
-.suggestion-content {
-    flex: 1;
-    min-width: 0;
-}
-
-.suggestion-title {
-    font-weight: 500;
-    color: #1e293b;
-    margin-bottom: 2px;
-}
-
-.suggestion-title strong {
-    background-color: #fef3c7;
-    color: #92400e;
-    padding: 0 2px;
-    border-radius: 2px;
-}
-
-.suggestion-subtitle {
-    font-size: 14px;
-    color: #64748b;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.suggestion-type {
-    flex-shrink: 0;
-    font-size: 12px;
-    color: #94a3b8;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-left: 12px;
-}
-
-.autocomplete-loading,
-.autocomplete-no-results {
-    padding: 16px;
-    text-align: center;
-    color: #64748b;
-}
-
-.loading-item,
-.no-results-item {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-.spin {
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-</style>
+<!-- Old styles removed - now using HPH CSS framework search styles -->

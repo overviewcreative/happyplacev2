@@ -191,14 +191,12 @@ class ListingFormHandler {
             true
         );
         
-        // Form validation script
-        wp_enqueue_script(
-            'hp-form-validation',
-            HP_ASSETS_URL . 'js/form-validation.js',
-            ['jquery'],
-            HP_VERSION,
-            true
-        );
+        // Note: Form validation now done by HPH.Forms unified system in theme
+        // Only enqueue if unified system is not available
+        if (!wp_script_is('hph-forms-unified', 'enqueued')) {
+            // Fallback: Basic jQuery only
+            wp_enqueue_script('jquery');
+        }
         
         // Listing form styles
         wp_enqueue_style(

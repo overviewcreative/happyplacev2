@@ -14,6 +14,11 @@
         totalSteps: 5,
         
         init: function() {
+            // Only initialize if the form exists on the page
+            if ($('#listingForm').length === 0) {
+                return; // No listing form found, skip initialization
+            }
+            
             this.bindEvents();
             this.initializeForm();
             this.initializeValidation();

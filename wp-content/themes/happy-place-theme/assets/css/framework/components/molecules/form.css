@@ -1,12 +1,14 @@
 /**
- * Form Component CSS - Production Styles
- * Extracted from mature CTA sections form styles
+ * Form Component CSS - Enhanced with Atomic System
+ * Complex form layouts built from atomic components
+ * Maintains backward compatibility while adding new atomic-based classes
  * 
  * @package HappyPlaceTheme
+ * @version 4.0.0
  */
 
 /* ================================================
-   FORM BASE STYLES
+   BACKWARD COMPATIBLE FORM STYLES (Existing)
    ================================================ */
 .hph-form {
     width: 100%;
@@ -25,9 +27,7 @@
     margin-bottom: 0;
 }
 
-/* ================================================
-   FORM INPUT STYLES
-   ================================================ */
+/* Legacy input styles - preserved for compatibility */
 .hph-form input,
 .hph-form textarea,
 .hph-form select {
@@ -51,10 +51,225 @@
     box-shadow: 0 0 0 3px rgba(81, 186, 224, 0.1);
 }
 
-.hph-form input::placeholder,
-.hph-form textarea::placeholder {
-    color: var(--hph-gray-400);
-    opacity: 1;
+/* ================================================
+   NEW ATOMIC-BASED MOLECULAR FORM COMPONENTS
+   ================================================ */
+
+/* Enhanced Form Layouts */
+.hph-form-advanced {
+    width: 100%;
+}
+
+.hph-form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.hph-form-col {
+    flex: 1;
+    min-width: 0;
+}
+
+.hph-form-col--half {
+    flex: 0 0 calc(50% - 0.5rem);
+}
+
+.hph-form-col--third {
+    flex: 0 0 calc(33.333% - 0.667rem);
+}
+
+/* Enhanced Form Groups */
+.hph-form-group-enhanced {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.hph-form-group-enhanced:last-child {
+    margin-bottom: 0;
+}
+
+.hph-form-group--inline {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Labels & Help Text */
+.hph-form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: var(--hph-label-font-size);
+    font-weight: var(--hph-label-font-weight);
+    color: var(--hph-gray-700);
+    letter-spacing: 0.025em;
+}
+
+.hph-form-label--required::after {
+    content: " *";
+    color: var(--hph-input-error-color);
+    font-weight: 400;
+}
+
+.hph-form-text {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: var(--hph-help-text-size);
+    color: var(--hph-gray-600);
+}
+
+/* ================================================
+   EMAIL FORM COMPATIBILITY (Enhanced)
+   ================================================ */
+.hph-form--email .hph-form-group {
+    background: var(--hph-white);
+    border-radius: var(--hph-radius-lg);
+    padding: 0.5rem;
+    box-shadow: var(--hph-shadow-lg);
+    border: 1px solid var(--hph-border-color-light);
+}
+
+.hph-form--email input,
+.hph-form--email .hph-form-input {
+    border: none;
+    box-shadow: none;
+    background: transparent;
+}
+
+.hph-form--email input:focus,
+.hph-form--email .hph-form-input:focus {
+    box-shadow: none;
+    border: none;
+}
+
+/* ================================================
+   SPECIALIZED MOLECULAR PATTERNS
+   ================================================ */
+
+/* Search Forms */
+.hph-form--search {
+    position: relative;
+}
+
+.hph-form--search .hph-form-input {
+    padding-left: 2.5rem;
+}
+
+.hph-form--search::before {
+    content: "";
+    position: absolute;
+    left: var(--hph-input-padding-x);
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.25rem;
+    height: 1.25rem;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3e%3cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3e%3c/svg%3e");
+    background-size: contain;
+    pointer-events: none;
+}
+
+/* Input Groups */
+.hph-input-group {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+}
+
+.hph-input-group > .hph-form-input,
+.hph-input-group > .hph-form-select {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.hph-input-group-text {
+    display: flex;
+    align-items: center;
+    padding: var(--hph-input-padding-y) var(--hph-input-padding-x);
+    background-color: var(--hph-gray-100);
+    border: var(--hph-input-border-width) var(--hph-input-border-style) var(--hph-input-border-color);
+    border-radius: var(--hph-input-radius);
+}
+
+/* ================================================
+   FORM BUTTONS (Enhanced)
+   ================================================ */
+.hph-form button,
+.hph-form .hph-btn {
+    flex-shrink: 0;
+    min-height: 48px;
+}
+
+.hph-form-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.hph-form-buttons--right {
+    justify-content: flex-end;
+}
+
+.hph-form-buttons--center {
+    justify-content: center;
+}
+
+/* ================================================
+   FORM GRIDS FOR LAYOUT
+   ================================================ */
+.hph-form-grid {
+    display: grid;
+    gap: 1rem;
+    width: 100%;
+}
+
+.hph-form-grid-2 {
+    grid-template-columns: 1fr 1fr;
+}
+
+.hph-form-grid-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.hph-form-grid-4 {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+/* Responsive form grids */
+@media (max-width: 768px) {
+    .hph-form-grid-2,
+    .hph-form-grid-3,
+    .hph-form-grid-4 {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 1024px) {
+    .hph-form-grid-4 {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .hph-form-grid-3 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ================================================
+   RESPONSIVE ENHANCEMENTS
+   ================================================ */
+@media (max-width: 768px) {
+    .hph-form-row {
+        flex-direction: column;
+    }
+    
+    .hph-form-col--half,
+    .hph-form-col--third {
+        flex: 1 0 100%;
+    }
+    
+    .hph-form-buttons {
+        flex-direction: column;
+    }
 }
 
 /* ================================================

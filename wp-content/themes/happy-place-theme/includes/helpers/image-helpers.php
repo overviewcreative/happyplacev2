@@ -1,8 +1,8 @@
 <?php
 /**
- * Image Helper Functions
+ * HPH Image Helpers
  * 
- * Provides utility functions for handling images within the Happy Place Theme
+ * Helper functions for handling images throughout the theme
  * 
  * @package HappyPlaceTheme
  * @since 3.0.0
@@ -14,11 +14,23 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Get properly encoded theme image URL
+ * Register a template part for asset loading
+ * Simple logging function for tracking template part usage
  * 
- * @param string $image_path Path to image relative to theme assets/images folder
- * @param bool $check_exists Whether to check if file exists before returning URL
- * @return string|null Image URL or null if file doesn't exist (when check_exists is true)
+ * @param string $template_part Template part name
+ */
+function hph_register_template_part($template_part) {
+    if (defined('WP_DEBUG') && WP_DEBUG) {
+        error_log("HPH: Template part registered: {$template_part}");
+    }
+}
+
+/**
+ * Get image URL from theme assets directory
+ * 
+ * @param string $image_path Relative path from assets/images/
+ * @param bool $check_exists Whether to check if file exists
+ * @return string Full URL to image or empty string if not found
  */
 function hph_get_image_url($image_path, $check_exists = false) {
     // Remove leading slash if present

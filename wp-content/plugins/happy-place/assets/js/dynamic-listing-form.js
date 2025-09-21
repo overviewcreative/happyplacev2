@@ -273,9 +273,20 @@
          */
         handleSubmit(e) {
             e.preventDefault();
+            e.stopImmediatePropagation(); // Prevent other handlers
+            
+            // Check if already processing
+            if (this.form.hasClass('hph-form-processing')) {
+                console.log('Form already processing, preventing duplicate submission');
+                return;
+            }
+            
+            // Mark as processing
+            this.form.addClass('hph-form-processing');
             
             // Validate all required fields
             if (!this.validateForm()) {
+                this.form.removeClass('hph-form-processing');
                 this.showNotification('Please fix the validation errors', 'error');
                 return;
             }
@@ -315,6 +326,10 @@
                     this.setLoadingState(false);
                     this.showNotification('An error occurred. Please try again.', 'error');
                     console.error('Form submission error:', error);
+                },
+                complete: () => {
+                    // Always remove processing state
+                    this.form.removeClass('hph-form-processing');
                 }
             });
         },

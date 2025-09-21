@@ -22,6 +22,7 @@
   
   /* Brand Core */
   --hph-primary: #50bae1;
+  --hph-primary-rgb: 80, 186, 225;
   --hph-primary-dark: #02333A;
   --hph-primary-light: #e0f2fe;
   
@@ -541,6 +542,50 @@
   --hph-input-radius: var(--hph-radius-md);
   --hph-input-border: var(--hph-border-width) solid var(--hph-border-color);
   --hph-input-focus-ring: 0 0 0 3px rgba(81, 186, 224, 0.1);
+
+  /* Enhanced Form Variables - Comprehensive System */
+  /* Form Colors */
+  --hph-input-bg: var(--hph-white);
+  --hph-input-bg-disabled: var(--hph-gray-50);
+  --hph-input-bg-focus: #f7fafc;
+  --hph-input-border-color: var(--hph-gray-300);
+  --hph-input-border-focus: var(--hph-primary);
+  --hph-input-text: var(--hph-gray-900);
+  --hph-input-placeholder: var(--hph-gray-400);
+  
+  /* Form Sizing */
+  --hph-input-height: 48px;
+  --hph-input-height-sm: 40px;
+  --hph-input-height-lg: 56px;
+  --hph-input-padding-x-sm: 0.75rem;
+  --hph-input-padding-y-sm: 0.5rem;
+  --hph-input-padding-x-lg: 1.25rem;
+  --hph-input-padding-y-lg: 1rem;
+  
+  /* Form Typography */
+  --hph-input-font-size: var(--hph-text-base);
+  --hph-input-font-size-sm: var(--hph-text-sm);
+  --hph-input-font-size-lg: var(--hph-text-lg);
+  --hph-input-line-height: 1.5;
+  --hph-label-font-size: var(--hph-text-sm);
+  --hph-label-font-weight: 500;
+  --hph-help-text-size: var(--hph-text-xs);
+  
+  /* Form Borders & Radius */
+  --hph-input-border-width: 2px;
+  --hph-input-border-style: solid;
+  --hph-input-radius-sm: var(--hph-radius);
+  --hph-input-radius-lg: var(--hph-radius-lg);
+  
+  /* Form States */
+  --hph-input-focus-shadow: 0 0 0 3px rgba(81, 186, 224, 0.15);
+  --hph-input-error-color: var(--hph-danger);
+  --hph-input-error-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
+  --hph-input-success-color: var(--hph-success);
+  --hph-input-success-shadow: 0 0 0 3px rgba(124, 155, 89, 0.1);
+  
+  /* Form Transitions */
+  --hph-input-transition: all 0.2s ease;
   
   /* Gallery */
   --hph-gallery-gap: 0.5rem;
@@ -593,7 +638,7 @@
   --hph-gradient-success-overlay: linear-gradient(180deg, rgba(34, 197, 94, 0) 0%, rgba(34, 197, 94, 0.8) 100%);
   --hph-gradient-danger-overlay: linear-gradient(180deg, rgba(239, 68, 68, 0) 0%, rgba(239, 68, 68, 0.8) 100%);
   --hph-gradient-warning-overlay: linear-gradient(180deg, rgba(245, 158, 11, 0) 0%, rgba(245, 158, 11, 0.8) 100%);
-  --hph-gradient-info-overlay: linear-gradient(180deg, rgba(59, 130, 246, 0) 0%, rgba(59, 130, 246, 0.8) 100%);
+  --hph-gradient-info-overlay: linear-gradient(180deg, var(--hph-info) 0%, rgba(var(--hph-info), 0.8) 100%);
   
   /* Diagonal Gradients */
   --hph-gradient-diagonal-dark: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%);

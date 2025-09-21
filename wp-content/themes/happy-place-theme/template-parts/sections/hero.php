@@ -2,19 +2,7 @@
 /**
  * HPH Hero Section Template
  * 
- * Hero section template using base CSS variables and // Set background styles
-if ($background_image) {
-    $hero_styles[] = "background-color: transparent";
-    $hero_styles[] = "background-image: url('" . esc_url($background_image) . "')";
-    $hero_styles[] = "background-size: cover";
-    $hero_styles[] = "background-position: center";
-    $hero_styles[] = "background-repeat: no-repeat";
-    if ($parallax) {
-        $hero_styles[] = "background-attachment: fixed";
-    }
-} elseif ($style === 'gradient') {
-    $hero_styles[] = "background: var(--hph-gradient-primary)";
-}ses
+ * Hero section template using base CSS variables and inline styles
  * 
  * @package HappyPlaceTheme
  * @since 3.0.0
@@ -60,7 +48,7 @@ $defaults = array(
     'show_stats' => false
 );
 
-// Merge with provided args
+// Merge with provided args - use consistent null coalescing
 $config = wp_parse_args($args ?? array(), $defaults);
 extract($config);
 
@@ -566,7 +554,8 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                             'size' => 'xl',
                             'icon' => '',
                             'icon_position' => 'left',
-                            'target' => '_self'
+                            'target' => '_self',
+                            'data_attributes' => ''
                         );
                         $btn = wp_parse_args($button, $btn_defaults);
                         
@@ -658,6 +647,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                         class="hph-hero-btn hph-hero-btn-<?php echo esc_attr($btn['style']); ?>"
                         <?php echo $btn_style_attr; ?>
                         <?php if ($btn['target'] !== '_self'): ?>target="<?php echo esc_attr($btn['target']); ?>"<?php endif; ?>
+                        <?php if ($btn['data_attributes']): echo $btn['data_attributes']; endif; ?>
                         onmouseover="this.style.transform='translateY(-2px)'"
                         onmouseout="this.style.transform='translateY(0)'"
                     >

@@ -152,14 +152,12 @@ class LeadCapture {
             HP_VERSION
         );
         
-        // Enqueue scripts
-        wp_enqueue_script(
-            'hp-lead-forms',
-            HP_PLUGIN_URL . 'assets/js/lead-forms.js',
-            ['jquery'],
-            HP_VERSION,
-            true
-        );
+        // Note: Form handling now done by HPH.Forms unified system in theme
+        // Enqueue scripts only if unified system is not available
+        if (!wp_script_is('hph-forms-unified', 'enqueued')) {
+            // Fallback: Basic form handling
+            wp_enqueue_script('jquery');
+        }
         
         // Localize script
         wp_localize_script('hp-lead-forms', 'hp_lead_forms', [

@@ -1,0 +1,425 @@
+/**
+ * Universal Carousel Component Styles
+ * 
+ * @package HappyPlaceTheme
+ * @since 1.0.0
+ */
+
+/* ============================================================================
+   CAROUSEL VARIABLES - INTEGRATED WITH HPH FRAMEWORK
+   ============================================================================ */
+:root {
+    --hph-carousel-primary: var(--hph-primary);
+    --hph-carousel-gap: var(--hph-spacing-lg);
+    --hph-carousel-border-radius: var(--hph-border-radius-lg);
+    --hph-carousel-transition: var(--hph-transition);
+    --hph-carousel-nav-size: 3rem;
+    --hph-carousel-dot-size: 0.75rem;
+    --hph-carousel-shadow: var(--hph-shadow-sm);
+    --hph-carousel-shadow-hover: var(--hph-shadow-md);
+}
+
+/* ============================================================================
+   CAROUSEL SECTION - FOLLOWING HPH SPACING PATTERNS
+   ============================================================================ */
+.hph-universal-carousel {
+    padding: var(--hph-spacing-section) 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Color Scheme Variations - Using HPH Variables Only */
+.hph-color-scheme--primary { --hph-carousel-primary: var(--hph-primary); }
+.hph-color-scheme--secondary { --hph-carousel-primary: var(--hph-secondary); }
+.hph-color-scheme--tertiary { --hph-carousel-primary: var(--hph-tertiary); }
+.hph-color-scheme--success { --hph-carousel-primary: var(--hph-success); }
+.hph-color-scheme--warning { --hph-carousel-primary: var(--hph-warning); }
+.hph-color-scheme--danger { --hph-carousel-primary: var(--hph-danger); }
+.hph-color-scheme--orange { --hph-carousel-primary: var(--hph-orange); }
+.hph-color-scheme--info { --hph-carousel-primary: var(--hph-info); }
+.hph-color-scheme--gray { --hph-carousel-primary: var(--hph-gray-600); }
+
+/* ============================================================================
+   CAROUSEL HEADER
+   ============================================================================ */
+.hph-carousel__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: var(--hph-spacing-xl);
+    flex-wrap: wrap;
+    gap: var(--hph-spacing-lg);
+}
+
+.hph-carousel__title {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    font-weight: var(--hph-font-weight-bold);
+    color: var(--hph-text-color);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--hph-spacing-sm);
+}
+
+.hph-carousel__title .hph-icon {
+    color: var(--hph-carousel-primary);
+    font-size: 0.8em;
+}
+
+.hph-carousel__subtitle {
+    font-size: var(--hph-font-size-lg);
+    color: var(--hph-text-muted);
+    margin: var(--hph-spacing-xs) 0 0 0;
+    max-width: 600px;
+}
+
+.hph-carousel__actions {
+    flex-shrink: 0;
+}
+
+/* ============================================================================
+   CAROUSEL CONTAINER
+   ============================================================================ */
+.hph-carousel__container {
+    position: relative;
+    overflow: hidden;
+    padding: 0 var(--hph-spacing-lg); /* Add padding for mobile */
+}
+
+/* Full width container override */
+.hph-container-full {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+}
+
+.hph-container-full .hph-carousel__container {
+    padding: 0 var(--hph-spacing-lg);
+}
+
+@media (min-width: 1200px) {
+    .hph-container-full .hph-carousel__container {
+        padding: 0 var(--hph-spacing-xl);
+    }
+}
+
+.hph-carousel__track-container {
+    overflow: hidden;
+    border-radius: var(--hph-carousel-border-radius);
+}
+
+.hph-carousel__track {
+    display: flex;
+    transition: var(--hph-carousel-transition);
+    gap: var(--hph-carousel-gap);
+}
+
+/* Dynamic responsive slides - viewport-based instead of fixed counts */
+.hph-carousel__slide {
+    flex: 0 0 280px; /* Fixed minimum width for compact cards */
+    max-width: 280px;
+}
+
+/* Responsive slide widths based on viewport, not data attributes */
+@media (min-width: 480px) {
+    .hph-carousel__slide {
+        flex: 0 0 260px;
+        max-width: 260px;
+    }
+}
+
+@media (min-width: 768px) {
+    .hph-carousel__slide {
+        flex: 0 0 280px;
+        max-width: 280px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .hph-carousel__slide {
+        flex: 0 0 300px;
+        max-width: 300px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .hph-carousel__slide {
+        flex: 0 0 320px;
+        max-width: 320px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .hph-carousel__slide {
+        flex: 0 0 340px;
+        max-width: 340px;
+    }
+}
+
+.hph-carousel__slide-content {
+    height: 100%;
+}
+
+/* ============================================================================
+   NAVIGATION ARROWS - FOLLOWING HPH BUTTON PATTERNS
+   ============================================================================ */
+.hph-carousel__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: var(--hph-carousel-nav-size);
+    height: var(--hph-carousel-nav-size);
+    background: var(--hph-white);
+    border: 2px solid var(--hph-carousel-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--hph-carousel-transition);
+    z-index: 2;
+    box-shadow: var(--hph-carousel-shadow);
+    color: var(--hph-carousel-primary);
+    font-weight: var(--hph-font-weight-medium, 500);
+}
+
+.hph-carousel__nav:hover {
+    background: var(--hph-carousel-primary);
+    color: white;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.hph-carousel__nav:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: translateY(-50%);
+}
+
+.hph-carousel__nav--prev {
+    left: -1.5rem;
+}
+
+.hph-carousel__nav--next {
+    right: -1.5rem;
+}
+
+.hph-carousel__nav .hph-icon {
+    font-size: 1.25rem;
+}
+
+/* ============================================================================
+   DOTS INDICATOR
+   ============================================================================ */
+.hph-carousel__dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--hph-spacing-xs);
+    margin-top: var(--hph-spacing-lg);
+}
+
+.hph-carousel__dot {
+    width: var(--hph-carousel-dot-size);
+    height: var(--hph-carousel-dot-size);
+    border-radius: 50%;
+    border: none;
+    background: var(--hph-gray-300);
+    cursor: pointer;
+    transition: var(--hph-carousel-transition);
+}
+
+.hph-carousel__dot:hover {
+    background: var(--hph-carousel-primary);
+    opacity: 0.7;
+}
+
+.hph-carousel__dot.is-active {
+    background: var(--hph-carousel-primary);
+    transform: scale(1.2);
+}
+
+/* ============================================================================
+   LOADING STATE
+   ============================================================================ */
+.hph-carousel__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    color: var(--hph-gray-600);
+}
+
+.hph-spinner {
+    width: 2rem;
+    height: 2rem;
+    border: 3px solid var(--hph-gray-200);
+    border-top-color: var(--hph-carousel-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: var(--hph-spacing-md);
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================================================
+   CAROUSEL CARD ADAPTATIONS
+   ============================================================================ */
+/* Ensure cards work well in carousel context */
+.hph-carousel__slide-content .hph-listing-card,
+.hph-carousel__slide-content .hph-place-card,
+.hph-carousel__slide-content .hph-event-card,
+.hph-carousel__slide-content .hph-agent-card {
+    height: 100%;
+    margin-bottom: 0;
+}
+
+/* Reduce card hover effects in carousel to prevent interference */
+.hph-carousel__slide:hover .hph-listing-card,
+.hph-carousel__slide:hover .hph-place-card {
+    transform: translateY(-2px); /* Reduced from -4px */
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================ */
+@media (max-width: 1200px) {
+    .hph-carousel__nav--prev {
+        left: -1rem;
+    }
+    
+    .hph-carousel__nav--next {
+        right: -1rem;
+    }
+}
+
+@media (max-width: 1024px) {
+    .hph-universal-carousel {
+        padding: var(--hph-spacing-section-sm) 0;
+    }
+    
+    .hph-carousel__header {
+        margin-bottom: var(--hph-spacing-lg);
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --hph-carousel-gap: var(--hph-spacing-md);
+        --hph-carousel-nav-size: 2.5rem;
+    }
+    
+    .hph-carousel__header {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: center;
+        margin-bottom: var(--hph-spacing-lg);
+    }
+    
+    .hph-carousel__title {
+        font-size: var(--hph-font-size-2xl);
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .hph-carousel__actions {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .hph-carousel__nav {
+        display: none; /* Hide navigation arrows on mobile */
+    }
+}
+
+@media (max-width: 480px) {
+    .hph-universal-carousel {
+        padding: var(--hph-spacing-section-xs) 0;
+    }
+    
+    .hph-carousel__track {
+        gap: var(--hph-spacing-sm);
+    }
+    
+    :root {
+        --hph-carousel-gap: var(--hph-spacing-sm);
+        --hph-carousel-dot-size: 0.625rem;
+    }
+}
+
+/* ============================================================================
+   POST TYPE SPECIFIC STYLES
+   ============================================================================ */
+
+/* Listings Carousel */
+.hph-carousel-listing {
+    background: linear-gradient(135deg, var(--hph-primary-light), var(--hph-white));
+}
+
+/* Agents Carousel */
+.hph-carousel-agent {
+    background: linear-gradient(135deg, var(--hph-gray-50), var(--hph-white));
+}
+
+.hph-carousel-agent .hph-carousel__slide-content {
+    text-align: center;
+}
+
+/* Places Carousel */
+.hph-carousel-local_place {
+    background: linear-gradient(135deg, var(--hph-tertiary-light), var(--hph-white));
+}
+
+/* Events Carousel */
+.hph-carousel-local_event {
+    background: linear-gradient(135deg, var(--hph-info-light), var(--hph-white));
+}
+
+/* Communities Carousel */
+.hph-carousel-community {
+    background: linear-gradient(135deg, var(--hph-success-light), var(--hph-white));
+}
+
+/* Cities Carousel */
+.hph-carousel-city {
+    background: linear-gradient(135deg, var(--hph-primary-50), var(--hph-white));
+}
+
+/* Open Houses Carousel */
+.hph-carousel-open_house {
+    background: linear-gradient(135deg, var(--hph-orange-light), var(--hph-white));
+}
+
+/* Posts Carousel */
+.hph-carousel-post {
+    background: linear-gradient(135deg, var(--hph-gray-100), var(--hph-white));
+}
+
+/* ============================================================================
+   ACCESSIBILITY
+   ============================================================================ */
+.hph-carousel__nav:focus,
+.hph-carousel__dot:focus {
+    outline: 2px solid var(--hph-carousel-primary);
+    outline-offset: 2px;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    .hph-carousel__track,
+    .hph-carousel__nav,
+    .hph-carousel__dot,
+    .hph-spinner {
+        transition: none;
+        animation: none;
+    }
+    
+    .hph-carousel__container[data-autoplay="true"] {
+        /* Disable autoplay for users with reduced motion preference */
+        animation-play-state: paused;
+    }
+}

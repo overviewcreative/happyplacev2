@@ -184,6 +184,52 @@
             "rest_base": "open-houses",
             "rest_controller_class": "WP_REST_Posts_Controller"
         },
+        "city": {
+            "label": "Cities",
+            "labels": {
+                "name": "Cities",
+                "singular_name": "City",
+                "menu_name": "Cities",
+                "name_admin_bar": "City",
+                "add_new": "Add New",
+                "add_new_item": "Add New City",
+                "new_item": "New City",
+                "edit_item": "Edit City",
+                "view_item": "View City",
+                "all_items": "All Cities",
+                "search_items": "Search Cities",
+                "parent_item_colon": "Parent Cities:",
+                "not_found": "No cities found.",
+                "not_found_in_trash": "No cities found in Trash."
+            },
+            "description": "Cities and towns for geographic organization",
+            "public": true,
+            "publicly_queryable": true,
+            "show_ui": true,
+            "show_in_menu": true,
+            "query_var": true,
+            "rewrite": {
+                "slug": "cities",
+                "with_front": false
+            },
+            "capability_type": "post",
+            "has_archive": true,
+            "hierarchical": true,
+            "menu_position": 8,
+            "menu_icon": "dashicons-location-alt",
+            "supports": [
+                "title",
+                "editor",
+                "thumbnail",
+                "excerpt",
+                "custom-fields",
+                "revisions",
+                "page-attributes"
+            ],
+            "show_in_rest": true,
+            "rest_base": "cities",
+            "rest_controller_class": "WP_REST_Posts_Controller"
+        },
         "lead": {
             "label": "Leads",
             "labels": {

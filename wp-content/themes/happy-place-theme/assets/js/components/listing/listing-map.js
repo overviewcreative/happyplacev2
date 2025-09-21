@@ -1,5 +1,5 @@
 /**
- * HPH Listing Map Component JavaScript
+ * HPH Listing Map Component JavaScript - Updated for Mapbox
  * 
  * @package HappyPlaceTheme
  * @since 3.0.0
@@ -7,6 +7,11 @@
 
 // Create global namespace for map functionality
 window.HPHListingMap = window.HPHListingMap || {};
+
+// Load HPH Map component first
+if (typeof HPHMap === 'undefined') {
+    console.error('Listing Map: HPHMap component not found. Loading fallback.');
+}
 
 (function($) {
     'use strict';

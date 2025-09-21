@@ -104,23 +104,18 @@ export default defineConfig(({ command, mode }) => {
     css: {
       postcss: {
         plugins: [
-          require('autoprefixer'),
+          'autoprefixer',
           ...(isProd ? [
-            require('cssnano')({
+            ['cssnano', {
               preset: ['default', {
                 discardComments: { removeAll: true },
                 normalizeWhitespace: true,
                 minifySelectors: true,
                 minifyParams: true
               }]
-            })
+            }]
           ] : [])
         ]
-      },
-      preprocessorOptions: {
-        scss: {
-          additionalData: `@import "./src/scss/variables.scss";`
-        }
       }
     },
     

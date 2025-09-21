@@ -62,14 +62,21 @@ if (isset($_POST['register_submit'])) {
             // Set user type
             update_user_meta($user_id, 'user_type', $user_type);
             
+            // Fire WordPress registration hooks for plugin compatibility
+            do_action('user_register', $user_id);
+            do_action('hph_user_registered', $user_id, $user_type);
+            
+            // Send new user notification emails
+            wp_new_user_notification($user_id, null, 'both');
+            
             $registration_success = __('Registration successful! Please check your email to activate your account.', 'happy-place-theme');
             
             // Optional: Auto login user
             wp_set_current_user($user_id);
             wp_set_auth_cookie($user_id);
             
-            // Redirect to dashboard
-            wp_redirect(home_url('/dashboard'));
+            // Redirect to dashboard with success parameter
+            wp_redirect(add_query_arg('registration', 'success', home_url('/dashboard')));
             exit;
         }
     }

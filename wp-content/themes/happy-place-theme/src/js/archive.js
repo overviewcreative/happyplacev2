@@ -1,27 +1,16 @@
 /**
  * Archive JavaScript Bundle
- * Archive pages, search results, and filtering
+ * Archive pages and listing archive functionality
  */
 
-// Note: Imports removed to fix build system
-// Will load dependencies via separate script tags if needed
+// Import archive functionality
+import '../../assets/js/features/archive-ajax.js';
+import '../../assets/js/features/advanced-filters.js';
 
-// Initialize archive functionality
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('%c📋 Happy Place Archive Loaded', 'color: #8b5cf6; font-weight: bold;');
-    
-    // Initialize archive functionality
-    if (window.HPH && window.HPH.Archive && window.HPH.Archive.init) {
-        window.HPH.Archive.init();
-    }
-    
-    // Initialize AJAX functionality
-    if (window.HPH && window.HPH.ArchiveAjax && window.HPH.ArchiveAjax.init) {
-        window.HPH.ArchiveAjax.init();
-    }
-    
-    // Initialize advanced filters
-    if (window.HPH && window.HPH.AdvancedFilters && window.HPH.AdvancedFilters.init) {
-        window.HPH.AdvancedFilters.init();
-    }
-});
+// Import enhanced archive listings functionality
+import '../../assets/js/pages/enhanced-archive-listings.js';
+
+// Import map functionality for map view
+import '../../assets/js/components/hph-map.js';
+
+console.log('HPH Archive JS Bundle Loaded');

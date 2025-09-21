@@ -1,4 +1,0 @@
-price,bedrooms,bathrooms_full,bathrooms_half,square_feet,street_name,street_type,city,state,zip_code,mls_number,status,property_type,hoa_fees
-"$350,000",3,2,0,1500,"123 Main","St","San Antonio","TX",78201,"MLS001","Active","Single Family","$150"
-"$425,000",4,2,1,2100,"456 Oak","Ave","San Antonio","TX",78202,"MLS002","Active","Single Family","$200"
-"$275,000",2,1,1,1200,"789 Pine","Dr","San Antonio","TX",78203,"MLS003","Pending","Condo","$75"

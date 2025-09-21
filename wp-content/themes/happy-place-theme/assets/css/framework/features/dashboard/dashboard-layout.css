@@ -612,6 +612,7 @@
   border: 1px solid var(--hph-border-color);
   border-radius: var(--hph-radius-lg);
   overflow: hidden;
+  padding: var(hph-space-md);
 }
 
   .hph-card-header {

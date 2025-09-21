@@ -1,0 +1,24 @@
+/**
+ * Local Features CSS Module
+ * Import manifest for all local content styles
+ * 
+ * @package HappyPlaceTheme
+ * @since 1.0.0
+ */
+
+/* Core local styles and variables */
+@import url('local-core.css');
+
+/* Component styles */
+@import url('place-card.css');
+@import url('event-card.css');
+@import url('city-hero.css');
+@import url('local-filters.css');
+
+/* Page-specific styles */
+@import url('local-archive.css');
+@import url('local-single.css');
+@import url('event-timeline.css');
+
+/* Utility styles */
+@import url('local-utilities.css');

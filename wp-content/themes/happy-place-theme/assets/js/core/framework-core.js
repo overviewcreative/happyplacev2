@@ -401,22 +401,73 @@
     };
 
     /**
-     * Initialize lazy loading
+     * Initialize lazy loading (legacy support)
+     * Enhanced version loaded separately via enhanced-lazy-loading.js
      */
     HPH.initLazyLoading = function() {
+        // Check if enhanced lazy loading is available
+        if (window.HPH && window.HPH.enhancedLazyLoading) {
+            console.log('Enhanced lazy loading already active');
+            return;
+        }
+        
+        // Fallback to basic lazy loading
+        if (!('IntersectionObserver' in window)) {
+            // Load all images immediately for unsupported browsers
+            document.querySelectorAll('img[data-src]').forEach(function(img) {
+                img.src = img.dataset.src;
+                img.classList.add('hph-loaded');
+                delete img.dataset.src;
+            });
+            return;
+        }
+        
         var imageObserver = new IntersectionObserver(function(entries, observer) {
             entries.forEach(function(entry) {
                 if (entry.isIntersecting) {
                     var img = entry.target;
-                    img.src = img.dataset.src;
-                    img.classList.remove('hph-lazy');
-                    img.classList.add('hph-loaded');
+                    
+                    // Add loading class for transition
+                    img.classList.add('hph-loading');
+                    
+                    // Create new image to preload
+                    var newImg = new Image();
+                    newImg.onload = function() {
+                        // Update source
+                        img.src = img.dataset.src;
+                        
+                        // Remove loading, add loaded with slight delay for smooth transition
+                        img.classList.remove('hph-loading');
+                        requestAnimationFrame(function() {
+                            img.classList.remove('hph-lazy');
+                            img.classList.add('hph-loaded');
+                        });
+                        
+                        // Clean up
+                        delete img.dataset.src;
+                    };
+                    
+                    newImg.onerror = function() {
+                        // Handle error gracefully
+                        img.classList.remove('hph-loading');
+                        img.classList.add('hph-image-error');
+                        console.warn('Failed to load lazy image:', img.dataset.src);
+                    };
+                    
+                    // Start loading
+                    newImg.src = img.dataset.src;
+                    
                     imageObserver.unobserve(img);
                 }
             });
+        }, {
+            rootMargin: '50px 0px',
+            threshold: 0.1
         });
         
         document.querySelectorAll('img[data-src]').forEach(function(img) {
+            // Add lazy class for initial styling
+            img.classList.add('hph-lazy');
             imageObserver.observe(img);
         });
     };

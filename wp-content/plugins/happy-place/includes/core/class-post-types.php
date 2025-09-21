@@ -170,6 +170,23 @@ class PostTypes {
                 'show_in_rest' => true,
                 'rest_base' => 'communities',
             ],
+            'city' => [
+                'labels' => $this->get_city_labels(),
+                'public' => true,
+                'publicly_queryable' => true,
+                'show_ui' => true,
+                'show_in_menu' => true,
+                'query_var' => true,
+                'rewrite' => ['slug' => 'cities', 'with_front' => false],
+                'capability_type' => 'post',
+                'has_archive' => true,
+                'hierarchical' => true,
+                'menu_position' => 8,
+                'menu_icon' => 'dashicons-location-alt',
+                'supports' => ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields', 'revisions', 'page-attributes'],
+                'show_in_rest' => true,
+                'rest_base' => 'cities',
+            ],
             'lead' => [
                 'labels' => $this->get_lead_labels(),
                 'public' => false,
@@ -343,6 +360,28 @@ class PostTypes {
             'all_items' => __('All Communities', 'happy-place'),
             'menu_name' => __('Communities', 'happy-place'),
             'name_admin_bar' => __('Community', 'happy-place'),
+        ];
+    }
+    
+    /**
+     * Get city labels
+     */
+    private function get_city_labels(): array {
+        return [
+            'name' => __('Cities', 'happy-place'),
+            'singular_name' => __('City', 'happy-place'),
+            'add_new' => __('Add New', 'happy-place'),
+            'add_new_item' => __('Add New City', 'happy-place'),
+            'edit_item' => __('Edit City', 'happy-place'),
+            'new_item' => __('New City', 'happy-place'),
+            'view_item' => __('View City', 'happy-place'),
+            'view_items' => __('View Cities', 'happy-place'),
+            'search_items' => __('Search Cities', 'happy-place'),
+            'not_found' => __('No cities found', 'happy-place'),
+            'not_found_in_trash' => __('No cities found in Trash', 'happy-place'),
+            'all_items' => __('All Cities', 'happy-place'),
+            'menu_name' => __('Cities', 'happy-place'),
+            'name_admin_bar' => __('City', 'happy-place'),
         ];
     }
     

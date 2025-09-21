@@ -235,7 +235,10 @@ $property_address = trim(get_field('street_number', $listing_id) . ' ' .
         
         <h3 class="hph-modal__title hph-text-xl hph-font-bold hph-mb-lg">RSVP for Open House</h3>
         
-        <form id="rsvp-form" class="hph-space-y-md">
+        <form id="rsvp-form" 
+              class="hph-space-y-md hph-form"
+              data-route-type="booking_request"
+              data-form-context="open_house_rsvp">
             
             <div class="hph-form-group">
                 <label class="hph-form-label hph-text-sm hph-font-medium hph-text-gray-700 hph-mb-xs hph-block">
@@ -293,6 +296,10 @@ $property_address = trim(get_field('street_number', $listing_id) . ' ' .
             <input type="hidden" name="property_address" value="<?php echo esc_attr($property_address); ?>">
             <input type="hidden" name="open_house_date" value="">
             <input type="hidden" name="open_house_time" value="">
+            <input type="hidden" name="action" value="hph_route_form">
+            <input type="hidden" name="route_type" value="booking_request">
+            <input type="hidden" name="form_type" value="open_house_rsvp">
+            <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('hph_booking_form'); ?>">
             
             <div class="hph-form-actions hph-flex hph-gap-sm hph-pt-md">
                 <button type="submit" 

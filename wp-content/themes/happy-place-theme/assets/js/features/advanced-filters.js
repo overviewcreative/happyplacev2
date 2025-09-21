@@ -653,7 +653,7 @@ class HPHAdvancedFilters {
     updateActiveFilters() {
         // Add null check for activeFilters element
         if (!this.elements.activeFilters) {
-            console.warn('Active filters container not found');
+            // Silently return if container doesn't exist (not all pages have it)
             return;
         }
         

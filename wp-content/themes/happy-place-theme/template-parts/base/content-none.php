@@ -240,8 +240,8 @@ $message = $args['message'] ?? $context_content['message'];
 
 .search-input:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: var(--hph-primary);
+    box-shadow: 0 0 0 3px rgba(var(--hph-primary-rgb), 0.1);
 }
 
 .search-button {
@@ -288,14 +288,14 @@ $message = $args['message'] ?? $context_content['message'];
 }
 
 .action-btn--primary {
-    background: #3b82f6;
+    background: var(--hph-primary);
     color: white;
 }
 
 .action-btn--primary:hover {
     background: #2563eb;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 4px 12px rgba(var(--hph-primary-rgb), 0.4);
 }
 
 .action-btn--secondary {

@@ -61,6 +61,7 @@ if (!empty($mapbox_key)) {
 
 // Enqueue quick fixes CSS for missing elements
 wp_enqueue_style('hph-quick-fixes', get_template_directory_uri() . '/assets/css/quick-fixes.css', [], '1.0.0');
+wp_enqueue_style('hph-archive-map-fixes', get_template_directory_uri() . '/assets/css/archive-map-fixes.css', [], '1.0.0');
 
 // Localize script for AJAX
 wp_localize_script('hph-archive-listings-enhanced', 'hph_listings', [
@@ -1206,6 +1207,86 @@ document.addEventListener('DOMContentLoaded', function() {
             console.warn('Could not initialize HPHAdvancedFilters:', error.message);
         }
     }
+});
+</script>
+
+<script>
+// Archive mode: Disable header scroll behavior and auto-expand search
+document.addEventListener('DOMContentLoaded', function() {
+    // Mark as archive mode
+    window.hphArchiveMode = true;
+    
+    // Disable header scroll handlers
+    if (typeof window.hphHeader !== "undefined" && window.hphHeader.destroy) {
+        window.hphHeader.destroy();
+    }
+    
+    // Remove scroll event listeners that might interfere
+    window.removeEventListener("scroll", window.hphHeaderScroll);
+    
+    // Auto-expand header search on archive pages
+    setTimeout(function() {
+        const searchToggle = document.querySelector(".hph-search-toggle");
+        const searchBar = document.querySelector(".hph-search-bar[data-search-bar]");
+        
+        if (searchToggle && searchBar) {
+            // Check if search is not already expanded
+            if (!searchBar.classList.contains("active") && searchBar.style.display !== "block") {
+                searchToggle.click();
+                searchBar.classList.add("archive-auto-expanded");
+                console.log("Archive Complex: Header search auto-expanded");
+            }
+        }
+    }, 100);
+    
+    // Handle map view special behavior for complex archive
+    function handleMapViewToggle() {
+        const mapViewBtn = document.querySelector("[data-view=\"map\"]");
+        const body = document.body;
+        const header = document.querySelector(".hph-sticky-header");
+        
+        if (mapViewBtn) {
+            mapViewBtn.addEventListener("click", function() {
+                // Add body class for map view
+                body.classList.add("map-view-active");
+                
+                // Hide header in map view
+                if (header) {
+                    header.style.display = "none";
+                }
+                
+                // Prevent scrolling
+                body.style.overflow = "hidden";
+                
+                console.log("Complex Archive: Map view activated - header hidden");
+            });
+        }
+        
+        // Handle switching back to other views
+        const otherViewBtns = document.querySelectorAll("[data-view]:not([data-view=\"map\"])");
+        
+        otherViewBtns.forEach(btn => {
+            if (btn) {
+                btn.addEventListener("click", function() {
+                    // Remove body class for map view
+                    body.classList.remove("map-view-active");
+                    
+                    // Show header again
+                    if (header) {
+                        header.style.display = "";
+                    }
+                    
+                    // Restore scrolling
+                    body.style.overflow = "";
+                    
+                    console.log("Complex Archive: Standard view activated - header restored");
+                });
+            }
+        });
+    }
+    
+    // Initialize map view handlers
+    handleMapViewToggle();
 });
 </script>
 

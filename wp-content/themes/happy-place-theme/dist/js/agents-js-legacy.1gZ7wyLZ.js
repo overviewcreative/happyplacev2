@@ -1,1 +1,0 @@
-System.register([],function(e,n){"use strict";return{execute:function(){document.addEventListener("DOMContentLoaded",function(){console.log("%c👥 Happy Place Agents Loaded","color: #06b6d4; font-weight: bold;"),window.HPH&&window.HPH.AgentArchive&&window.HPH.AgentArchive.init&&window.HPH.AgentArchive.init()})}}});

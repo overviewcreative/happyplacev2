@@ -53,6 +53,90 @@
   aspect-ratio: 1;
 }
 
+/* Button Icon Color Inheritance */
+.hph-btn .fa,
+.hph-btn .fas,
+.hph-btn .far,
+.hph-btn .fal,
+.hph-btn .fab,
+.hph-btn i,
+button .fa,
+button .fas,
+button .far,
+button .fal,
+button .fab,
+button i,
+[class*="btn"] .fa,
+[class*="btn"] .fas,
+[class*="btn"] .far,
+[class*="btn"] .fal,
+[class*="btn"] .fab,
+[class*="btn"] i {
+  color: inherit !important;
+}
+
+/* Button Icon Color Inheritance on Hover */
+.hph-btn:hover .fa,
+.hph-btn:hover .fas,
+.hph-btn:hover .far,
+.hph-btn:hover .fal,
+.hph-btn:hover .fab,
+.hph-btn:hover i,
+button:hover .fa,
+button:hover .fas,
+button:hover .far,
+button:hover .fal,
+button:hover .fab,
+button:hover i,
+[class*="btn"]:hover .fa,
+[class*="btn"]:hover .fas,
+[class*="btn"]:hover .far,
+[class*="btn"]:hover .fal,
+[class*="btn"]:hover .fab,
+[class*="btn"]:hover i {
+  color: inherit !important;
+}
+
+/* Button Icon Color Inheritance on Focus and Active */
+.hph-btn:focus .fa,
+.hph-btn:focus .fas,
+.hph-btn:focus .far,
+.hph-btn:focus .fal,
+.hph-btn:focus .fab,
+.hph-btn:focus i,
+.hph-btn:active .fa,
+.hph-btn:active .fas,
+.hph-btn:active .far,
+.hph-btn:active .fal,
+.hph-btn:active .fab,
+.hph-btn:active i,
+button:focus .fa,
+button:focus .fas,
+button:focus .far,
+button:focus .fal,
+button:focus .fab,
+button:focus i,
+button:active .fa,
+button:active .fas,
+button:active .far,
+button:active .fal,
+button:active .fab,
+button:active i,
+[class*="btn"]:focus .fa,
+[class*="btn"]:focus .fas,
+[class*="btn"]:focus .far,
+[class*="btn"]:focus .fal,
+[class*="btn"]:focus .fab,
+[class*="btn"]:focus i,
+[class*="btn"]:active .fa,
+[class*="btn"]:active .fas,
+[class*="btn"]:active .far,
+[class*="btn"]:active .fal,
+[class*="btn"]:active .fab,
+[class*="btn"]:active i {
+  color: inherit !important;
+}
+
 /* ================================================
    BUTTON VARIANTS
    ================================================ */
@@ -280,6 +364,38 @@
   border-radius: 50rem;
   padding-left: 1.75rem;
   padding-right: 1.75rem;
+}
+
+.hph-btn-circle {
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* Icon centering fix for all circle buttons and button-like elements */
+.hph-btn-circle,
+button[style*="border-radius: 50%"],
+.hph-modal-close,
+[class*="close"][style*="border-radius"],
+[class*="btn"][style*="border-radius: 50%"] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+}
+
+.hph-btn-circle span,
+.hph-modal-close span,
+[class*="close"] span,
+[class*="btn"][style*="border-radius: 50%"] span {
+  display: block;
+  line-height: 1;
+  font-size: inherit;
 }
 
 /* ================================================
@@ -700,6 +816,10 @@
   height: 48px;
   padding: 0;
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 .hph-hero__btn--icon:hover {

@@ -1,17 +1,9 @@
 /**
  * Agents JavaScript Bundle
- * Agent pages and interactions
+ * Agent and staff page functionality
  */
 
-// Note: Imports removed to fix build system
-// Will load dependencies via separate script tags if needed
+// Import agent functionality
+import '../../assets/js/pages/enhanced-archive-agents.js';
 
-// Initialize agents functionality
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('%c👥 Happy Place Agents Loaded', 'color: #06b6d4; font-weight: bold;');
-    
-    // Initialize agent archive
-    if (window.HPH && window.HPH.AgentArchive && window.HPH.AgentArchive.init) {
-        window.HPH.AgentArchive.init();
-    }
-});
+console.log('HPH Agents JS Bundle Loaded');

@@ -1,0 +1,271 @@
+/* ================================================
+   RESPONSIVE ENHANCEMENTS FOR LISTING FEATURES
+   Mobile-first responsive design utilities
+   
+   Breakpoint system:
+   - 320px: Base mobile
+   - 480px: Large mobile
+   - 640px: Large mobile landscape  
+   - 768px: Tablet
+   - 1024px: Desktop
+   - 1200px: Large desktop
+   ================================================ */
+
+/* ============================================================================
+   HERO SECTION RESPONSIVE ENHANCEMENTS - CONFLICTS REMOVED
+   All hero styles are now consolidated in listing-hero.css to prevent conflicts
+   ============================================================================ */
+
+/* ================================================
+   PROPERTY DETAILS RESPONSIVE ENHANCEMENTS
+   ================================================ */
+
+/* Property overview section */
+.hph-property-overview {
+    margin-bottom: 1.5rem;
+}
+
+.hph-property-overview h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+@media (min-width: 640px) {
+    .hph-property-overview {
+        margin-bottom: 2rem;
+    }
+    
+    .hph-property-overview h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+}
+
+/* Property features responsive grid */
+.hph-property-features {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+@media (min-width: 480px) {
+    .hph-property-features {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 768px) {
+    .hph-property-features {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+    }
+}
+
+/* Property details grid */
+.hph-property-details-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+@media (min-width: 640px) {
+    .hph-property-details-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .hph-property-details-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+    }
+}
+
+/* ================================================
+   LISTING GRID RESPONSIVE ENHANCEMENTS
+   ================================================ */
+
+.hph-listing-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+    .hph-listing-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .hph-listing-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1200px) {
+    .hph-listing-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* ================================================
+   SINGLE LISTING LAYOUT RESPONSIVE
+   ================================================ */
+
+.hph-listing-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.hph-listing-main {
+    order: 1;
+}
+
+.hph-listing-sidebar-wrapper {
+    order: 2;
+    position: relative;
+}
+
+/* Large mobile (480px and up) */
+@media (min-width: 480px) {
+    .hph-listing-content {
+        padding: 1.5rem 0;
+    }
+    
+    .hph-listing-layout {
+        gap: 2rem;
+    }
+}
+
+/* Tablet (768px and up) */
+@media (min-width: 768px) {
+    .hph-listing-content {
+        padding: 2rem 0;
+    }
+    
+    .hph-listing-layout {
+        gap: 2.5rem;
+    }
+}
+
+/* Desktop (1024px and up) */
+@media (min-width: 1024px) {
+    .hph-listing-content {
+        padding: 2.5rem 0;
+    }
+    
+    .hph-listing-layout {
+        grid-template-columns: 1fr 350px;
+        gap: 3rem;
+    }
+    
+    .hph-listing-sidebar-wrapper {
+        position: sticky;
+        top: 2rem;
+        align-self: start;
+    }
+}
+
+/* Large desktop (1200px and up) */
+@media (min-width: 1200px) {
+    .hph-listing-layout {
+        grid-template-columns: 1fr 380px;
+        gap: 3.5rem;
+    }
+}
+
+/* ================================================
+   LISTING CARD RESPONSIVE ENHANCEMENTS
+   ================================================ */
+
+.hph-listing-card {
+    background: white;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.hph-listing-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.hph-listing-card__image {
+    aspect-ratio: 4/3;
+    background-size: cover;
+    background-position: center;
+}
+
+@media (min-width: 768px) {
+    .hph-listing-card__image {
+        aspect-ratio: 16/10;
+    }
+}
+
+/* ================================================
+   AGENT CARD RESPONSIVE
+   ================================================ */
+
+.hph-agent-card {
+    text-align: center;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 768px) {
+    .hph-agent-card {
+        padding: 2rem;
+    }
+}
+
+/* ================================================
+   MOBILE OPTIMIZATIONS
+   ================================================ */
+
+@media (max-width: 480px) {
+    .hph-container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .hph-btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .hph-stats {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .hph-price {
+        font-size: 1.5rem;
+    }
+}
+
+/* ================================================
+   PRINT STYLES
+   ================================================ */
+
+@media print {
+    .hph-listing-sidebar-wrapper {
+        display: none !important;
+    }
+    
+    .hph-listing-layout {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .hph-hero__actions,
+    .hph-gallery-nav {
+        display: none !important;
+    }
+}

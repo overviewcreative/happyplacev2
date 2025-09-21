@@ -40,8 +40,11 @@ $defaults = array(
     'section_id' => ''
 );
 
-// Merge with provided args
-$config = wp_parse_args($args ?? array(), $defaults);
+// Merge with provided args - handle cases where $args might not be set
+if (!isset($args) || !is_array($args)) {
+    $args = array();
+}
+$config = wp_parse_args($args, $defaults);
 extract($config);
 
 // Build section styles
@@ -272,7 +275,8 @@ if ($layout === 'split' || $layout === 'inline') {
                         'style' => 'white',
                         'size' => 'xl',
                         'icon' => '',
-                        'target' => '_self'
+                        'target' => '_self',
+                        'data_attributes' => ''
                     ));
                     
                     $btn_styles = array(
@@ -315,6 +319,7 @@ if ($layout === 'split' || $layout === 'inline') {
                     href="<?php echo esc_url($btn['url']); ?>"
                     style="<?php echo implode('; ', $btn_styles); ?>"
                     <?php if ($btn['target'] !== '_self'): ?>target="<?php echo esc_attr($btn['target']); ?>"<?php endif; ?>
+                    <?php if ($btn['data_attributes']): echo $btn['data_attributes']; endif; ?>
                     onmouseover="this.style.transform='translateY(-2px)'"
                     onmouseout="this.style.transform='translateY(0)'"
                 >
@@ -391,7 +396,8 @@ if ($layout === 'split' || $layout === 'inline') {
                         'style' => 'white',
                         'size' => 'xl',
                         'icon' => '',
-                        'target' => '_self'
+                        'target' => '_self',
+                        'data_attributes' => ''
                     ));
                     
                     $btn_styles = array(
@@ -428,6 +434,7 @@ if ($layout === 'split' || $layout === 'inline') {
                     href="<?php echo esc_url($btn['url']); ?>"
                     style="<?php echo implode('; ', $btn_styles); ?>"
                     <?php if ($btn['target'] !== '_self'): ?>target="<?php echo esc_attr($btn['target']); ?>"<?php endif; ?>
+                    <?php if ($btn['data_attributes']): echo $btn['data_attributes']; endif; ?>
                     onmouseover="this.style.transform='translateY(-2px)'"
                     onmouseout="this.style.transform='translateY(0)'"
                 >
@@ -546,6 +553,7 @@ if ($layout === 'split' || $layout === 'inline') {
                     href="<?php echo esc_url($btn['url']); ?>"
                     style="<?php echo implode('; ', $btn_styles); ?>"
                     <?php if ($btn['target'] !== '_self'): ?>target="<?php echo esc_attr($btn['target']); ?>"<?php endif; ?>
+                    <?php if ($btn['data_attributes']): echo $btn['data_attributes']; endif; ?>
                     onmouseover="this.style.transform='translateY(-2px)'"
                     onmouseout="this.style.transform='translateY(0)'"
                 >

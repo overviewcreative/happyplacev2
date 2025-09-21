@@ -1,0 +1,194 @@
+{
+  "key": "group_hpl_city_fields",
+  "title": "Happy Place Local — City Fields",
+  "fields": [
+    {
+      "key": "field_hpl_city_state",
+      "label": "State",
+      "name": "state",
+      "type": "text",
+      "instructions": "State abbreviation (e.g., DE, MD).",
+      "required": 1,
+      "wrapper": { "width": "20" }
+    },
+    {
+      "key": "field_hpl_city_county",
+      "label": "County",
+      "name": "county",
+      "type": "text",
+      "instructions": "County this city belongs to.",
+      "required": 0,
+      "wrapper": { "width": "30" }
+    },
+    {
+      "key": "field_hpl_city_population",
+      "label": "Population",
+      "name": "population",
+      "type": "number",
+      "instructions": "Approximate population.",
+      "wrapper": { "width": "20" }
+    },
+    {
+      "key": "field_hpl_city_lat",
+      "label": "Latitude",
+      "name": "lat",
+      "type": "text",
+      "wrapper": { "width": "15" }
+    },
+    {
+      "key": "field_hpl_city_lng",
+      "label": "Longitude",
+      "name": "lng",
+      "type": "text",
+      "wrapper": { "width": "15" }
+    },
+    {
+      "key": "field_hpl_city_tagline",
+      "label": "Tagline",
+      "name": "tagline",
+      "type": "text",
+      "instructions": "Short phrase about the city (appears on city/listing pages).",
+      "wrapper": { "width": "100" }
+    },
+    {
+      "key": "field_hpl_city_description",
+      "label": "Description",
+      "name": "description",
+      "type": "wysiwyg",
+      "instructions": "Editorial description for the city page.",
+      "tabs": "all",
+      "toolbar": "basic",
+      "media_upload": 0
+    },
+    {
+      "key": "field_hpl_city_hero_image",
+      "label": "Hero Image",
+      "name": "hero_image",
+      "type": "image",
+      "instructions": "Main image for the city page.",
+      "return_format": "id",
+      "preview_size": "medium",
+      "library": "all",
+      "wrapper": { "width": "50" }
+    },
+    {
+      "key": "field_hpl_city_gallery",
+      "label": "Gallery",
+      "name": "gallery",
+      "type": "gallery",
+      "instructions": "Optional supporting images.",
+      "return_format": "id",
+      "preview_size": "thumbnail",
+      "library": "all",
+      "wrapper": { "width": "50" }
+    },
+
+    {
+      "key": "field_hpl_city_related_places",
+      "label": "Related Places",
+      "name": "related_places",
+      "type": "relationship",
+      "instructions": "Key places within this city (restaurants, venues, parks, etc.).",
+      "post_type": ["local_place"],
+      "filters": ["search"],
+      "return_format": "id",
+      "min": 0,
+      "max": 0,
+      "wrapper": { "width": "100" }
+    },
+    {
+      "key": "field_hpl_city_featured_places",
+      "label": "Featured Places",
+      "name": "featured_places",
+      "type": "relationship",
+      "instructions": "Hand-picked places to spotlight on the city page.",
+      "post_type": ["local_place"],
+      "filters": ["search"],
+      "return_format": "id",
+      "min": 0,
+      "max": 0,
+      "wrapper": { "width": "100" }
+    },
+    {
+      "key": "field_hpl_city_upcoming_events",
+      "label": "Upcoming Events (Curated)",
+      "name": "upcoming_events",
+      "type": "relationship",
+      "instructions": "Optional curated list. Your templates can also auto-pull by city.",
+      "post_type": ["local_event"],
+      "filters": ["search"],
+      "return_format": "id",
+      "min": 0,
+      "max": 0,
+      "wrapper": { "width": "100" }
+    },
+    {
+      "key": "field_hpl_city_featured_stories",
+      "label": "Featured Stories",
+      "name": "featured_stories",
+      "type": "relationship",
+      "instructions": "Local stories/posts to feature for this city.",
+      "post_type": ["local_story"],
+      "filters": ["search"],
+      "return_format": "id",
+      "min": 0,
+      "max": 0,
+      "wrapper": { "width": "100" }
+    },
+    {
+      "key": "field_hpl_city_featured_deals",
+      "label": "Featured Deals",
+      "name": "featured_deals",
+      "type": "relationship",
+      "instructions": "Local deals to highlight on this city page.",
+      "post_type": ["local_deal"],
+      "filters": ["search"],
+      "return_format": "id",
+      "min": 0,
+      "max": 0,
+      "wrapper": { "width": "100" }
+    },
+
+
+    {
+      "key": "field_hpl_city_external_links",
+      "label": "External Resources",
+      "name": "external_links",
+      "type": "repeater",
+      "instructions": "Helpful links (official site, chamber, tourism).",
+      "sub_fields": [
+        {
+          "key": "field_hpl_city_external_links_label",
+          "label": "Label",
+          "name": "label",
+          "type": "text",
+          "wrapper": { "width": "40" }
+        },
+        {
+          "key": "field_hpl_city_external_links_url",
+          "label": "URL",
+          "name": "url",
+          "type": "url",
+          "wrapper": { "width": "60" }
+        }
+      ],
+      "min": 0,
+      "max": 0,
+      "layout": "table",
+      "button_label": "Add Link"
+    }
+  ],
+  "location": [
+    [
+      { "param": "post_type", "operator": "==", "value": "city" }
+    ]
+  ],
+  "menu_order": 0,
+  "position": "normal",
+  "style": "default",
+  "label_placement": "top",
+  "instruction_placement": "label",
+  "hide_on_screen": "",
+  "active": true,
+  "description": "Structured fields and relationships for the City CPT."
+}

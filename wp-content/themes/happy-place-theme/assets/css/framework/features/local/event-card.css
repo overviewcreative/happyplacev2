@@ -1,0 +1,414 @@
+/**
+ * Event Card Component Styles
+ * Styles for all event card variations
+ * 
+ * @package HappyPlaceTheme
+ * @since 1.0.0
+ */
+
+/* ============================================================================
+   BASE EVENT CARD
+   ============================================================================ */
+.hph-event-card {
+    position: relative;
+    display: flex;
+    background: white;
+    border-radius: var(--hph-local-radius);
+    box-shadow: var(--hph-local-shadow);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hph-event-card:hover {
+    transform: translateX(4px);
+    box-shadow: var(--hph-local-shadow-lg);
+}
+
+/* ============================================================================
+   DATE BLOCK
+   ============================================================================ */
+.hph-event-card__date-block {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--hph-event-primary), var(--hph-event-primary-dark));
+    color: white;
+    text-align: center;
+}
+
+.hph-event-card__month {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.9;
+}
+
+.hph-event-card__day {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    margin: 0.25rem 0;
+}
+
+.hph-event-card__time {
+    font-size: 0.75rem;
+    opacity: 0.9;
+    margin-top: 0.25rem;
+}
+
+/* Past events */
+.hph-event-card.is-past .hph-event-card__date-block {
+    background: var(--hph-gray-400);
+}
+
+/* Today's events */
+.hph-event-card.is-today .hph-event-card__date-block {
+    background: linear-gradient(135deg, var(--hph-red-500), var(--hph-red-600));
+}
+
+/* Free events */
+.hph-event-card.is-free .hph-event-card__date-block {
+    background: linear-gradient(135deg, var(--hph-green-500), var(--hph-green-600));
+}
+
+/* ============================================================================
+   CONTENT AREA
+   ============================================================================ */
+.hph-event-card__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1.25rem;
+}
+
+.hph-event-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
+.hph-event-card__title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 0;
+    flex: 1;
+}
+
+.hph-event-card__title-link {
+    color: var(--hph-gray-900);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.hph-event-card__title-link:hover {
+    color: var(--hph-event-primary);
+}
+
+.hph-event-card__badges {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: 1rem;
+}
+
+/* Event Details */
+.hph-event-card__details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.hph-event-card__venue,
+.hph-event-card__address,
+.hph-event-card__duration,
+.hph-event-card__organizer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--hph-gray-600);
+}
+
+.hph-event-card__venue {
+    font-weight: 500;
+    color: var(--hph-gray-700);
+}
+
+.hph-event-card__description {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--hph-gray-600);
+    margin-bottom: 1rem;
+}
+
+/* Actions */
+.hph-event-card__actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: auto;
+}
+
+/* ============================================================================
+   TIMELINE VARIANT
+   ============================================================================ */
+.hph-event-card--timeline {
+    position: relative;
+    margin-left: 2rem;
+    background: var(--hph-gray-50);
+}
+
+.hph-event-card--timeline::before {
+    content: "";
+    position: absolute;
+    left: -2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1rem;
+    height: 1rem;
+    background: var(--hph-event-primary);
+    border: 3px solid white;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hph-event-card--timeline .hph-event-card__date-block {
+    width: 80px;
+    background: transparent;
+    color: var(--hph-gray-700);
+}
+
+.hph-event-card--timeline .hph-event-card__month {
+    color: var(--hph-gray-500);
+}
+
+.hph-event-card--timeline .hph-event-card__day {
+    color: var(--hph-event-primary);
+    font-size: 1.5rem;
+}
+
+.hph-event-card--timeline .hph-event-card__time {
+    color: var(--hph-gray-600);
+}
+
+/* ============================================================================
+   COMPACT VARIANT
+   ============================================================================ */
+.hph-event-card--compact {
+    min-height: var(--hph-event-card-compact-height);
+}
+
+.hph-event-card--compact .hph-event-card__date-block {
+    width: 80px;
+}
+
+.hph-event-card--compact .hph-event-card__day {
+    font-size: 1.5rem;
+}
+
+.hph-event-card--compact .hph-event-card__content {
+    padding: 1rem;
+}
+
+.hph-event-card--compact .hph-event-card__title {
+    font-size: 1rem;
+}
+
+.hph-event-card--compact .hph-event-card__description,
+.hph-event-card--compact .hph-event-card__organizer {
+    display: none;
+}
+
+/* ============================================================================
+   FEATURED VARIANT
+   ============================================================================ */
+.hph-event-card--featured {
+    flex-direction: column;
+    min-height: 400px;
+}
+
+.hph-event-card--featured .hph-event-card__date-block {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 80px;
+    height: 80px;
+    border-radius: var(--hph-local-radius);
+    z-index: 2;
+}
+
+.hph-event-card--featured .hph-event-card__media {
+    height: 200px;
+    overflow: hidden;
+    background: var(--hph-gray-100);
+}
+
+.hph-event-card--featured .hph-event-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.hph-event-card--featured:hover .hph-event-card__image {
+    transform: scale(1.05);
+}
+
+.hph-event-card--featured .hph-event-card__content {
+    padding: 1.5rem;
+}
+
+.hph-event-card--featured .hph-event-card__title {
+    font-size: 1.25rem;
+}
+
+/* ============================================================================
+   TIMELINE LAYOUT
+   ============================================================================ */
+.hph-timeline__section {
+    position: relative;
+    padding-left: 3rem;
+}
+
+.hph-timeline__section::before {
+    content: "";
+    position: absolute;
+    left: 0.5rem;
+    top: 2.5rem;
+    bottom: 0;
+    width: 2px;
+    background: var(--hph-gray-300);
+}
+
+.hph-timeline__date-marker {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 0.75rem 0;
+}
+
+.hph-timeline__date {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--hph-gray-900);
+}
+
+.hph-timeline__events {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.hph-timeline__item {
+    animation: slideInLeft 0.3s ease;
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ============================================================================
+   RESPONSIVE
+   ============================================================================ */
+@media (max-width: 768px) {
+    .hph-event-card__date-block {
+        width: 80px;
+    }
+    
+    .hph-event-card__day {
+        font-size: 1.5rem;
+    }
+    
+    .hph-event-card__content {
+        padding: 1rem;
+    }
+    
+    .hph-event-card__title {
+        font-size: 1rem;
+    }
+    
+    .hph-event-card__actions {
+        flex-wrap: wrap;
+    }
+    
+    .hph-timeline__section {
+        padding-left: 2rem;
+    }
+    
+    .hph-timeline__section::before {
+        left: 0.25rem;
+    }
+    
+    .hph-event-card--timeline {
+        margin-left: 1rem;
+    }
+    
+    .hph-event-card--timeline::before {
+        left: -1rem;
+        width: 0.75rem;
+        height: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hph-event-card {
+        flex-direction: column;
+    }
+    
+    .hph-event-card__date-block {
+        width: 100%;
+        flex-direction: row;
+        justify-content: center;
+        gap: 1rem;
+        padding: 0.75rem;
+    }
+    
+    .hph-event-card__month,
+    .hph-event-card__day,
+    .hph-event-card__time {
+        margin: 0;
+    }
+    
+    .hph-event-card--featured .hph-event-card__date-block {
+        position: relative;
+        top: auto;
+        right: auto;
+        width: 100%;
+        height: auto;
+    }
+}
+
+/* ============================================================================
+   STATES
+   ============================================================================ */
+.hph-event-card.is-past {
+    opacity: 0.6;
+}
+
+.hph-event-card.is-past .hph-event-card__title-link {
+    color: var(--hph-gray-600);
+}
+
+.hph-event-card.is-loading {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.hph-event-card.is-selected {
+    border: 2px solid var(--hph-event-primary);
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+}

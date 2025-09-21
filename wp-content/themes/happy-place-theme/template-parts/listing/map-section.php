@@ -1,10 +1,10 @@
 <?php
 /**
- * Simple Mapbox Map Template Part
+ * Enhanced Listing Map Section
  * File: template-parts/listing/map-section.php
  * 
- * Displays property location using Mapbox GL JS with bridge functions
- * Requires Mapbox API key in theme customizer
+ * Modern map display with improved UX/UI for The Parker Group
+ * Styles are in separate CSS file: listing-map-enhanced.css
  * 
  * @package HappyPlaceTheme
  */
@@ -30,29 +30,27 @@ if (function_exists('hpt_get_listing_coordinates')) {
     }
 }
 
-// Extract data from bridge function results with fallbacks
+// Extract coordinates
 if ($listing_coordinates) {
     $latitude = $listing_coordinates['lat'] ?? null;
     $longitude = $listing_coordinates['lng'] ?? null;
 } else {
-    // Fallback to direct field access
     $latitude = get_field('latitude', $listing_id);
     $longitude = get_field('longitude', $listing_id);
 }
 
-// Build full address from bridge function data with fallbacks
+// Build full address
 if ($listing_address) {
     $full_address = $listing_address['full_address'] ?? '';
+    $street_address = $listing_address['street_address'] ?? '';
+    $city = $listing_address['city'] ?? '';
+    $state = $listing_address['state'] ?? '';
+    $zip_code = $listing_address['zip_code'] ?? '';
+    
     if (!$full_address) {
-        // Fallback to manual building if bridge function doesn't provide full address
-        $street_address = $listing_address['street_address'] ?? '';
-        $city = $listing_address['city'] ?? '';
-        $state = $listing_address['state'] ?? '';
-        $zip_code = $listing_address['zip_code'] ?? '';
         $full_address = trim("$street_address, $city, $state $zip_code", ', ');
     }
 } else {
-    // Complete fallback to direct field access
     $street_number = get_field('street_number', $listing_id);
     $street_name = get_field('street_name', $listing_id);
     $street_type = get_field('street_type', $listing_id);
@@ -64,48 +62,133 @@ if ($listing_address) {
     $full_address = $street_address . ', ' . $city . ', ' . $state . ' ' . $zip_code;
 }
 
-// Get Mapbox API key from theme settings
+// Get subdivision/community name if available
+$subdivision = get_field('subdivision', $listing_id) ?: '';
+
+// Get Mapbox API key
 $mapbox_api_key = get_theme_mod('mapbox_api_key', '');
 
-// Don't show map if no coordinates or API key
 if (!$latitude || !$longitude || !$mapbox_api_key) {
     return;
 }
 
-// Generate unique map ID
 $map_id = 'property-map-' . $listing_id;
 ?>
 
-<section class="hph-map-section">
-    <div class="hph-map-header">
-        <h2 class="hph-map-title">Location</h2>
-        <div class="hph-map-actions">
-            <button onclick="openStreetView(<?php echo $latitude; ?>, <?php echo $longitude; ?>)" 
-                    class="hph-map-btn">
-                <i class="fas fa-street-view"></i>
-                Street View
-            </button>
-            <a href="https://www.google.com/maps/dir/?api=1&destination=<?php echo urlencode($full_address); ?>" 
-               target="_blank"
-               class="hph-map-btn">
-                <i class="fas fa-directions"></i>
-                Get Directions
-            </a>
+<section class="hph-map-section" id="location">
+    <div class="hph-map-wrapper">
+        <!-- Section Header -->
+        <div class="hph-map-header">
+            <div class="hph-map-title-group">
+                <h2 class="hph-map-title">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Location</span>
+                </h2>
+                <p class="hph-map-subtitle">Explore the neighborhood</p>
+            </div>
+            
+            <div class="hph-map-actions">
+                <button class="hph-map-btn hph-map-btn--view" 
+                        onclick="toggleMapView('<?php echo esc_js($map_id); ?>')"
+                        data-view="streets">
+                    <i class="fas fa-satellite"></i>
+                    <span class="hph-btn-text">Satellite</span>
+                </button>
+                <button class="hph-map-btn" 
+                        onclick="openStreetView(<?php echo $latitude; ?>, <?php echo $longitude; ?>)">
+                    <i class="fas fa-street-view"></i>
+                    <span class="hph-btn-text">Street View</span>
+                </button>
+                <a href="https://www.google.com/maps/dir/?api=1&destination=<?php echo urlencode($full_address); ?>" 
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="hph-map-btn hph-map-btn--directions">
+                    <i class="fas fa-route"></i>
+                    <span class="hph-btn-text">Get Directions</span>
+                </a>
+            </div>
         </div>
-    </div>
-    
-    <!-- Map Container -->
-    <div id="<?php echo esc_attr($map_id); ?>" 
-         class="hph-map-container"
-         data-lat="<?php echo esc_attr($latitude); ?>"
-         data-lng="<?php echo esc_attr($longitude); ?>"
-         data-address="<?php echo esc_attr($street_address); ?>">
-    </div>
-    
-    <!-- Address Display -->
-    <div class="hph-map-address">
-        <i class="fas fa-map-marker-alt"></i>
-        <span><?php echo esc_html($full_address); ?></span>
+
+        <!-- Map Container with Address Bar -->
+        <div class="hph-map-container-wrapper">
+            <!-- Map -->
+            <div id="<?php echo esc_attr($map_id); ?>" 
+                 class="hph-map-container"
+                 data-lat="<?php echo esc_attr($latitude); ?>"
+                 data-lng="<?php echo esc_attr($longitude); ?>"
+                 data-address="<?php echo esc_attr($street_address); ?>">
+                <div class="hph-map-loading">
+                    <div class="hph-map-spinner"></div>
+                    <p>Loading map...</p>
+                </div>
+            </div>
+
+            <!-- Floating Controls -->
+            <div class="hph-map-controls">
+                <button class="hph-map-control" 
+                        onclick="zoomToProperty('<?php echo esc_js($map_id); ?>')"
+                        title="Center on Property">
+                    <i class="fas fa-home"></i>
+                </button>
+                <button class="hph-map-control" 
+                        onclick="toggleFullscreen('<?php echo esc_js($map_id); ?>')"
+                        title="Fullscreen">
+                    <i class="fas fa-expand"></i>
+                </button>
+            </div>
+
+            <!-- Address Bar -->
+            <div class="hph-map-address-bar">
+                <div class="hph-address-content">
+                    <i class="fas fa-map-pin"></i>
+                    <div class="hph-address-details">
+                        <span class="hph-address-main"><?php echo esc_html($street_address); ?></span>
+                        <span class="hph-address-city"><?php echo esc_html($city); ?>, <?php echo esc_html($state); ?> <?php echo esc_html($zip_code); ?></span>
+                    </div>
+                    <?php if ($subdivision) : ?>
+                        <div class="hph-address-community">
+                            <i class="fas fa-home-lg-alt"></i>
+                            <span><?php echo esc_html($subdivision); ?></span>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <button class="hph-copy-address" onclick="copyAddress('<?php echo esc_js($full_address); ?>')">
+                    <i class="fas fa-copy"></i>
+                    <span>Copy</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- What's Nearby Section -->
+        <div class="hph-map-nearby">
+            <h3 class="hph-nearby-title">What's Nearby</h3>
+            <div class="hph-nearby-grid">
+                <button class="hph-nearby-item" onclick="searchNearby('schools', <?php echo $latitude; ?>, <?php echo $longitude; ?>)">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Schools</span>
+                </button>
+                <button class="hph-nearby-item" onclick="searchNearby('grocery', <?php echo $latitude; ?>, <?php echo $longitude; ?>)">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Grocery</span>
+                </button>
+                <button class="hph-nearby-item" onclick="searchNearby('restaurants', <?php echo $latitude; ?>, <?php echo $longitude; ?>)">
+                    <i class="fas fa-utensils"></i>
+                    <span>Dining</span>
+                </button>
+                <button class="hph-nearby-item" onclick="searchNearby('parks', <?php echo $latitude; ?>, <?php echo $longitude; ?>)">
+                    <i class="fas fa-tree"></i>
+                    <span>Parks</span>
+                </button>
+                <button class="hph-nearby-item" onclick="searchNearby('medical', <?php echo $latitude; ?>, <?php echo $longitude; ?>)">
+                    <i class="fas fa-hospital"></i>
+                    <span>Medical</span>
+                </button>
+                <button class="hph-nearby-item" onclick="searchNearby('shopping', <?php echo $latitude; ?>, <?php echo $longitude; ?>)">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>Shopping</span>
+                </button>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -115,218 +198,36 @@ $map_id = 'property-map-' . $listing_id;
 <!-- Mapbox JS -->
 <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
 
-<style>
-/* Map Section Styles */
-.hph-map-section {
-    background: white;
-    border-radius: var(--hph-radius-lg);
-    padding: var(--hph-spacing-2xl);
-    box-shadow: var(--hph-shadow-sm);
-    margin-bottom: var(--hph-spacing-2xl);
-}
-
-.hph-map-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--hph-spacing-xl);
-}
-
-.hph-map-title {
-    font-size: var(--hph-text-2xl);
-    font-weight: 600;
-    color: var(--hph-gray-900);
-    margin: 0;
-}
-
-.hph-map-actions {
-    display: flex;
-    gap: var(--hph-spacing-sm);
-}
-
-.hph-map-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--hph-spacing-sm);
-    padding: var(--hph-spacing-sm) var(--hph-spacing-lg);
-    background: white;
-    border: 1px solid var(--hph-gray-300);
-    border-radius: var(--hph-radius-md);
-    color: var(--hph-gray-700);
-    font-size: var(--hph-text-sm);
-    cursor: pointer;
-    transition: all 0.2s;
-    text-decoration: none;
-}
-
-.hph-map-btn:hover {
-    background: var(--hph-primary-light);
-    border-color: var(--hph-primary);
-    color: var(--hph-primary);
-}
-
-/* Map Container */
-.hph-map-container {
-    width: 100%;
-    height: 450px;
-    border-radius: var(--hph-radius-lg);
-    overflow: hidden;
-    background: var(--hph-gray-100);
-    position: relative;
-}
-
-/* Mapbox Controls */
-.mapboxgl-ctrl-attrib {
-    font-size: 10px;
-}
-
-.mapboxgl-ctrl-logo {
-    margin: 0 !important;
-}
-
-/* Custom Marker Styles */
-.hph-map-marker {
-    width: 40px;
-    height: 40px;
-    background: var(--hph-primary);
-    border-radius: 50% 50% 50% 0;
-    transform: rotate(-45deg);
-    border: 3px solid white;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.hph-map-marker i {
-    transform: rotate(45deg);
-    color: white;
-    font-size: 18px;
-}
-
-/* Popup Styles */
-.mapboxgl-popup-content {
-    padding: var(--hph-spacing-md);
-    border-radius: var(--hph-radius-md);
-    box-shadow: var(--hph-shadow-lg);
-    min-width: 200px;
-}
-
-.hph-popup-content {
-    text-align: center;
-}
-
-.hph-popup-title {
-    font-weight: 600;
-    color: var(--hph-gray-900);
-    margin-bottom: var(--hph-spacing-xs);
-}
-
-.hph-popup-address {
-    font-size: var(--hph-text-sm);
-    color: var(--hph-gray-600);
-}
-
-/* Address Display */
-.hph-map-address {
-    display: flex;
-    align-items: center;
-    gap: var(--hph-spacing-sm);
-    margin-top: var(--hph-spacing-lg);
-    padding: var(--hph-spacing-md);
-    background: var(--hph-gray-50);
-    border-radius: var(--hph-radius-md);
-    font-size: var(--hph-text-sm);
-    color: var(--hph-gray-700);
-}
-
-.hph-map-address i {
-    color: var(--hph-primary);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .hph-map-section {
-        padding: var(--hph-spacing-xl);
-        border-radius: 0;
-    }
-    
-    .hph-map-container {
-        height: 350px;
-    }
-    
-    .hph-map-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--hph-spacing-md);
-    }
-    
-    .hph-map-actions {
-        width: 100%;
-    }
-    
-    .hph-map-btn {
-        flex: 1;
-        justify-content: center;
-    }
-}
-
-@media (max-width: 480px) {
-    .hph-map-container {
-        height: 300px;
-        border-radius: var(--hph-radius-md);
-    }
-    
-    .hph-map-title {
-        font-size: var(--hph-text-xl);
-    }
-}
-
-/* Loading State */
-.hph-map-loading {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    color: var(--hph-gray-500);
-}
-
-.hph-map-loading i {
-    font-size: 2rem;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 0.4; }
-    50% { opacity: 1; }
-}
-</style>
-
 <script>
-// Initialize Mapbox Map
+// Map JavaScript
+let map;
+let currentStyle = 'streets';
+let propertyMarker;
+
 document.addEventListener('DOMContentLoaded', function() {
     const mapContainer = document.getElementById('<?php echo esc_js($map_id); ?>');
-    
     if (!mapContainer) return;
     
-    // Get map data
     const lat = parseFloat(mapContainer.dataset.lat);
     const lng = parseFloat(mapContainer.dataset.lng);
     const address = mapContainer.dataset.address;
     
-    // Set Mapbox access token
+    // Initialize Mapbox
     mapboxgl.accessToken = '<?php echo esc_js($mapbox_api_key); ?>';
     
     try {
+        // Remove loading indicator
+        mapContainer.innerHTML = '';
+        
         // Create map
-        const map = new mapboxgl.Map({
+        map = new mapboxgl.Map({
             container: '<?php echo esc_js($map_id); ?>',
             style: 'mapbox://styles/mapbox/streets-v12',
             center: [lng, lat],
             zoom: 15,
             pitch: 0,
-            bearing: 0
+            bearing: 0,
+            antialias: true
         });
         
         // Add navigation controls
@@ -334,67 +235,118 @@ document.addEventListener('DOMContentLoaded', function() {
             showCompass: false
         }), 'top-right');
         
-        // Create custom marker element
+        // Create custom property marker
         const markerEl = document.createElement('div');
-        markerEl.className = 'hph-map-marker';
+        markerEl.className = 'hph-property-marker';
         markerEl.innerHTML = '<i class="fas fa-home"></i>';
         
-        // Add marker to map
-        const marker = new mapboxgl.Marker({
+        propertyMarker = new mapboxgl.Marker({
             element: markerEl,
             anchor: 'bottom'
         })
         .setLngLat([lng, lat])
         .addTo(map);
         
-        // Create popup
+        // Add popup to marker
         const popup = new mapboxgl.Popup({
             offset: 25,
-            closeButton: false
+            closeButton: false,
+            className: 'hph-property-popup'
         })
         .setHTML(`
             <div class="hph-popup-content">
-                <div class="hph-popup-title">Property Location</div>
-                <div class="hph-popup-address">${address}</div>
+                <strong>${address}</strong>
+                <p>Your future happy place</p>
             </div>
         `);
         
-        // Attach popup to marker
-        marker.setPopup(popup);
+        propertyMarker.setPopup(popup);
         
         // Show popup on load
-        popup.addTo(map);
-        
-        // Add hover effect
-        markerEl.addEventListener('mouseenter', () => {
-            markerEl.style.transform = 'rotate(-45deg) scale(1.1)';
-        });
-        
-        markerEl.addEventListener('mouseleave', () => {
-            markerEl.style.transform = 'rotate(-45deg) scale(1)';
-        });
-        
-        // Resize map on window resize
-        window.addEventListener('resize', () => {
-            map.resize();
-        });
+        setTimeout(() => {
+            popup.addTo(map);
+        }, 500);
         
     } catch (error) {
         console.error('Error initializing map:', error);
-        
-        // Show error message
-        mapContainer.innerHTML = `
-            <div class="hph-map-loading">
-                <i class="fas fa-exclamation-triangle"></i>
-                <p>Unable to load map</p>
-            </div>
-        `;
+        mapContainer.innerHTML = '<div class="hph-map-error"><i class="fas fa-exclamation-triangle"></i><p>Unable to load map</p></div>';
     }
 });
 
-// Open Street View
+// Toggle map view between streets and satellite
+function toggleMapView(mapId) {
+    if (!map) return;
+    
+    const btn = event.currentTarget;
+    currentStyle = currentStyle === 'streets' ? 'satellite' : 'streets';
+    
+    if (currentStyle === 'satellite') {
+        map.setStyle('mapbox://styles/mapbox/satellite-streets-v12');
+        btn.innerHTML = '<i class="fas fa-map"></i><span class="hph-btn-text">Streets</span>';
+    } else {
+        map.setStyle('mapbox://styles/mapbox/streets-v12');
+        btn.innerHTML = '<i class="fas fa-satellite"></i><span class="hph-btn-text">Satellite</span>';
+    }
+}
+
+// Open Google Street View
 function openStreetView(lat, lng) {
     const url = `https://www.google.com/maps/@${lat},${lng},3a,75y,90t/data=!3m6!1e1!3m4!1s!2e0!7i16384!8i8192`;
+    window.open(url, '_blank');
+}
+
+// Zoom to property
+function zoomToProperty(mapId) {
+    if (!map || !propertyMarker) return;
+    
+    map.flyTo({
+        center: propertyMarker.getLngLat(),
+        zoom: 16,
+        duration: 1500
+    });
+}
+
+// Toggle fullscreen
+function toggleFullscreen(mapId) {
+    const mapWrapper = document.querySelector('.hph-map-container-wrapper');
+    
+    if (!document.fullscreenElement) {
+        mapWrapper.requestFullscreen().catch(err => {
+            console.error('Error attempting to enable fullscreen:', err);
+        });
+    } else {
+        document.exitFullscreen();
+    }
+}
+
+// Copy address to clipboard
+function copyAddress(address) {
+    navigator.clipboard.writeText(address).then(() => {
+        const btn = event.currentTarget;
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i><span>Copied!</span>';
+        btn.classList.add('hph-copy-success');
+        
+        setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.classList.remove('hph-copy-success');
+        }, 2000);
+    });
+}
+
+// Search nearby places (opens in Google Maps)
+function searchNearby(type, lat, lng) {
+    const searches = {
+        schools: 'schools',
+        grocery: 'grocery+stores',
+        restaurants: 'restaurants',
+        parks: 'parks',
+        medical: 'hospitals+medical',
+        shopping: 'shopping'
+    };
+    
+    const query = searches[type] || type;
+    const url = `https://www.google.com/maps/search/${query}/@${lat},${lng},14z`;
     window.open(url, '_blank');
 }
 </script>

@@ -1,34 +1,28 @@
 <?php
 /**
- * Enhanced Agent Archive Template
- * Using the same implementation pattern as the listings archive
- * 
- * @package HappyPlaceTheme
+ * Simple Agent Archive Template
  */
 
 get_header();
 
-// Get filter parameters from URL
-$search_query = sanitize_text_field($_GET['s'] ?? '');
+// Get filter parameters
+$search = sanitize_text_field($_GET['search'] ?? '');
 $specialty = sanitize_text_field($_GET['specialty'] ?? '');
-$language = sanitize_text_field($_GET['language'] ?? '');
-$office = sanitize_text_field($_GET['office'] ?? '');
 $experience = sanitize_text_field($_GET['experience'] ?? '');
-$view = sanitize_text_field($_GET['view'] ?? 'grid');
 $sort = sanitize_text_field($_GET['sort'] ?? 'name_asc');
 
-// Build query args
+// Build query
+$paged = get_query_var('paged') ? get_query_var('paged') : 1;
 $args = [
     'post_type' => 'agent',
-    'post_status' => 'publish',
-    'posts_per_page' => 60,
-    'paged' => get_query_var('paged') ?: 1,
-    'meta_query' => ['relation' => 'AND']
+    'post_status' => 'publish', 
+    'posts_per_page' => -1, // Show all agents on one page
+    'meta_query' => []
 ];
 
 // Add search
-if (!empty($search_query)) {
-    $args['s'] = $search_query;
+if (!empty($search)) {
+    $args['s'] = $search;
 }
 
 // Add specialty filter
@@ -40,31 +34,13 @@ if (!empty($specialty)) {
     ];
 }
 
-// Add language filter
-if (!empty($language)) {
-    $args['meta_query'][] = [
-        'key' => 'languages',
-        'value' => $language,
-        'compare' => 'LIKE'
-    ];
-}
-
-// Add office filter
-if (!empty($office)) {
-    $args['meta_query'][] = [
-        'key' => 'office',
-        'value' => intval($office),
-        'compare' => '='
-    ];
-}
-
 // Add experience filter
 if (!empty($experience)) {
     switch ($experience) {
-        case '1-5':
+        case '0-5':
             $args['meta_query'][] = [
                 'key' => 'years_experience',
-                'value' => [1, 5],
+                'value' => [0, 5],
                 'type' => 'NUMERIC',
                 'compare' => 'BETWEEN'
             ];
@@ -77,18 +53,10 @@ if (!empty($experience)) {
                 'compare' => 'BETWEEN'
             ];
             break;
-        case '10-15':
+        case '10+':
             $args['meta_query'][] = [
                 'key' => 'years_experience',
-                'value' => [10, 15],
-                'type' => 'NUMERIC',
-                'compare' => 'BETWEEN'
-            ];
-            break;
-        case '15+':
-            $args['meta_query'][] = [
-                'key' => 'years_experience',
-                'value' => 15,
+                'value' => 10,
                 'type' => 'NUMERIC',
                 'compare' => '>='
             ];
@@ -107,14 +75,14 @@ switch ($sort) {
         $args['orderby'] = 'meta_value_num';
         $args['order'] = 'DESC';
         break;
-    case 'sales_desc':
-        $args['meta_key'] = 'total_sales_volume';
+    case 'experience_asc':
+        $args['meta_key'] = 'years_experience';
         $args['orderby'] = 'meta_value_num';
-        $args['order'] = 'DESC';
+        $args['order'] = 'ASC';
         break;
-    case 'featured':
-        $args['meta_key'] = 'featured';
-        $args['orderby'] = ['meta_value' => 'DESC', 'title' => 'ASC'];
+    case 'recent':
+        $args['orderby'] = 'date';
+        $args['order'] = 'DESC';
         break;
     default: // name_asc
         $args['orderby'] = 'title';
@@ -122,427 +90,170 @@ switch ($sort) {
         break;
 }
 
-// Execute query
-$agents_query = new WP_Query($args);
-
-// Helper function to build URL with params
-function build_agent_filter_url($additional_params = []) {
-    $base_url = get_post_type_archive_link('agent');
-    $current_params = $_GET;
-    $params = array_merge($current_params, $additional_params);
-    
-    // Remove empty params
-    $params = array_filter($params, function($value) {
-        return $value !== '' && $value !== '0' && $value !== 0;
-    });
-    
-    if (!empty($params)) {
-        return $base_url . '?' . http_build_query($params);
-    }
-    return $base_url;
-}
+$agents = new WP_Query($args);
 ?>
 
-<!-- Hero Section -->
-<section class="hph-bg-gradient-primary hph-py-xl hph-mb-lg">
-    <div class="hph-container">
-        <div class="hph-max-w-3xl hph-mx-auto hph-text-center hph-text-white">
-            <h1 class="hph-text-4xl hph-font-bold hph-mb-md">Meet Our Expert Agents</h1>
-            <p class="hph-text-lg hph-opacity-90">
-                <?php printf('%d professional agents ready to help', $agents_query->found_posts); ?>
-            </p>
+<!-- Hero Section with Search/Filter -->
+<section class="hph-hero hph-relative hph-min-h-96 hph-flex hph-items-center hph-bg-cover hph-bg-center" 
+         style="background-image: url('<?php echo get_template_directory_uri(); ?>/assets/images/agents-hero.jpg');">
+    
+    <!-- Gradient Overlay -->
+    <div class="hph-absolute hph-inset-0 hph-bg-gradient-to-r hph-from-black hph-via-black hph-to-transparent hph-opacity-70"></div>
+    
+    <!-- Content Container -->
+    <div class="hph-container hph-relative hph-z-10 hph-py-xl">
+        <div class="hph-max-w-4xl">
+            
+            <!-- Hero Title -->
+            <div class="hph-mb-lg">
+                <h1 class="hph-text-white hph-text-4xl md:hph-text-5xl hph-font-bold hph-mb-md">Our Expert Agents</h1>
+                <p class="hph-text-white hph-text-xl hph-opacity-90">Find the perfect agent to help you buy or sell your home</p>
+            </div>
+            
+            <!-- Search/Filter Form -->
+            <div class="hph-bg-white hph-rounded-lg hph-p-6 hph-shadow-xl">
+                <form method="get" class="hph-space-y-md">
+                    
+                    <!-- Search Bar - Full Width Centered -->
+                    <div class="hph-w-full hph-flex hph-flex-col hph-items-center">
+                        <label for="search" class="hph-block hph-text-sm hph-font-medium hph-mb-xs hph-text-gray-700 hph-text-center">Search Agents</label>
+                        <input type="text" id="search" name="search" value="<?php echo esc_attr($search); ?>" 
+                               placeholder="Agent name..." class="hph-input hph-w-full hph-text-lg hph-py-4 hph-px-6 hph-text-center">
+                    </div>
+                    
+                    <!-- Filter Row -->
+                    <div class="hph-grid hph-grid-cols-1 md:hph-grid-cols-4 hph-gap-md hph-items-end">
+                        
+                        <!-- Specialty -->
+                        <div>
+                            <label for="specialty" class="hph-block hph-text-sm hph-font-medium hph-mb-xs hph-text-gray-700">Specialty</label>
+                            <select id="specialty" name="specialty" class="hph-select hph-w-full">
+                                <option value="">All Specialties</option>
+                                <option value="Residential" <?php selected($specialty, 'Residential'); ?>>Residential</option>
+                                <option value="Commercial" <?php selected($specialty, 'Commercial'); ?>>Commercial</option>
+                                <option value="First-time Buyers" <?php selected($specialty, 'First-time Buyers'); ?>>First-time Buyers</option>
+                                <option value="Luxury" <?php selected($specialty, 'Luxury'); ?>>Luxury Homes</option>
+                                <option value="Investment" <?php selected($specialty, 'Investment'); ?>>Investment Properties</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Experience -->
+                        <div>
+                            <label for="experience" class="hph-block hph-text-sm hph-font-medium hph-mb-xs hph-text-gray-700">Experience</label>
+                            <select id="experience" name="experience" class="hph-select hph-w-full">
+                                <option value="">Any Experience</option>
+                                <option value="0-5" <?php selected($experience, '0-5'); ?>>0-5 Years</option>
+                                <option value="5-10" <?php selected($experience, '5-10'); ?>>5-10 Years</option>
+                                <option value="10+" <?php selected($experience, '10+'); ?>>10+ Years</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Sort -->
+                        <div>
+                            <label for="sort" class="hph-block hph-text-sm hph-font-medium hph-mb-xs hph-text-gray-700">Sort By</label>
+                            <select id="sort" name="sort" class="hph-select hph-w-full">
+                                <option value="name_asc" <?php selected($sort, 'name_asc'); ?>>Name A-Z</option>
+                                <option value="name_desc" <?php selected($sort, 'name_desc'); ?>>Name Z-A</option>
+                                <option value="experience_desc" <?php selected($sort, 'experience_desc'); ?>>Most Experienced</option>
+                                <option value="experience_asc" <?php selected($sort, 'experience_asc'); ?>>Least Experienced</option>
+                                <option value="recent" <?php selected($sort, 'recent'); ?>>Recently Added</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Submit -->
+                        <div class="hph-flex hph-space-x-sm">
+                            <button type="submit" class="hph-btn hph-btn-primary hph-px-6 hph-py-3">Search</button>
+                            <a href="<?php echo get_post_type_archive_link('agent'); ?>" class="hph-btn hph-btn-outline hph-px-6 hph-py-3">Clear</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
         </div>
     </div>
 </section>
 
-<div class="hph-container hph-py-lg">
-    
-    <!-- Search & Filters Card -->
-    <div class="hph-bg-white hph-rounded-xl hph-shadow-md hph-p-lg hph-mb-lg">
-        <form method="get" id="filter-form">
-            <!-- Hidden fields for view and sort -->
-            <input type="hidden" name="view" value="<?php echo esc_attr($view); ?>">
-            <input type="hidden" name="sort" value="<?php echo esc_attr($sort); ?>">
-            
-            <div class="hph-grid hph-grid-cols-1 md:hph-grid-cols-4 hph-gap-md hph-mb-md">
-                
-                <!-- Search Field -->
-                <div class="md:hph-col-span-2">
-                    <label class="hph-block hph-mb-xs hph-font-medium hph-text-gray-700">Search Agents</label>
-                    <input type="text" name="s" value="<?php echo esc_attr($search_query); ?>" 
-                           placeholder="Name, specialty, or location"
-                           class="hph-w-full hph-px-md hph-py-sm hph-border-2 hph-border-gray-200 hph-rounded-lg focus:hph-border-primary focus:hph-outline-none">
-                </div>
-                
-                <!-- Specialty -->
-                <div>
-                    <label class="hph-block hph-mb-xs hph-font-medium hph-text-gray-700">Specialty</label>
-                    <select name="specialty" class="hph-w-full hph-px-md hph-py-sm hph-border-2 hph-border-gray-200 hph-rounded-lg focus:hph-border-primary focus:hph-outline-none">
-                        <option value="">All Specialties</option>
-                        <option value="buyers-agent" <?php selected($specialty, 'buyers-agent'); ?>>Buyer's Agent</option>
-                        <option value="listing-agent" <?php selected($specialty, 'listing-agent'); ?>>Listing Agent</option>
-                        <option value="luxury-homes" <?php selected($specialty, 'luxury-homes'); ?>>Luxury Homes</option>
-                        <option value="first-time-buyers" <?php selected($specialty, 'first-time-buyers'); ?>>First-Time Buyers</option>
-                        <option value="investment-properties" <?php selected($specialty, 'investment-properties'); ?>>Investment Properties</option>
-                        <option value="commercial" <?php selected($specialty, 'commercial'); ?>>Commercial</option>
-                    </select>
-                </div>
-                
-                <!-- Language -->
-                <div>
-                    <label class="hph-block hph-mb-xs hph-font-medium hph-text-gray-700">Language</label>
-                    <select name="language" class="hph-w-full hph-px-md hph-py-sm hph-border-2 hph-border-gray-200 hph-rounded-lg focus:hph-border-primary focus:hph-outline-none">
-                        <option value="">All Languages</option>
-                        <option value="english" <?php selected($language, 'english'); ?>>English</option>
-                        <option value="spanish" <?php selected($language, 'spanish'); ?>>Spanish</option>
-                        <option value="french" <?php selected($language, 'french'); ?>>French</option>
-                        <option value="mandarin" <?php selected($language, 'mandarin'); ?>>Mandarin</option>
-                        <option value="german" <?php selected($language, 'german'); ?>>German</option>
-                    </select>
-                </div>
-                
-                <!-- Experience -->
-                <div>
-                    <label class="hph-block hph-mb-xs hph-font-medium hph-text-gray-700">Experience</label>
-                    <select name="experience" class="hph-w-full hph-px-md hph-py-sm hph-border-2 hph-border-gray-200 hph-rounded-lg focus:hph-border-primary focus:hph-outline-none">
-                        <option value="">Any Experience</option>
-                        <option value="1-5" <?php selected($experience, '1-5'); ?>>1-5 Years</option>
-                        <option value="5-10" <?php selected($experience, '5-10'); ?>>5-10 Years</option>
-                        <option value="10-15" <?php selected($experience, '10-15'); ?>>10-15 Years</option>
-                        <option value="15+" <?php selected($experience, '15+'); ?>>15+ Years</option>
-                    </select>
-                </div>
-                
-                <!-- Office -->
-                <div>
-                    <label class="hph-block hph-mb-xs hph-font-medium hph-text-gray-700">Office</label>
-                    <select name="office" class="hph-w-full hph-px-md hph-py-sm hph-border-2 hph-border-gray-200 hph-rounded-lg focus:hph-border-primary focus:hph-outline-none">
-                        <option value="">All Offices</option>
-                        <?php
-                        // Get offices dynamically
-                        $offices = get_posts([
-                            'post_type' => 'office',
-                            'posts_per_page' => -1,
-                            'post_status' => 'publish',
-                            'orderby' => 'title',
-                            'order' => 'ASC'
-                        ]);
-                        foreach ($offices as $office_post) {
-                            printf(
-                                '<option value="%d" %s>%s</option>',
-                                $office_post->ID,
-                                selected($office, $office_post->ID, false),
-                                esc_html($office_post->post_title)
-                            );
-                        }
-                        ?>
-                    </select>
-                </div>
-                
-                <!-- Submit Button -->
-                <div class="hph-flex hph-items-end">
-                    <button type="submit" class="hph-btn hph-btn-primary hph-w-full">
-                        <i class="fas fa-search hph-mr-sm"></i> Search
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Quick Filters -->
-            <div class="hph-flex hph-flex-wrap hph-gap-sm hph-pt-md hph-border-t">
-                <span class="hph-font-medium hph-text-gray-700 hph-mr-sm">Quick Filters:</span>
-                <a href="<?php echo build_agent_filter_url(['sort' => 'featured']); ?>" 
-                   class="hph-px-md hph-py-xs hph-rounded-full hph-border-2 <?php echo $sort === 'featured' ? 'hph-bg-primary hph-text-white hph-border-primary' : 'hph-border-gray-300 hph-text-gray-700 hover:hph-border-primary'; ?>">
-                    <i class="fas fa-star"></i> Featured
-                </a>
-                <a href="<?php echo build_agent_filter_url(['specialty' => 'luxury-homes']); ?>"
-                   class="hph-px-md hph-py-xs hph-rounded-full hph-border-2 <?php echo $specialty === 'luxury-homes' ? 'hph-bg-primary hph-text-white hph-border-primary' : 'hph-border-gray-300 hph-text-gray-700 hover:hph-border-primary'; ?>">
-                    <i class="fas fa-gem"></i> Luxury Specialist
-                </a>
-                <a href="<?php echo build_agent_filter_url(['specialty' => 'first-time-buyers']); ?>"
-                   class="hph-px-md hph-py-xs hph-rounded-full hph-border-2 <?php echo $specialty === 'first-time-buyers' ? 'hph-bg-primary hph-text-white hph-border-primary' : 'hph-border-gray-300 hph-text-gray-700 hover:hph-border-primary'; ?>">
-                    <i class="fas fa-home"></i> First-Time Buyer Expert
-                </a>
-                <?php if($search_query || $specialty || $language || $experience || $office): ?>
-                    <a href="<?php echo get_post_type_archive_link('agent'); ?>" class="hph-px-md hph-py-xs hph-rounded-full hph-border-2 hph-border-danger hph-text-danger hover:hph-bg-danger hover:hph-text-white hph-ml-auto">
-                        <i class="fas fa-times"></i> Clear All
-                    </a>
-                <?php endif; ?>
-            </div>
-        </form>
-    </div>
-    
-    <!-- Controls Bar -->
-    <div class="hph-bg-white hph-rounded-lg hph-shadow-sm hph-p-md hph-mb-lg">
-        <div class="hph-flex hph-justify-between hph-items-center hph-flex-wrap hph-gap-md">
-            
-            <!-- Results Count -->
-            <div class="hph-text-gray-600">
-                <span class="hph-font-semibold hph-text-gray-900"><?php echo $agents_query->found_posts; ?></span> 
-                agents found
-            </div>
-            
-            <!-- View & Sort Controls -->
-            <div class="hph-flex hph-items-center hph-gap-md">
-                
-                <!-- View Switcher -->
-                <div class="hph-btn-group">
-                    <a href="<?php echo build_agent_filter_url(['view' => 'grid']); ?>" 
-                       class="hph-btn-sm <?php echo $view === 'grid' ? 'hph-btn-primary' : 'hph-btn-outline'; ?>">
-                        <i class="fas fa-th"></i> Grid
-                    </a>
-                    <a href="<?php echo build_agent_filter_url(['view' => 'list']); ?>" 
-                       class="hph-btn-sm <?php echo $view === 'list' ? 'hph-btn-primary' : 'hph-btn-outline'; ?>">
-                        <i class="fas fa-list"></i> List
-                    </a>
-                </div>
-                
-                <!-- Sort Dropdown -->
-                <select onchange="window.location.href=this.value" class="hph-px-md hph-py-sm hph-border-2 hph-border-gray-200 hph-rounded-lg">
-                    <option value="<?php echo build_agent_filter_url(['sort' => 'name_asc']); ?>" <?php selected($sort, 'name_asc'); ?>>Name A-Z</option>
-                    <option value="<?php echo build_agent_filter_url(['sort' => 'name_desc']); ?>" <?php selected($sort, 'name_desc'); ?>>Name Z-A</option>
-                    <option value="<?php echo build_agent_filter_url(['sort' => 'experience_desc']); ?>" <?php selected($sort, 'experience_desc'); ?>>Most Experienced</option>
-                    <option value="<?php echo build_agent_filter_url(['sort' => 'sales_desc']); ?>" <?php selected($sort, 'sales_desc'); ?>>Top Performers</option>
-                    <option value="<?php echo build_agent_filter_url(['sort' => 'featured']); ?>" <?php selected($sort, 'featured'); ?>>Featured First</option>
-                </select>
-            </div>
+<!-- Results Section -->
+<div class="hph-container hph-py-xl">
+
+    <?php if ($agents->have_posts()) : ?>
+        <!-- Results Count -->
+        <div class="hph-mb-md">
+            <p class="hph-text-gray-600">Found <?php echo $agents->found_posts; ?> agent<?php echo $agents->found_posts != 1 ? 's' : ''; ?></p>
         </div>
-    </div>
-    
-    <!-- Search Panel (Hidden by default, shown when advanced search is triggered) -->
-    <div id="search-panel" class="hph-search-panel hph-hidden">
-        <div class="hph-bg-white hph-rounded-lg hph-shadow-md hph-p-lg hph-mb-lg">
-            <h3 class="hph-text-lg hph-font-semibold hph-mb-md">Advanced Agent Search</h3>
-            <!-- Advanced search content would go here -->
-        </div>
-    </div>
-    
-    <!-- Active Filters Display -->
-    <div id="active-filters" class="hph-active-filters" style="display: none;">
-        <div class="hph-bg-gray-50 hph-rounded-lg hph-p-md hph-mb-lg">
-            <div class="hph-flex hph-flex-wrap hph-items-center hph-gap-sm">
-                <span class="hph-font-medium hph-text-gray-700">Active Filters:</span>
-                <div id="filter-tags" class="hph-flex hph-flex-wrap hph-gap-sm"></div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Filter Controls -->
-    <div id="filter-controls" class="hph-filter-controls hph-mb-lg">
-        <!-- This can house additional filter UI elements -->
-    </div>
-    
-    <!-- AJAX Loading Indicator -->
-    <div id="ajax-loader" class="hph-ajax-loader hph-hidden">
-        <div class="hph-text-center hph-py-lg">
-            <div class="hph-spinner hph-inline-block"></div>
-            <p class="hph-mt-sm hph-text-gray-600">Loading agents...</p>
-        </div>
-    </div>
-    
-    <!-- Results Container -->
-    <div id="results-container" class="hph-results-container">
-    
-    <!-- Agents -->
-    <?php if ($agents_query->have_posts()): ?>
         
-        <!-- Grid/List Container -->
-        <div class="<?php echo $view === 'list' ? 'hph-space-y-md' : 'hph-grid hph-grid-cols-1 md:hph-grid-cols-2 lg:hph-grid-cols-3 hph-gap-lg'; ?>">
-            <?php while ($agents_query->have_posts()): $agents_query->the_post(); ?>
+        <div class="hph-grid hph-grid-cols-1 md:hph-grid-cols-2 lg:hph-grid-cols-3 xl:hph-grid-cols-4 hph-gap-lg hph-mb-xl">
+            <?php while ($agents->have_posts()) : $agents->the_post(); ?>
                 <?php 
-                // Use the appropriate agent card template based on view
-                if ($view === 'list') {
-                    get_template_part('template-parts/agent-card-list', null, ['agent_id' => get_the_ID()]);
-                } else {
-                    get_template_part('template-parts/agent-card', null, ['agent_id' => get_the_ID()]);
-                }
+                $email = get_field('email');
+                $phone = get_field('phone');
+                $title = get_field('title');
                 ?>
+                
+                <div class="hph-card hph-rounded-lg hph-p-6 hph-bg-white hph-shadow-md hover:hph-shadow-lg hph-transition-shadow">
+                    <!-- Clickable area for profile -->
+                    <a href="<?php the_permalink(); ?>" class="hph-block hph-text-decoration-none">
+                        <!-- Profile photo -->
+                        <div class="hph-flex hph-justify-center hph-mb-4">
+                            <?php 
+                            $profile_photo = get_field('profile_photo');
+                            if ($profile_photo) : ?>
+                                <img src="<?php echo esc_url($profile_photo['sizes']['thumbnail'] ?? $profile_photo['url']); ?>" 
+                                     alt="<?php the_title(); ?>"
+                                     class="hph-w-20 hph-h-20 hph-rounded-full hph-object-cover hph-border-3 hph-border-gray-200"
+                                     style="object-position: center center;">
+                            <?php else : ?>
+                                <div class="hph-w-20 hph-h-20 hph-rounded-full hph-bg-gray-200 hph-flex hph-items-center hph-justify-center">
+                                    <i class="fas fa-user hph-text-gray-400 hph-text-xl"></i>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        
+                        <!-- Agent name and title -->
+                        <div class="hph-text-center hph-mb-4">
+                            <h3 class="hph-text-lg hph-font-semibold hph-text-gray-900 hph-mb-4"><?php the_title(); ?></h3>
+                            <?php if ($title) : ?>
+                                <p class="hph-text-sm hph-text-gray-600"><?php echo esc_html($title); ?></p>
+                            <?php endif; ?>
+                        </div>
+                    </a>
+                    
+                    <!-- Contact buttons - NOT clickable to profile -->
+                    <div class="hph-space-y-2">
+                        <?php if ($phone) : ?>
+                            <a href="tel:<?php echo esc_attr($phone); ?>" 
+                               class="hph-btn hph-btn-primary hph-btn-sm hph-w-full hph-text-center hph-py-2 hph-mb-2"
+                               onclick="event.stopPropagation();">
+                                <i class="fas fa-phone hph-mr-2"></i>
+                                <?php echo esc_html($phone); ?>
+                            </a>
+                        <?php endif; ?>
+                        
+                        <?php if ($email) : ?>
+                            <a href="mailto:<?php echo esc_attr($email); ?>" 
+                               class="hph-btn hph-btn-outline hph-btn-sm hph-w-full hph-text-center hph-py-2 hph-mb-2"
+                               onclick="event.stopPropagation();">
+                                <i class="fas fa-envelope hph-mr-2"></i>
+                                Email
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
             <?php endwhile; ?>
         </div>
-        
-        <!-- Pagination -->
-        <?php if ($agents_query->max_num_pages > 1): ?>
-            <nav class="hph-mt-xl hph-flex hph-justify-center">
-                <div class="hph-pagination">
-                    <?php
-                    echo paginate_links([
-                        'total' => $agents_query->max_num_pages,
-                        'current' => max(1, get_query_var('paged')),
-                        'format' => '?paged=%#%',
-                        'base' => build_agent_filter_url() . '%_%',
-                        'add_args' => false,
-                        'prev_text' => '<i class="fas fa-chevron-left"></i>',
-                        'next_text' => '<i class="fas fa-chevron-right"></i>',
-                        'type' => 'list',
-                        'end_size' => 2,
-                        'mid_size' => 1
-                    ]);
-                    ?>
-                </div>
-            </nav>
-        <?php endif; ?>
-        
-    <?php else: ?>
-        
-        <!-- No Results -->
-        <div class="hph-text-center hph-py-xl">
+
+
+    <?php else : ?>
+        <div class="hph-text-center hph-py-5xl">
             <div class="hph-mb-lg">
                 <i class="fas fa-users hph-text-gray-300 hph-text-6xl"></i>
             </div>
             <h3 class="hph-text-2xl hph-font-semibold hph-mb-md">No Agents Found</h3>
-            <p class="hph-text-gray-600 hph-mb-lg">
-                Try adjusting your search criteria or removing some filters.
-            </p>
-            <a href="<?php echo get_post_type_archive_link('agent'); ?>" class="hph-btn hph-btn-primary">
-                View All Agents
-            </a>
+            <p class="hph-text-gray-600 hph-mb-lg">There are currently no agents to display.</p>
         </div>
-        
     <?php endif; ?>
-    
-</div> <!-- End results-container -->
-</div> <!-- End main container -->
 
-<!-- Simple CSS for pagination styling -->
-<style>
-.hph-pagination ul {
-    display: flex;
-    gap: var(--hph-gap-sm);
-    list-style: none;
-    padding: 0;
-}
-
-.hph-pagination a,
-.hph-pagination .current {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 40px;
-    height: 40px;
-    padding: 0 var(--hph-padding-md);
-    border: 2px solid var(--hph-gray-300);
-    border-radius: var(--hph-radius-md);
-    color: var(--hph-gray-700);
-    text-decoration: none;
-    transition: var(--hph-transition-fast);
-}
-
-.hph-pagination a:hover {
-    border-color: var(--hph-primary);
-    color: var(--hph-primary);
-}
-
-.hph-pagination .current {
-    background: var(--hph-primary);
-    color: var(--hph-white);
-    border-color: var(--hph-primary);
-}
-
-.hph-btn-group {
-    display: inline-flex;
-    border-radius: var(--hph-radius-md);
-    overflow: hidden;
-}
-
-.hph-btn-group .hph-btn-sm {
-    border-radius: 0;
-    margin: 0;
-}
-
-.hph-btn-group .hph-btn-sm:first-child {
-    border-radius: var(--hph-radius-md) 0 0 var(--hph-radius-md);
-}
-
-.hph-btn-group .hph-btn-sm:last-child {
-    border-radius: 0 var(--hph-radius-md) var(--hph-radius-md) 0;
-}
-
-/* Search and Filter Enhancements */
-.hph-search-panel.hph-hidden,
-.hph-ajax-loader.hph-hidden {
-    display: none !important;
-}
-
-.hph-active-filters {
-    transition: all 0.3s ease;
-}
-
-.hph-spinner {
-    width: 24px;
-    height: 24px;
-    border: 3px solid var(--hph-gray-200);
-    border-top: 3px solid var(--hph-primary);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.hph-filter-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--hph-gap-xs);
-    padding: var(--hph-padding-xs) var(--hph-padding-sm);
-    background: var(--hph-primary);
-    color: var(--hph-white);
-    border-radius: var(--hph-radius-full);
-    font-size: 0.875rem;
-    line-height: 1.25;
-}
-
-.hph-filter-tag .remove {
-    cursor: pointer;
-    opacity: 0.8;
-    transition: opacity 0.2s ease;
-}
-
-.hph-filter-tag .remove:hover {
-    opacity: 1;
-}
-
-/* Enhanced form styling */
-#filter-form select:focus,
-#filter-form input:focus {
-    box-shadow: 0 0 0 3px rgba(var(--hph-primary-rgb), 0.1);
-}
-
-/* Agent card hover effects */
-.hph-agent-card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.hph-agent-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-}
-</style>
-
-<!-- Initialize JavaScript Global Variables -->
-<script type="text/javascript">
-window.hphArchive = {
-    ajaxUrl: '<?php echo admin_url('admin-ajax.php'); ?>',
-    nonce: '<?php echo wp_create_nonce('hph_archive_nonce'); ?>',
-    postType: 'agent',
-    currentPage: <?php echo max(1, get_query_var('paged')); ?>,
-    maxPages: <?php echo $agents_query->max_num_pages; ?>,
-    currentFilters: {
-        search: '<?php echo esc_js($search_query); ?>',
-        specialty: '<?php echo esc_js($specialty); ?>',
-        language: '<?php echo esc_js($language); ?>',
-        office: '<?php echo esc_js($office); ?>',
-        experience: '<?php echo esc_js($experience); ?>',
-        view: '<?php echo esc_js($view); ?>',
-        sort: '<?php echo esc_js($sort); ?>'
-    },
-    strings: {
-        loading: '<?php echo esc_js(__('Loading...', 'happy-place-theme')); ?>',
-        noResults: '<?php echo esc_js(__('No agents found', 'happy-place-theme')); ?>',
-        error: '<?php echo esc_js(__('Error loading results', 'happy-place-theme')); ?>'
-    }
-};
-</script>
+</div>
 
 <?php
 wp_reset_postdata();

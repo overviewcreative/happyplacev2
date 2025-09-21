@@ -17,6 +17,25 @@
     width: 100%;
     overflow: hidden;
     background-color: #f8f9fa;
+    padding-top: 80px;
+    z-index: 1; /* Ensure hero stays below header (1002-1003) */
+}
+
+/* Ensure all hero sections respect stacking order */
+.hph-hero,
+.hph-hero-gradient,
+.hph-hero-image,
+.hph-hero-minimal,
+.hph-hero-property {
+    z-index: 1;
+}
+
+/* Ensure main content sections don't interfere with header */
+main,
+.site-main,
+section:not(.hph-header):not(.hph-topbar) {
+    position: relative;
+    z-index: auto;
 }
 
 /* Hero Heights */

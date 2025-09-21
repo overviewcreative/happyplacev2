@@ -84,11 +84,18 @@ class AdminMenu {
         add_action('wp_ajax_hp_sync_mls', [$this, 'ajax_sync_mls']);
         add_action('wp_ajax_hp_sync_config', [$this, 'ajax_sync_config']);
         add_action('wp_ajax_hp_test_airtable_connection', [$this, 'ajax_test_airtable_connection']);
-        add_action('wp_ajax_hp_test_followup_boss_connection', [$this, 'ajax_test_followup_boss_connection']);
         add_action('wp_ajax_hp_bulk_sync_leads', [$this, 'ajax_bulk_sync_leads']);
         add_action('wp_ajax_hp_cleanup_roles', [$this, 'ajax_cleanup_roles']);
         add_action('wp_ajax_hp_preview_role_changes', [$this, 'ajax_preview_role_changes']);
         add_action('wp_ajax_get_lead_details', [$this, 'ajax_get_lead_details']);
+        
+        // Performance Tools AJAX handlers
+        add_action('wp_ajax_hp_build_css_bundles', [$this, 'ajax_build_css_bundles']);
+        add_action('wp_ajax_hp_clear_asset_cache', [$this, 'ajax_clear_asset_cache']);
+        add_action('wp_ajax_hp_analyze_performance', [$this, 'ajax_analyze_performance']);
+        add_action('wp_ajax_hp_optimize_images', [$this, 'ajax_optimize_images']);
+        add_action('wp_ajax_hp_clear_transients', [$this, 'ajax_clear_transients']);
+        add_action('wp_ajax_hp_test_page_speed', [$this, 'ajax_test_page_speed']);
         
         // Add toolbar items
         add_action('admin_bar_menu', [$this, 'add_toolbar_items'], 100);
@@ -208,6 +215,16 @@ class AdminMenu {
                 'capability' => 'manage_options',
                 'slug' => 'hp-users',
                 'callback' => [$this, 'render_users'],
+            ],
+            
+            // Performance Tools (asset management, cache clearing, monitoring)
+            'performance-tools' => [
+                'parent' => 'happy-place',
+                'title' => __('Performance Tools', 'happy-place'),
+                'menu_title' => __('Performance Tools', 'happy-place'),
+                'capability' => 'manage_options',
+                'slug' => 'hp-performance-tools',
+                'callback' => [$this, 'render_performance_tools'],
             ],
         ];
         
@@ -2247,7 +2264,7 @@ class AdminMenu {
         
         $summary = [
             'total_views' => $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}hp_property_views WHERE created_at >= {$date_filter}"),
-            'total_leads' => $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'lead' AND post_date >= {$date_filter}"),
+            'total_leads' => $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}hp_leads WHERE created_at >= {$date_filter}"),
             'avg_time_on_site' => $wpdb->get_var("SELECT AVG(time_on_site) FROM {$wpdb->prefix}hp_analytics WHERE date >= {$date_filter}"),
             'bounce_rate' => $wpdb->get_var("SELECT AVG(bounce_rate) FROM {$wpdb->prefix}hp_analytics WHERE date >= {$date_filter}"),
         ];
@@ -2735,104 +2752,6 @@ class AdminMenu {
     }
     
     /**
-     * AJAX handler for testing FollowUp Boss connection
-     * 
-     * @return void
-     */
-    public function ajax_test_followup_boss_connection(): void {
-        check_ajax_referer('hp_admin_nonce', '_wpnonce');
-        
-        if (!current_user_can('manage_options')) {
-            wp_die(__('You do not have sufficient permissions to access this page.', 'happy-place'));
-        }
-        
-        $api_key = sanitize_text_field($_POST['api_key'] ?? '');
-        
-        if (empty($api_key)) {
-            wp_send_json_error(__('API Key is required', 'happy-place'));
-        }
-        
-        try {
-            // Test FollowUp Boss API connection using just API key
-            // FollowUp Boss uses HTTP Basic Auth with API key as username and empty password
-            $auth = base64_encode($api_key . ':');
-            
-            $response = wp_remote_get('https://api.followupboss.com/v1/people?count=1', [
-                'headers' => [
-                    'Authorization' => 'Basic ' . $auth,
-                    'Content-Type' => 'application/json'
-                ],
-                'timeout' => 15
-            ]);
-            
-            if (is_wp_error($response)) {
-                throw new \Exception($response->get_error_message());
-            }
-            
-            $status_code = wp_remote_retrieve_response_code($response);
-            
-            if ($status_code === 200) {
-                // Get users/agents list to show account info
-                $users_response = wp_remote_get('https://api.followupboss.com/v1/users', [
-                    'headers' => [
-                        'Authorization' => 'Basic ' . $auth,
-                        'Content-Type' => 'application/json'
-                    ],
-                    'timeout' => 10
-                ]);
-                
-                $agents = [];
-                $account_info = '';
-                
-                if (!is_wp_error($users_response) && wp_remote_retrieve_response_code($users_response) === 200) {
-                    $users_data = json_decode(wp_remote_retrieve_body($users_response), true);
-                    if (isset($users_data['users'])) {
-                        foreach ($users_data['users'] as $user) {
-                            $agents[] = $user['name'] ?? $user['email'];
-                        }
-                        $account_info = sprintf(
-                            __('Account verified with %d agents/users.', 'happy-place'),
-                            count($agents)
-                        );
-                        
-                        // Cache the agents list for future use
-                        update_option('hp_followup_boss_agents', $users_data['users']);
-                    }
-                }
-                
-                hp_log('FollowUp Boss connection test successful', 'info', 'AdminMenu');
-                wp_send_json_success([
-                    'message' => __('Connection successful! FollowUp Boss API is accessible. ', 'happy-place') . $account_info,
-                    'agents' => $agents
-                ]);
-                
-            } elseif ($status_code === 401) {
-                throw new \Exception(__('Invalid API key. Please check your FollowUp Boss API key.', 'happy-place'));
-            } elseif ($status_code === 403) {
-                throw new \Exception(__('Access forbidden. Please check your API key permissions.', 'happy-place'));
-            } else {
-                $body = wp_remote_retrieve_body($response);
-                $error_data = json_decode($body, true);
-                $error_message = '';
-                
-                if (isset($error_data['error'])) {
-                    $error_message = is_array($error_data['error']) 
-                        ? ($error_data['error']['message'] ?? 'Unknown error')
-                        : $error_data['error'];
-                } else {
-                    $error_message = sprintf(__('HTTP %d error', 'happy-place'), $status_code);
-                }
-                
-                throw new \Exception($error_message);
-            }
-            
-        } catch (\Exception $e) {
-            hp_log('FollowUp Boss connection test failed: ' . $e->getMessage(), 'error', 'AdminMenu');
-            wp_send_json_error($e->getMessage());
-        }
-    }
-    
-    /**
      * AJAX handler for bulk syncing leads to FollowUp Boss
      * 
      * @return void
@@ -3221,5 +3140,623 @@ class AdminMenu {
         <?php
         
         wp_die();
+    }
+    
+    /**
+     * Render Performance Tools page
+     * 
+     * @return void
+     */
+    public function render_performance_tools(): void {
+        // Check capability
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.'));
+        }
+        
+        ?>
+        <div class="wrap">
+            <h1><?php echo esc_html__('Performance Tools', 'happy-place'); ?></h1>
+            <p><?php echo esc_html__('Optimize your Happy Place theme performance with asset management, caching, and monitoring tools.', 'happy-place'); ?></p>
+            
+            <div class="hp-performance-tools">
+                
+                <!-- Asset Management Section -->
+                <div class="postbox">
+                    <h2 class="hndle"><span><?php echo esc_html__('Asset Management', 'happy-place'); ?></span></h2>
+                    <div class="inside">
+                        <p><?php echo esc_html__('Manage CSS and JavaScript assets to improve page load times.', 'happy-place'); ?></p>
+                        
+                        <div class="hp-tool-grid">
+                            <div class="hp-tool-card">
+                                <h3><span class="dashicons dashicons-admin-appearance"></span> CSS Bundles</h3>
+                                <p>Generate optimized CSS bundles from 107+ framework files into 7 efficient bundles.</p>
+                                <button type="button" class="button button-primary hp-tool-action" data-action="hp_build_css_bundles">
+                                    <span class="dashicons dashicons-update"></span> Build CSS Bundles
+                                </button>
+                                <div class="hp-tool-result" id="css-bundles-result"></div>
+                            </div>
+                            
+                            <div class="hp-tool-card">
+                                <h3><span class="dashicons dashicons-trash"></span> Clear Asset Cache</h3>
+                                <p>Clear cached CSS/JS files and force regeneration of optimized assets.</p>
+                                <button type="button" class="button hp-tool-action" data-action="hp_clear_asset_cache">
+                                    <span class="dashicons dashicons-dismiss"></span> Clear Asset Cache
+                                </button>
+                                <div class="hp-tool-result" id="asset-cache-result"></div>
+                            </div>
+                            
+                            <div class="hp-tool-card">
+                                <h3><span class="dashicons dashicons-format-image"></span> Optimize Images</h3>
+                                <p>Compress and optimize theme images for faster loading.</p>
+                                <button type="button" class="button hp-tool-action" data-action="hp_optimize_images">
+                                    <span class="dashicons dashicons-images-alt2"></span> Optimize Images
+                                </button>
+                                <div class="hp-tool-result" id="optimize-images-result"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cache Management Section -->
+                <div class="postbox">
+                    <h2 class="hndle"><span><?php echo esc_html__('Cache Management', 'happy-place'); ?></span></h2>
+                    <div class="inside">
+                        <p><?php echo esc_html__('Clear various caches to ensure fresh content delivery.', 'happy-place'); ?></p>
+                        
+                        <div class="hp-tool-grid">
+                            <div class="hp-tool-card">
+                                <h3><span class="dashicons dashicons-database-remove"></span> Clear Transients</h3>
+                                <p>Clear WordPress transient cache to free up database space.</p>
+                                <button type="button" class="button hp-tool-action" data-action="hp_clear_transients">
+                                    <span class="dashicons dashicons-trash"></span> Clear Transients
+                                </button>
+                                <div class="hp-tool-result" id="transients-result"></div>
+                            </div>
+                            
+                            <div class="hp-tool-card">
+                                <h3><span class="dashicons dashicons-admin-tools"></span> WordPress Cache</h3>
+                                <p>Clear WordPress object cache and rewrite rules.</p>
+                                <button type="button" class="button hp-tool-action" data-action="hp_clear_cache">
+                                    <span class="dashicons dashicons-update-alt"></span> Clear WP Cache
+                                </button>
+                                <div class="hp-tool-result" id="wp-cache-result"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Performance Monitoring Section -->
+                <div class="postbox">
+                    <h2 class="hndle"><span><?php echo esc_html__('Performance Monitoring', 'happy-place'); ?></span></h2>
+                    <div class="inside">
+                        <p><?php echo esc_html__('Analyze and monitor your site\'s performance metrics.', 'happy-place'); ?></p>
+                        
+                        <div class="hp-tool-grid">
+                            <div class="hp-tool-card">
+                                <h3><span class="dashicons dashicons-chart-line"></span> Performance Analysis</h3>
+                                <p>Analyze current asset loading, file sizes, and optimization opportunities.</p>
+                                <button type="button" class="button button-secondary hp-tool-action" data-action="hp_analyze_performance">
+                                    <span class="dashicons dashicons-analytics"></span> Analyze Performance
+                                </button>
+                                <div class="hp-tool-result" id="performance-analysis-result"></div>
+                            </div>
+                            
+                            <div class="hp-tool-card">
+                                <h3><span class="dashicons dashicons-performance"></span> Page Speed Test</h3>
+                                <p>Test homepage loading speed and Core Web Vitals.</p>
+                                <button type="button" class="button button-secondary hp-tool-action" data-action="hp_test_page_speed">
+                                    <span class="dashicons dashicons-clock"></span> Test Page Speed
+                                </button>
+                                <div class="hp-tool-result" id="page-speed-result"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Current Status Section -->
+                <div class="postbox">
+                    <h2 class="hndle"><span><?php echo esc_html__('Current Status', 'happy-place'); ?></span></h2>
+                    <div class="inside">
+                        <?php $this->display_performance_status(); ?>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+        <style>
+        .hp-performance-tools .postbox {
+            margin-bottom: 20px;
+        }
+        .hp-tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .hp-tool-card {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #f9f9f9;
+        }
+        .hp-tool-card h3 {
+            margin: 0 0 10px 0;
+            color: #23282d;
+        }
+        .hp-tool-card h3 .dashicons {
+            margin-right: 8px;
+            color: #0073aa;
+        }
+        .hp-tool-card p {
+            color: #666;
+            margin: 10px 0 15px 0;
+        }
+        .hp-tool-result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 3px;
+            display: none;
+        }
+        .hp-tool-result.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .hp-tool-result.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .hp-tool-result.info {
+            background: #d1ecf1;
+            border: 1px solid #b8daff;
+            color: #0c5460;
+        }
+        .hp-tool-action.loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        .hp-status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .hp-status-item {
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        .hp-status-item strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .hp-status-good { border-left: 4px solid #46b450; }
+        .hp-status-warning { border-left: 4px solid #ffb900; }
+        .hp-status-error { border-left: 4px solid #dc3232; }
+        </style>
+        
+        <script>
+        jQuery(document).ready(function($) {
+            $('.hp-tool-action').on('click', function() {
+                var $button = $(this);
+                var $result = $button.siblings('.hp-tool-result');
+                var action = $button.data('action');
+                
+                $button.addClass('loading');
+                $result.removeClass('success error info').hide();
+                
+                $.ajax({
+                    url: ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: action,
+                        nonce: '<?php echo wp_create_nonce('hp_performance_tools'); ?>'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $result.addClass('success').html(response.data.message).show();
+                            if (response.data.details) {
+                                $result.append('<br><small>' + response.data.details + '</small>');
+                            }
+                        } else {
+                            $result.addClass('error').html(response.data || 'Operation failed').show();
+                        }
+                    },
+                    error: function() {
+                        $result.addClass('error').html('Network error occurred').show();
+                    },
+                    complete: function() {
+                        $button.removeClass('loading');
+                    }
+                });
+            });
+        });
+        </script>
+        <?php
+    }
+    
+    /**
+     * Display current performance status
+     * 
+     * @return void
+     */
+    private function display_performance_status(): void {
+        $theme_dir = get_template_directory();
+        $theme_uri = get_template_directory_uri();
+        
+        // Check CSS bundles
+        $core_bundle = file_exists($theme_dir . '/dist/css/core.css');
+        $bundle_count = count(glob($theme_dir . '/dist/css/*.css'));
+        $original_files = count(glob($theme_dir . '/assets/css/framework/**/*.css'));
+        
+        // Check asset sizes
+        $bundle_size = 0;
+        if ($core_bundle) {
+            $bundles = glob($theme_dir . '/dist/css/*.css');
+            foreach ($bundles as $bundle) {
+                $bundle_size += filesize($bundle);
+            }
+        }
+        
+        // Get transient count
+        global $wpdb;
+        $transient_count = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->options} WHERE option_name LIKE '%_transient_%'");
+        
+        ?>
+        <div class="hp-status-grid">
+            <div class="hp-status-item <?php echo $core_bundle ? 'hp-status-good' : 'hp-status-warning'; ?>">
+                <strong>CSS Bundles</strong>
+                <?php if ($core_bundle): ?>
+                    ✅ Active (<?php echo $bundle_count; ?> bundles, <?php echo round($bundle_size / 1024); ?>KB)
+                <?php else: ?>
+                    ⚠️ Not Generated
+                <?php endif; ?>
+            </div>
+            
+            <div class="hp-status-item <?php echo $original_files > 0 ? 'hp-status-good' : 'hp-status-error'; ?>">
+                <strong>Framework Files</strong>
+                <?php echo $original_files; ?> CSS files detected
+            </div>
+            
+            <div class="hp-status-item <?php echo $transient_count < 100 ? 'hp-status-good' : 'hp-status-warning'; ?>">
+                <strong>Transients</strong>
+                <?php echo number_format($transient_count); ?> cached items
+            </div>
+            
+            <div class="hp-status-item hp-status-good">
+                <strong>Debug Mode</strong>
+                <?php echo defined('WP_DEBUG') && WP_DEBUG ? '⚠️ Enabled' : '✅ Disabled'; ?>
+            </div>
+        </div>
+        <?php
+    }
+    
+    /**
+     * AJAX: Build CSS bundles
+     * 
+     * @return void
+     */
+    public function ajax_build_css_bundles(): void {
+        // Enhanced error handling and debugging
+        try {
+            check_ajax_referer('hp_performance_tools', 'nonce');
+            
+            if (!current_user_can('manage_options')) {
+                wp_send_json_error('Insufficient permissions');
+                return;
+            }
+            
+            $theme_dir = get_template_directory();
+            
+            // Verify theme directory exists
+            if (!is_dir($theme_dir)) {
+                wp_send_json_error('Theme directory not found: ' . $theme_dir);
+                return;
+            }
+            
+            // Try Node.js builder first, fallback to PHP builder
+            $node_script = $theme_dir . '/build-css.js';
+            $php_script = $theme_dir . '/build-css-php.php';
+            
+            if (file_exists($node_script)) {
+                // Try Node.js build
+                $output = [];
+                $return_var = 0;
+                
+                $original_dir = getcwd();
+                if (chdir($theme_dir)) {
+                    exec('node build-css.js 2>&1', $output, $return_var);
+                    chdir($original_dir);
+                    
+                    if ($return_var === 0) {
+                        $bundles = glob($theme_dir . '/dist/css/*.css');
+                        $bundle_count = count($bundles);
+                        
+                        if ($bundle_count > 0) {
+                            $total_size = 0;
+                            foreach ($bundles as $bundle) {
+                                if (file_exists($bundle)) {
+                                    $total_size += filesize($bundle);
+                                }
+                            }
+                            
+                            wp_send_json_success([
+                                'message' => "Successfully generated {$bundle_count} CSS bundles with Node.js!",
+                                'details' => 'Total size: ' . round($total_size / 1024, 1) . 'KB. Page refresh recommended.'
+                            ]);
+                            return;
+                        }
+                    } else {
+                        // Log Node.js errors but continue to PHP fallback
+                        error_log('HP CSS Builder - Node.js build failed: ' . implode("\n", $output));
+                    }
+                } else {
+                    error_log('HP CSS Builder - Could not change to theme directory: ' . $theme_dir);
+                }
+            }
+            
+            // Fallback to PHP builder
+            if (!file_exists($php_script)) {
+                wp_send_json_error('CSS build scripts not found. Expected: ' . $php_script);
+                return;
+            }
+            
+            // Load the PHP builder with error checking
+            require_once $php_script;
+            
+            if (!class_exists('HP_CSS_Builder')) {
+                wp_send_json_error('HP_CSS_Builder class not found in build script');
+                return;
+            }
+            
+            $builder = new HP_CSS_Builder();
+            
+            // Check if builder has required methods
+            if (!method_exists($builder, 'build_all') || !method_exists($builder, 'get_statistics')) {
+                wp_send_json_error('HP_CSS_Builder missing required methods');
+                return;
+            }
+            
+            $results = $builder->build_all();
+            $stats = $builder->get_statistics();
+            
+            if ($stats['successful_bundles'] > 0) {
+                $messages = [];
+                foreach ($results as $name => $result) {
+                    if ($result['success']) {
+                        $messages[] = $result['message'];
+                    }
+                }
+                
+                wp_send_json_success([
+                    'message' => "Generated {$stats['successful_bundles']}/{$stats['total_bundles']} CSS bundles with PHP builder!",
+                    'details' => 'Total size: ' . $stats['total_size_kb'] . 'KB. ' . implode('<br>', array_slice($messages, 0, 3))
+                ]);
+            } else {
+                $error_messages = [];
+                foreach ($results as $name => $result) {
+                    if (!$result['success']) {
+                        $error_messages[] = $result['message'];
+                    }
+                }
+                
+                wp_send_json_error('Build failed: ' . implode('<br>', array_slice($error_messages, 0, 3)));
+            }
+            
+        } catch (Throwable $e) {
+            // Catch all errors including fatal errors and exceptions
+            wp_send_json_error('Build error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
+        }
+    }
+    
+    /**
+     * AJAX: Clear asset cache
+     * 
+     * @return void
+     */
+    public function ajax_clear_asset_cache(): void {
+        check_ajax_referer('hp_performance_tools', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Insufficient permissions');
+        }
+        
+        $theme_dir = get_template_directory();
+        $cleared_items = 0;
+        
+        // Clear CSS bundles
+        $bundles = glob($theme_dir . '/dist/css/*.css');
+        foreach ($bundles as $bundle) {
+            if (unlink($bundle)) {
+                $cleared_items++;
+            }
+        }
+        
+        // Clear JS bundles if they exist
+        $js_bundles = glob($theme_dir . '/dist/js/*.js');
+        foreach ($js_bundles as $bundle) {
+            if (unlink($bundle)) {
+                $cleared_items++;
+            }
+        }
+        
+        // Clear WordPress object cache
+        wp_cache_flush();
+        
+        wp_send_json_success([
+            'message' => "Cleared {$cleared_items} cached asset files!",
+            'details' => 'WordPress object cache also flushed. Assets will be regenerated on next page load.'
+        ]);
+    }
+    
+    /**
+     * AJAX: Analyze performance
+     * 
+     * @return void
+     */
+    public function ajax_analyze_performance(): void {
+        check_ajax_referer('hp_performance_tools', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Insufficient permissions');
+        }
+        
+        $theme_dir = get_template_directory();
+        $analysis = [];
+        
+        // Analyze CSS files
+        $framework_files = glob($theme_dir . '/assets/css/framework/**/*.css', GLOB_BRACE);
+        $bundle_files = glob($theme_dir . '/dist/css/*.css');
+        
+        $framework_size = 0;
+        foreach ($framework_files as $file) {
+            $framework_size += filesize($file);
+        }
+        
+        $bundle_size = 0;
+        foreach ($bundle_files as $file) {
+            $bundle_size += filesize($file);
+        }
+        
+        $analysis[] = '<strong>CSS Analysis:</strong>';
+        $analysis[] = '• Framework files: ' . count($framework_files) . ' (' . round($framework_size / 1024) . 'KB)';
+        $analysis[] = '• Bundle files: ' . count($bundle_files) . ' (' . round($bundle_size / 1024) . 'KB)';
+        
+        if ($bundle_size > 0 && $framework_size > 0) {
+            $savings = round((($framework_size - $bundle_size) / $framework_size) * 100);
+            $analysis[] = '• Size reduction: ' . $savings . '%';
+        }
+        
+        // Analyze transients
+        global $wpdb;
+        $transient_count = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->options} WHERE option_name LIKE '%_transient_%'");
+        $analysis[] = '<strong>Cache Analysis:</strong>';
+        $analysis[] = '• Transients: ' . number_format($transient_count) . ' items';
+        
+        // Check for common performance issues
+        $issues = [];
+        if (!count($bundle_files)) {
+            $issues[] = '⚠️ CSS bundles not generated';
+        }
+        if ($transient_count > 200) {
+            $issues[] = '⚠️ High transient count';
+        }
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            $issues[] = '⚠️ Debug mode enabled in production';
+        }
+        
+        if (!empty($issues)) {
+            $analysis[] = '<strong>Issues Found:</strong>';
+            $analysis = array_merge($analysis, $issues);
+        } else {
+            $analysis[] = '<strong>✅ No performance issues detected</strong>';
+        }
+        
+        wp_send_json_success([
+            'message' => 'Performance analysis complete',
+            'details' => implode('<br>', $analysis)
+        ]);
+    }
+    
+    /**
+     * AJAX: Optimize images
+     * 
+     * @return void
+     */
+    public function ajax_optimize_images(): void {
+        check_ajax_referer('hp_performance_tools', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Insufficient permissions');
+        }
+        
+        // This is a placeholder - actual image optimization would require additional tools
+        wp_send_json_success([
+            'message' => 'Image optimization feature is ready for implementation',
+            'details' => 'Consider installing image optimization plugins like Smush or ShortPixel for automated compression.'
+        ]);
+    }
+    
+    /**
+     * AJAX: Clear transients
+     * 
+     * @return void
+     */
+    public function ajax_clear_transients(): void {
+        check_ajax_referer('hp_performance_tools', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Insufficient permissions');
+        }
+        
+        global $wpdb;
+        
+        // Get count before clearing
+        $count = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->options} WHERE option_name LIKE '%_transient_%'");
+        
+        // Clear expired transients first
+        $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_%' AND option_value < UNIX_TIMESTAMP()");
+        
+        // Clear all transients
+        $deleted = $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_%' OR option_name LIKE '_site_transient_%'");
+        
+        wp_send_json_success([
+            'message' => "Cleared {$deleted} transient cache items!",
+            'details' => "Original count: {$count}. Database space freed up."
+        ]);
+    }
+    
+    /**
+     * AJAX: Test page speed
+     * 
+     * @return void
+     */
+    public function ajax_test_page_speed(): void {
+        check_ajax_referer('hp_performance_tools', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Insufficient permissions');
+        }
+        
+        $home_url = home_url();
+        $start_time = microtime(true);
+        
+        // Test homepage loading
+        $response = wp_remote_get($home_url, [
+            'timeout' => 30,
+            'user-agent' => 'Happy Place Performance Test'
+        ]);
+        
+        $load_time = microtime(true) - $start_time;
+        
+        if (is_wp_error($response)) {
+            wp_send_json_error('Failed to test page: ' . $response->get_error_message());
+        }
+        
+        $response_code = wp_remote_retrieve_response_code($response);
+        $response_size = strlen(wp_remote_retrieve_body($response));
+        
+        $results = [];
+        $results[] = '<strong>Page Speed Test Results:</strong>';
+        $results[] = '• Response code: ' . $response_code;
+        $results[] = '• Load time: ' . round($load_time * 1000) . 'ms';
+        $results[] = '• Page size: ' . round($response_size / 1024) . 'KB';
+        
+        // Basic performance assessment
+        if ($load_time < 1.0) {
+            $results[] = '✅ Excellent loading speed!';
+        } elseif ($load_time < 2.0) {
+            $results[] = '👍 Good loading speed';
+        } else {
+            $results[] = '⚠️ Consider optimization';
+        }
+        
+        wp_send_json_success([
+            'message' => 'Page speed test completed',
+            'details' => implode('<br>', $results)
+        ]);
     }
 }

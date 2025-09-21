@@ -120,6 +120,23 @@
     display: none;
 }
 
+/* Autofill style fixes */
+.hph-search__input:-webkit-autofill,
+.hph-search__input:-webkit-autofill:hover,
+.hph-search__input:-webkit-autofill:focus,
+.hph-search__input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px var(--hph-white) inset !important;
+    -webkit-text-fill-color: var(--hph-text-primary) !important;
+    background-clip: content-box;
+}
+
+.hph-search__input:-moz-autofill,
+.hph-search__input:-moz-autofill:hover,
+.hph-search__input:-moz-autofill:focus {
+    background-color: var(--hph-white) !important;
+    color: var(--hph-text-primary) !important;
+}
+
 /* Input with icons */
 .hph-search__input--with-icon.hph-search__input--icon-left {
     padding-left: 2.5rem;

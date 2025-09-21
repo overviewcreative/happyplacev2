@@ -261,7 +261,7 @@ if (!wp_style_is('hph-advanced-filters', 'enqueued')) :
     --hph-primary-50: #eff6ff;
     --hph-primary-100: #dbeafe;
     --hph-primary-200: #bfdbfe;
-    --hph-primary-500: #3b82f6;
+    --hph-primary-500: var(--hph-primary);
     --hph-primary-600: #2563eb;
     --hph-primary-700: #1d4ed8;
 }

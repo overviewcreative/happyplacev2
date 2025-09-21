@@ -122,7 +122,7 @@ $status_badges = [
                     <div class="hph-flex hph-gap-sm hph-mt-xs">
                         <?php if ($property_type): ?>
                         <span class="hph-text-xs hph-text-gray-500">
-                            <?php echo ucwords(str_replace(['_', '-'], ' ', $property_type)); ?>
+                            <?php echo esc_html(hph_format_property_value($property_type)); ?>
                         </span>
                         <?php endif; ?>
                         <?php if ($mls_number): ?>

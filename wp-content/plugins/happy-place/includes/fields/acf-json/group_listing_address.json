@@ -287,6 +287,43 @@
       },
       "maxlength": 50,
       "placeholder": "County name"
+    },
+    {
+      "key": "field_google_place_id",
+      "label": "Google Place ID",
+      "name": "google_place_id",
+      "type": "text",
+      "instructions": "Auto-generated Google Place identifier",
+      "wrapper": {
+        "width": "50",
+        "class": "auto-generated"
+      },
+      "readonly": 1,
+      "maxlength": 200
+    },
+    {
+      "key": "field_geocoding_accuracy",
+      "label": "Geocoding Accuracy",
+      "name": "geocoding_accuracy",
+      "type": "text",
+      "instructions": "Precision level of geocoding result",
+      "wrapper": {
+        "width": "25",
+        "class": "auto-generated"
+      },
+      "readonly": 1
+    },
+    {
+      "key": "field_last_geocoded_address",
+      "label": "Last Geocoded Address",
+      "name": "last_geocoded_address",
+      "type": "text",
+      "instructions": "Last address that was successfully geocoded",
+      "wrapper": {
+        "width": "75",
+        "class": "auto-generated"
+      },
+      "readonly": 1
     }
   ],
   "location": [

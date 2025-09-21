@@ -157,6 +157,14 @@ $fields['stories'] = $listing_data['stories'] ?? get_field('stories', $listing_i
 $fields['basement'] = $listing_data['basement'] ?? get_field('basement', $listing_id);
 $fields['condition'] = $listing_data['condition'] ?? get_field('condition', $listing_id);
 
+// Format display values for property details
+// Apply formatting to property values
+$fields['property_type'] = hph_format_property_value($fields['property_type']);
+$fields['property_style'] = hph_format_property_value($fields['property_style']); 
+$fields['garage_type'] = hph_format_property_value($fields['garage_type']);
+$fields['condition'] = hph_format_property_value($fields['condition']);
+$fields['basement'] = hph_format_property_value($fields['basement']);
+
 // Features Arrays - fallback to direct field access
 $fields['interior_features'] = get_field('interior_features', $listing_id) ?: [];
 $fields['exterior_features'] = get_field('exterior_features', $listing_id) ?: [];
@@ -212,17 +220,17 @@ $feature_labels = [
 ];
 ?>
 
-<div class="hph-listing-main-body hph-py-3xl">
-    <div class="hph-container">
+<div class="hph-listing-main-body">
+    <div class="hph-content-wrapper">
         
         <!-- Property Description -->
         <?php if ($property_description) : ?>
-        <section class="hph-section hph-mb-lg">
-            <div class="hph-section__header hph-mb-lg">
-                <h2 class="hph-section__title hph-text-2xl hph-font-bold">About <?php echo esc_html($property_title); ?></h2>
+        <section class="hph-section hph-mb-md">
+            <div class="hph-section__header hph-mb-md">
+                <h2 class="hph-section__title hph-text-xl hph-font-bold">About <?php echo esc_html($property_title); ?></h2>
             </div>
             <div class="hph-section__content hph-text-flow">
-                <div class="hph-description-text hph-text-lg hph-text-gray-700">
+                <div class="hph-description-text hph-text-base hph-text-gray-700">
                     <?php echo wp_kses_post($property_description); ?>
                 </div>
             </div>
@@ -230,76 +238,75 @@ $feature_labels = [
         <?php endif; ?>
         
         <!-- Property Details -->
-        <section class="hph-section hph-mb-3xl">
-            <div class="hph-section__header hph-mb-lg">
-                <h2 class="hph-section__title hph-text-2xl hph-font-bold">Property Details</h2>
+        <section class="hph-section hph-mb-lg">
+            <div class="hph-section__header hph-mb-md">
+                <h2 class="hph-section__title hph-text-xl hph-font-bold">Property Details</h2>
             </div>
             
-            <div class="hph-details-grid hph-grid hph-grid-cols-2 hph-grid-cols-md-3 hph-gap-lg">
+            <div class="hph-property-details-grid hph-details-grid hph-grid hph-grid-cols-1 sm:hph-grid-cols-2 md:hph-grid-cols-3 lg:hph-grid-cols-4 hph-gap-lg gap-responsive">
                 
                 <?php if ($fields['property_type']) : ?>
-                <div class="hph-detail-item hph-p-md hph-bg-gray-50 hph-rounded-md">
-                    <dt class="hph-text-sm hph-text-gray-600 hph-mb-xs">Type</dt>
-                    <dd class="hph-text-lg hph-font-semibold"><?php echo esc_html($fields['property_type']); ?></dd>
+                <div class="hph-detail-item padding-responsive hph-bg-gray-50 hph-rounded-md">
+                    <dt class="hph-detail-label text-responsive-sm hph-text-gray-600 hph-mb-xs">Type</dt>
+                    <dd class="hph-detail-value text-responsive-base hph-font-semibold"><?php echo esc_html($fields['property_type']); ?></dd>
                 </div>
                 <?php endif; ?>
                 
                 <?php if ($fields['property_style']) : ?>
-                <div class="hph-detail-item hph-p-md hph-bg-gray-50 hph-rounded-md">
-                    <dt class="hph-text-sm hph-text-gray-600 hph-mb-xs">Style</dt>
-                    <dd class="hph-text-lg hph-font-semibold"><?php echo esc_html($fields['property_style']); ?></dd>
+                <div class="hph-detail-item padding-responsive hph-bg-gray-50 hph-rounded-md">
+                    <dt class="hph-detail-label text-responsive-sm hph-text-gray-600 hph-mb-xs">Style</dt>
+                    <dd class="hph-detail-value text-responsive-base hph-font-semibold"><?php echo esc_html($fields['property_style']); ?></dd>
                 </div>
                 <?php endif; ?>
                 
                 <?php if ($fields['bedrooms']) : ?>
-                <div class="hph-detail-item hph-p-md hph-bg-gray-50 hph-rounded-md">
-                    <dt class="hph-text-sm hph-text-gray-600 hph-mb-xs">Bedrooms</dt>
-                    <dd class="hph-text-lg hph-font-semibold"><?php echo esc_html($fields['bedrooms']); ?></dd>
+                <div class="hph-detail-item padding-responsive hph-bg-gray-50 hph-rounded-md">
+                    <dt class="hph-detail-label text-responsive-sm hph-text-gray-600 hph-mb-xs">Bedrooms</dt>
+                    <dd class="hph-detail-value text-responsive-base hph-font-semibold"><?php echo esc_html($fields['bedrooms']); ?></dd>
                 </div>
                 <?php endif; ?>
                 
                 <?php if ($fields['bathrooms_formatted']) : ?>
-                <div class="hph-detail-item hph-p-md hph-bg-gray-50 hph-rounded-md">
-                    <dt class="hph-text-sm hph-text-gray-600 hph-mb-xs">Bathrooms</dt>
-                    <dd class="hph-text-lg hph-font-semibold"><?php echo esc_html($fields['bathrooms_formatted']); ?></dd>
+                <div class="hph-detail-item padding-responsive hph-bg-gray-50 hph-rounded-md">
+                    <dt class="hph-detail-label text-responsive-sm hph-text-gray-600 hph-mb-xs">Bathrooms</dt>
+                    <dd class="hph-detail-value text-responsive-base hph-font-semibold"><?php echo esc_html($fields['bathrooms_formatted']); ?></dd>
                 </div>
                 <?php endif; ?>
                 
                 <?php if ($fields['square_feet_formatted']) : ?>
-                <div class="hph-detail-item hph-p-md hph-bg-gray-50 hph-rounded-md">
-                    <dt class="hph-text-sm hph-text-gray-600 hph-mb-xs">Square Feet</dt>
-                    <dd class="hph-text-lg hph-font-semibold"><?php echo esc_html($fields['square_feet_formatted']); ?></dd>
+                <div class="hph-detail-item padding-responsive hph-bg-gray-50 hph-rounded-md">
+                    <dt class="hph-detail-label text-responsive-sm hph-text-gray-600 hph-mb-xs">Square Feet</dt>
+                    <dd class="hph-detail-value text-responsive-base hph-font-semibold"><?php echo esc_html($fields['square_feet_formatted']); ?></dd>
                 </div>
                 <?php endif; ?>
                 
                 <?php if ($fields['lot_size_formatted']) : ?>
-                <div class="hph-detail-item hph-p-md hph-bg-gray-50 hph-rounded-md">
-                    <dt class="hph-text-sm hph-text-gray-600 hph-mb-xs">Lot Size</dt>
-                    <dd class="hph-text-lg hph-font-semibold"><?php echo esc_html($fields['lot_size_formatted']); ?></dd>
+                <div class="hph-detail-item padding-responsive hph-bg-gray-50 hph-rounded-md">
+                    <dt class="hph-detail-label text-responsive-sm hph-text-gray-600 hph-mb-xs">Lot Size</dt>
+                    <dd class="hph-detail-value text-responsive-base hph-font-semibold"><?php echo esc_html($fields['lot_size_formatted']); ?></dd>
                 </div>
                 <?php endif; ?>
                 
                 <?php if ($fields['year_built']) : ?>
-                <div class="hph-detail-item hph-p-md hph-bg-gray-50 hph-rounded-md">
-                    <dt class="hph-text-sm hph-text-gray-600 hph-mb-xs">Year Built</dt>
-                    <dd class="hph-text-lg hph-font-semibold"><?php echo esc_html($fields['year_built']); ?></dd>
+                <div class="hph-detail-item padding-responsive hph-bg-gray-50 hph-rounded-md">
+                    <dt class="hph-detail-label text-responsive-sm hph-text-gray-600 hph-mb-xs">Year Built</dt>
+                    <dd class="hph-detail-value text-responsive-base hph-font-semibold"><?php echo esc_html($fields['year_built']); ?></dd>
                 </div>
                 <?php endif; ?>
                 
-                <?php if ($garage_spaces) : ?>
-                <div class="hph-detail-item hph-p-md hph-bg-gray-50 hph-rounded-md">
-                    <dt class="hph-text-sm hph-text-gray-600 hph-mb-xs">Garage</dt>
-                    <dd class="hph-text-lg hph-font-semibold">
-                        <?php echo esc_html($garage_spaces); ?> Car
-                        <?php if ($garage_type) echo ' ' . esc_html($garage_type); ?>
+                <?php if ($fields['garage_spaces']) : ?>
+                <div class="hph-detail-item padding-responsive hph-bg-gray-50 hph-rounded-md">
+                    <dt class="hph-detail-label text-responsive-sm hph-text-gray-600 hph-mb-xs">Garage</dt>
+                    <dd class="hph-detail-value text-responsive-base hph-font-semibold">
+                        <?php echo esc_html(hph_format_garage_display($fields['garage_spaces'], $fields['garage_type'])); ?>
                     </dd>
                 </div>
                 <?php endif; ?>
                 
-                <?php if ($stories) : ?>
-                <div class="hph-detail-item hph-p-md hph-bg-gray-50 hph-rounded-md">
-                    <dt class="hph-text-sm hph-text-gray-600 hph-mb-xs">Stories</dt>
-                    <dd class="hph-text-lg hph-font-semibold"><?php echo esc_html($stories); ?></dd>
+                <?php if ($fields['stories']) : ?>
+                <div class="hph-detail-item padding-responsive hph-bg-gray-50 hph-rounded-md">
+                    <dt class="hph-detail-label text-responsive-sm hph-text-gray-600 hph-mb-xs">Stories</dt>
+                    <dd class="hph-detail-value text-responsive-base hph-font-semibold"><?php echo esc_html($fields['stories']); ?></dd>
                 </div>
                 <?php endif; ?>
                 
@@ -308,24 +315,24 @@ $feature_labels = [
         
         <!-- Property Features -->
         <?php if (!empty($interior_features) || !empty($exterior_features) || !empty($appliances)) : ?>
-        <section class="hph-section hph-mb-3xl">
-            <div class="hph-section__header hph-mb-lg">
-                <h2 class="hph-section__title hph-text-2xl hph-font-bold">Features & Amenities</h2>
+        <section class="hph-property-features hph-section hph-mb-lg">
+            <div class="hph-section__header hph-mb-md">
+                <h2 class="hph-section__title text-responsive-lg hph-font-bold">Features & Amenities</h2>
             </div>
             
-            <div class="hph-features-grid hph-grid hph-grid-cols-1 hph-grid-cols-md-2 hph-grid-cols-lg-3 hph-gap-xl">
+            <div class="hph-features-grid hph-grid hph-grid-cols-1 sm:hph-grid-cols-2 lg:hph-grid-cols-3 gap-responsive">
                 
                 <?php if (!empty($interior_features)) : ?>
                 <div class="hph-feature-group">
-                    <h3 class="hph-feature-group__title hph-text-lg hph-font-semibold hph-mb-md hph-flex hph-items-center hph-gap-sm">
-                        <i class="fas fa-home hph-text-primary"></i>
+                    <h3 class="hph-feature-group__title text-responsive-base hph-font-semibold hph-mb-md hph-flex hph-items-center gap-responsive">
+                        <i class="hph-feature-icon fas fa-home hph-text-primary"></i>
                         Interior Features
                     </h3>
                     <ul class="hph-feature-list hph-space-y-sm">
                         <?php foreach ($interior_features as $feature) : ?>
-                        <li class="hph-feature-item hph-flex hph-items-center hph-gap-sm">
-                            <i class="fas fa-check hph-text-success hph-text-sm"></i>
-                            <span><?php echo esc_html($feature_labels[$feature] ?? ucwords(str_replace('_', ' ', $feature))); ?></span>
+                        <li class="hph-feature-item hph-flex hph-items-center gap-responsive">
+                            <i class="hph-feature-icon fas fa-check hph-text-success hph-text-sm"></i>
+                            <span class="text-responsive-sm"><?php echo esc_html($feature_labels[$feature] ?? ucwords(str_replace('_', ' ', $feature))); ?></span>
                         </li>
                         <?php endforeach; ?>
                     </ul>
@@ -334,15 +341,15 @@ $feature_labels = [
                 
                 <?php if (!empty($exterior_features)) : ?>
                 <div class="hph-feature-group">
-                    <h3 class="hph-feature-group__title hph-text-lg hph-font-semibold hph-mb-md hph-flex hph-items-center hph-gap-sm">
-                        <i class="fas fa-tree hph-text-primary"></i>
+                    <h3 class="hph-feature-group__title text-responsive-base hph-font-semibold hph-mb-md hph-flex hph-items-center gap-responsive">
+                        <i class="hph-feature-icon fas fa-tree hph-text-primary"></i>
                         Exterior Features
                     </h3>
                     <ul class="hph-feature-list hph-space-y-sm">
                         <?php foreach ($exterior_features as $feature) : ?>
-                        <li class="hph-feature-item hph-flex hph-items-center hph-gap-sm">
-                            <i class="fas fa-check hph-text-success hph-text-sm"></i>
-                            <span><?php echo esc_html($feature_labels[$feature] ?? ucwords(str_replace('_', ' ', $feature))); ?></span>
+                        <li class="hph-feature-item hph-flex hph-items-center gap-responsive">
+                            <i class="hph-feature-icon fas fa-check hph-text-success hph-text-sm"></i>
+                            <span class="text-responsive-sm"><?php echo esc_html($feature_labels[$feature] ?? ucwords(str_replace('_', ' ', $feature))); ?></span>
                         </li>
                         <?php endforeach; ?>
                     </ul>
@@ -372,9 +379,9 @@ $feature_labels = [
         
         <!-- Financial Information -->
         <?php if ($annual_taxes || $hoa_fee) : ?>
-        <section class="hph-section hph-mb-3xl">
-            <div class="hph-section__header hph-mb-lg">
-                <h2 class="hph-section__title hph-text-2xl hph-font-bold">Financial Information</h2>
+        <section class="hph-section hph-mb-lg">
+            <div class="hph-section__header hph-mb-md">
+                <h2 class="hph-section__title hph-text-xl hph-font-bold">Financial Information</h2>
             </div>
             
             <div class="hph-financial-grid hph-grid hph-grid-cols-1 hph-grid-cols-md-2 hph-gap-lg">

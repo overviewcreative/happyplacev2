@@ -1,4 +1,7 @@
 /* Dashboard Feature Module */
+@import url('dashboard-core.css');
 @import url('dashboard-layout.css');
+@import url('dashboard-components.css');
 @import url('dashboard-widgets.css');
 @import url('dashboard-forms.css');
+@import url('dashboard-leads.css');

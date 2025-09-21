@@ -14,17 +14,15 @@
 $site_logo = get_theme_mod('custom_logo');
 $site_logo_url = wp_get_attachment_image_url($site_logo, 'full');
 
-// Use new theme settings helper functions
-$agency_phone = hph_get_agency_phone();
-$agency_email = hph_get_agency_email();
-$agency_hours = hph_get_agency_hours();
-$social_links = hph_get_social_links();
-
-// Check if we have a custom brand logo
-$brand_logo = hph_get_brand_logo();
-if ($brand_logo) {
-    $site_logo_url = $brand_logo;
-}
+// Use fallback values for contact info
+$agency_phone = get_option('hph_agency_phone', '(302) 555-0123');
+$agency_email = get_option('hph_agency_email', 'info@happyplace.com');
+$agency_hours = get_option('hph_agency_hours', 'Mon-Fri 9AM-6PM');
+$social_links = array(
+    'facebook' => get_option('hph_facebook_url', '#'),
+    'instagram' => get_option('hph_instagram_url', '#'),
+    'linkedin' => get_option('hph_linkedin_url', '#')
+);
 
 // User account
 $is_logged_in = is_user_logged_in();
@@ -49,7 +47,7 @@ $bed_options = array('Beds', '1+', '2+', '3+', '4+', '5+');
 $bath_options = array('Baths', '1+', '2+', '3+', '4+');
 
 // Check if sticky header is enabled
-$sticky_header = hph_is_sticky_header_enabled();
+$sticky_header = get_theme_mod('sticky_header_enabled', true);
 
 // Ensure Font Awesome is loaded
 if (!wp_script_is('font-awesome', 'enqueued')) {
@@ -73,12 +71,14 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
         <?php esc_html_e('Skip to content', 'happyplace'); ?>
     </a>
 
-    <!-- Top Bar -->
-    <div class="hph-topbar">
-        <div class="hph-container">
-            <div class="hph-topbar-content">
-                <!-- Left: Contact Info -->
-                <div class="hph-topbar-left">
+    <!-- Header Wrapper for Archive Mode Styling -->
+    <div class="hph-header-wrapper">
+        <!-- Top Bar -->
+        <div class="hph-topbar">
+            <div class="hph-container">
+                <div class="hph-topbar-content">
+                    <!-- Left: Phone -->
+                    <div class="hph-topbar-left">
                     <a href="tel:<?php echo esc_attr(preg_replace('/[^0-9]/', '', $agency_phone)); ?>" 
                        class="hph-topbar-item">
                         <i class="fas fa-phone"></i>
@@ -89,14 +89,16 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                         <i class="fas fa-envelope"></i>
                         <span><?php echo esc_html($agency_email); ?></span>
                     </a>
-                    <div class="hph-topbar-item hph-hide-mobile">
-                        <i class="fas fa-clock"></i>
-                        <span><?php echo esc_html($agency_hours); ?></span>
-                    </div>
                 </div>
                 
-                <!-- Right: Social & Quick Links -->
+                <!-- Right: Email (Mobile) + Social & Quick Links (Desktop) -->
                 <div class="hph-topbar-right">
+                    <!-- Email for mobile space-between layout -->
+                    <a href="mailto:<?php echo esc_attr($agency_email); ?>" 
+                       class="hph-topbar-item hph-show-mobile">
+                        <i class="fas fa-envelope"></i>
+                        <span><?php echo esc_html($agency_email); ?></span>
+                    </a>
                     <!-- Social Links -->
                     <div class="hph-social-links">
                         <?php foreach ($social_links as $platform => $url) : ?>
@@ -112,17 +114,20 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                     
                     <!-- Quick Links -->
                     <div class="hph-quick-links">
-                        <a href="/sell" class="hph-topbar-link">
+                        <a href="/sellers/" class="hph-topbar-link">
                             <i class="fas fa-tag"></i>
                             <span>Sell</span>
                         </a>
-                        <a href="/mortgage" class="hph-topbar-link">
+                        <a href="/mortgages/" class="hph-topbar-link">
                             <i class="fas fa-calculator"></i>
                             <span>Mortgage</span>
                         </a>
-                        <a href="/agents" class="hph-topbar-link">
+                        <a href="/contact/" class="hph-topbar-link modal-trigger" 
+                           data-modal-form="general-contact" 
+                           data-modal-title="Contact Us" 
+                           data-modal-subtitle="Send us a message and we'll get back to you soon.">
                             <i class="fas fa-users"></i>
-                            <span>Agents</span>
+                            <span>Contact</span>
                         </a>
                     </div>
                 </div>
@@ -158,90 +163,50 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                         'menu_id' => 'primary-menu',
                         'container' => false,
                         'menu_class' => 'hph-nav-menu',
-                        'fallback_cb' => 'hph_default_menu',
-                        'walker' => class_exists('HPH_Mega_Menu_Walker') ? new HPH_Mega_Menu_Walker() : ''
+                        'fallback_cb' => 'hph_default_fallback_menu'
                     ));
+                    
+                    // Fallback menu function
+                    function hph_default_fallback_menu() {
+                        echo '<ul class="hph-nav-menu">';
+                        echo '<li><a href="' . esc_url(home_url('/')) . '">Home</a></li>';
+                        echo '<li><a href="' . esc_url(home_url('/listings/')) . '">Listings</a></li>';
+                        echo '<li><a href="' . esc_url(home_url('/buyers/')) . '">Find Your Happy Place</a></li>';
+                        echo '<li><a href="' . esc_url(home_url('/sellers/')) . '">List With Us</a></li>';
+                        echo '<li><a href="' . esc_url(home_url('/mortgages/')) . '">Mortgages</a></li>';
+                        echo '<li><a href="' . esc_url(home_url('/about/')) . '">About</a></li>';
+                        echo '<li><a href="' . esc_url(home_url('/contact/')) . '" data-no-modal>Contact</a></li>';
+                        echo '</ul>';
+                    }
                     ?>
                 </nav>
+                
+                <!-- Page Title (shown when scrolled) -->
+                <div class="hph-header-title">
+                    <h1><?php 
+                        if (is_singular()) {
+                            echo esc_html(get_the_title());
+                        } elseif (is_home() || is_front_page()) {
+                            echo esc_html(get_bloginfo('name'));
+                        } elseif (is_post_type_archive('listing')) {
+                            echo esc_html__('Property Listings', 'happy-place-theme');
+                        } elseif (is_page()) {
+                            echo esc_html(get_the_title());
+                        } else {
+                            echo esc_html(wp_get_document_title());
+                        }
+                    ?></h1>
+                </div>
                 
                 <!-- Header Actions -->
                 <div class="hph-header-actions">
                     <!-- Search Toggle -->
-                    <button class="hph-action-btn hph-search-toggle" 
-                            aria-label="Toggle search"
-                            data-toggle="search">
+                    <button class="hph-search-toggle" data-search-toggle aria-label="Toggle search">
                         <i class="fas fa-search"></i>
                     </button>
                     
-                    <!-- Saved Listings -->
-                    <?php if ($is_logged_in) : ?>
-                    <a href="/my-account/saved-listings" 
-                       class="hph-action-btn hph-saved-properties">
-                        <i class="fas fa-heart"></i>
-                        <?php if ($saved_properties_count > 0) : ?>
-                        <span class="hph-badge"><?php echo esc_html($saved_properties_count); ?></span>
-                        <?php endif; ?>
-                    </a>
-                    <?php endif; ?>
-                    
-                    <!-- User Account -->
-                    <div class="hph-user-dropdown">
-                        <button class="hph-action-btn hph-user-toggle" 
-                                aria-label="User menu"
-                                aria-expanded="false">
-                            <i class="fas fa-user-circle"></i>
-                        </button>
-                        
-                        <div class="hph-dropdown-menu hph-user-menu">
-                            <?php if ($is_logged_in) : ?>
-                                <div class="hph-user-info">
-                                    <div class="hph-user-avatar">
-                                        <?php echo get_avatar($current_user->ID, 60); ?>
-                                    </div>
-                                    <div class="hph-user-details">
-                                        <span class="hph-user-greeting">Welcome back!</span>
-                                        <span class="hph-user-email"><?php echo esc_html($current_user->user_email); ?></span>
-                                    </div>
-                                </div>
-                                <div class="hph-dropdown-divider"></div>
-                                <a href="/my-account" class="hph-dropdown-link">
-                                    <i class="fas fa-tachometer-alt"></i> Dashboard
-                                </a>
-                                <a href="/my-account/saved-listings" class="hph-dropdown-link">
-                                    <i class="fas fa-heart"></i> Saved Listings
-                                </a>
-                                <a href="/my-account/saved-searches" class="hph-dropdown-link">
-                                    <i class="fas fa-search"></i> Saved Searches
-                                </a>
-                                <a href="/my-account/property-alerts" class="hph-dropdown-link">
-                                    <i class="fas fa-bell"></i> Property Alerts
-                                </a>
-                                <div class="hph-dropdown-divider"></div>
-                                <a href="/my-account/settings" class="hph-dropdown-link">
-                                    <i class="fas fa-cog"></i> Settings
-                                </a>
-                                <a href="<?php echo wp_logout_url(home_url()); ?>" class="hph-dropdown-link">
-                                    <i class="fas fa-sign-out-alt"></i> Sign Out
-                                </a>
-                            <?php else : ?>
-                                <a href="/login" class="hph-dropdown-link hph-login-link">
-                                    <i class="fas fa-sign-in-alt"></i> Sign In
-                                </a>
-                                <a href="/register" class="hph-dropdown-link hph-register-link">
-                                    <i class="fas fa-user-plus"></i> Create Account
-                                </a>
-                                <div class="hph-dropdown-divider"></div>
-                                <p class="hph-dropdown-text">
-                                    Sign in to save listings and searches
-                                </p>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                    
                     <!-- Mobile Menu Toggle -->
-                    <button class="hph-action-btn hph-mobile-toggle" 
-                            aria-label="Toggle mobile menu"
-                            aria-expanded="false">
+                    <button class="hph-mobile-toggle" data-mobile-toggle aria-label="Toggle mobile menu">
                         <span class="hph-hamburger">
                             <span></span>
                             <span></span>
@@ -256,7 +221,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
         <!-- Search Bar (Hidden by default) -->
         <div class="hph-search-bar" data-search-bar>
             <div class="hph-container">
-                <form class="hph-search-form" action="<?php echo esc_url(home_url('/advanced-search/')); ?>" method="GET">
+                <form class="hph-search-form" action="<?php echo esc_url(home_url('/listings/')); ?>" method="GET">
                     <input type="hidden" name="post_type" value="listing">
                     <div class="hph-search-grid">
                         <!-- Search Input -->
@@ -264,10 +229,16 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                             <i class="fas fa-search"></i>
                             <input type="text" 
                                    name="s" 
+                                   id="header-search-input"
                                    class="hph-search-input" 
                                    placeholder="Enter city, zip, address, or MLS#"
                                    autocomplete="off">
-                            <div class="hph-search-suggestions"></div>
+                            <?php get_template_part('template-parts/components/search/search-autocomplete', null, [
+                                'input_id' => 'header-search-input',
+                                'container_id' => 'header-search-autocomplete',
+                                'post_types' => ['listing', 'agent', 'city', 'community'],
+                                'max_suggestions' => 8
+                            ]); ?>
                         </div>
                         
                         <!-- Property Type -->
@@ -315,22 +286,87 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                             Search
                         </button>
                         
-                        <!-- Advanced Search Link -->
-                        <a href="<?php echo esc_url(home_url('/advanced-search/')); ?>" class="hph-advanced-search">
-                            <i class="fas fa-sliders-h"></i>
-                            Advanced Search
-                        </a>
+                        
+                        <?php if (is_post_type_archive('listing') || is_page_template('archive-listing.php')) : ?>
+                        <!-- View Controls - Only shown on listing archive pages -->
+                        <div class="hph-view-controls hph-search-view-controls">
+                            <div class="hph-view-modes" role="tablist">
+                                <button type="button" class="hph-view-btn active" data-view="grid" role="tab" aria-selected="true" title="Grid View">
+                                    <i class="fas fa-th-large"></i>
+                                    <span class="hph-view-label">Grid</span>
+                                </button>
+                                <button type="button" class="hph-view-btn" data-view="list" role="tab" aria-selected="false" title="List View">
+                                    <i class="fas fa-list"></i>
+                                    <span class="hph-view-label">List</span>
+                                </button>
+                                <button type="button" class="hph-view-btn" data-view="map" role="tab" aria-selected="false" title="Map View">
+                                    <i class="fas fa-map-marked-alt"></i>
+                                    <span class="hph-view-label">Map</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <script>
+                        // Integrate header view controls with archive functionality
+                        document.addEventListener('DOMContentLoaded', function() {
+                            if (typeof window.ArchiveListingEnhanced !== 'undefined') {
+                                // Sync header view controls with archive view controls
+                                const headerViewBtns = document.querySelectorAll('.hph-search-view-controls .hph-view-btn');
+                                
+                                headerViewBtns.forEach(btn => {
+                                    btn.addEventListener('click', function() {
+                                        // Update header button states
+                                        headerViewBtns.forEach(b => {
+                                            b.classList.remove('active');
+                                            b.setAttribute('aria-selected', 'false');
+                                        });
+                                        
+                                        this.classList.add('active');
+                                        this.setAttribute('aria-selected', 'true');
+                                    });
+                                });
+                            }
+                        });
+                        </script>
+                        <?php endif; ?>
                     </div>
                 </form>
                 
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const searchForm = document.querySelector('.hph-search-form');
+                    if (searchForm) {
+                        searchForm.addEventListener('submit', function(e) {
+                            // Remove empty parameters before submission
+                            const formData = new FormData(this);
+                            const url = new URL(this.action);
+                            
+                            // Clear existing search params
+                            url.search = '';
+                            
+                            // Add only non-empty values
+                            for (let [key, value] of formData.entries()) {
+                                if (value && value.trim() !== '') {
+                                    url.searchParams.set(key, value);
+                                }
+                            }
+                            
+                            // Redirect to clean URL
+                            e.preventDefault();
+                            window.location.href = url.toString();
+                        });
+                    }
+                });
+                </script>
+                
                 <!-- Quick Search Links -->
                 <div class="hph-quick-searches">
-                    <span class="hph-quick-label">Quick Search:</span>
-                    <a href="/listings/?status=open-house" class="hph-quick-link">Open Houses</a>
-                    <a href="/listings/?status=new" class="hph-quick-link">New Listings</a>
-                    <a href="/listings/?feature=waterfront" class="hph-quick-link">Waterfront</a>
-                    <a href="/listings/?feature=pool" class="hph-quick-link">With Pool</a>
-                    <a href="/listings/?status=reduced" class="hph-quick-link">Price Reduced</a>
+                    <span class="hph-quick-label">Browse By Type:</span>
+                    <a href="/listings/?property_type=single-family" class="hph-quick-link">Single Family</a>
+                    <a href="/listings/?property_type=condo" class="hph-quick-link">Condos</a>
+                    <a href="/listings/?property_type=townhouse" class="hph-quick-link">Townhouses</a>
+                    <a href="/listings/?property_type=multi-family" class="hph-quick-link">Multi-Family</a>
+                    <a href="/listings/?property_type=land" class="hph-quick-link">Land</a>
                 </div>
             </div>
             
@@ -340,6 +376,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
             </button>
         </div>
     </header>
+    </div><!-- End .hph-header-wrapper -->
 
     <!-- Mobile Menu -->
     <div class="hph-mobile-menu" data-mobile-menu>
@@ -359,14 +396,21 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
         
         <!-- Mobile Search -->
         <div class="hph-mobile-search">
-            <form action="<?php echo esc_url(home_url('/advanced-search/')); ?>" method="GET">
-                <input type="hidden" name="type" value="listing">
+            <form action="<?php echo esc_url(home_url('/listings/')); ?>" method="GET">
+                <input type="hidden" name="post_type" value="listing">
                 <div class="hph-mobile-search-input">
                     <i class="fas fa-search"></i>
                     <input type="text" 
                            name="s" 
+                           id="mobile-search-input"
                            placeholder="Search listings..."
                            autocomplete="off">
+                    <?php get_template_part('template-parts/components/search/search-autocomplete', null, [
+                        'input_id' => 'mobile-search-input',
+                        'container_id' => 'mobile-search-autocomplete',
+                        'post_types' => ['listing', 'agent', 'city', 'community'],
+                        'max_suggestions' => 6
+                    ]); ?>
                 </div>
             </form>
         </div>
@@ -375,37 +419,15 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
         <nav class="hph-mobile-nav">
             <?php
             wp_nav_menu(array(
-                'theme_location' => 'mobile',
+                'theme_location' => 'primary',
                 'menu_id' => 'mobile-menu',
                 'container' => false,
                 'menu_class' => 'hph-mobile-menu-list',
-                'fallback_cb' => 'hph_default_mobile_menu'
+                'fallback_cb' => false
             ));
             ?>
         </nav>
         
-        <!-- Mobile User Section -->
-        <div class="hph-mobile-user">
-            <?php if ($is_logged_in) : ?>
-                <div class="hph-mobile-user-info">
-                    <?php echo get_avatar($current_user->ID, 40); ?>
-                    <span><?php echo esc_html($current_user->display_name); ?></span>
-                </div>
-                <a href="/my-account" class="hph-mobile-btn">
-                    <i class="fas fa-tachometer-alt"></i> My Account
-                </a>
-                <a href="<?php echo wp_logout_url(home_url()); ?>" class="hph-mobile-btn">
-                    <i class="fas fa-sign-out-alt"></i> Sign Out
-                </a>
-            <?php else : ?>
-                <a href="/login" class="hph-mobile-btn hph-mobile-btn-primary">
-                    <i class="fas fa-sign-in-alt"></i> Sign In
-                </a>
-                <a href="/register" class="hph-mobile-btn">
-                    <i class="fas fa-user-plus"></i> Create Account
-                </a>
-            <?php endif; ?>
-        </div>
         
         <!-- Mobile Contact -->
         <div class="hph-mobile-contact">

@@ -70,7 +70,7 @@ class LeadService extends Service {
         global $wpdb;
         $charset_collate = $wpdb->get_charset_collate();
         
-        // Leads table
+        // Leads table - unified schema compatible with theme handlers
         $sql_leads = "CREATE TABLE IF NOT EXISTS {$this->table_name} (
             id int(11) NOT NULL AUTO_INCREMENT,
             first_name varchar(100) NOT NULL,
@@ -96,6 +96,8 @@ class LeadService extends Service {
             updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             assigned_to int(11),
             last_contacted datetime,
+            created_date datetime DEFAULT CURRENT_TIMESTAMP,
+            last_contact datetime DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             KEY idx_email (email),
             KEY idx_status (status),
@@ -126,9 +128,24 @@ class LeadService extends Service {
      * Register AJAX handlers
      */
     private function register_ajax_handlers(): void {
-        // Public handlers
+        // Public handlers - unified system
         add_action('wp_ajax_nopriv_hp_submit_lead', [$this, 'ajax_submit_lead']);
         add_action('wp_ajax_hp_submit_lead', [$this, 'ajax_submit_lead']);
+        
+        // Theme compatibility handlers - high priority to override theme handlers
+        add_action('wp_ajax_nopriv_hph_submit_lead_form', [$this, 'ajax_submit_lead_form'], 5);
+        add_action('wp_ajax_hph_submit_lead_form', [$this, 'ajax_submit_lead_form'], 5);
+        
+        // Remove conflicting theme handlers if they exist
+        add_action('init', function() {
+            if (function_exists('handle_lead_form_submission')) {
+                remove_action('wp_ajax_hph_submit_lead_form', 'handle_lead_form_submission');
+                remove_action('wp_ajax_nopriv_hph_submit_lead_form', 'handle_lead_form_submission');
+                $this->log('Disabled conflicting theme lead form handlers');
+            } else {
+                $this->log('No conflicting theme handlers found to disable');
+            }
+        }, 20);
         
         // Admin handlers
         add_action('wp_ajax_hp_update_lead_status', [$this, 'ajax_update_lead_status']);
@@ -150,20 +167,39 @@ class LeadService extends Service {
      * AJAX handler for lead submission
      */
     public function ajax_submit_lead(): void {
-        // Verify nonce
-        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'hp_lead_form_nonce')) {
+        // Verify nonce - support multiple nonce formats
+        $nonce_valid = false;
+        if (isset($_POST['nonce']) && wp_verify_nonce($_POST['nonce'], 'hph_lead_nonce')) {
+            $nonce_valid = true; // Agent forms format
+        } elseif (isset($_POST['nonce']) && wp_verify_nonce($_POST['nonce'], 'hp_lead_form_nonce')) {
+            $nonce_valid = true; // Plugin forms format
+        }
+        
+        if (!$nonce_valid) {
             wp_send_json_error(['message' => 'Security check failed']);
             return;
         }
         
+        // Handle different name formats
+        $first_name = sanitize_text_field($_POST['first_name'] ?? '');
+        $last_name = sanitize_text_field($_POST['last_name'] ?? '');
+        
+        // If using single 'name' field (agent forms), split it
+        if (empty($first_name) && empty($last_name) && !empty($_POST['name'])) {
+            $full_name = sanitize_text_field($_POST['name']);
+            $name_parts = explode(' ', $full_name, 2);
+            $first_name = $name_parts[0];
+            $last_name = isset($name_parts[1]) ? $name_parts[1] : '';
+        }
+        
         // Sanitize and validate data
         $lead_data = [
-            'first_name' => sanitize_text_field($_POST['first_name'] ?? ''),
-            'last_name' => sanitize_text_field($_POST['last_name'] ?? ''),
+            'first_name' => $first_name,
+            'last_name' => $last_name,
             'email' => sanitize_email($_POST['email'] ?? ''),
             'phone' => sanitize_text_field($_POST['phone'] ?? ''),
             'message' => sanitize_textarea_field($_POST['message'] ?? ''),
-            'source' => sanitize_text_field($_POST['source'] ?? 'website'),
+            'source' => sanitize_text_field($_POST['source'] ?? $_POST['lead_type'] ?? 'website'),
             'source_url' => esc_url_raw($_POST['source_url'] ?? ''),
             'listing_id' => intval($_POST['listing_id'] ?? 0),
             'agent_id' => intval($_POST['agent_id'] ?? 0),
@@ -208,6 +244,149 @@ class LeadService extends Service {
     }
     
     /**
+     * AJAX handler for theme form submissions (compatibility method)
+     * Handles form.php template submissions with different nonce/field format
+     */
+    public function ajax_submit_lead_form(): void {
+        $this->log('ajax_submit_lead_form called - contact form submission received');
+        
+        // Verify nonce (theme format)
+        if (!isset($_POST['hph_lead_nonce']) || !wp_verify_nonce($_POST['hph_lead_nonce'], 'hph_lead_form_submission')) {
+            $this->log('Nonce verification failed for contact form');
+            wp_send_json_error(['message' => 'Security check failed']);
+            return;
+        }
+        
+        $this->log('Nonce verified successfully for contact form');
+        
+        // Get form type and source
+        $form_type = sanitize_text_field($_POST['form_type'] ?? 'contact');
+        $lead_source = sanitize_text_field($_POST['lead_source'] ?? 'website_form');
+        
+        // Sanitize and validate data (theme format)
+        $lead_data = [
+            'first_name' => sanitize_text_field($_POST['first_name'] ?? ''),
+            'last_name' => sanitize_text_field($_POST['last_name'] ?? ''),
+            'email' => sanitize_email($_POST['email'] ?? ''),
+            'phone' => sanitize_text_field($_POST['phone'] ?? ''),
+            'message' => sanitize_textarea_field($_POST['message'] ?? ''),
+            'source' => $lead_source,
+            'source_url' => esc_url_raw($_POST['page_url'] ?? ''),
+            'listing_id' => intval($_POST['listing_id'] ?? 0),
+            'agent_id' => intval($_POST['agent_id'] ?? 0),
+            'ip_address' => $_SERVER['REMOTE_ADDR'] ?? '',
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
+            'referrer' => $_SERVER['HTTP_REFERER'] ?? '',
+            'utm_source' => sanitize_text_field($_POST['utm_source'] ?? ''),
+            'utm_medium' => sanitize_text_field($_POST['utm_medium'] ?? ''),
+            'utm_campaign' => sanitize_text_field($_POST['utm_campaign'] ?? '')
+        ];
+        
+        // Add form-specific fields if present
+        $additional_fields = ['interest', 'timeline', 'address', 'city', 'state', 'zip', 
+                             'bedrooms', 'bathrooms', 'square_feet', 'property_type'];
+        
+        foreach ($additional_fields as $field) {
+            if (isset($_POST[$field])) {
+                $lead_data[$field] = sanitize_text_field($_POST[$field]);
+            }
+        }
+        
+        // Validate required fields based on form type
+        $required_fields = ['first_name', 'last_name', 'email'];
+        
+        switch ($form_type) {
+            case 'buyer_guide':
+                $required_fields[] = 'phone';
+                $required_fields[] = 'timeline';
+                break;
+            case 'valuation':
+                $required_fields[] = 'phone';
+                $required_fields[] = 'address';
+                $required_fields[] = 'city';
+                $required_fields[] = 'bedrooms';
+                $required_fields[] = 'bathrooms';
+                $required_fields[] = 'property_type';
+                break;
+            case 'contact':
+                $required_fields[] = 'message';
+                $required_fields[] = 'interest';
+                break;
+        }
+        
+        // Check required fields
+        $missing_fields = [];
+        foreach ($required_fields as $field) {
+            if (empty($lead_data[$field])) {
+                $missing_fields[] = $field;
+            }
+        }
+        
+        if (!empty($missing_fields)) {
+            wp_send_json_error(['message' => 'Please fill out all required fields: ' . implode(', ', $missing_fields)]);
+            return;
+        }
+        
+        if (!is_email($lead_data['email'])) {
+            wp_send_json_error(['message' => 'Please enter a valid email address']);
+            return;
+        }
+        
+        // Check for existing lead and handle accordingly
+        global $wpdb;
+        $existing_lead = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$this->table_name} WHERE email = %s",
+            $lead_data['email']
+        ));
+        
+        if ($existing_lead) {
+            // Update existing lead
+            $update_data = [
+                'last_contact' => current_time('mysql'),
+                'source' => $lead_source,
+                'updated_at' => current_time('mysql')
+            ];
+            
+            // Update non-empty fields
+            $updateable_fields = ['phone', 'first_name', 'last_name', 'message'];
+            foreach ($updateable_fields as $field) {
+                if (!empty($lead_data[$field]) && $lead_data[$field] !== $existing_lead->$field) {
+                    $update_data[$field] = $lead_data[$field];
+                }
+            }
+            
+            $result = $wpdb->update(
+                $this->table_name,
+                $update_data,
+                ['id' => $existing_lead->id]
+            );
+            
+            $lead_id = $existing_lead->id;
+        } else {
+            // Create new lead
+            $lead_id = $this->create_lead($lead_data);
+            
+            if (!$lead_id) {
+                wp_send_json_error(['message' => 'Failed to save lead. Please try again.']);
+                return;
+            }
+        }
+        
+        // Send notifications
+        $this->send_lead_notifications($lead_id, $lead_data);
+        
+        // Trigger hook for integrations
+        do_action('hp_lead_created', $lead_id, $lead_data);
+        
+        $this->log("Contact form submission successful - Lead ID: {$lead_id}");
+        
+        wp_send_json_success([
+            'message' => 'Thank you for your inquiry! We\'ll get back to you soon.',
+            'lead_id' => $lead_id
+        ]);
+    }
+    
+    /**
      * Create a new lead
      */
     public function create_lead(array $data): int {
@@ -225,14 +404,35 @@ class LeadService extends Service {
             }
         }
         
+        // Ensure compatibility date fields are set
+        $current_time = current_time('mysql');
+        if (empty($data['created_at'])) {
+            $data['created_at'] = $current_time;
+        }
+        if (empty($data['created_date'])) {
+            $data['created_date'] = $current_time;
+        }
+        if (empty($data['updated_at'])) {
+            $data['updated_at'] = $current_time;
+        }
+        if (empty($data['last_contact'])) {
+            $data['last_contact'] = $current_time;
+        }
+        
+        // Create format specifiers dynamically based on data types
+        $formats = [];
+        foreach ($data as $key => $value) {
+            if (in_array($key, ['listing_id', 'agent_id', 'lead_score', 'assigned_to'])) {
+                $formats[] = '%d'; // Integer fields
+            } else {
+                $formats[] = '%s'; // String/text fields (including datetime)
+            }
+        }
+        
         $result = $wpdb->insert(
             $this->table_name,
             $data,
-            [
-                '%s', '%s', '%s', '%s', '%s', '%s', '%s', 
-                '%d', '%d', '%s', '%s', '%s', '%d', '%s', 
-                '%s', '%s', '%s', '%s', '%s', '%d'
-            ]
+            $formats
         );
         
         if ($result === false) {
@@ -510,13 +710,12 @@ class LeadService extends Service {
      * Enqueue frontend assets
      */
     public function enqueue_frontend_assets(): void {
-        wp_enqueue_script(
-            'hp-lead-forms',
-            HP_ASSETS_URL . 'js/lead-forms.js',
-            ['jquery'],
-            HP_VERSION,
-            true
-        );
+        // Note: Lead form handling now done by HPH.Forms unified system in theme
+        // Only enqueue fallback if unified system is not available
+        if (!wp_script_is('hph-forms-unified', 'enqueued')) {
+            // Fallback: Basic jQuery for legacy support
+            wp_enqueue_script('jquery');
+        }
         
         wp_localize_script('hp-lead-forms', 'hp_lead_forms', [
             'ajax_url' => admin_url('admin-ajax.php'),

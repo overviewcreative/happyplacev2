@@ -128,8 +128,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // ================================================================
-    // STICKY HEADER WITH SCROLL BEHAVIOR
+    // STICKY HEADER WITH SCROLL BEHAVIOR - DISABLED
     // ================================================================
+    // Sticky header behavior removed to prevent overlap issues with map view
+    // Header is now static positioned in navigation.css
+    
+    /*
     const header = document.querySelector('.hph-sticky-header');
     const topbar = document.querySelector('.hph-topbar');
     
@@ -178,6 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Initialize on page load
         updateHeader();
     }
+    */
     
     // ================================================================
     // SEARCH SUGGESTIONS (Basic implementation)
@@ -291,7 +296,7 @@ const additionalStyles = `
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         max-height: 200px;
         overflow-y: auto;
-        z-index: 1000;
+        z-index: 1006;
         display: none;
     }
     

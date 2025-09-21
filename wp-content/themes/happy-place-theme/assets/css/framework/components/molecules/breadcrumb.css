@@ -19,6 +19,17 @@
 }
 
 /* ================================================
+   Listing Breadcrumb - Header Clearance
+   ================================================ */
+
+.hph-breadcrumb {
+    padding-top: 4rem !important;
+    margin-top: 0 !important;
+    position: relative;
+    z-index: 10;
+}
+
+/* ================================================
    Breadcrumb Container
    ================================================ */
 
@@ -265,10 +276,26 @@
    Mobile Responsive
    ================================================ */
 
+@media (max-width: 1200px) {
+    .hph-breadcrumb {
+        padding-top: 3.5rem !important;
+    }
+}
+
+@media (max-width: 1024px) {
+    .hph-breadcrumb {
+        padding-top: 3rem !important;
+    }
+}
+
 @media (max-width: 640px) {
     .hph-breadcrumbs {
         font-size: var(--hph-font-size-xs);
         --hph-breadcrumbs-separator-spacing: var(--hph-spacing-xs);
+    }
+    
+    .hph-breadcrumb {
+        padding-top: 3rem !important;
     }
     
     .hph-breadcrumbs__link {

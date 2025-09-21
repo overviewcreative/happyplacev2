@@ -119,34 +119,37 @@
 }
 
 .hph-sticky-header {
-    position: fixed;
-    top: var(--hph-topbar-height);
-    left: 0;
-    right: 0;
+    position: static; /* Changed from fixed to static */
+    /* Remove top, left, right positioning */
     width: 100%;
     z-index: 1000;
     background: var(--hph-white);
     border-bottom: 1px solid var(--hph-gray-200);
-    transition: transform 0.3s ease, box-shadow 0.3s ease, top 0.3s ease;
+    /* Remove transition effects */
 }
 
+/* Disable sticky header scroll behaviors */
 .hph-sticky-header.scrolled {
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-    top: 0;
+    /* Remove all scroll-based styling changes */
+    box-shadow: none;
+    top: auto;
 }
 
 .hph-sticky-header.hidden {
-    transform: translateY(-100%);
+    /* Prevent header from hiding */
+    transform: none;
 }
 
 .hph-topbar.scrolled {
-    transform: translateY(-100%);
-    opacity: 0;
+    /* Keep topbar visible */
+    transform: none;
+    opacity: 1;
 }
 
 .hph-sticky-header.scrolled .hph-header-content {
-    height: 60px;
-    transition: height 0.3s ease;
+    /* Maintain consistent header height */
+    height: auto;
+    transition: none;
 }
 
 .hph-sticky-header.scrolled .hph-logo-img {
@@ -874,7 +877,7 @@
     main,
     .site-main,
     .hph-main-content {
-        padding-top: 0;
+        padding-top: 1vh;
     }
 }
 

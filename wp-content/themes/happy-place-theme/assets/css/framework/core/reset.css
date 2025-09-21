@@ -174,4 +174,8 @@ legend {
   margin: 0;
 }
 
+.wpadminbar {
+  display: none !important;
+}
+
 /* File Location: /wp-content/themes/happy-place-theme/assets/css/framework/01-base/hph-reset.css */

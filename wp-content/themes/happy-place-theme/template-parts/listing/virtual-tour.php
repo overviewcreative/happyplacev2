@@ -1,17 +1,17 @@
 <?php
 /**
- * Virtual Tour Template Part
+ * Virtual Tour Section Template Part
  * File: template-parts/listing/virtual-tour.php
  * 
- * Displays virtual tour iframe or video tour using bridge functions
- * Uses HPH framework utilities and CSS variables
+ * Full-width virtual tour section with embedded iframe
+ * Matches hero section styling approach with modern design
  * 
  * @package HappyPlaceTheme
  */
 
 $listing_id = $args['listing_id'] ?? get_the_ID();
 
-// Get virtual tour data using bridge functions with fallbacks
+// Get virtual tour URL using bridge function with fallback
 $virtual_tour_url = null;
 if (function_exists('hpt_get_listing_virtual_tour_url')) {
     try {
@@ -20,151 +20,107 @@ if (function_exists('hpt_get_listing_virtual_tour_url')) {
         error_log('Bridge function hpt_get_listing_virtual_tour_url failed: ' . $e->getMessage());
     }
 }
+
+// Fallback to direct field access if bridge not available
 if (!$virtual_tour_url) {
-    $virtual_tour_url = get_field('virtual_tour_url', $listing_id);
+    $virtual_tour_url = get_field('virtual_tour_url', $listing_id) ?: get_field('virtual_tour', $listing_id) ?: null;
 }
 
-$video_tour_url = null;
-if (function_exists('hpt_get_listing_video')) {
-    try {
-        $video_tour_url = hpt_get_listing_video($listing_id);
-    } catch (Exception $e) {
-        error_log('Bridge function hpt_get_listing_video failed: ' . $e->getMessage());
-    }
-}
-if (!$video_tour_url) {
-    $video_tour_url = get_field('video_tour_url', $listing_id) ?: get_field('video_url', $listing_id);
-}
-
-$floor_plan_images = null;
-if (function_exists('hpt_get_listing_floor_plans')) {
-    try {
-        $floor_plan_images = hpt_get_listing_floor_plans($listing_id);
-    } catch (Exception $e) {
-        error_log('Bridge function hpt_get_listing_floor_plans failed: ' . $e->getMessage());
-    }
-}
-if (empty($floor_plan_images)) {
-    $floor_plan_images = get_field('floor_plans', $listing_id) ?: [];
-}
-
-if (!$virtual_tour_url && !$video_tour_url && empty($floor_plan_images)) {
+// Early return if no virtual tour URL
+if (!$virtual_tour_url) {
     return;
+}
+
+// Get property title for section header
+$property_title = get_the_title($listing_id);
+$property_address = get_field('address', $listing_id) ?: '';
+
+// Sanitize and prepare URL for embedding
+$embed_url = esc_url($virtual_tour_url);
+
+// Check if it's a common virtual tour platform and adjust URL for embedding
+if (strpos($virtual_tour_url, 'matterport.com') !== false) {
+    // Matterport embedding adjustments
+    if (strpos($virtual_tour_url, '/show/') !== false) {
+        $embed_url = str_replace('/show/', '/showcase/', $virtual_tour_url);
+    }
+} elseif (strpos($virtual_tour_url, 'youtube.com') !== false || strpos($virtual_tour_url, 'youtu.be') !== false) {
+    // YouTube embedding adjustments
+    if (strpos($virtual_tour_url, 'watch?v=') !== false) {
+        $video_id = substr($virtual_tour_url, strpos($virtual_tour_url, 'v=') + 2);
+        $embed_url = "https://www.youtube.com/embed/{$video_id}?rel=0&showinfo=0&modestbranding=1";
+    } elseif (strpos($virtual_tour_url, 'youtu.be/') !== false) {
+        $video_id = substr($virtual_tour_url, strrpos($virtual_tour_url, '/') + 1);
+        $embed_url = "https://www.youtube.com/embed/{$video_id}?rel=0&showinfo=0&modestbranding=1";
+    }
 }
 ?>
 
-<section class="hph-virtual-tour hph-py-3xl hph-bg-gray-50">
-    <div class="hph-container">
+<section id="virtual-tour" class="hph-virtual-tour-section">
+    <div class="hph-virtual-tour-container">
         
-        <div class="hph-section__header hph-text-center hph-mb-xl">
-            <h2 class="hph-section__title hph-text-3xl hph-font-bold hph-mb-sm">
-                Virtual Tour & Floor Plans
-            </h2>
-            <p class="hph-section__subtitle hph-text-lg hph-text-gray-600">
-                Explore the property virtually
-            </p>
+        <!-- Section Header -->
+        <div class="hph-virtual-tour-header">
+            <div class="hph-container">
+                <div class="hph-virtual-tour-title-area">
+                    <h2 class="hph-virtual-tour-title">
+                        <i class="fas fa-cube hph-mr-3"></i>
+                        Virtual Tour
+                    </h2>
+                    <?php if ($property_title || $property_address) : ?>
+                        <p class="hph-virtual-tour-subtitle">
+                            <?php 
+                            if ($property_address) {
+                                echo esc_html($property_address);
+                            } elseif ($property_title) {
+                                echo esc_html($property_title);
+                            }
+                            ?>
+                        </p>
+                    <?php endif; ?>
+                </div>
+                
+                <!-- Tour Controls -->
+                <div class="hph-virtual-tour-controls">
+                    <button type="button" 
+                            class="hph-tour-fullscreen-btn"
+                            onclick="toggleTourFullscreen()"
+                            title="Toggle Fullscreen">
+                        <i class="fas fa-expand"></i>
+                        <span class="hph-sr-only">Toggle Fullscreen</span>
+                    </button>
+                    
+                    <a href="<?php echo esc_url($virtual_tour_url); ?>" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       class="hph-tour-external-btn"
+                       title="Open in New Window">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span class="hph-sr-only">Open in New Window</span>
+                    </a>
+                </div>
+            </div>
         </div>
         
-        <!-- Tab Navigation -->
-        <div class="hph-tour-tabs hph-flex hph-justify-center hph-gap-md hph-mb-xl">
-            <?php if ($virtual_tour_url) : ?>
-            <button class="hph-tab-btn hph-px-lg hph-py-sm hph-bg-white hph-rounded-md hph-font-medium hph-text-gray-700 hover:hph-bg-primary hover:hph-text-white hph-transition-all hph-active"
-                    data-tab="virtual-tour">
-                <i class="fas fa-vr-cardboard hph-mr-sm"></i>
-                Virtual Tour
-            </button>
-            <?php endif; ?>
+        <!-- Virtual Tour Embed -->
+        <div class="hph-virtual-tour-embed" id="virtual-tour-embed">
+            <iframe src="<?php echo esc_url($embed_url); ?>"
+                    width="100%" 
+                    height="600"
+                    frameborder="0" 
+                    allowfullscreen
+                    allow="xr-spatial-tracking; gyroscope; accelerometer"
+                    loading="lazy"
+                    title="Virtual Tour - <?php echo esc_attr($property_title ?: 'Property Tour'); ?>">
+            </iframe>
             
-            <?php if ($video_tour_url) : ?>
-            <button class="hph-tab-btn hph-px-lg hph-py-sm hph-bg-white hph-rounded-md hph-font-medium hph-text-gray-700 hover:hph-bg-primary hover:hph-text-white hph-transition-all"
-                    data-tab="video-tour">
-                <i class="fas fa-video hph-mr-sm"></i>
-                Video Tour
-            </button>
-            <?php endif; ?>
-            
-            <?php if (!empty($floor_plan_images)) : ?>
-            <button class="hph-tab-btn hph-px-lg hph-py-sm hph-bg-white hph-rounded-md hph-font-medium hph-text-gray-700 hover:hph-bg-primary hover:hph-text-white hph-transition-all"
-                    data-tab="floor-plans">
-                <i class="fas fa-blueprint hph-mr-sm"></i>
-                Floor Plans
-            </button>
-            <?php endif; ?>
-        </div>
-        
-        <!-- Tab Content -->
-        <div class="hph-tour-content">
-            
-            <?php if ($virtual_tour_url) : ?>
-            <!-- Virtual Tour Content -->
-            <div class="hph-tab-content hph-active" data-content="virtual-tour">
-                <div class="hph-tour-iframe-wrapper hph-relative hph-bg-white hph-rounded-lg hph-shadow-lg hph-overflow-hidden" 
-                     style="padding-bottom: 56.25%; height: 0;">
-                    <iframe src="<?php echo esc_url($virtual_tour_url); ?>" 
-                            class="hph-absolute hph-inset-0 hph-w-full hph-h-full"
-                            frameborder="0" 
-                            allowfullscreen
-                            allow="vr; xr; accelerometer; gyroscope; autoplay">
-                    </iframe>
+            <!-- Loading Overlay -->
+            <div class="hph-tour-loading" id="tour-loading">
+                <div class="hph-tour-loading-content">
+                    <div class="hph-tour-loading-spinner"></div>
+                    <p class="hph-tour-loading-text">Loading Virtual Tour...</p>
                 </div>
             </div>
-            <?php endif; ?>
-            
-            <?php if ($video_tour_url) : ?>
-            <!-- Video Tour Content -->
-            <div class="hph-tab-content <?php echo !$virtual_tour_url ? 'hph-active' : ''; ?>" data-content="video-tour">
-                <div class="hph-video-wrapper hph-relative hph-bg-white hph-rounded-lg hph-shadow-lg hph-overflow-hidden" 
-                     style="padding-bottom: 56.25%; height: 0;">
-                    <?php
-                    // Check if YouTube or Vimeo
-                    if (strpos($video_tour_url, 'youtube.com') !== false || strpos($video_tour_url, 'youtu.be') !== false) {
-                        // Extract YouTube ID
-                        preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i', $video_tour_url, $matches);
-                        $youtube_id = $matches[1] ?? '';
-                        if ($youtube_id) {
-                            $embed_url = "https://www.youtube.com/embed/{$youtube_id}";
-                        }
-                    } elseif (strpos($video_tour_url, 'vimeo.com') !== false) {
-                        // Extract Vimeo ID
-                        preg_match('/vimeo\.com\/([0-9]+)/', $video_tour_url, $matches);
-                        $vimeo_id = $matches[1] ?? '';
-                        if ($vimeo_id) {
-                            $embed_url = "https://player.vimeo.com/video/{$vimeo_id}";
-                        }
-                    } else {
-                        $embed_url = $video_tour_url;
-                    }
-                    ?>
-                    <iframe src="<?php echo esc_url($embed_url); ?>" 
-                            class="hph-absolute hph-inset-0 hph-w-full hph-h-full"
-                            frameborder="0" 
-                            allowfullscreen>
-                    </iframe>
-                </div>
-            </div>
-            <?php endif; ?>
-            
-            <?php if (!empty($floor_plan_images)) : ?>
-            <!-- Floor Plans Content -->
-            <div class="hph-tab-content <?php echo (!$virtual_tour_url && !$video_tour_url) ? 'hph-active' : ''; ?>" data-content="floor-plans">
-                <div class="hph-floor-plans hph-grid hph-grid-cols-1 hph-grid-cols-md-2 hph-gap-lg">
-                    <?php foreach ($floor_plan_images as $floor_plan) : ?>
-                    <div class="hph-floor-plan-item hph-bg-white hph-rounded-lg hph-shadow-md hph-overflow-hidden">
-                        <img src="<?php echo esc_url($floor_plan['url']); ?>" 
-                             alt="<?php echo esc_attr($floor_plan['alt'] ?? 'Floor Plan'); ?>"
-                             class="hph-w-full hph-h-auto hph-cursor-pointer"
-                             data-lightbox="floor-plans">
-                        <?php if (!empty($floor_plan['caption'])) : ?>
-                        <div class="hph-p-md hph-text-center hph-text-sm hph-text-gray-600">
-                            <?php echo esc_html($floor_plan['caption']); ?>
-                        </div>
-                        <?php endif; ?>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-            <?php endif; ?>
-            
         </div>
         
     </div>
@@ -172,21 +128,71 @@ if (!$virtual_tour_url && !$video_tour_url && empty($floor_plan_images)) {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Tab switching functionality
-    const tabs = document.querySelectorAll('.hph-tab-btn');
-    const contents = document.querySelectorAll('.hph-tab-content');
+    // Hide loading overlay when iframe loads
+    const iframe = document.querySelector('#virtual-tour-embed iframe');
+    const loading = document.getElementById('tour-loading');
     
-    tabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-            const targetTab = this.dataset.tab;
-            
-            // Update active states
-            tabs.forEach(t => t.classList.remove('hph-active'));
-            contents.forEach(c => c.classList.remove('hph-active'));
-            
-            this.classList.add('hph-active');
-            document.querySelector(`[data-content="${targetTab}"]`).classList.add('hph-active');
+    if (iframe && loading) {
+        iframe.addEventListener('load', function() {
+            loading.style.display = 'none';
         });
-    });
+        
+        // Fallback: hide loading after 10 seconds
+        setTimeout(function() {
+            if (loading) {
+                loading.style.display = 'none';
+            }
+        }, 10000);
+    }
+});
+
+// Fullscreen toggle function
+function toggleTourFullscreen() {
+    const embedContainer = document.getElementById('virtual-tour-embed');
+    const iframe = embedContainer.querySelector('iframe');
+    
+    if (!document.fullscreenElement) {
+        // Enter fullscreen
+        if (embedContainer.requestFullscreen) {
+            embedContainer.requestFullscreen();
+        } else if (embedContainer.webkitRequestFullscreen) {
+            embedContainer.webkitRequestFullscreen();
+        } else if (embedContainer.mozRequestFullScreen) {
+            embedContainer.mozRequestFullScreen();
+        } else if (embedContainer.msRequestFullscreen) {
+            embedContainer.msRequestFullscreen();
+        }
+        
+        // Adjust iframe for fullscreen
+        iframe.style.height = '100vh';
+        embedContainer.classList.add('hph-tour-fullscreen');
+        
+    } else {
+        // Exit fullscreen
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+        
+        // Reset iframe height
+        iframe.style.height = '600px';
+        embedContainer.classList.remove('hph-tour-fullscreen');
+    }
+}
+
+// Listen for fullscreen changes
+document.addEventListener('fullscreenchange', function() {
+    const embedContainer = document.getElementById('virtual-tour-embed');
+    const iframe = embedContainer.querySelector('iframe');
+    
+    if (!document.fullscreenElement) {
+        iframe.style.height = '600px';
+        embedContainer.classList.remove('hph-tour-fullscreen');
+    }
 });
 </script>

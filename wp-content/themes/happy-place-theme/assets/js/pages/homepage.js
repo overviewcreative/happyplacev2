@@ -376,7 +376,7 @@
         }
         
         .hph-notification-info {
-            border-left: 4px solid var(--hph-info, #3b82f6);
+            border-left: 4px solid var(--hph-info);
         }
         
         .hph-notification-content {

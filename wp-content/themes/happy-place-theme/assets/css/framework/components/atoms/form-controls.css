@@ -1,0 +1,208 @@
+/**
+ * FORM CONTROLS ATOMS  
+ * Advanced form controls (checkboxes, radios, ranges, files)
+ * 
+ * @package HappyPlaceTheme  
+ * @version 4.0.0
+ */
+
+/* ================================================
+   CHECKBOXES & RADIOS
+   ================================================ */
+.hph-form-check {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+  position: relative;
+  padding-left: 1.75rem;
+  min-height: 1.5rem;
+}
+
+.hph-form-check--inline {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 1.5rem;
+  margin-bottom: 0;
+}
+
+.hph-form-check-input {
+  position: absolute;
+  left: 0;
+  top: 0.125rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  background-color: var(--hph-input-bg);
+  border: 2px solid var(--hph-input-border-color);
+  transition: var(--hph-input-transition);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.hph-form-check-input[type="checkbox"] {
+  border-radius: var(--hph-radius);
+}
+
+.hph-form-check-input[type="radio"] {
+  border-radius: 50%;
+}
+
+/* Checked State */
+.hph-form-check-input:checked {
+  background-color: var(--hph-primary);
+  border-color: var(--hph-primary);
+}
+
+.hph-form-check-input[type="checkbox"]:checked {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.hph-form-check-input[type="radio"]:checked {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2' fill='%23fff'/%3e%3c/svg%3e");
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.hph-form-check-input:focus {
+  outline: 0;
+  box-shadow: var(--hph-input-focus-shadow);
+}
+
+.hph-form-check-label {
+  cursor: pointer;
+  user-select: none;
+  font-size: var(--hph-text-base);
+  color: var(--hph-gray-700);
+  line-height: 1.5;
+}
+
+/* ================================================
+   TOGGLE SWITCHES
+   ================================================ */
+.hph-form-switch {
+  padding-left: 3rem;
+}
+
+.hph-form-switch .hph-form-check-input {
+  width: 2.5rem;
+  height: 1.25rem;
+  background-color: var(--hph-gray-300);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='white'/%3e%3c/svg%3e");
+  background-position: left center;
+  border-radius: 2rem;
+  transition: background-position 0.15s ease-in-out, background-color 0.15s ease-in-out;
+}
+
+.hph-form-switch .hph-form-check-input:checked {
+  background-color: var(--hph-primary);
+  background-position: right center;
+}
+
+/* ================================================
+   RANGE SLIDERS
+   ================================================ */
+.hph-form-range {
+  display: block;
+  width: 100%;
+  height: 1.5rem;
+  padding: 0;
+  background-color: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.hph-form-range:focus {
+  outline: none;
+}
+
+.hph-form-range::-webkit-slider-track {
+  width: 100%;
+  height: 0.5rem;
+  background: var(--hph-gray-200);
+  border-radius: var(--hph-radius-full);
+  cursor: pointer;
+}
+
+.hph-form-range::-moz-range-track {
+  width: 100%;
+  height: 0.5rem;
+  background: var(--hph-gray-200);
+  border-radius: var(--hph-radius-full);
+  cursor: pointer;
+}
+
+.hph-form-range::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: var(--hph-primary);
+  border: 3px solid var(--hph-white);
+  border-radius: 50%;
+  box-shadow: var(--hph-shadow-sm);
+  cursor: pointer;
+  transition: var(--hph-input-transition);
+  margin-top: -0.5rem;
+}
+
+.hph-form-range::-moz-range-thumb {
+  width: 1.5rem;
+  height: 1.5rem;
+  background: var(--hph-primary);
+  border: 3px solid var(--hph-white);
+  border-radius: 50%;
+  box-shadow: var(--hph-shadow-sm);
+  cursor: pointer;
+  transition: var(--hph-input-transition);
+  border: none;
+}
+
+/* ================================================
+   FILE INPUTS
+   ================================================ */
+.hph-form-file {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  width: 100%;
+}
+
+.hph-form-file-input {
+  position: absolute;
+  left: -9999px;
+}
+
+.hph-form-file-label {
+  display: block;
+  padding: var(--hph-input-padding-y) var(--hph-input-padding-x);
+  font-size: var(--hph-input-font-size);
+  font-weight: 400;
+  line-height: var(--hph-input-line-height);
+  color: var(--hph-input-text);
+  background-color: var(--hph-input-bg);
+  border: var(--hph-input-border-width) var(--hph-input-border-style) var(--hph-input-border-color);
+  border-radius: var(--hph-input-radius);
+  transition: var(--hph-input-transition);
+  cursor: pointer;
+}
+
+.hph-form-file-label::before {
+  content: "Choose file";
+  display: inline-block;
+  padding: 0.375rem 0.75rem;
+  margin-right: 0.75rem;
+  background: var(--hph-gray-100);
+  border-radius: var(--hph-radius);
+  font-weight: 500;
+}
+
+.hph-form-file-input:focus ~ .hph-form-file-label {
+  border-color: var(--hph-input-border-focus);
+  box-shadow: var(--hph-input-focus-shadow);
+}

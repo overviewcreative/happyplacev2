@@ -1,0 +1,638 @@
+{
+    "key": "group_staff_fields",
+    "title": "Staff Information",
+    "fields": [
+        {
+            "key": "field_staff_personal_tab",
+            "label": "Personal Information",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "Basic personal and contact information",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_staff_first_name",
+            "label": "First Name",
+            "name": "first_name",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Staff member's first name",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_staff_last_name",
+            "label": "Last Name",
+            "name": "last_name",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Staff member's last name",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_staff_job_title",
+            "label": "Job Title",
+            "name": "job_title",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Official job title or position",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "e.g., Office Manager, Marketing Coordinator",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_staff_department",
+            "label": "Department",
+            "name": "department",
+            "aria-label": "",
+            "type": "select",
+            "instructions": "Which department does this staff member belong to?",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "administration": "Administration",
+                "marketing": "Marketing",
+                "operations": "Operations",
+                "customer_service": "Customer Service",
+                "finance": "Finance",
+                "it": "IT \/ Technology",
+                "legal": "Legal",
+                "human_resources": "Human Resources",
+                "other": "Other"
+            },
+            "default_value": "",
+            "return_format": "value",
+            "multiple": 0,
+            "allow_null": 1,
+            "ui": 0,
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_staff_employee_id",
+            "label": "Employee ID",
+            "name": "employee_id",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Internal employee identification number (optional)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_staff_profile_photo",
+            "label": "Profile Photo",
+            "name": "profile_photo",
+            "aria-label": "",
+            "type": "image",
+            "instructions": "Professional headshot photo",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array",
+            "library": "all",
+            "min_width": 300,
+            "min_height": 300,
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": "",
+            "preview_size": "thumbnail"
+        },
+        {
+            "key": "field_staff_contact_tab",
+            "label": "Contact Information",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "Contact details and communication preferences",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_staff_email",
+            "label": "Email Address",
+            "name": "email",
+            "aria-label": "",
+            "type": "email",
+            "instructions": "Primary business email address",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_staff_phone",
+            "label": "Phone Number",
+            "name": "phone",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Primary business phone number",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_staff_extension",
+            "label": "Extension",
+            "name": "extension",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Phone extension (if applicable)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_staff_direct_phone",
+            "label": "Direct Phone",
+            "name": "direct_phone",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Direct line phone number",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_staff_mobile_phone",
+            "label": "Mobile Phone",
+            "name": "mobile_phone",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Mobile phone number (if public)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_staff_show_contact_publicly",
+            "label": "Show Contact Info Publicly",
+            "name": "show_contact_publicly",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "Display contact information on the public website",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 1,
+            "ui_on_text": "",
+            "ui_off_text": "",
+            "ui": 1
+        },
+        {
+            "key": "field_staff_professional_tab",
+            "label": "Professional Information",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "Professional background and experience",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_staff_bio",
+            "label": "Biography",
+            "name": "bio",
+            "aria-label": "",
+            "type": "wysiwyg",
+            "instructions": "Professional biography or description",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "tabs": "all",
+            "toolbar": "basic",
+            "media_upload": 0,
+            "delay": 0
+        },
+        {
+            "key": "field_staff_years_experience",
+            "label": "Years of Experience",
+            "name": "years_experience",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Total years of professional experience",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "min": 0,
+            "max": 50,
+            "step": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_staff_start_date",
+            "label": "Start Date",
+            "name": "start_date",
+            "aria-label": "",
+            "type": "date_picker",
+            "instructions": "Date started with the company",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "display_format": "F j, Y",
+            "return_format": "Y-m-d",
+            "first_day": 1
+        },
+        {
+            "key": "field_staff_featured",
+            "label": "Featured Staff Member",
+            "name": "featured",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "Highlight this staff member on the team page",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "34",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 0,
+            "ui_on_text": "",
+            "ui_off_text": "",
+            "ui": 1
+        },
+        {
+            "key": "field_staff_specialties",
+            "label": "Specialties\/Skills",
+            "name": "specialties",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Key skills or areas of expertise (one per line)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "rows": 3,
+            "placeholder": "Project Management\nCustomer Relations\nData Analysis",
+            "new_lines": ""
+        },
+        {
+            "key": "field_staff_education",
+            "label": "Education",
+            "name": "education",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Educational background and certifications",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "rows": 3,
+            "placeholder": "Bachelor's Degree in Business Administration\nCertified Project Manager (PMP)",
+            "new_lines": ""
+        },
+        {
+            "key": "field_staff_social_tab",
+            "label": "Social Media",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "Professional social media profiles",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_staff_linkedin",
+            "label": "LinkedIn Profile",
+            "name": "linkedin",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "LinkedIn profile URL",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": ""
+        },
+        {
+            "key": "field_staff_twitter",
+            "label": "Twitter Profile",
+            "name": "twitter",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "Twitter profile URL",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": ""
+        },
+        {
+            "key": "field_staff_facebook",
+            "label": "Facebook Profile",
+            "name": "facebook",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "Facebook profile URL",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": ""
+        },
+        {
+            "key": "field_staff_instagram",
+            "label": "Instagram Profile",
+            "name": "instagram",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "Instagram profile URL",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": ""
+        },
+        {
+            "key": "field_staff_display_tab",
+            "label": "Display Settings",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "Control how this staff member appears on the website",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_staff_display_order",
+            "label": "Display Order",
+            "name": "display_order",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Order of appearance on team pages (lower numbers appear first)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": 10,
+            "min": 1,
+            "max": 100,
+            "step": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_staff_show_on_team_page",
+            "label": "Show on Team Page",
+            "name": "show_on_team_page",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "Display this staff member on the public team page",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 1,
+            "ui_on_text": "",
+            "ui_off_text": "",
+            "ui": 1
+        },
+        {
+            "key": "field_staff_status",
+            "label": "Employment Status",
+            "name": "status",
+            "aria-label": "",
+            "type": "select",
+            "instructions": "Current employment status",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "34",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "active": "Active",
+                "inactive": "Inactive",
+                "former": "Former Employee"
+            },
+            "default_value": "active",
+            "return_format": "value",
+            "multiple": 0,
+            "allow_null": 0,
+            "ui": 0,
+            "ajax": 0,
+            "placeholder": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "staff"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": [
+        "the_content",
+        "excerpt",
+        "discussion",
+        "comments",
+        "revisions",
+        "slug",
+        "author",
+        "format",
+        "page_attributes",
+        "featured_image",
+        "categories",
+        "tags",
+        "send-trackbacks"
+    ],
+    "active": true,
+    "description": "Complete staff member information including personal details, contact information, and professional background.",
+    "show_in_rest": 0,
+    "modified": 1641234567
+}

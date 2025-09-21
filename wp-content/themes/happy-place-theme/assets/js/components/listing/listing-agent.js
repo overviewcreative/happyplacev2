@@ -308,7 +308,8 @@
          */
         collectFormData() {
             this.formData = {
-                action: 'hph_submit_agent_lead',
+                action: 'hph_route_form',
+                route_type: 'property_inquiry',
                 nonce: window.hphAgentForm.nonce,
                 property_id: window.hphAgentForm.propertyId,
                 agent_id: window.hphAgentForm.agentId,

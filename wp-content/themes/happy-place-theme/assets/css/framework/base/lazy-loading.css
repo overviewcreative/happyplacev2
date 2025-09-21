@@ -1,0 +1,320 @@
+/**
+ * Enhanced Lazy Loading Styles
+ * 
+ * Smooth fade-in transitions for lazy-loaded images
+ * 
+ * @package HappyPlaceTheme
+ * @version 3.2.1
+ */
+
+/* ================================================
+   LAZY LOADING BASE STYLES
+   ================================================ */
+
+/**
+ * Image lazy loading states
+ */
+.hph-lazy,
+.hph-image-lazy {
+    opacity: 0;
+    transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: opacity;
+}
+
+.hph-lazy.hph-loaded,
+.hph-image-lazy.hph-loaded {
+    opacity: 1;
+}
+
+/**
+ * Enhanced fade-in with subtle transform
+ */
+.hph-lazy-enhanced,
+.hph-image-lazy-enhanced {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    transition: 
+        opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: opacity, transform;
+}
+
+.hph-lazy-enhanced.hph-loaded,
+.hph-image-lazy-enhanced.hph-loaded {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/**
+ * Blur-to-sharp effect for high-quality images
+ */
+.hph-lazy-blur {
+    opacity: 1;
+    filter: blur(8px);
+    transform: scale(1.05);
+    transition: 
+        filter 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: filter, transform;
+}
+
+.hph-lazy-blur.hph-loaded {
+    filter: blur(0);
+    transform: scale(1);
+}
+
+/* ================================================
+   LOADING PLACEHOLDER STYLES
+   ================================================ */
+
+/**
+ * Skeleton loading animation for images
+ */
+.hph-image-skeleton {
+    background: linear-gradient(
+        90deg,
+        var(--hph-gray-200) 25%,
+        var(--hph-gray-100) 50%,
+        var(--hph-gray-200) 75%
+    );
+    background-size: 400% 100%;
+    animation: hph-skeleton-loading 1.5s ease-in-out infinite;
+    border-radius: var(--hph-border-radius);
+}
+
+@keyframes hph-skeleton-loading {
+    0% { background-position: 100% 0%; }
+    100% { background-position: -100% 0%; }
+}
+
+/**
+ * Pulse loading effect
+ */
+.hph-image-pulse {
+    background-color: var(--hph-gray-200);
+    animation: hph-pulse-loading 1.2s ease-in-out infinite;
+    border-radius: var(--hph-border-radius);
+}
+
+@keyframes hph-pulse-loading {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.7; }
+}
+
+/* ================================================
+   CONTEXTUAL LOADING STATES
+   ================================================ */
+
+/**
+ * Gallery images - staggered fade-in
+ */
+.hph-gallery-lazy {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: 
+        opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: opacity, transform;
+}
+
+.hph-gallery-lazy.hph-loaded {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Add staggered delays for gallery items */
+.hph-gallery-lazy:nth-child(1) { transition-delay: 0ms; }
+.hph-gallery-lazy:nth-child(2) { transition-delay: 100ms; }
+.hph-gallery-lazy:nth-child(3) { transition-delay: 200ms; }
+.hph-gallery-lazy:nth-child(4) { transition-delay: 300ms; }
+.hph-gallery-lazy:nth-child(5) { transition-delay: 400ms; }
+.hph-gallery-lazy:nth-child(6) { transition-delay: 500ms; }
+
+/**
+ * Card images - gentle fade with scale
+ */
+.hph-card-image-lazy {
+    opacity: 0;
+    transform: scale(0.98);
+    transition: 
+        opacity 0.6s ease-out,
+        transform 0.6s ease-out;
+    will-change: opacity, transform;
+}
+
+.hph-card-image-lazy.hph-loaded {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/**
+ * Hero images - dramatic entrance
+ */
+.hph-hero-lazy {
+    opacity: 0;
+    transform: scale(1.1);
+    transition: 
+        opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: opacity, transform;
+}
+
+.hph-hero-lazy.hph-loaded {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* ================================================
+   RESPONSIVE CONSIDERATIONS
+   ================================================ */
+
+/**
+ * Reduce motion for users who prefer it
+ */
+@media (prefers-reduced-motion: reduce) {
+    .hph-lazy,
+    .hph-lazy-enhanced,
+    .hph-lazy-blur,
+    .hph-gallery-lazy,
+    .hph-card-image-lazy,
+    .hph-hero-lazy,
+    .hph-image-lazy,
+    .hph-image-lazy-enhanced {
+        transition: opacity 0.3s ease;
+        transform: none;
+    }
+    
+    .hph-image-skeleton,
+    .hph-image-pulse {
+        animation: none;
+        background: var(--hph-gray-200);
+    }
+}
+
+/**
+ * High contrast mode support
+ */
+@media (prefers-contrast: high) {
+    .hph-lazy,
+    .hph-image-lazy {
+        transition-duration: 0.2s;
+    }
+    
+    .hph-image-skeleton {
+        background: var(--hph-gray-300);
+        animation: none;
+    }
+}
+
+/* ================================================
+   LOADING STATE UTILITIES
+   ================================================ */
+
+/**
+ * Loading state for image containers
+ */
+.hph-image-loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.hph-image-loading::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--hph-gray-100);
+    z-index: 1;
+    transition: opacity 0.3s ease;
+}
+
+.hph-image-loading.hph-loaded::before {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/**
+ * Error state for failed image loads
+ */
+.hph-image-error {
+    background: var(--hph-gray-200);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--hph-gray-600);
+    font-size: var(--hph-text-sm);
+    min-height: 200px;
+}
+
+.hph-image-error::after {
+    content: '📷 Image not available';
+}
+
+/* ================================================
+   INTERSECTION OBSERVER FALLBACK
+   ================================================ */
+
+/**
+ * Fallback for browsers without IntersectionObserver
+ */
+.no-intersection-observer .hph-lazy,
+.no-intersection-observer .hph-image-lazy {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+}
+
+/* ================================================
+   PERFORMANCE OPTIMIZATIONS
+   ================================================ */
+
+/**
+ * GPU acceleration for smooth animations
+ */
+.hph-lazy,
+.hph-lazy-enhanced,
+.hph-lazy-blur,
+.hph-gallery-lazy,
+.hph-card-image-lazy,
+.hph-hero-lazy,
+.hph-image-lazy,
+.hph-image-lazy-enhanced {
+    transform: translateZ(0); /* Force GPU layer */
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+/**
+ * Optimize for different image types
+ */
+.hph-lazy[data-src*=".webp"],
+.hph-lazy[data-src*=".avif"] {
+    /* Faster transitions for modern formats */
+    transition-duration: 0.4s;
+}
+
+.hph-lazy[data-src*=".jpg"],
+.hph-lazy[data-src*=".jpeg"],
+.hph-lazy[data-src*=".png"] {
+    /* Standard transitions for traditional formats */
+    transition-duration: 0.6s;
+}
+
+/* ================================================
+   PRINT STYLES
+   ================================================ */
+
+@media print {
+    .hph-lazy,
+    .hph-image-lazy,
+    .hph-lazy-enhanced,
+    .hph-image-lazy-enhanced {
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+        transition: none !important;
+    }
+}

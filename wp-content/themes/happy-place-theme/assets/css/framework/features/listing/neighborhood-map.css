@@ -1,0 +1,751 @@
+/**
+ * Neighborhood Map Section Styles - HPH Framework
+ * File: assets/css/framework/features/listing/neighborhood-map.css
+ * 
+ * Styles for the neighborhood-focused map template with city and local places integration
+ * Uses HPH framework variables and utilities
+ */
+
+/* ==========================================================================
+   Neighborhood Section Layout
+   ========================================================================== */
+
+.hph-neighborhood-section {
+    padding: var(--hph-space-2xl) 0;
+    background: linear-gradient(135deg, var(--hph-gray-25) 0%, var(--hph-white) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.hph-neighborhood-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(80, 186, 225, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(161, 186, 137, 0.02) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.hph-neighborhood-wrapper {
+    max-width: var(--hph-container-xl);
+    margin: 0 auto;
+    padding: 0 var(--hph-padding-responsive-lg);
+    position: relative;
+    z-index: 1;
+}
+
+/* ==========================================================================
+   Section Header
+   ========================================================================== */
+
+.hph-neighborhood-header {
+    text-align: center;
+    margin-bottom: var(--hph-space-2xl);
+}
+
+.hph-neighborhood-title {
+    font-size: var(--hph-text-3xl);
+    font-weight: var(--hph-font-bold);
+    color: var(--hph-text-color);
+    margin-bottom: var(--hph-space-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--hph-space-md);
+    font-family: var(--hph-font-display);
+}
+
+.hph-neighborhood-title i {
+    color: var(--hph-primary);
+    font-size: var(--hph-text-2xl);
+}
+
+.hph-neighborhood-tagline {
+    font-size: var(--hph-text-lg);
+    color: var(--hph-text-muted);
+    font-weight: var(--hph-font-normal);
+    margin: 0;
+}
+
+/* ==========================================================================
+   Main Content Layout
+   ========================================================================== */
+
+.hph-neighborhood-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--hph-space-2xl);
+}
+
+/* ==========================================================================
+   Map Container
+   ========================================================================== */
+
+.hph-neighborhood-map-container {
+    position: relative;
+    height: 450px;
+    border-radius: var(--hph-radius-2xl);
+    overflow: hidden;
+    box-shadow: var(--hph-shadow-xl);
+    background: var(--hph-white);
+}
+
+.hph-neighborhood-map {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--hph-radius-2xl);
+}
+
+.hph-map-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background: linear-gradient(135deg, var(--hph-gray-50) 0%, var(--hph-gray-100) 100%);
+    color: var(--hph-text-muted);
+}
+
+.hph-map-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--hph-gray-200);
+    border-left: 4px solid var(--hph-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: var(--hph-space-md);
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.hph-map-overlay-controls {
+    position: absolute;
+    top: var(--hph-space-md);
+    left: var(--hph-space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--hph-space-sm);
+    z-index: 10;
+}
+
+.hph-map-control {
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--hph-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--hph-transition);
+    box-shadow: var(--hph-shadow-sm);
+    backdrop-filter: blur(8px);
+}
+
+.hph-map-control:hover {
+    background: var(--hph-white);
+    transform: translateY(-2px);
+    box-shadow: var(--hph-shadow-md);
+}
+
+.hph-map-control i {
+    color: var(--hph-text-color);
+    font-size: var(--hph-icon-md);
+}
+
+.hph-map-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--hph-danger);
+    background: var(--hph-danger-light);
+}
+
+.hph-map-error i {
+    font-size: var(--hph-text-2xl);
+    margin-bottom: var(--hph-space-md);
+}
+
+/* ==========================================================================
+   Property Marker Styles
+   ========================================================================== */
+
+.hph-property-marker {
+    background: var(--hph-primary);
+    width: 40px;
+    height: 40px;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--hph-shadow-lg);
+    cursor: pointer;
+    transition: var(--hph-transition);
+    border: 3px solid var(--hph-white);
+}
+
+.hph-property-marker:hover {
+    transform: rotate(-45deg) scale(1.1);
+}
+
+.hph-property-marker i {
+    color: var(--hph-white);
+    font-size: var(--hph-icon-md);
+    transform: rotate(45deg);
+}
+
+.hph-property-popup .mapboxgl-popup-content {
+    padding: var(--hph-space-md);
+    border-radius: var(--hph-radius-lg);
+    box-shadow: var(--hph-shadow-lg);
+    border: none;
+}
+
+.hph-popup-content strong {
+    color: var(--hph-primary-700);
+    font-size: var(--hph-text-base);
+}
+
+.hph-popup-content p {
+    margin: var(--hph-space-sm) 0 0 0;
+    color: var(--hph-text-muted);
+    font-size: var(--hph-text-sm);
+}
+
+/* ==========================================================================
+   City Information Section
+   ========================================================================== */
+
+.hph-city-info {
+    background: var(--hph-white);
+    border-radius: var(--hph-radius-2xl);
+    padding: var(--hph-space-2xl);
+    box-shadow: var(--hph-shadow-sm);
+    border: var(--hph-border-width) solid var(--hph-border-color-light);
+}
+
+.hph-city-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--hph-space-2xl);
+    align-items: start;
+}
+
+.hph-city-image {
+    position: relative;
+    border-radius: var(--hph-radius-xl);
+    overflow: hidden;
+    aspect-ratio: 4/3;
+}
+
+.hph-city-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--hph-transition);
+}
+
+.hph-city-image:hover img {
+    transform: scale(1.05);
+}
+
+.hph-city-overview h3 {
+    font-size: var(--hph-text-2xl);
+    font-weight: var(--hph-font-bold);
+    color: var(--hph-text-color);
+    margin-bottom: var(--hph-space-lg);
+    line-height: var(--hph-leading-tight);
+    font-family: var(--hph-font-display);
+}
+
+.hph-city-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: var(--hph-space-md);
+    margin-bottom: var(--hph-space-lg);
+}
+
+.hph-stat {
+    text-align: center;
+    padding: var(--hph-space-md);
+    background: linear-gradient(135deg, var(--hph-primary-25) 0%, var(--hph-gray-25) 100%);
+    border-radius: var(--hph-radius-lg);
+    border: var(--hph-border-width) solid var(--hph-primary-100);
+}
+
+.hph-stat i {
+    color: var(--hph-primary);
+    font-size: var(--hph-icon-lg);
+    margin-bottom: var(--hph-space-sm);
+    display: block;
+}
+
+.hph-stat-value {
+    display: block;
+    font-size: var(--hph-text-lg);
+    font-weight: var(--hph-font-bold);
+    color: var(--hph-text-color);
+    margin-bottom: var(--hph-space-xs);
+}
+
+.hph-stat-label {
+    font-size: var(--hph-text-sm);
+    color: var(--hph-text-muted);
+    font-weight: var(--hph-font-medium);
+}
+
+.hph-city-description {
+    color: var(--hph-text-color);
+    line-height: var(--hph-line-height-base);
+    margin-bottom: var(--hph-space-lg);
+}
+
+.hph-city-description p:last-child {
+    margin-bottom: 0;
+}
+
+.hph-city-links h4 {
+    font-size: var(--hph-text-lg);
+    font-weight: var(--hph-font-semibold);
+    color: var(--hph-text-color);
+    margin-bottom: var(--hph-space-sm);
+}
+
+.hph-city-links ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.hph-city-links li {
+    margin-bottom: var(--hph-space-sm);
+}
+
+.hph-city-links a {
+    display: flex;
+    align-items: center;
+    gap: var(--hph-space-sm);
+    color: var(--hph-primary);
+    text-decoration: none;
+    font-weight: var(--hph-font-medium);
+    transition: var(--hph-transition);
+}
+
+.hph-city-links a:hover {
+    color: var(--hph-primary-700);
+}
+
+.hph-city-links a i {
+    font-size: var(--hph-text-sm);
+}
+
+/* ==========================================================================
+   Local Places Section
+   ========================================================================== */
+
+.hph-local-places {
+    background: var(--hph-white);
+    border-radius: var(--hph-radius-2xl);
+    padding: var(--hph-space-2xl);
+    box-shadow: var(--hph-shadow-sm);
+    border: var(--hph-border-width) solid var(--hph-border-color-light);
+}
+
+.hph-local-places h3 {
+    font-size: var(--hph-text-2xl);
+    font-weight: var(--hph-font-bold);
+    color: var(--hph-text-color);
+    margin-bottom: var(--hph-space-lg);
+    text-align: center;
+    font-family: var(--hph-font-display);
+}
+
+.hph-places-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--hph-space-lg);
+}
+
+.hph-place-card {
+    background: linear-gradient(135deg, var(--hph-white) 0%, var(--hph-gray-25) 100%);
+    border-radius: var(--hph-radius-xl);
+    overflow: hidden;
+    box-shadow: var(--hph-shadow-sm);
+    border: var(--hph-border-width) solid var(--hph-border-color-light);
+    transition: var(--hph-transition);
+}
+
+.hph-place-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--hph-shadow-lg);
+}
+
+.hph-place-image {
+    aspect-ratio: 16/10;
+    overflow: hidden;
+    position: relative;
+}
+
+.hph-place-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--hph-transition);
+}
+
+.hph-place-card:hover .hph-place-image img {
+    transform: scale(1.05);
+}
+
+.hph-place-content {
+    padding: var(--hph-card-padding);
+}
+
+.hph-place-content h4 {
+    font-size: var(--hph-text-lg);
+    font-weight: var(--hph-font-semibold);
+    color: var(--hph-text-color);
+    margin-bottom: var(--hph-space-sm);
+    line-height: var(--hph-leading-snug);
+}
+
+.hph-place-type {
+    display: inline-block;
+    background: var(--hph-primary-100);
+    color: var(--hph-primary-700);
+    font-size: var(--hph-text-xs);
+    font-weight: var(--hph-font-semibold);
+    padding: var(--hph-space-xs) var(--hph-space-sm);
+    border-radius: var(--hph-radius-full);
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    margin-bottom: var(--hph-space-sm);
+}
+
+.hph-place-content p {
+    color: var(--hph-text-muted);
+    line-height: var(--hph-line-height-base);
+    margin-bottom: var(--hph-space-sm);
+}
+
+.hph-place-address {
+    display: flex;
+    align-items: center;
+    gap: var(--hph-space-sm);
+    color: var(--hph-text-light);
+    font-size: var(--hph-text-sm);
+}
+
+.hph-place-address i {
+    color: var(--hph-primary-500);
+    font-size: var(--hph-text-xs);
+}
+
+/* ==========================================================================
+   Communities Section
+   ========================================================================== */
+
+.hph-communities {
+    background: var(--hph-white);
+    border-radius: var(--hph-radius-2xl);
+    padding: var(--hph-space-2xl);
+    box-shadow: var(--hph-shadow-sm);
+    border: var(--hph-border-width) solid var(--hph-border-color-light);
+}
+
+.hph-communities h3 {
+    font-size: var(--hph-text-2xl);
+    font-weight: var(--hph-font-bold);
+    color: var(--hph-text-color);
+    margin-bottom: var(--hph-space-lg);
+    text-align: center;
+    font-family: var(--hph-font-display);
+}
+
+.hph-communities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--hph-space-lg);
+}
+
+.hph-community-card {
+    background: linear-gradient(135deg, var(--hph-white) 0%, var(--hph-gray-25) 100%);
+    border-radius: var(--hph-radius-xl);
+    overflow: hidden;
+    box-shadow: var(--hph-shadow-sm);
+    border: var(--hph-border-width) solid var(--hph-border-color-light);
+    transition: var(--hph-transition);
+}
+
+.hph-community-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--hph-shadow-lg);
+}
+
+.hph-community-image {
+    aspect-ratio: 16/10;
+    overflow: hidden;
+    position: relative;
+}
+
+.hph-community-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--hph-transition);
+}
+
+.hph-community-card:hover .hph-community-image img {
+    transform: scale(1.05);
+}
+
+.hph-community-content {
+    padding: var(--hph-card-padding);
+}
+
+.hph-community-content h4 {
+    margin-bottom: var(--hph-space-sm);
+}
+
+.hph-community-content h4 a {
+    color: var(--hph-text-color);
+    text-decoration: none;
+    font-size: var(--hph-text-lg);
+    font-weight: var(--hph-font-semibold);
+    transition: var(--hph-transition);
+}
+
+.hph-community-content h4 a:hover {
+    color: var(--hph-primary);
+}
+
+.hph-community-content p {
+    color: var(--hph-text-muted);
+    line-height: var(--hph-line-height-base);
+    margin-bottom: var(--hph-space-md);
+}
+
+.hph-learn-more {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--hph-space-sm);
+    color: var(--hph-primary);
+    text-decoration: none;
+    font-weight: var(--hph-font-medium);
+    font-size: var(--hph-text-sm);
+    transition: var(--hph-transition);
+}
+
+.hph-learn-more:hover {
+    color: var(--hph-primary-700);
+    transform: translateX(2px);
+}
+
+.hph-learn-more i {
+    font-size: var(--hph-text-xs);
+    transition: var(--hph-transition);
+}
+
+.hph-learn-more:hover i {
+    transform: translateX(2px);
+}
+
+/* ==========================================================================
+   Neighborhood Actions
+   ========================================================================== */
+
+.hph-neighborhood-actions {
+    background: linear-gradient(135deg, var(--hph-primary-25) 0%, var(--hph-gray-25) 100%);
+    border-radius: var(--hph-radius-2xl);
+    padding: var(--hph-space-2xl);
+    text-align: center;
+    border: var(--hph-border-width) solid var(--hph-primary-100);
+}
+
+.hph-neighborhood-actions h3 {
+    font-size: var(--hph-text-2xl);
+    font-weight: var(--hph-font-bold);
+    color: var(--hph-text-color);
+    margin-bottom: var(--hph-space-lg);
+    font-family: var(--hph-font-display);
+}
+
+.hph-action-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--hph-space-md);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hph-action-btn {
+    background: var(--hph-white);
+    border: var(--hph-border-width-2) solid var(--hph-primary-200);
+    border-radius: var(--hph-radius-xl);
+    padding: var(--hph-card-padding);
+    cursor: pointer;
+    transition: var(--hph-transition);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--hph-space-sm);
+    text-decoration: none;
+    color: var(--hph-primary-700);
+}
+
+.hph-action-btn:hover {
+    border-color: var(--hph-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--hph-shadow-md);
+    background: var(--hph-primary-25);
+}
+
+.hph-action-btn i {
+    font-size: var(--hph-icon-xl);
+    color: var(--hph-primary);
+}
+
+.hph-action-btn span {
+    font-weight: var(--hph-font-semibold);
+    font-size: var(--hph-text-sm);
+}
+
+/* ==========================================================================
+   Single Listing Integration
+   ========================================================================== */
+
+.hph-neighborhood-map-section {
+    margin-top: var(--hph-space-2xl);
+    margin-bottom: var(--hph-space-2xl);
+}
+
+.hph-neighborhood-map-section .hph-neighborhood-section {
+    padding: 0;
+    background: transparent;
+}
+
+.hph-neighborhood-map-section .hph-neighborhood-section::before {
+    display: none;
+}
+
+.hph-neighborhood-map-section .hph-neighborhood-wrapper {
+    max-width: 100%;
+    padding: 0;
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+    .hph-neighborhood-wrapper {
+        padding: 0 var(--hph-padding-responsive-md);
+    }
+    
+    .hph-city-header {
+        grid-template-columns: 1fr;
+        gap: var(--hph-space-lg);
+    }
+    
+    .hph-city-stats {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .hph-places-grid,
+    .hph-communities-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .hph-neighborhood-title {
+        font-size: var(--hph-text-2xl);
+        flex-direction: column;
+        gap: var(--hph-space-sm);
+    }
+    
+    .hph-neighborhood-title i {
+        font-size: var(--hph-text-xl);
+    }
+    
+    .hph-neighborhood-map-container {
+        height: 350px;
+    }
+    
+    .hph-city-info,
+    .hph-local-places,
+    .hph-communities,
+    .hph-neighborhood-actions {
+        padding: var(--hph-space-lg);
+    }
+    
+    .hph-city-overview h3 {
+        font-size: var(--hph-text-xl);
+    }
+    
+    .hph-city-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .hph-places-grid,
+    .hph-communities-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .hph-action-buttons {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--hph-space-sm);
+    }
+    
+    .hph-action-btn {
+        padding: var(--hph-space-md);
+    }
+}
+
+@media (max-width: 480px) {
+    .hph-neighborhood-section {
+        padding: var(--hph-space-xl) 0;
+    }
+    
+    .hph-neighborhood-content {
+        gap: var(--hph-space-xl);
+    }
+    
+    .hph-neighborhood-map-container {
+        height: 300px;
+        border-radius: var(--hph-radius-xl);
+    }
+    
+    .hph-map-overlay-controls {
+        top: var(--hph-space-sm);
+        left: var(--hph-space-sm);
+    }
+    
+    .hph-map-control {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .hph-city-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .hph-stat {
+        padding: var(--hph-space-sm);
+    }
+    
+    .hph-action-buttons {
+        grid-template-columns: 1fr;
+    }
+}

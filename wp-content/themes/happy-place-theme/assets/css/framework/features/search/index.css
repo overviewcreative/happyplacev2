@@ -1,0 +1,7 @@
+/* ================================================
+   Search Feature Module
+   All search-related styles and components
+   ================================================ */
+
+/* Import search components */
+@import url('search-results.css');
