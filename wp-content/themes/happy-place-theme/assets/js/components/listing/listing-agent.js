@@ -356,7 +356,6 @@
                     }
                 },
                 error: (xhr, status, error) => {
-                    console.error('Form submission error:', error);
                     this.handleError('Network error. Please check your connection and try again.');
                 },
                 complete: () => {

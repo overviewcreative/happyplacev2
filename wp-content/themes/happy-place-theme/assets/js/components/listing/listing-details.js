@@ -183,7 +183,7 @@
                 navigator.share({
                     title: document.title,
                     url: url || window.location.href
-                }).catch(console.error);
+                });
             } else {
                 // Fallback to copy URL
                 this.copyToClipboard(url || window.location.href);
@@ -461,7 +461,6 @@
             }
             
             // Console log for debugging
-            console.log('HPH Event:', event, data);
         }
     };
 

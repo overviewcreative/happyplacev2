@@ -35,7 +35,6 @@ class UserSystemManager {
             this.trackListingView();
         }
         
-        console.log('User System initialized');
     }
     
     /**
@@ -57,7 +56,6 @@ class UserSystemManager {
         const listingId = button.dataset.listingId;
         
         if (!listingId) {
-            console.error('No listing ID found');
             return;
         }
         
@@ -80,7 +78,7 @@ class UserSystemManager {
         button.disabled = true;
         
         try {
-            const response = await this.makeRequest('toggle_favorite', {
+            const response = await this.makeRequest('hph_toggle_favorite', {
                 listing_id: listingId,
                 nonce: this.nonce
             });
@@ -98,7 +96,6 @@ class UserSystemManager {
                 this.showNotification(response.data.message || 'Error updating favorite', 'error');
             }
         } catch (error) {
-            console.error('Favorite toggle error:', error);
             this.showNotification('Error updating favorite', 'error');
         } finally {
             // Restore button state
@@ -341,7 +338,7 @@ class UserSystemManager {
         submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
         
         try {
-            const response = await this.makeRequest('save_search', {
+            const response = await this.makeRequest('hph_save_search', {
                 search_name: searchName,
                 criteria: searchParams,
                 frequency: frequency,
@@ -358,7 +355,6 @@ class UserSystemManager {
                 this.showNotification(response.data.message || 'Error saving search', 'error');
             }
         } catch (error) {
-            console.error('Save search error:', error);
             this.showNotification('Error saving search', 'error');
         } finally {
             submitButton.disabled = false;
@@ -429,7 +425,6 @@ class UserSystemManager {
                 this.showNotification(response.data.message || 'Registration failed', 'error');
             }
         } catch (error) {
-            console.error('Quick registration error:', error);
             this.showNotification('Registration error. Please try again.', 'error');
         } finally {
             // Restore button state
@@ -480,7 +475,7 @@ class UserSystemManager {
         if (minutes > 0) {
             // Send beacon to avoid blocking page unload
             const data = new URLSearchParams({
-                action: 'track_engagement',
+                action: 'hph_track_engagement',
                 user_id: this.userId,
                 engagement_action: 'time_on_site',
                 minutes: minutes,
@@ -507,7 +502,6 @@ class UserSystemManager {
                 scroll_depth: this.maxScrollDepth,
                 source: 'single_listing'
             }).catch(error => {
-                console.error('Error tracking listing view:', error);
             });
         }, 10000);
     }
@@ -568,7 +562,6 @@ class UserSystemManager {
                 recommendationsContainer.innerHTML = '<p class="text-muted">Recommendations will appear here.</p>';
             }
         } catch (error) {
-            console.error('Error loading dashboard data:', error);
         }
     }
     

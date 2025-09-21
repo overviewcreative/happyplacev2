@@ -75,13 +75,13 @@ if ($controls_args['animation_style'] !== 'none') {
                         'grid' => __('Grid View', 'happy-place-theme'),
                         'list' => __('List View', 'happy-place-theme'),
                         'masonry' => __('Masonry View', 'happy-place-theme'),
-                        'map' => __('Map View', 'happy-place-theme')
+                        /* 'map' => __('Map View', 'happy-place-theme') */
                     ];
                     $view_icons = [
                         'grid' => '⊞',
                         'list' => '☰',
                         'masonry' => '▦',
-                        'map' => '🗺️'
+                        /* 'map' => '🗺️' */
                     ];
                 ?>
                     <button 

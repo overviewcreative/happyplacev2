@@ -147,8 +147,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     async function fetchSuggestions(query) {
+
+        // Always show fallback suggestions first for immediate feedback
+        const fallbackSuggestions = generateFallbackSuggestions(query);
+        suggestions = fallbackSuggestions;
+        displaySuggestions(fallbackSuggestions);
+
+        // Then try to load enhanced suggestions via AJAX
         showLoading();
-        
+
         try {
             // Create request data
             const requestData = {
@@ -173,16 +180,26 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             const data = await response.json();
-            
+
             if (data.success) {
                 suggestions = data.data.suggestions || [];
-                displaySuggestions(suggestions);
+
+                if (suggestions.length > 0) {
+                    displaySuggestions(suggestions);
+                } else {
+                    // If no real suggestions found, generate fallbacks
+                    const fallbackSuggestions = generateFallbackSuggestions(query);
+                    suggestions = fallbackSuggestions;
+                    displaySuggestions(fallbackSuggestions);
+                }
             } else {
-                console.error('Autocomplete error:', data.data?.message || 'Unknown error');
-                showNoResults();
+
+                // Even on error, show fallback suggestions
+                const fallbackSuggestions = generateFallbackSuggestions(query);
+                suggestions = fallbackSuggestions;
+                displaySuggestions(fallbackSuggestions);
             }
         } catch (error) {
-            console.error('Autocomplete request failed:', error);
             
             // Fallback to static suggestions
             const fallbackSuggestions = generateFallbackSuggestions(query);
@@ -263,30 +280,88 @@ document.addEventListener('DOMContentLoaded', function() {
         // Generate basic suggestions based on query
         const suggestions = [];
         const queryLower = query.toLowerCase();
-        
-        // Property type suggestions
-        const propertyTypes = [
-            { title: 'Single Family Homes', type: 'listing', query: query + ' single family' },
-            { title: 'Condos', type: 'listing', query: query + ' condo' },
-            { title: 'Townhouses', type: 'listing', query: query + ' townhouse' }
-        ];
-        
-        // Location-based suggestions
+
+        // Get the listing archive URL dynamically
+        const listingArchiveUrl = '<?php echo esc_js(home_url("/listings/")); ?>';
+
+        // Primary search suggestion - always include this
+        suggestions.push({
+            title: `Search "${query}" in Listings`,
+            subtitle: 'Find all matching properties',
+            type: 'listing',
+            type_label: 'Search',
+            query: query,
+            price: '',
+            url: `${listingArchiveUrl}?s=${encodeURIComponent(query)}&post_type=listing`
+        });
+
+        // Add "Browse All Listings" if query is short
+        if (query.length <= 3) {
+            suggestions.push({
+                title: 'Browse All Listings',
+                subtitle: 'View all available properties',
+                type: 'listing',
+                type_label: 'Browse',
+                query: '',
+                price: '',
+                url: listingArchiveUrl
+            });
+        }
+
+        // Location-based suggestions (prioritized)
         if (queryLower.length >= 2) {
-            const cities = ['Rehoboth Beach', 'Bethany Beach', 'Lewes', 'Millsboro'];
+            const cities = ['Rehoboth Beach', 'Bethany Beach', 'Lewes', 'Millsboro', 'Ocean City', 'Fenwick Island', 'Selbyville'];
             cities.forEach(city => {
                 if (city.toLowerCase().includes(queryLower)) {
                     suggestions.push({
-                        title: city,
-                        subtitle: 'Delaware',
+                        title: `Properties in ${city}`,
+                        subtitle: 'Browse all listings',
                         type: 'city',
-                        type_label: 'City',
-                        query: city
+                        type_label: 'Location',
+                        query: city,
+                        url: `${listingArchiveUrl}?s=${encodeURIComponent(city)}&post_type=listing`
                     });
                 }
             });
         }
-        
+
+        // Property type suggestions - only if query could be property related
+        const propertyKeywords = ['house', 'home', 'condo', 'townhouse', 'apartment', 'property', 'listing'];
+        const hasPropertyKeyword = propertyKeywords.some(keyword => queryLower.includes(keyword) || keyword.includes(queryLower));
+
+        if (hasPropertyKeyword || queryLower.length <= 3) {
+            const propertyTypes = [
+                { title: `${query} Single Family Homes`, subtitle: 'Houses and single-family properties', type: 'listing', query: query + ' single family' },
+                { title: `${query} Condos`, subtitle: 'Condominium properties', type: 'listing', query: query + ' condo' },
+                { title: `${query} Townhouses`, subtitle: 'Townhome properties', type: 'listing', query: query + ' townhouse' }
+            ];
+
+            propertyTypes.forEach(propType => {
+                if (suggestions.length < config.maxSuggestions) {
+                    suggestions.push({
+                        ...propType,
+                        url: `${listingArchiveUrl}?s=${encodeURIComponent(propType.query)}&post_type=listing`
+                    });
+                }
+            });
+        }
+
+        // Price range suggestions for numeric queries
+        if (/^\d+/.test(query)) {
+            const basePrice = parseInt(query);
+            if (basePrice >= 100000) {
+                suggestions.push({
+                    title: `Properties under $${Math.ceil(basePrice/1000)}K`,
+                    subtitle: 'Browse by price range',
+                    type: 'listing',
+                    type_label: 'Price Range',
+                    query: query,
+                    url: `${listingArchiveUrl}?max_price=${basePrice}&post_type=listing`
+                });
+            }
+        }
+
+        // Limit to max suggestions
         return suggestions.slice(0, config.maxSuggestions);
     }
     
@@ -294,10 +369,14 @@ document.addEventListener('DOMContentLoaded', function() {
         searchInput.value = suggestion.query || suggestion.title;
         hideAutocomplete();
         
-        // Submit the form or trigger search
-        const form = searchInput.closest('form');
-        if (form) {
-            form.submit();
+        // Submit the form or navigate to URL
+        if (suggestion.url) {
+            window.location.href = suggestion.url;
+        } else {
+            const form = searchInput.closest('form');
+            if (form) {
+                form.submit();
+            }
         }
         
         // Save to recent searches if enabled
@@ -368,7 +447,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             localStorage.setItem('hpt_recent_searches', JSON.stringify(limited));
         } catch (error) {
-            console.error('Failed to save recent search:', error);
+            // Failed to save recent search
         }
     }
 });

@@ -13,16 +13,7 @@
 // Get component args - compatible with both component loader and get_template_part
 $args = $args ?? get_query_var('args', array());
 
-// Debug card rendering
-error_log('CARD DEBUG: Card template called');
-error_log('CARD DEBUG: Args received: ' . wp_json_encode(array_keys($args)));
-error_log('CARD DEBUG: Args type: ' . gettype($args));
-
-if (empty($args)) {
-    error_log('CARD DEBUG: NO ARGS - this is the problem!');
-} else {
-    error_log('CARD DEBUG: Args count: ' . count($args));
-}
+// Debug disabled for production
 
 // Extract with defaults - pure UI props only
 $props = wp_parse_args($args, array(
@@ -64,10 +55,7 @@ $props = wp_parse_args($args, array(
     'attributes' => array()
 ));
 
-// Debug parsed props
-error_log('CARD DEBUG: Props parsed, variant: ' . $props['variant'] . ', has title: ' . (!empty($props['title']['text']) ? 'yes' : 'no'));
-error_log('CARD DEBUG: Title text: "' . ($props['title']['text'] ?? 'NONE') . '"');
-error_log('CARD DEBUG: Image src: "' . ($props['image']['src'] ?? 'NONE') . '"');
+// Props parsed and ready for rendering
 
 // Build card classes - matching CSS file naming
 $card_classes = array(
@@ -81,6 +69,8 @@ if ($props['layout'] !== 'vertical') {
     $card_classes[] = 'hph-card-' . $props['layout'];
 }
 
+// Layout class applied
+
 // Add hover effect class
 if ($props['hover_effect'] !== 'none') {
     $card_classes[] = 'hph-card-hover-' . $props['hover_effect'];
@@ -93,7 +83,7 @@ if ($props['animate']) {
 }
 
 // Add image position class
-if ($props['image']['position'] !== 'top' && $props['image']['src']) {
+if (($props['image']['position'] ?? 'top') !== 'top' && $props['image']['src']) {
     $card_classes[] = 'hph-card-image-' . $props['image']['position'];
 }
 
@@ -136,13 +126,7 @@ if ($description && $props['description_limit'] > 0) {
 
 ?>
 
-<!-- CARD DEBUG: Starting card render -->
-<<?php echo $wrapper_tag; ?> <?php echo $wrapper_attrs; ?> style="border: 1px solid #ccc; margin: 10px; padding: 15px; background: #fff;">
-    
-    <!-- DEBUG: Show card is rendering -->
-    <div style="background: #e3f2fd; padding: 5px; margin-bottom: 10px; font-size: 12px; color: #1565c0;">
-        🐛 CARD DEBUG: variant=<?php echo esc_html($props['variant']); ?>, title=<?php echo esc_html($props['title']['text'] ?? 'NONE'); ?>
-    </div>
+<<?php echo $wrapper_tag; ?> <?php echo $wrapper_attrs; ?>>
     
     <?php if ($props['image']['src']): ?>
     <div class="hph-card-media hph-card-media-<?php echo esc_attr($props['image']['ratio']); ?>">
@@ -165,17 +149,18 @@ if ($description && $props['description_limit'] > 0) {
     </div>
     <?php endif; ?>
     
+    <div class="hph-card-body">
     <div class="hph-card-content">
         
         <?php if ($props['subtitle']): ?>
         <div class="hph-card-subtitle">
-            <?php echo esc_html($props['subtitle']); ?>
+            <?php echo wp_kses_post($props['subtitle']); ?>
         </div>
         <?php endif; ?>
         
         <?php if ($props['title']['text']): ?>
         <<?php echo $props['title']['tag']; ?> class="hph-card-title">
-            <?php if ($props['title']['link'] && !$props['link_wrapper']): ?>
+            <?php if (($props['title']['link'] ?? '') && !$props['link_wrapper']): ?>
                 <a href="<?php echo esc_url($props['title']['link']); ?>">
                     <?php echo esc_html($props['title']['text']); ?>
                 </a>
@@ -194,7 +179,7 @@ if ($description && $props['description_limit'] > 0) {
         <?php if (!empty($props['meta_items'])): ?>
         <div class="hph-card-meta">
             <?php foreach ($props['meta_items'] as $meta): ?>
-            <div class="hph-card-meta-item">
+            <div class="hph-card-meta-item <?php echo esc_attr($meta['class'] ?? ''); ?>">
                 <?php if (!empty($meta['icon'])): ?>
                     <i class="hph-card-meta-icon fas fa-<?php echo esc_attr($meta['icon']); ?>"></i>
                 <?php endif; ?>
@@ -205,6 +190,12 @@ if ($description && $props['description_limit'] > 0) {
                 <?php endif; ?>
             </div>
             <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+        
+        <?php if (!empty($props['price_per_sqft'])): ?>
+        <div class="hph-card-price-per-sqft">
+            <?php echo esc_html($props['price_per_sqft']); ?>
         </div>
         <?php endif; ?>
         
@@ -244,6 +235,7 @@ if ($description && $props['description_limit'] > 0) {
         </div>
         <?php endif; ?>
         
+    </div>
     </div>
     
 </<?php echo $wrapper_tag; ?>>

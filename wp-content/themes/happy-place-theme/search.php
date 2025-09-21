@@ -71,21 +71,12 @@ $is_mixed_search = count($post_types_found) > 1;
 <main class="hph-main-content search-results-page" role="main">
     <div class="hph-container">
         
-        <!-- Enhanced Search Form -->
-        <section class="search-form-section">
-            <?php 
-            hph_component('search-form', [
-                'form_id' => 'wordpress-search',
-                'placeholder' => __('Refine your search...', 'happy-place-theme'),
-                'show_filters' => true,
-                'show_post_type_selector' => true,
-                'current_query' => $search_query,
-                'current_post_type' => $post_type,
-                'advanced_mode' => true,
-                'form_action' => home_url('/'),
-                'form_method' => 'GET'
-            ]);
-            ?>
+        <!-- Enhanced Search Form - DISABLED: Using header search as single source of truth -->
+        <section class="search-form-section" style="display: none;">
+            <div class="search-form-disabled-notice">
+                <p><strong>Note:</strong> Search functionality has been moved to the header search bar above for a unified experience. The enhanced header search provides the same advanced filtering capabilities.</p>
+                <p><a href="#" onclick="document.querySelector('[data-search-toggle]').click(); return false;" class="hph-btn hph-btn-primary">Open Header Search</a></p>
+            </div>
         </section>
 
         <!-- Search Results Section -->

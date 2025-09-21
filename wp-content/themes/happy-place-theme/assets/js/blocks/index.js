@@ -16,7 +16,6 @@ try {
     require('./auto-generated');
 } catch (e) {
     // Auto-generated file doesn't exist yet
-    console.log('HPH Blocks: Auto-generated blocks not found, registering manual fallback');
 }
 
 /**

@@ -169,7 +169,7 @@ if (empty($agents) && !empty($query_args)) {
     
     // If still no agents, use demo data
     if (empty($agents)) {
-        $demo_image_base = function_exists('hph_get_image_url') ? '' : get_template_directory_uri() . '/assets/images/';
+        $demo_image_base = function_exists('hph_get_image_url') ? '' : hph_get_image_url_only('assets/images/');
         
         $agents = array(
             array(
@@ -274,25 +274,25 @@ switch ($background) {
 // Padding styles
 switch ($padding) {
     case 'sm':
-        $section_styles[] = 'padding-top: var(--hph-padding-lg)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-lg)';
+        $section_styles[] = 'padding-top: var(--hph-space-6)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-6)';
         break;
     case 'md':
-        $section_styles[] = 'padding-top: var(--hph-padding-xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-8)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-8)';
         break;
     case 'lg':
-        $section_styles[] = 'padding-top: var(--hph-padding-2xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-2xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-12)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-12)';
         break;
     case '2xl':
-        $section_styles[] = 'padding-top: var(--hph-padding-4xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-4xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-24)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-24)';
         break;
     case 'xl':
     default:
-        $section_styles[] = 'padding-top: var(--hph-padding-3xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-3xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-16)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-16)';
         break;
 }
 
@@ -301,8 +301,8 @@ $container_styles = array(
     'position: relative',
     'margin-left: auto',
     'margin-right: auto',
-    'padding-left: var(--hph-padding-lg)',
-    'padding-right: var(--hph-padding-lg)'
+    'padding-left: var(--hph-space-6)',
+    'padding-right: var(--hph-space-6)'
 );
 
 // Content width
@@ -370,9 +370,9 @@ $muted_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.7)' : 'var(--hph-gray-500)';
     <div style="<?php echo implode('; ', $container_styles); ?>">
         
         <?php if ($headline || $subheadline): ?>
-        <div style="text-align: center; margin-bottom: var(--hph-margin-3xl); <?php echo $animation ? 'animation: fadeInUp 0.8s ease-out;' : ''; ?>">
+        <div style="text-align: center; margin-bottom: var(--hph-space-16); <?php echo $animation ? 'animation: fadeInUp 0.8s ease-out;' : ''; ?>">
             <?php if ($headline): ?>
-            <h2 style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-4xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight); color: <?php echo $heading_color; ?>;">
+            <h2 style="margin: 0 0 var(--hph-space-6) 0; font-size: var(--hph-text-4xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight); color: <?php echo $heading_color; ?>;">
                 <?php echo esc_html($headline); ?>
             </h2>
             <?php endif; ?>
@@ -398,22 +398,22 @@ $muted_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.7)' : 'var(--hph-gray-500)';
                     <div style="background-image: url('<?php echo esc_url($featured['image']); ?>'); background-size: cover; background-position: center;"></div>
                     <?php endif; ?>
                     
-                    <div style="padding: var(--hph-padding-2xl); display: flex; flex-direction: column; justify-content: center;">
-                        <h3 style="margin: 0 0 var(--hph-margin-sm) 0; font-size: var(--hph-text-3xl); font-weight: var(--hph-font-bold); color: var(--hph-primary-800);">
+                    <div style="padding: var(--hph-space-12); display: flex; flex-direction: column; justify-content: center;">
+                        <h3 style="margin: 0 0 var(--hph-space-2) 0; font-size: var(--hph-text-3xl); font-weight: var(--hph-font-bold); color: var(--hph-primary-800);">
                             <?php echo esc_html($featured['name']); ?>
                         </h3>
-                        <p style="margin: 0 0 var(--hph-margin-lg) 0; color: var(--hph-primary-600); font-weight: var(--hph-font-medium);">
+                        <p style="margin: 0 0 var(--hph-space-6) 0; color: var(--hph-primary-600); font-weight: var(--hph-font-medium);">
                             <?php echo esc_html($featured['title']); ?>
                         </p>
                         
                         <?php if ($show_bio && !empty($featured['bio'])): ?>
-                        <p style="margin: 0 0 var(--hph-margin-xl) 0; color: var(--hph-gray-600); line-height: var(--hph-leading-relaxed);">
+                        <p style="margin: 0 0 var(--hph-space-8) 0; color: var(--hph-gray-600); line-height: var(--hph-leading-relaxed);">
                             <?php echo esc_html($featured['bio']); ?>
                         </p>
                         <?php endif; ?>
                         
                         <?php if ($show_stats && !empty($featured['stats'])): ?>
-                        <div style="display: flex; gap: var(--hph-gap-xl); margin-bottom: var(--hph-margin-xl);">
+                        <div style="display: flex; gap: var(--hph-gap-xl); margin-bottom: var(--hph-space-8);">
                             <?php if (!empty($featured['stats']['sold'])): ?>
                             <div>
                                 <div style="font-size: var(--hph-text-2xl); font-weight: var(--hph-font-bold); color: var(--hph-primary);">
@@ -436,11 +436,11 @@ $muted_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.7)' : 'var(--hph-gray-500)';
                         
                         <?php if ($show_button && !empty($featured['link'])): ?>
                         <a href="<?php echo esc_url($featured['link']); ?>" 
-                           style="display: inline-flex; align-items: center; padding: var(--hph-padding-md) var(--hph-padding-xl); background: var(--hph-primary); color: var(--hph-white); text-decoration: none; border-radius: var(--hph-radius-lg); font-weight: var(--hph-font-semibold); transition: all 300ms ease; max-width: fit-content;"
+                           style="display: inline-flex; align-items: center; padding: var(--hph-space-4) var(--hph-space-8); background: var(--hph-primary); color: var(--hph-white); text-decoration: none; border-radius: var(--hph-radius-lg); font-weight: var(--hph-font-semibold); transition: all 300ms ease; max-width: fit-content;"
                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(81, 186, 224, 0.3)';"
                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
                             View Profile
-                            <svg style="width: 20px; height: 20px; margin-left: var(--hph-margin-sm);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg style="width: 20px; height: 20px; margin-left: var(--hph-space-2);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
                         </a>
@@ -455,7 +455,7 @@ $muted_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.7)' : 'var(--hph-gray-500)';
                 $other_agents = array_slice($agents, 1);
                 foreach ($other_agents as $index => $agent): 
                 ?>
-                <div style="display: flex; gap: var(--hph-gap-lg); padding: var(--hph-padding-lg); background: var(--hph-white); border-radius: var(--hph-radius-lg); box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 300ms ease; <?php echo $animation ? 'animation: fadeInUp 0.8s ease-out ' . (($index + 1) * 0.1) . 's; opacity: 0; animation-fill-mode: forwards;' : ''; ?>"
+                <div style="display: flex; gap: var(--hph-gap-lg); padding: var(--hph-space-6); background: var(--hph-white); border-radius: var(--hph-radius-lg); box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 300ms ease; <?php echo $animation ? 'animation: fadeInUp 0.8s ease-out ' . (($index + 1) * 0.1) . 's; opacity: 0; animation-fill-mode: forwards;' : ''; ?>"
                      onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.12)';"
                      onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)';">
                     <?php 
@@ -466,16 +466,16 @@ $muted_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.7)' : 'var(--hph-gray-500)';
                     } elseif (function_exists('hph_get_image_url')) {
                         $image_url = hph_get_image_url('agent-placeholder.jpg');
                     } else {
-                        $image_url = get_template_directory_uri() . '/assets/images/agent-placeholder.jpg';
+                        $image_url = hph_get_image_url_only('assets/images/agent-placeholder.jpg');
                     }
                     ?>
                     <?php if ($image_url): ?>
                     <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($agent['name']); ?>" 
                          style="width: 80px; height: 80px; border-radius: var(--hph-radius-full); object-fit: cover; flex-shrink: 0;"
-                         onerror="this.src='<?php echo esc_url(get_template_directory_uri() . '/assets/images/agent-placeholder.jpg'); ?>';">
+                         onerror="this.src='<?php echo esc_url(hph_get_image_url_only('assets/images/agent-placeholder.jpg')); ?>';">
                     <?php endif; ?>
                     <div style="flex: 1; min-width: 0;">
-                        <h4 style="margin: 0 0 var(--hph-margin-xs) 0; font-size: var(--hph-text-lg); font-weight: var(--hph-font-semibold); color: var(--hph-primary-800);">
+                        <h4 style="margin: 0 0 var(--hph-space-1) 0; font-size: var(--hph-text-lg); font-weight: var(--hph-font-semibold); color: var(--hph-primary-800);">
                             <?php echo esc_html($agent['name']); ?>
                         </h4>
                         <p style="margin: 0; color: var(--hph-gray-600); font-size: var(--hph-text-sm);">
@@ -489,7 +489,7 @@ $muted_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.7)' : 'var(--hph-gray-500)';
             <?php elseif ($layout === 'list'): ?>
             <!-- List Layout -->
             <?php foreach ($agents as $index => $agent): ?>
-            <div style="display: flex; gap: var(--hph-gap-xl); padding: var(--hph-padding-xl); background: var(--hph-white); border-radius: var(--hph-radius-lg); box-shadow: 0 2px 8px rgba(0,0,0,0.08); align-items: center; transition: all 300ms ease; <?php echo $animation ? 'animation: fadeInUp 0.8s ease-out ' . ($index * 0.1) . 's; opacity: 0; animation-fill-mode: forwards;' : ''; ?>"
+            <div style="display: flex; gap: var(--hph-gap-xl); padding: var(--hph-space-8); background: var(--hph-white); border-radius: var(--hph-radius-lg); box-shadow: 0 2px 8px rgba(0,0,0,0.08); align-items: center; transition: all 300ms ease; <?php echo $animation ? 'animation: fadeInUp 0.8s ease-out ' . ($index * 0.1) . 's; opacity: 0; animation-fill-mode: forwards;' : ''; ?>"
                  onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.12)';"
                  onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)';">
                 <?php 
@@ -500,25 +500,25 @@ $muted_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.7)' : 'var(--hph-gray-500)';
                 } elseif (function_exists('hph_get_image_url')) {
                     $image_url = hph_get_image_url('agent-placeholder.jpg');
                 } else {
-                    $image_url = get_template_directory_uri() . '/assets/images/agent-placeholder.jpg';
+                    $image_url = hph_get_image_url_only('assets/images/agent-placeholder.jpg');
                 }
                 ?>
                 <?php if ($image_url): ?>
                 <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($agent['name']); ?>" 
                      style="width: 200px; height: 200px; border-radius: var(--hph-radius-lg); object-fit: cover; flex-shrink: 0;"
-                     onerror="this.src='<?php echo esc_url(get_template_directory_uri() . '/assets/images/agent-placeholder.jpg'); ?>';">
+                     onerror="this.src='<?php echo esc_url(hph_get_image_url_only('assets/images/agent-placeholder.jpg')); ?>';">
                 <?php endif; ?>
                 
                 <div style="flex: 1; min-width: 0;">
-                    <h3 style="margin: 0 0 var(--hph-margin-sm) 0; font-size: var(--hph-text-2xl); font-weight: var(--hph-font-bold); color: var(--hph-primary-800);">
+                    <h3 style="margin: 0 0 var(--hph-space-2) 0; font-size: var(--hph-text-2xl); font-weight: var(--hph-font-bold); color: var(--hph-primary-800);">
                         <?php echo esc_html($agent['name']); ?>
                     </h3>
-                    <p style="margin: 0 0 var(--hph-margin-md) 0; color: var(--hph-primary-600); font-weight: var(--hph-font-medium);">
+                    <p style="margin: 0 0 var(--hph-space-4) 0; color: var(--hph-primary-600); font-weight: var(--hph-font-medium);">
                         <?php echo esc_html($agent['title']); ?>
                     </p>
                     
                     <?php if ($show_bio && !empty($agent['bio'])): ?>
-                    <p style="margin: 0 0 var(--hph-margin-lg) 0; color: var(--hph-gray-600); line-height: var(--hph-leading-relaxed);">
+                    <p style="margin: 0 0 var(--hph-space-6) 0; color: var(--hph-gray-600); line-height: var(--hph-leading-relaxed);">
                         <?php echo esc_html($agent['bio']); ?>
                     </p>
                     <?php endif; ?>
@@ -570,7 +570,7 @@ $muted_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.7)' : 'var(--hph-gray-500)';
                 } elseif (function_exists('hph_get_image_url')) {
                     $image_url = hph_get_image_url('agent-placeholder.jpg');
                 } else {
-                    $image_url = get_template_directory_uri() . '/assets/images/agent-placeholder.jpg';
+                    $image_url = hph_get_image_url_only('assets/images/agent-placeholder.jpg');
                 }
                 ?>
                 <?php if ($image_url): ?>
@@ -579,28 +579,28 @@ $muted_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.7)' : 'var(--hph-gray-500)';
                          style="width: 100%; height: 100%; object-fit: cover; transition: transform 300ms ease;"
                          onmouseover="this.style.transform='scale(1.05)'"
                          onmouseout="this.style.transform='scale(1)'"
-                         onerror="this.src='<?php echo esc_url(get_template_directory_uri() . '/assets/images/agent-placeholder.jpg'); ?>';">
+                         onerror="this.src='<?php echo esc_url(hph_get_image_url_only('assets/images/agent-placeholder.jpg')); ?>';">
                 </div>
                 <?php endif; ?>
                 
-                <div style="padding: var(--hph-padding-xl);">
-                    <h3 style="margin: 0 0 var(--hph-margin-xs) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-bold); color: var(--hph-primary-800);">
+                <div style="padding: var(--hph-space-8);">
+                    <h3 style="margin: 0 0 var(--hph-space-1) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-bold); color: var(--hph-primary-800);">
                         <?php echo esc_html($agent['name']); ?>
                     </h3>
-                    <p style="margin: 0 0 var(--hph-margin-md) 0; color: var(--hph-primary-600); font-size: var(--hph-text-sm); font-weight: var(--hph-font-medium);">
+                    <p style="margin: 0 0 var(--hph-space-4) 0; color: var(--hph-primary-600); font-size: var(--hph-text-sm); font-weight: var(--hph-font-medium);">
                         <?php echo esc_html($agent['title']); ?>
                     </p>
                     
                     <?php if ($show_bio && !empty($agent['bio'])): ?>
-                    <p style="margin: 0 0 var(--hph-margin-lg) 0; color: var(--hph-gray-600); font-size: var(--hph-text-sm); line-height: var(--hph-leading-relaxed);">
+                    <p style="margin: 0 0 var(--hph-space-6) 0; color: var(--hph-gray-600); font-size: var(--hph-text-sm); line-height: var(--hph-leading-relaxed);">
                         <?php echo esc_html(wp_trim_words($agent['bio'], 15)); ?>
                     </p>
                     <?php endif; ?>
                     
                     <?php if ($show_contact && (!empty($agent['phone']) || !empty($agent['email']))): ?>
-                    <div style="padding-top: var(--hph-padding-md); border-top: 1px solid var(--hph-gray-100); margin-bottom: var(--hph-margin-md);">
+                    <div style="padding-top: var(--hph-space-4); border-top: 1px solid var(--hph-gray-100); margin-bottom: var(--hph-space-4);">
                         <?php if (!empty($agent['phone'])): ?>
-                        <a href="tel:<?php echo esc_attr($agent['phone']); ?>" style="display: block; color: var(--hph-gray-600); text-decoration: none; font-size: var(--hph-text-sm); margin-bottom: var(--hph-margin-sm);">
+                        <a href="tel:<?php echo esc_attr($agent['phone']); ?>" style="display: block; color: var(--hph-gray-600); text-decoration: none; font-size: var(--hph-text-sm); margin-bottom: var(--hph-space-2);">
                             <?php echo esc_html($agent['phone']); ?>
                         </a>
                         <?php endif; ?>
@@ -614,7 +614,7 @@ $muted_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.7)' : 'var(--hph-gray-500)';
                     <?php endif; ?>
                     
                     <?php if ($show_social && !empty($agent['social'])): ?>
-                    <div style="display: flex; gap: var(--hph-gap-sm); margin-bottom: var(--hph-margin-lg);">
+                    <div style="display: flex; gap: var(--hph-gap-sm); margin-bottom: var(--hph-space-6);">
                         <?php foreach ($agent['social'] as $platform => $url): 
                             if (!empty($url)):
                         ?>
@@ -633,7 +633,7 @@ $muted_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.7)' : 'var(--hph-gray-500)';
                     
                     <?php if ($show_button && !empty($agent['link'])): ?>
                     <a href="<?php echo esc_url($agent['link']); ?>" 
-                       style="display: block; text-align: center; padding: var(--hph-padding-sm) var(--hph-padding-md); background: var(--hph-primary); color: var(--hph-white); text-decoration: none; border-radius: var(--hph-radius-md); font-weight: var(--hph-font-medium); transition: all 300ms ease; font-size: var(--hph-text-sm);"
+                       style="display: block; text-align: center; padding: var(--hph-space-2) var(--hph-space-4); background: var(--hph-primary); color: var(--hph-white); text-decoration: none; border-radius: var(--hph-radius-md); font-weight: var(--hph-font-medium); transition: all 300ms ease; font-size: var(--hph-text-sm);"
                        onmouseover="this.style.background='var(--hph-primary-600)';"
                        onmouseout="this.style.background='var(--hph-primary)';">
                         View Profile

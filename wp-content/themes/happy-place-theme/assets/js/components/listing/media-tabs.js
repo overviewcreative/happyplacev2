@@ -36,7 +36,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 thumbnailStrip.style.display = mediaType === 'photos' ? 'block' : 'none';
             }
             
-            console.log(`Switched to ${mediaType} for gallery ${galleryId}`);
         });
     });
     
@@ -113,5 +112,4 @@ document.addEventListener('DOMContentLoaded', function() {
         track.style.transform = 'translateX(0%)';
     });
     
-    console.log('Media tabs initialized');
 });

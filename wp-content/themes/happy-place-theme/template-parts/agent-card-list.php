@@ -1,12 +1,24 @@
 <?php
 /**
- * Agent Card - List View
+ * Agent Card - List View - Uses Universal Card System
  * File: template-parts/agent-card-list.php
- * 
+ *
  * @package HappyPlaceTheme
  */
 
 $agent_id = $args['agent_id'] ?? get_the_ID();
+
+// Use the universal card system with horizontal layout
+hph_component('universal-card', [
+    'post_id' => $agent_id,
+    'layout' => 'horizontal',
+    'variant' => $args['variant'] ?? 'default',
+    'size' => $args['size'] ?? 'md',
+    'show_actions' => true,
+    'clickable' => true
+]);
+
+return; // Exit early - rest of file is legacy code to be removed
 
 // Get agent data (same as grid view)
 $first_name = get_field('first_name', $agent_id);
@@ -57,7 +69,7 @@ if ($agent_photo && is_array($agent_photo)) {
 
 // Final fallback to placeholder
 if (!$agent_photo) {
-    $agent_photo = get_template_directory_uri() . '/assets/images/placeholder-agent.jpg';
+    $agent_photo = hph_get_image_url_only('assets/images/placeholder-agent.jpg');
 }
 
 // Process specialties for display

@@ -135,7 +135,7 @@ $agent_users = get_users(['role__in' => ['agent', 'administrator']]);
                     Apply Filters
                 </button>
                 
-                <button type="button" id="clear-open-house-filters" class="hph-btn hph-btn-outline">
+                <button type="button" id="clear-open-house-filters" class="hph-btn hph-btn-outline-primary">
                     Clear
                 </button>
             </div>
@@ -210,7 +210,7 @@ $agent_users = get_users(['role__in' => ['agent', 'administrator']]);
                 </div>
                 
                 <div class="hph-flex hph-flex-row hph-gap-sm">
-                    <button type="button" id="prev-page" class="hph-btn hph-btn-outline hph-btn-sm" disabled>
+                    <button type="button" id="prev-page" class="hph-btn hph-btn-outline-primary hph-btn-sm" disabled>
                         <i class="fas fa-chevron-left"></i>
                         Previous
                     </button>
@@ -219,7 +219,7 @@ $agent_users = get_users(['role__in' => ['agent', 'administrator']]);
                         Page <span id="current-page">1</span> of <span id="total-pages">1</span>
                     </span>
                     
-                    <button type="button" id="next-page" class="hph-btn hph-btn-outline hph-btn-sm" disabled>
+                    <button type="button" id="next-page" class="hph-btn hph-btn-outline-primary hph-btn-sm" disabled>
                         Next
                         <i class="fas fa-chevron-right"></i>
                     </button>
@@ -244,7 +244,7 @@ $agent_users = get_users(['role__in' => ['agent', 'administrator']]);
                         <!-- Property Selection -->
                         <div class="col-12">
                             <label for="oh-listing-id" class="form-label">Property <span class="text-danger">*</span></label>
-                            <select id="oh-listing-id" name="listing_id" class="form-select" required>
+                            <select id="oh-listing-id" name="listing_id" class="hph-form-select" required>
                                 <option value="">Select a property...</option>
                                 <?php
                                 $listings_args = [
@@ -275,21 +275,21 @@ $agent_users = get_users(['role__in' => ['agent', 'administrator']]);
                         <!-- Title -->
                         <div class="col-12">
                             <label for="oh-title" class="form-label">Open House Title <span class="text-danger">*</span></label>
-                            <input type="text" id="oh-title" name="title" class="form-control" required 
+                            <input type="text" id="oh-title" name="title" class="hph-form-input" required 
                                    placeholder="e.g., Weekend Open House - Beautiful Family Home">
                         </div>
 
                         <!-- Description -->
                         <div class="col-12">
                             <label for="oh-description" class="form-label">Description</label>
-                            <textarea id="oh-description" name="description" class="form-control" rows="3"
+                            <textarea id="oh-description" name="description" class="hph-form-textarea" rows="3"
                                       placeholder="Additional details about the open house..."></textarea>
                         </div>
 
                         <!-- Date Selection -->
                         <div class="col-md-6">
                             <label for="oh-event-date" class="form-label">Date <span class="text-danger">*</span></label>
-                            <input type="date" id="oh-event-date" name="event_date" class="form-control" required
+                            <input type="date" id="oh-event-date" name="event_date" class="hph-form-input" required
                                    min="<?php echo date('Y-m-d'); ?>">
                             <small class="form-text text-muted">Select the date for your open house</small>
                         </div>
@@ -297,7 +297,7 @@ $agent_users = get_users(['role__in' => ['agent', 'administrator']]);
                         <!-- Hosting Agent Selection -->
                         <div class="col-md-6">
                             <label for="oh-hosting-agent" class="form-label">Hosting Agent <span class="text-danger">*</span></label>
-                            <select id="oh-hosting-agent" name="hosting_agent" class="form-select" required>
+                            <select id="oh-hosting-agent" name="hosting_agent" class="hph-form-select" required>
                                 <option value="">Select hosting agent...</option>
                                 <?php 
                                 // First add agent posts
@@ -332,7 +332,7 @@ $agent_users = get_users(['role__in' => ['agent', 'administrator']]);
                         <!-- Simplified Time Selection -->
                         <div class="col-md-6">
                             <label for="oh-start-time" class="form-label">Start Time <span class="text-danger">*</span></label>
-                            <select id="oh-start-time" name="start_time" class="form-select" required>
+                            <select id="oh-start-time" name="start_time" class="hph-form-select" required>
                                 <option value="">Select start time...</option>
                                 <option value="09:00">9:00 AM</option>
                                 <option value="09:30">9:30 AM</option>
@@ -358,7 +358,7 @@ $agent_users = get_users(['role__in' => ['agent', 'administrator']]);
                         
                         <div class="col-md-6">
                             <label for="oh-end-time" class="form-label">End Time <span class="text-danger">*</span></label>
-                            <select id="oh-end-time" name="end_time" class="form-select" required>
+                            <select id="oh-end-time" name="end_time" class="hph-form-select" required>
                                 <option value="">Select end time...</option>
                                 <option value="10:00">10:00 AM</option>
                                 <option value="10:30">10:30 AM</option>
@@ -387,14 +387,14 @@ $agent_users = get_users(['role__in' => ['agent', 'administrator']]);
                         <!-- Contact Information -->
                         <div class="col-md-6">
                             <label for="oh-contact-phone" class="form-label">Contact Phone</label>
-                            <input type="tel" id="oh-contact-phone" name="contact_phone" class="form-control"
+                            <input type="tel" id="oh-contact-phone" name="contact_phone" class="hph-form-input"
                                    placeholder="(555) 123-4567">
                             <small class="form-text text-muted">Phone number for inquiries</small>
                         </div>
                         
                         <div class="col-md-6">
                             <label for="oh-contact-email" class="form-label">Contact Email</label>
-                            <input type="email" id="oh-contact-email" name="contact_email" class="form-control"
+                            <input type="email" id="oh-contact-email" name="contact_email" class="hph-form-input"
                                    value="<?php echo esc_attr($current_user->user_email); ?>"
                                    placeholder="agent@example.com">
                             <small class="form-text text-muted">Email for RSVP notifications</small>
@@ -403,13 +403,13 @@ $agent_users = get_users(['role__in' => ['agent', 'administrator']]);
                         <!-- Settings -->
                         <div class="col-md-6">
                             <label for="oh-max-visitors" class="form-label">Max Visitors (0 = unlimited)</label>
-                            <input type="number" id="oh-max-visitors" name="max_visitors" class="form-control" 
+                            <input type="number" id="oh-max-visitors" name="max_visitors" class="hph-form-input" 
                                    min="0" value="0">
                         </div>
                         
                         <div class="col-md-6">
                             <label for="oh-timezone" class="form-label">Timezone</label>
-                            <select id="oh-timezone" name="timezone" class="form-select">
+                            <select id="oh-timezone" name="timezone" class="hph-form-select">
                                 <option value="America/New_York">Eastern Time (EST/EDT)</option>
                                 <option value="America/Chicago">Central Time (CST/CDT)</option>
                                 <option value="America/Denver">Mountain Time (MST/MDT)</option>
@@ -419,30 +419,30 @@ $agent_users = get_users(['role__in' => ['agent', 'administrator']]);
 
                         <!-- Options -->
                         <div class="col-12">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="oh-require-registration" 
+                            <div class="hph-form-check">
+                                <input class="hph-form-check-input" type="checkbox" id="oh-require-registration" 
                                        name="require_registration" value="1" checked>
-                                <label class="form-check-label" for="oh-require-registration">
+                                <label class="hph-form-check-label" for="oh-require-registration">
                                     Require RSVP Registration
                                 </label>
                             </div>
                         </div>
                         
                         <div class="col-12">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="oh-public-visibility" 
+                            <div class="hph-form-check">
+                                <input class="hph-form-check-input" type="checkbox" id="oh-public-visibility" 
                                        name="public_visibility" value="1" checked>
-                                <label class="form-check-label" for="oh-public-visibility">
+                                <label class="hph-form-check-label" for="oh-public-visibility">
                                     Show publicly on website
                                 </label>
                             </div>
                         </div>
                         
                         <div class="col-12">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="oh-send-reminders" 
+                            <div class="hph-form-check">
+                                <input class="hph-form-check-input" type="checkbox" id="oh-send-reminders" 
                                        name="send_reminders" value="1" checked>
-                                <label class="form-check-label" for="oh-send-reminders">
+                                <label class="hph-form-check-label" for="oh-send-reminders">
                                     Send reminder emails to attendees
                                 </label>
                             </div>
@@ -451,17 +451,17 @@ $agent_users = get_users(['role__in' => ['agent', 'administrator']]);
                         <!-- Special Instructions -->
                         <div class="col-12">
                             <label for="oh-special-instructions" class="form-label">Special Instructions</label>
-                            <textarea id="oh-special-instructions" name="special_instructions" class="form-control" rows="2"
+                            <textarea id="oh-special-instructions" name="special_instructions" class="hph-form-textarea" rows="2"
                                       placeholder="Parking instructions, entry requirements, etc."></textarea>
                         </div>
                     </div>
                 </div>
                 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">
-                        <span class="btn-text">Schedule Open House</span>
-                        <span class="btn-loading d-none">
+                    <button type="button" class="hph-btn hph-btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="hph-btn hph-btn-primary">
+                        <span class="hph-btn-text">Schedule Open House</span>
+                        <span class="hph-btn-loading d-none">
                             <span class="spinner-border spinner-border-sm me-2"></span>
                             Scheduling...
                         </span>
@@ -486,8 +486,8 @@ $agent_users = get_users(['role__in' => ['agent', 'administrator']]);
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="export-rsvp-list">
+                <button type="button" class="hph-btn hph-btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="hph-btn hph-btn-primary" id="export-rsvp-list">
                     <i class="fas fa-download me-1"></i>
                     Export to CSV
                 </button>

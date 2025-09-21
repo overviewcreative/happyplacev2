@@ -66,7 +66,6 @@ class HPH_Dashboard_Ajax {
         
         // Enhanced Phase 1 handlers
         add_action('wp_ajax_hph_bulk_listing_actions', array($this, 'bulk_listing_actions'));
-        add_action('wp_ajax_hph_filter_listings', array($this, 'filter_listings'));
         add_action('wp_ajax_hph_duplicate_listing', array($this, 'duplicate_listing'));
         add_action('wp_ajax_hph_update_listing_status', array($this, 'update_listing_status'));
         add_action('wp_ajax_hph_update_listing_price', array($this, 'update_listing_price'));
@@ -75,7 +74,6 @@ class HPH_Dashboard_Ajax {
         
         // Open Houses
         add_action('wp_ajax_hph_schedule_open_house', array($this, 'schedule_open_house'));
-        add_action('wp_ajax_hph_get_open_houses', array($this, 'get_open_houses'));
         add_action('wp_ajax_hph_cancel_open_house', array($this, 'cancel_open_house'));
         
         // Leads Management
@@ -1672,7 +1670,7 @@ class HPH_Dashboard_Ajax {
         // Check if current user is one of the assigned agents
         foreach ($agent_ids as $agent_id) {
             // Get the synced user ID for this agent
-            $synced_user_id = get_post_meta($agent_id, '_synced_user_id', true);
+            $synced_user_id = hpt_get_agent_user_id($agent_id);
             
             if ($synced_user_id && $synced_user_id == $current_user_id) {
                 return true;

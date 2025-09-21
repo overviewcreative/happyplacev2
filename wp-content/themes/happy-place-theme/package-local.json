@@ -1,0 +1,35 @@
+{
+  "name": "happy-place-local-image-processor",
+  "version": "1.0.0",
+  "description": "Local image processing for real estate bulk uploads",
+  "main": "scripts/local-image-processor.js",
+  "bin": {
+    "process-images": "./scripts/local-image-processor.js"
+  },
+  "scripts": {
+    "process": "node scripts/local-image-processor.js",
+    "process-example": "node scripts/local-image-processor.js --input ./example-photos --output ./optimized --property '123 Main St'",
+    "install-deps": "npm install sharp imagemin imagemin-mozjpeg imagemin-webp imagemin-avif chalk ora"
+  },
+  "dependencies": {
+    "sharp": "^0.32.6",
+    "chalk": "^4.1.2",
+    "ora": "^5.4.1"
+  },
+  "optionalDependencies": {
+    "imagemin": "^8.0.1",
+    "imagemin-mozjpeg": "^10.0.0",
+    "imagemin-webp": "^7.0.0",
+    "imagemin-avif": "^0.1.5"
+  },
+  "keywords": [
+    "real-estate",
+    "image-processing",
+    "optimization",
+    "wordpress",
+    "bulk-upload"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

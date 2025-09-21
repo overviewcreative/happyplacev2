@@ -178,7 +178,7 @@ function render_action_button($action, $is_primary = false) {
         'variant' => $button_variant,
         'size' => 'md',
         'href' => $action['url'] ?? null,
-        'onclick' => $action['action'] ?? null,
+        'data_hph_click' => $action['action'] ?? null,
     ];
     
     get_template_part('template-parts/base/button', null, $button_props);

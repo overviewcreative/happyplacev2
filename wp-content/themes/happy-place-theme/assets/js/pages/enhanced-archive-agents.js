@@ -298,7 +298,6 @@ class EnhancedAgentArchive {
             }
         })
         .catch(error => {
-            console.error('Filter error:', error);
             this.showError('Network error occurred');
         })
         .finally(() => {
@@ -361,7 +360,6 @@ class EnhancedAgentArchive {
             }
         })
         .catch(error => {
-            console.error('Load more error:', error);
             this.showError('Network error occurred');
         })
         .finally(() => {
@@ -504,7 +502,6 @@ class EnhancedAgentArchive {
             }
         })
         .catch(error => {
-            console.error('Matching error:', error);
             this.showError('Network error occurred');
         })
         .finally(() => {
@@ -757,7 +754,6 @@ class EnhancedAgentArchive {
             }
         })
         .catch(error => {
-            console.error('Contact error:', error);
             this.showNotification('Network error occurred', 'error');
         })
         .finally(() => {
@@ -807,7 +803,6 @@ class EnhancedAgentArchive {
             }
         })
         .catch(error => {
-            console.error('Favorite error:', error);
             this.updateFavoriteButton(button, isFavorited);
             this.showNotification('Network error occurred', 'error');
         });
@@ -818,7 +813,8 @@ class EnhancedAgentArchive {
             navigator.share({
                 title: title,
                 url: url
-            }).catch(err => console.log('Error sharing:', err));
+            
+            });
         } else {
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(url).then(() => {
@@ -1040,7 +1036,6 @@ if (document.readyState === 'loading') {
  */
 function testEnhancedAgentArchive() {
     if (typeof window.hphArchive === 'undefined') {
-        console.warn('Agent Archive JavaScript: hphArchive global not found');
         return;
     }
     
@@ -1067,35 +1062,26 @@ function testEnhancedAgentArchive() {
     let passed = 0;
     let failed = 0;
     
-    console.group('👥 Enhanced Agent Archive Tests');
     
     for (const [testName, testFn] of Object.entries(tests)) {
         try {
             if (testFn()) {
-                console.log(`✅ ${testName}: PASS`);
                 passed++;
             } else {
-                console.warn(`❌ ${testName}: FAIL`);
                 failed++;
             }
         } catch (error) {
-            console.error(`❌ ${testName}: ERROR -`, error.message);
             failed++;
         }
     }
     
-    console.log(`\n📊 Test Results: ${passed} passed, ${failed} failed (${Math.round(passed / (passed + failed) * 100)}% success rate)`);
     
     if (failed === 0) {
-        console.log('🎉 All tests passed! Agent archive functionality is ready.');
     } else {
-        console.warn('⚠️  Some tests failed. Check the elements and configuration.');
     }
     
-    console.groupEnd();
     
     // Test advanced features
-    console.group('✨ Advanced Features Tests');
     
     const advancedTests = {
         'Advanced Search Toggle Function': () => {
@@ -1130,14 +1116,10 @@ function testEnhancedAgentArchive() {
     for (const [testName, testFn] of Object.entries(advancedTests)) {
         try {
             if (testFn()) {
-                console.log(`✅ ${testName}: PASS`);
             } else {
-                console.warn(`❌ ${testName}: FAIL`);
             }
         } catch (error) {
-            console.error(`❌ ${testName}: ERROR -`, error.message);
         }
     }
     
-    console.groupEnd();
 }

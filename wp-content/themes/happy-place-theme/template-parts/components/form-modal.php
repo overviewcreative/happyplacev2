@@ -118,7 +118,7 @@ $form_template_args = wp_parse_args($args['form_args'], [
             
             <!-- Modal Footer (Optional) -->
             <div class="modal-footer hph-modal-footer" style="display: none;">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <button type="button" class="hph-btn hph-btn-secondary" data-bs-dismiss="modal">
                     <?php _e('Close', 'happy-place-theme'); ?>
                 </button>
             </div>

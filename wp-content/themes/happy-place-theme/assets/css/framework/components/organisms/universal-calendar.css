@@ -1,0 +1,186 @@
+/**
+ * Universal Calendar Component Styles - Minimal Version
+ *
+ * Lightweight, framework-compatible calendar styles that don't conflict
+ * with existing layout systems. Designed for future calendar implementations.
+ *
+ * @package HappyPlaceTheme
+ * @version 2.0.0
+ */
+
+/* ============================================================================
+   Future Calendar Components (Minimal)
+   ============================================================================ */
+
+/* Simple calendar container for future use */
+.hph-calendar {
+    background: var(--hph-white);
+    border: 1px solid var(--hph-border-color);
+    border-radius: var(--hph-radius-lg);
+    box-shadow: var(--hph-shadow-sm);
+}
+
+.hph-calendar__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--hph-space-6);
+    border-bottom: 1px solid var(--hph-border-color);
+    background: var(--hph-gray-25);
+}
+
+.hph-calendar__title {
+    font-size: var(--hph-text-lg);
+    font-weight: var(--hph-font-semibold);
+    color: var(--hph-text-primary);
+    margin: 0;
+}
+
+.hph-calendar__nav-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: transparent;
+    border: 1px solid var(--hph-border-color);
+    border-radius: var(--hph-radius-md);
+    color: var(--hph-text-secondary);
+    cursor: pointer;
+    transition: var(--hph-transition);
+}
+
+.hph-calendar__nav-btn:hover {
+    background: var(--hph-primary-25);
+    border-color: var(--hph-primary);
+    color: var(--hph-primary);
+}
+
+/* Simple calendar grid for future use */
+.hph-calendar__grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.hph-calendar__day-header {
+    padding: var(--hph-space-4);
+    text-align: center;
+    font-size: var(--hph-text-sm);
+    font-weight: var(--hph-font-semibold);
+    color: var(--hph-text-secondary);
+    background: var(--hph-gray-50);
+    border-bottom: 1px solid var(--hph-border-color);
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.hph-calendar__day {
+    position: relative;
+    min-height: 100px;
+    padding: var(--hph-space-2);
+    border-right: 1px solid var(--hph-border-color);
+    border-bottom: 1px solid var(--hph-border-color);
+    background: var(--hph-white);
+    transition: var(--hph-transition);
+}
+
+.hph-calendar__day:hover {
+    background: var(--hph-gray-25);
+}
+
+.hph-calendar__day--today {
+    background: var(--hph-primary-25);
+    border-color: var(--hph-primary);
+}
+
+.hph-calendar__day--other-month {
+    background: var(--hph-gray-25);
+    color: var(--hph-text-muted);
+    opacity: 0.6;
+}
+
+.hph-calendar__day-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.5rem;
+    height: 1.5rem;
+    font-size: var(--hph-text-sm);
+    font-weight: var(--hph-font-medium);
+    border-radius: var(--hph-radius-sm);
+    margin-bottom: var(--hph-space-1);
+}
+
+.hph-calendar__day--today .hph-calendar__day-number {
+    background: var(--hph-primary);
+    color: var(--hph-white);
+}
+
+/* Simple event display for calendar */
+.hph-calendar__events {
+    display: flex;
+    flex-direction: column;
+    gap: var(--hph-space-1);
+}
+
+.hph-calendar__event {
+    padding: var(--hph-space-1) var(--hph-space-2);
+    background: var(--hph-primary-100);
+    color: var(--hph-primary-700);
+    border-radius: var(--hph-radius-sm);
+    font-size: var(--hph-text-xs);
+    font-weight: var(--hph-font-medium);
+    cursor: pointer;
+    transition: var(--hph-transition);
+}
+
+.hph-calendar__event:hover {
+    background: var(--hph-primary-200);
+}
+
+.hph-calendar__event--open-house {
+    background: var(--hph-secondary-100);
+    color: var(--hph-secondary-700);
+}
+
+.hph-calendar__event--open-house:hover {
+    background: var(--hph-secondary-200);
+}
+
+/* Responsive calendar */
+@media (max-width: 768px) {
+    .hph-calendar__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hph-calendar__day-header {
+        display: none;
+    }
+
+    .hph-calendar__day {
+        min-height: auto;
+        padding: var(--hph-space-4);
+        border-right: none;
+        border-radius: var(--hph-radius-md);
+        margin-bottom: var(--hph-space-2);
+    }
+
+    .hph-calendar__day:last-child {
+        margin-bottom: 0;
+    }
+}
+
+/* ============================================================================
+   Notes
+   ============================================================================ */
+/*
+ * This is a minimal calendar implementation that doesn't interfere
+ * with existing layout systems. The previous universal-calendar.css
+ * was causing container conflicts.
+ *
+ * For the events page, we use the existing archive patterns instead
+ * of complex calendar views to maintain consistency with the design system.
+ *
+ * Future calendar implementations can build on these base styles
+ * without affecting the main layout.
+ */

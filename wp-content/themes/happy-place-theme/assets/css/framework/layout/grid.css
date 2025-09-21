@@ -24,7 +24,6 @@
   max-width: var(--hph-container-sm);
 }
 
-.hph-container,
 .hph-container-md {
   max-width: var(--hph-container-md);
 }
@@ -380,8 +379,8 @@
   .hph-container-lg,
   .hph-container-xl,
   .hph-container-2xl {
-    padding-left: var(--hph-padding-md);
-    padding-right: var(--hph-padding-md);
+    padding-left: var(--hph-space-4);
+    padding-right: var(--hph-space-4);
   }
   
   /* Mobile dashboard layout */

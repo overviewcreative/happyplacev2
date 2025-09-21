@@ -14,80 +14,147 @@ get_header(); ?>
     // ============================================
     get_template_part('template-parts/sections/hero', null, array(
         'style' => 'image',
-        'theme' => 'primary',
-        'height' => 'lg',
-        'background_image' => function_exists('hph_get_image_url') ? hph_get_image_url('corn-field-delaware.jpg') : '',
-        'parallax' => true,
-        'overlay' => 'gradient',
+        'theme' => 'dark',
+        'height' => 'full',
+        'is_top_of_page' => true,
+        'background_image' => hph_add_fastly_optimization(get_template_directory_uri() . '/assets/images/hero-bg2.jpg', 'full'),
+        'ken_burns' => true,
+        'ken_burns_direction' => 'zoom-in',
+        'ken_burns_duration' => 30,
+        'overlay' => 'dark-subtle',
         'alignment' => 'left',
-        'headline' => 'Live Local, Give Local, Love Local',
-        'subheadline' => 'Your Local Real Estate Advisors Since 2016',
+        'headline' => 'Welcome to the neighborhood',
+        'subheadline' => 'Delmarva is our happy place.',
         'content' => 'We\'re more than real estate agents – we\'re your neighbors, teachers turned advisors, and passionate advocates for Sussex County communities.',
         'content_width' => 'normal',
-        'fade_in' => true,
-        'scroll_indicator' => false,
         'buttons' => array(
             array(
-                'text' => 'Meet Our Team',
-                'url' => '#team-section',
+                'text' => 'Meet The Team',
+                'url' => '/meet-the-team/',
                 'style' => 'white',
-                'size' => 'l',
+                'size' => 'm',
                 'icon' => 'fas fa-users',
                 'icon_position' => 'right',
                 'target' => '_self'
             ),
             array(
                 'text' => 'Let\'s Connect',
-                'url' => '#',
+                'url' => '/contact/',
                 'data_attributes' => 'data-modal-form="general-contact" data-modal-title="Start Your Journey" data-modal-subtitle="Whether buying or selling, we\'re here to guide you home."',
                 'style' => 'outline-white',
-                'size' => 'l',
+                'size' => 'm',
                 'target' => '_self'
             )
         ),
         'section_id' => 'about-hero'
     ));
-    
+
     // ============================================
     // Company Story Section
-    // ============================================
+    // ============================================ 
     get_template_part('template-parts/sections/content', null, array(
         'layout' => 'left-image',
         'background' => 'light',
+        'theme' => 'light',
         'padding' => 'xl',
         'alignment' => 'left',
-        'image_style' => 'circle',
-        'image_size' => 'medium',
+        'image_style' => 'tall',
+        'image_size' => 'large',
         'image' => array(
-            'url' => function_exists('hph_get_image_url') ? hph_get_image_url('dustin-rachel.jpg') : '',
-            'alt' => 'Dustin & Rachel Parker of The Parker Group',
-            'image_style' => 'circle',
+            'url' => function_exists('hph_get_image_url') ? hph_get_image_url('the-parkers.jpg') : '',
+            'alt' => 'Dustin & Rachel Parker of The Parker Group and their children, Ford and Avery.',
             'fade_in' => true,
         ),
         'headline' => 'From Classroom to Community',
         'subheadline' => 'A New Approach to Real Estate',
-        'content' => '<p>When Dustin and Rachel Parker traded their teaching careers at Sussex Academy for real estate in 2015, they brought something special with them – a genuine passion for education, service, and helping others succeed. What started as Dustin taking real estate classes on the side has grown into one of Sussex County\'s most trusted real estate teams.</p><br>
+        'content' => '<p> When Dustin and Rachel Parker traded their teaching careers at Sussex Academy for real estate in 2015, they brought something special with them – a genuine passion for education, service, and helping others succeed. What started as Dustin taking real estate classes on the side has grown into one of Sussex County\'s most trusted real estate teams.</p><br>
         <p>As a ninth-generation Sussex County native, Dustin\'s roots run deep in Delaware. Rachel brings her Eastern Shore of Maryland heritage to the team, allowing us to serve families across the Delmarva region. Our backgrounds in politics and education didn\'t just shape our careers – they shaped our commitment to clarity, empowerment, and making a real difference in people\'s lives.</p>
-        <p>Today, with nearly 60 agents and a dedicated support team across four locations in Georgetown, Lewes, Milford, and Bridgeville, we\'re reimagining what real estate can be – locally focused, tech-enabled, and always centered on you.</p>',
+        <p>Today, with nearly 60 agents and a dedicated support team across three locations in Georgetown, Milford, and Middletown, we\'re reimagining what real estate can be – locally focused, tech-enabled, and always centered on you.</p>',
     
         'section_id' => 'company-story'
-    ));
+    )); 
     
     // ============================================
     // Mission Statement Section
     // ============================================
-    get_template_part('template-parts/sections/content', null, array(
+    get_template_part('template-parts/sections/hero', null, array(
         'style' => 'centered',
-        'background' => 'dark',
+        'background_image' => get_template_directory_uri() . '/assets/images/Our Story-02.jpg',
         'theme' => 'dark',
+        'parallax' => 'true',
+        'overlay' => 'gradient',
+        'height' => 'normal',
         'padding' => 'lg',
-        'container' => 'narrow',
-        'headline' => 'Our Mission',
-        'content' => '<p class="lead text-center"><strong>"We serve our community by helping others find their happy place."</strong></p>
-        <p class="text-center">It\'s more than finding a house – it\'s about discovering where you belong. We believe in creating a future where finding your happy place is faster, easier, and more personalized than ever before. Through innovative marketing, cutting-edge technology, and unwavering dedication to exceptional service, we\'re transforming the real estate landscape while building stronger, more connected communities.</p>',
+        'content_width' => 'normal',
+        'badge' => 'Our Mission',
+        'headline' => '"To serve our community by helping others find their happy place."',
         'section_id' => 'mission'
     ));
     
+
+    // ============================================
+    // Features Section with Images - Why Choose Us
+    // ============================================
+    /*
+    get_template_part('template-parts/sections/features-with-images', null, array(
+        'section_background' => 'dark',
+        'headline' => 'When you combine local expertise with an industry leading approach, you get more than just a real estate company.',
+        'subheadline' => '',
+        'layout' => 'grid',
+        'columns' => 6,
+        'card_height' => 'auto',
+        'overlay_type' => 'gradient',
+        'overlay_color' => 'dark',
+        'hover_effect' => 'zoom',
+        'features' => array(
+            array(
+                'backround_image' => array(
+                    'url' => get_template_directory_uri() . '/assets/images/live-local.jpg',
+                    'alt' => 'Local area photo'
+                ),
+                'title' => 'The Local Expertise',
+                
+            ),
+            array(
+                'background_image' => array(
+                    'url' => hph_add_fastly_optimization(get_template_directory_uri() . '/assets/images/parker-agents.jpg', 'large'),
+                    'alt' => 'Professional team meeting'
+                ),
+                'title' => 'The Integrated Approach',            ),
+            array(
+                'background_image' => array(
+                    'url' => get_template_directory_uri() . '/assets/images/connection.jpg',
+                    'alt' => 'Modern home interior'
+                ),
+                'title' => 'The Personal Touch',
+            ),
+             array(
+                'backround_image' => array(
+                    'url' => get_template_directory_uri() . '/assets/images/live-local.jpg',
+                    'alt' => 'Local area photo'
+                ),
+                'title' => 'The Local Expertise',
+                
+            ),
+            array(
+                'background_image' => array(
+                    'url' => hph_add_fastly_optimization(get_template_directory_uri() . '/assets/images/parker-agents.jpg', 'large'),
+                    'alt' => 'Professional team meeting'
+                ),
+                'title' => 'The Integrated Approach',            ),
+            array(
+                'background_image' => array(
+                    'url' => get_template_directory_uri() . '/assets/images/connection.jpg',
+                    'alt' => 'Modern home interior'
+                ),
+                'title' => 'The Personal Touch',
+            )
+        ),
+        'animation' => false,
+        'section_id' => 'features-why-choose'
+    ));
+    */
+
     // ============================================
     // Core Values Section
     // ============================================
@@ -96,7 +163,8 @@ get_header(); ?>
         'theme' => 'light',
         'columns' => 4,
         'icon_style' => 'circle',
-        'padding' => 'xl',
+        'content_width' => 'normal',
+        'padding' => 'sm',
         'headline' => 'What Drives Us',
         'subheadline' => 'The values that guide every interaction',
         'features' => array(
@@ -216,6 +284,7 @@ get_template_part('template-parts/sections/content', null, array(
     // ============================================
     // Our Approach Section
     // ============================================
+    /*
     get_template_part('template-parts/sections/content', null, array(
         'style' => 'centered',
         'theme' => 'light',
@@ -228,7 +297,7 @@ get_template_part('template-parts/sections/content', null, array(
         <p>From our award-winning marketing strategies to our commitment to continuous education, everything we do is designed to make your real estate journey smoother, faster, and more successful. We\'re not just keeping up with the market – we\'re helping to shape its future.</p>',
         'section_id' => 'our-approach'
     ));
-    
+    */
     // ============================================
     // Call to Action
     // ============================================
@@ -242,17 +311,18 @@ get_template_part('template-parts/sections/content', null, array(
         'buttons' => array(
             array(
                 'text' => 'Drop Us a Line',
-                'url' => '/contact',
+                'url' => 'tel:3022176692',
                 'style' => 'white',
-                'size' => 'xl',
+                'size' => 'm',
                 'icon' => 'fas fa-phone',
                 'icon_position' => 'right'
             ),
             array(
                 'text' => 'Find Your Happy Place',
-                'url' => '/listings',
+                'url' => 'https://search.parkergroupsells.com/search/map?s[orderBy]=featured&s[page]=1&s[bbox]=38.830380586773515%2C-75.05765152684316%2C38.51409016575655%2C-75.69485855809316',
                 'style' => 'outline-white',
-                'size' => 'xl'
+                'size' => 'm',
+                'target' => '_blank'
             )
         ),
         'section_id' => 'about-cta'

@@ -87,13 +87,26 @@ function hpt_get_open_house($open_house = null) {
         'formatted_datetime' => hpt_get_open_house_formatted_datetime($open_house->ID),
         'time_until' => hpt_get_open_house_time_until($open_house->ID),
     );
+
+    return $base_data;
 }
 
 /**
  * Get open house date
  */
 function hpt_get_open_house_date($open_house_id) {
-    return get_field('open_house_date', $open_house_id) ?: get_field('event_date', $open_house_id) ?: '';
+    // Try multiple field names for compatibility
+    $date = get_field('start_date', $open_house_id);
+    if (!$date) {
+        $date = get_post_meta($open_house_id, 'start_date', true);
+    }
+    if (!$date) {
+        $date = get_field('open_house_date', $open_house_id);
+    }
+    if (!$date) {
+        $date = get_field('event_date', $open_house_id);
+    }
+    return $date ?: '';
 }
 
 /**
@@ -166,12 +179,21 @@ function hpt_get_open_house_notes($open_house_id) {
  * Get related listing
  */
 function hpt_get_open_house_listing($open_house_id) {
+    // Try both ACF and meta approaches for compatibility
     $listing_id = get_field('related_listing', $open_house_id);
-    
+
+    if (!$listing_id) {
+        $listing_id = get_field('listing_id', $open_house_id);
+    }
+
+    if (!$listing_id) {
+        $listing_id = get_post_meta($open_house_id, 'listing_id', true);
+    }
+
     if (!$listing_id) {
         $listing_id = get_field('listing', $open_house_id);
     }
-    
+
     return $listing_id ? intval($listing_id) : null;
 }
 
@@ -435,7 +457,7 @@ function hpt_query_open_houses($args = array()) {
         'post_type' => 'open_house',
         'post_status' => 'publish',
         'posts_per_page' => 10,
-        'meta_key' => 'open_house_date',
+        'meta_key' => 'start_date',
         'orderby' => 'meta_value',
         'order' => 'ASC',
     );
@@ -455,17 +477,12 @@ function hpt_get_upcoming_open_houses($limit = 5) {
         'post_status' => 'publish',
         'meta_query' => array(
             array(
-                'key' => 'open_house_date',
+                'key' => 'start_date',
                 'value' => date('Y-m-d'),
                 'compare' => '>='
-            ),
-            array(
-                'key' => 'event_status',
-                'value' => 'scheduled',
-                'compare' => '='
             )
         ),
-        'meta_key' => 'open_house_date',
+        'meta_key' => 'start_date',
         'orderby' => 'meta_value',
         'order' => 'ASC'
     ));
@@ -481,13 +498,8 @@ function hpt_get_todays_open_houses() {
         'post_status' => 'publish',
         'meta_query' => array(
             array(
-                'key' => 'open_house_date',
+                'key' => 'start_date',
                 'value' => date('Y-m-d'),
-                'compare' => '='
-            ),
-            array(
-                'key' => 'event_status',
-                'value' => 'scheduled',
                 'compare' => '='
             )
         ),
@@ -522,7 +534,7 @@ function hpt_get_agent_open_houses($agent_id, $upcoming_only = true) {
         'posts_per_page' => -1,
         'post_status' => 'publish',
         'meta_query' => $meta_query,
-        'meta_key' => 'open_house_date',
+        'meta_key' => 'start_date',
         'orderby' => 'meta_value',
         'order' => 'ASC'
     ));
@@ -534,16 +546,25 @@ function hpt_get_agent_open_houses($agent_id, $upcoming_only = true) {
 if (!function_exists('hpt_get_listing_open_houses')) {
     function hpt_get_listing_open_houses($listing_id, $upcoming_only = true) {
         $meta_query = array(
+            'relation' => 'AND',
             array(
-                'key' => 'related_listing',
-                'value' => $listing_id,
-                'compare' => '='
+                'relation' => 'OR',
+                array(
+                    'key' => 'related_listing',
+                    'value' => $listing_id,
+                    'compare' => '='
+                ),
+                array(
+                    'key' => 'listing_id',
+                    'value' => $listing_id,
+                    'compare' => '='
+                )
             )
         );
-        
+
         if ($upcoming_only) {
             $meta_query[] = array(
-                'key' => 'open_house_date',
+                'key' => 'start_date',
                 'value' => date('Y-m-d'),
                 'compare' => '>='
             );
@@ -554,7 +575,7 @@ if (!function_exists('hpt_get_listing_open_houses')) {
             'posts_per_page' => -1,
             'post_status' => 'publish',
             'meta_query' => $meta_query,
-            'meta_key' => 'open_house_date',
+            'meta_key' => 'start_date',
             'orderby' => 'meta_value',
             'order' => 'ASC'
         ));
@@ -571,7 +592,7 @@ function hpt_get_featured_open_houses($limit = 3) {
         'post_status' => 'publish',
         'meta_query' => array(
             array(
-                'key' => 'open_house_date',
+                'key' => 'start_date',
                 'value' => date('Y-m-d'),
                 'compare' => '>='
             ),
@@ -581,7 +602,7 @@ function hpt_get_featured_open_houses($limit = 3) {
                 'compare' => '='
             )
         ),
-        'meta_key' => 'open_house_date',
+        'meta_key' => 'start_date',
         'orderby' => 'meta_value',
         'order' => 'ASC'
     ));
@@ -612,4 +633,101 @@ function hpt_get_upcoming_open_houses_with_service($limit = 5) {
     }
     
     return $upcoming;
+}
+
+/**
+ * Bidirectional Open House/Listing Relationship Management
+ * Hooks into open house save events to update related listings
+ */
+
+// Hook into the open house service save action
+add_action('hp_open_house_saved', 'hpt_update_listing_open_house_relationship', 10, 2);
+
+/**
+ * Update listing when open house is saved
+ * Creates bidirectional relationship between open houses and listings
+ */
+function hpt_update_listing_open_house_relationship($open_house_id, $post) {
+    if (!function_exists('hpt_get_open_house_listing')) {
+        return;
+    }
+
+    // Get the related listing ID
+    $listing_id = hpt_get_open_house_listing($open_house_id);
+
+    if (!$listing_id) {
+        return;
+    }
+
+    // Get open house date to determine if listing has upcoming open houses
+    $open_house_date = hpt_get_open_house_date($open_house_id);
+    $today = date('Y-m-d');
+
+    // Get all open houses for this listing
+    $listing_open_houses = hpt_get_listing_open_houses($listing_id, false); // Get all, not just upcoming
+
+    // Check if listing has any upcoming open houses
+    $has_upcoming_open_houses = false;
+    foreach ($listing_open_houses as $oh) {
+        $oh_date = hpt_get_open_house_date($oh->ID);
+        if ($oh_date && $oh_date >= $today && get_post_status($oh->ID) === 'publish') {
+            $has_upcoming_open_houses = true;
+            break;
+        }
+    }
+
+    // Update listing meta to reflect open house status
+    update_post_meta($listing_id, 'listing_has_open_house', $has_upcoming_open_houses ? 'yes' : 'no');
+
+    // Update next open house date on listing
+    if ($has_upcoming_open_houses) {
+        $next_open_house_date = null;
+        foreach ($listing_open_houses as $oh) {
+            $oh_date = hpt_get_open_house_date($oh->ID);
+            if ($oh_date && $oh_date >= $today && get_post_status($oh->ID) === 'publish') {
+                if (!$next_open_house_date || $oh_date < $next_open_house_date) {
+                    $next_open_house_date = $oh_date;
+                }
+            }
+        }
+        if ($next_open_house_date) {
+            update_post_meta($listing_id, 'next_open_house_date', $next_open_house_date);
+        }
+    } else {
+        delete_post_meta($listing_id, 'next_open_house_date');
+    }
+
+    // Trigger listing update hook for any other integrations
+    do_action('hpt_listing_open_house_updated', $listing_id, $open_house_id, $has_upcoming_open_houses);
+}
+
+/**
+ * Clean up listing relationship when open house is deleted
+ */
+add_action('before_delete_post', 'hpt_cleanup_listing_open_house_relationship');
+
+function hpt_cleanup_listing_open_house_relationship($post_id) {
+    $post = get_post($post_id);
+
+    if (!$post || $post->post_type !== 'open_house') {
+        return;
+    }
+
+    // Get the related listing ID before deletion
+    $listing_id = hpt_get_open_house_listing($post_id);
+
+    if ($listing_id) {
+        // Trigger the update after this open house is deleted
+        wp_schedule_single_event(time() + 1, 'hpt_delayed_listing_update', array($listing_id));
+    }
+}
+
+/**
+ * Delayed listing update after open house deletion
+ */
+add_action('hpt_delayed_listing_update', 'hpt_delayed_listing_open_house_update');
+
+function hpt_delayed_listing_open_house_update($listing_id) {
+    // Re-evaluate listing's open house status after deletion
+    hpt_update_listing_open_house_relationship(0, null); // Trigger with empty params to force re-evaluation
 }

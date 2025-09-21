@@ -134,32 +134,7 @@
   align-items: stretch;
 }
 
-.hph-form-input-icon {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 1.25rem;
-  height: 1.25rem;
-  color: var(--hph-gray-400);
-  pointer-events: none;
-  z-index: 1;
-}
-
-.hph-form-input-icon-left {
-  left: var(--hph-input-padding-x);
-}
-
-.hph-form-input-icon-right {
-  right: var(--hph-input-padding-x);
-}
-
-.hph-form-input-with-icon-left {
-  padding-left: 2.5rem;
-}
-
-.hph-form-input-with-icon-right {
-  padding-right: 2.5rem;
-}
+/* Input icon styles moved to atomic form-input.css and search-input.css */
 
 /* Input Addons */
 .hph-form-input-addon {
@@ -564,46 +539,9 @@
 }
 
 /* ================================================
-   SEARCH FORMS
+   SEARCH FORMS - Moved to atomic search-input.css
    ================================================ */
-.hph-form-search {
-  position: relative;
-}
-
-.hph-form-search-input {
-  padding-left: 2.5rem;
-  padding-right: 2.5rem;
-}
-
-.hph-form-search-icon {
-  position: absolute;
-  left: var(--hph-input-padding-x);
-  top: 50%;
-  transform: translateY(-50%);
-  width: 1.25rem;
-  height: 1.25rem;
-  color: var(--hph-gray-400);
-  pointer-events: none;
-}
-
-.hph-form-search-clear {
-  position: absolute;
-  right: var(--hph-input-padding-x);
-  top: 50%;
-  transform: translateY(-50%);
-  width: 1.25rem;
-  height: 1.25rem;
-  color: var(--hph-gray-400);
-  cursor: pointer;
-  transition: var(--hph-transition-fast);
-  background: none;
-  border: none;
-  padding: 0;
-}
-
-.hph-form-search-clear:hover {
-  color: var(--hph-gray-600);
-}
+/* Search form styles are now handled by the atomic search-input.css component */
 
 /* ================================================
    FLOATING LABELS

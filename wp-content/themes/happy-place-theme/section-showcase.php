@@ -5,6 +5,7 @@
     get_template_part('template-parts/sections/hero', null, array(
         'style' => 'image',
         'height' => 'xl',
+        'is_top_of_page' => true,
         'background_image' => function_exists('hph_get_image_url') ? hph_get_image_url('26590 Mariners Rd. 10.jpg') : '',
         'parallax' => true,
         'overlay' => 'dark',
@@ -1166,36 +1167,36 @@
 </div>
 
 <!-- Sticky Navigation for Demo -->
-<nav style="position: fixed; top: 50%; right: 20px; transform: translateY(-50%); z-index: 100; background: var(--hph-white); padding: var(--hph-padding-lg); border-radius: var(--hph-radius-lg); box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-height: 80vh; overflow-y: auto; min-width: 180px;">
-    <h3 style="font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold); margin-bottom: var(--hph-margin-md); color: var(--hph-gray-900);">Section Navigation</h3>
+<nav style="position: fixed; top: 50%; right: 20px; transform: translateY(-50%); z-index: 100; background: var(--hph-white); padding: var(--hph-space-6); border-radius: var(--hph-radius-lg); box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-height: 80vh; overflow-y: auto; min-width: 180px;">
+    <h3 style="font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold); margin-bottom: var(--hph-space-4); color: var(--hph-gray-900);">Section Navigation</h3>
     
     <div style="display: flex; flex-direction: column; gap: var(--hph-gap-xs);">
-        <h4 style="font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold); color: var(--hph-gray-600); margin: var(--hph-margin-sm) 0;">Hero</h4>
+        <h4 style="font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold); color: var(--hph-gray-600); margin: var(--hph-space-2) 0;">Hero</h4>
         <a href="#hero-minimal" style="font-size: var(--hph-text-xs); color: var(--hph-primary); text-decoration: none;">Minimal</a>
         <a href="#hero-gradient" style="font-size: var(--hph-text-xs); color: var(--hph-primary); text-decoration: none;">Gradient</a>
         <a href="#hero-parallax" style="font-size: var(--hph-text-xs); color: var(--hph-primary); text-decoration: none;">Parallax</a>
         
-        <h4 style="font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold); color: var(--hph-gray-600); margin: var(--hph-margin-sm) 0;">Content</h4>
+        <h4 style="font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold); color: var(--hph-gray-600); margin: var(--hph-space-2) 0;">Content</h4>
         <a href="#content-centered" style="font-size: var(--hph-text-xs); color: var(--hph-primary); text-decoration: none;">Centered</a>
         <a href="#content-left-image" style="font-size: var(--hph-text-xs); color: var(--hph-primary); text-decoration: none;">Left Image</a>
         <a href="#content-right-image" style="font-size: var(--hph-text-xs); color: var(--hph-primary); text-decoration: none;">Right Image</a>
         <a href="#content-grid" style="font-size: var(--hph-text-xs); color: var(--hph-primary); text-decoration: none;">Grid</a>
         <a href="#content-stats" style="font-size: var(--hph-text-xs); color: var(--hph-primary); text-decoration: none;">Stats</a>
         
-        <h4 style="font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold); color: var(--hph-gray-600); margin: var(--hph-margin-sm) 0;">CTA</h4>
+        <h4 style="font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold); color: var(--hph-gray-600); margin: var(--hph-space-2) 0;">CTA</h4>
         <a href="#cta-centered" style="font-size: var(--hph-text-xs); color: var(--hph-primary); text-decoration: none;">Centered</a>
         <a href="#cta-split" style="font-size: var(--hph-text-xs); color: var(--hph-primary); text-decoration: none;">Split</a>
         <a href="#cta-minimal" style="font-size: var(--hph-text-xs); color: var(--hph-primary); text-decoration: none;">Minimal</a>
         
-        <h4 style="font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold); color: var(--hph-gray-600); margin: var(--hph-margin-sm) 0;">Features</h4>
+        <h4 style="font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold); color: var(--hph-gray-600); margin: var(--hph-space-2) 0;">Features</h4>
         <a href="#features-cards" style="font-size: var(--hph-text-xs); color: var(--hph-primary); text-decoration: none;">Cards</a>
         <a href="#features-list" style="font-size: var(--hph-text-xs); color: var(--hph-primary); text-decoration: none;">List</a>
         <a href="#features-grid" style="font-size: var(--hph-text-xs); color: var(--hph-primary); text-decoration: none;">Grid</a>
         
-        <h4 style="font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold); color: var(--hph-gray-600); margin: var(--hph-margin-sm) 0;">Agents</h4>
+        <h4 style="font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold); color: var(--hph-gray-600); margin: var(--hph-space-2) 0;">Agents</h4>
         <a href="#agents-grid" style="font-size: var(--hph-text-xs); color: var(--hph-primary); text-decoration: none;">Team Grid</a>
         
-        <h4 style="font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold); color: var(--hph-gray-600); margin: var(--hph-margin-sm) 0;">Listings</h4>
+        <h4 style="font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold); color: var(--hph-gray-600); margin: var(--hph-space-2) 0;">Listings</h4>
         <a href="#listings-featured" style="font-size: var(--hph-text-xs); color: var(--hph-primary); text-decoration: none;">Featured</a>
         <a href="#listings-grid-filters" style="font-size: var(--hph-text-xs); color: var(--hph-primary); text-decoration: none;">Grid + Filters</a>
         <a href="#listings-list" style="font-size: var(--hph-text-xs); color: var(--hph-primary); text-decoration: none;">List View</a>

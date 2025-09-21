@@ -8,7 +8,7 @@
 
 // Enqueue required assets
 wp_enqueue_style('hph-local-single', get_template_directory_uri() . '/assets/css/framework/features/local/local-single.css', ['hph-framework'], '1.0.0');
-wp_enqueue_script('hph-single-event', get_template_directory_uri() . '/assets/js/pages/single-event.js', ['hph-framework'], '1.0.0', true);
+// wp_enqueue_script('hph-single-event', get_template_directory_uri() . '/assets/js/pages/single-event.js', ['hph-framework'], '1.0.0', true);
 
 // Get event data
 $event_id = get_the_ID();
@@ -209,14 +209,14 @@ get_header();
                     <a href="<?php echo esc_url($tickets_url); ?>" 
                        target="_blank" 
                        rel="noopener" 
-                       class="hph-btn hph-btn--primary hph-btn--large">
+                       class="hph-btn hph-btn-primary hph-btn-lg">
                         <i class="hph-icon hph-icon--ticket"></i>
                         Get Tickets
                     </a>
                     <?php endif; ?>
                     
                     <?php if (!$is_past): ?>
-                    <button class="hph-btn hph-btn--outline hph-btn--large" 
+                    <button class="hph-btn hph-btn-outline-primary hph-btn-lg" 
                             data-add-to-calendar
                             data-title="<?php echo esc_attr($title); ?>"
                             data-start="<?php echo esc_attr($start_datetime); ?>"
@@ -227,7 +227,7 @@ get_header();
                     </button>
                     <?php endif; ?>
                     
-                    <button class="hph-btn hph-btn--ghost hph-btn--large hph-event-favorite" 
+                    <button class="hph-btn hph-btn-ghost hph-btn-lg hph-event-favorite" 
                             data-event-id="<?php echo $event_id; ?>">
                         <i class="hph-icon hph-icon--heart-outline"></i>
                         Save Event
@@ -338,7 +338,7 @@ get_header();
                             <a href="<?php echo esc_url($tickets_url); ?>" 
                                target="_blank" 
                                rel="noopener"
-                               class="hph-btn hph-btn--primary hph-btn--block">
+                               class="hph-btn hph-btn-primary">
                                 Get Tickets
                             </a>
                             <?php endif; ?>
@@ -363,7 +363,7 @@ get_header();
                             <a href="https://maps.google.com/?q=<?php echo urlencode($venue_address); ?>" 
                                target="_blank" 
                                rel="noopener"
-                               class="hph-btn hph-btn--ghost hph-btn--small hph-btn--block">
+                               class="hph-btn hph-btn-ghost hph-btn-sm">
                                 <i class="hph-icon hph-icon--directions"></i>
                                 Get Directions
                             </a>
@@ -417,9 +417,9 @@ get_header();
             </h2>
             <div class="hph-related-events__list">
                 <?php while ($related_events->have_posts()): $related_events->the_post(); ?>
-                    <?php get_template_part('template-parts/components/local/event-card', null, [
-                        'event_id' => get_the_ID(),
-                        'variant' => 'default'
+                    <?php hph_component('universal-card', [
+                        'post_id' => get_the_ID(),
+                        'layout' => 'vertical'
                     ]); ?>
                 <?php endwhile; wp_reset_postdata(); ?>
             </div>

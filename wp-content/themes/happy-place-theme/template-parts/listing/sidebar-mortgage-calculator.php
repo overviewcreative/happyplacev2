@@ -60,15 +60,15 @@ if (!$listing_price) {
             </p>
         </div>
         <button type="button" 
-                class="hph-collapse-toggle hph-collapse-toggle--calculator"
-                aria-expanded="false"
+                class="hph-collapse-toggle hph-collapse-toggle--calculator lg:hph-hidden"
+                aria-expanded="true"
                 aria-controls="mortgage-calculator-content"
                 aria-label="Toggle mortgage calculator">
-            <i class="fas fa-chevron-down"></i>
+            <i class="fas fa-chevron-up"></i>
         </button>
     </div>
     
-    <div class="hph-widget__content hph-widget__content--collapsible" id="mortgage-calculator-content" style="display: none;">
+    <div class="hph-widget__content hph-widget__content--collapsible" id="mortgage-calculator-content">
     
     <form id="mortgage-calculator" class="hph-calculator-form">
         
@@ -159,7 +159,7 @@ if (!$listing_price) {
         <!-- Advanced Options Toggle -->
         <button type="button" 
                 id="toggle-advanced" 
-                class="hph-btn hph-btn--link hph-text-primary hph-flex hph-items-center hph-gap-2 hph-mb-4">
+                class="hph-btn hph-btn-link hph-text-primary hph-flex hph-items-center hph-gap-2 hph-mb-4">
             <i class="fas fa-chevron-down hph-transition-transform"></i>
             Advanced Options
         </button>

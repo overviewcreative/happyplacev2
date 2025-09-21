@@ -35,7 +35,7 @@ get_header();
     Basic Post Carousel
 </h2>
 <?php
-get_template_part('template-parts/sections/post-carousel', null, array(
+get_template_part('template-parts/components/universal-carousel', null, array(
     'post_type' => 'post',
     'posts_per_page' => 3,
     'background' => 'dark',
@@ -58,7 +58,7 @@ get_template_part('template-parts/sections/post-carousel', null, array(
     Featured Listings Carousel
 </h2>
 <?php
-get_template_part('template-parts/sections/post-carousel', null, array(
+get_template_part('template-parts/components/universal-carousel', null, array(
     'post_type' => 'listing',
     'posts_per_page' => 5,
     'meta_query' => array(
@@ -88,7 +88,7 @@ get_template_part('template-parts/sections/post-carousel', null, array(
     Meet Our Team - Agent Carousel
 </h2>
 <?php
-get_template_part('template-parts/sections/post-carousel', null, array(
+get_template_part('template-parts/components/universal-carousel', null, array(
     'post_type' => 'agent',
     'posts_per_page' => 4,
     'background' => 'light',
@@ -111,7 +111,7 @@ get_template_part('template-parts/sections/post-carousel', null, array(
     Explore Communities Carousel
 </h2>
 <?php
-get_template_part('template-parts/sections/post-carousel', null, array(
+get_template_part('template-parts/components/universal-carousel', null, array(
     'post_type' => 'community',
     'posts_per_page' => 5,
     'background' => 'dark',
@@ -134,7 +134,7 @@ get_template_part('template-parts/sections/post-carousel', null, array(
     City Guides Carousel
 </h2>
 <?php
-get_template_part('template-parts/sections/post-carousel', null, array(
+get_template_part('template-parts/components/universal-carousel', null, array(
     'post_type' => 'city',
     'posts_per_page' => 4,
     'background' => 'light',

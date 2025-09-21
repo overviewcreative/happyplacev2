@@ -108,7 +108,7 @@ class HPH_Enhanced_Dashboard {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
                 body: new URLSearchParams({
-                    action: 'update_listing_field',
+                    action: 'hph_update_listing_field',
                     nonce: hphDashboard.nonce,
                     listing_id: listingId,
                     field: field,
@@ -141,7 +141,6 @@ class HPH_Enhanced_Dashboard {
                 throw new Error(result.data || 'Update failed');
             }
         } catch (error) {
-            console.error('Inline edit error:', error);
             this.showAlert('Failed to update: ' + error.message, 'danger');
         } finally {
             this.showLoadingState(listingCard, false);
@@ -282,7 +281,7 @@ class HPH_Enhanced_Dashboard {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
                 body: new URLSearchParams({
-                    action: 'duplicate_listing',
+                    action: 'hph_duplicate_listing',
                     nonce: hphDashboard.nonce,
                     listing_id: listingId
                 })
@@ -298,7 +297,6 @@ class HPH_Enhanced_Dashboard {
                 throw new Error(result.data || 'Duplication failed');
             }
         } catch (error) {
-            console.error('Duplicate error:', error);
             this.showAlert('Failed to duplicate listing: ' + error.message, 'danger');
         }
     }
@@ -313,7 +311,7 @@ class HPH_Enhanced_Dashboard {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
                 body: new URLSearchParams({
-                    action: 'delete_listing',
+                    action: 'hph_delete_listing',
                     nonce: hphDashboard.nonce,
                     listing_id: listingId
                 })
@@ -335,7 +333,6 @@ class HPH_Enhanced_Dashboard {
                 throw new Error(result.data || 'Deletion failed');
             }
         } catch (error) {
-            console.error('Delete error:', error);
             this.showAlert('Failed to delete listing: ' + error.message, 'danger');
         }
     }
@@ -397,7 +394,6 @@ class HPH_Enhanced_Dashboard {
                 throw new Error(result.data || 'Save failed');
             }
         } catch (error) {
-            console.error('Form submission error:', error);
             this.showAlert('Failed to save listing: ' + error.message, 'danger');
         } finally {
             submitButton.disabled = false;

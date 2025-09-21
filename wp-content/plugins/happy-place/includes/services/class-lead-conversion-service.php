@@ -709,7 +709,7 @@ class LeadConversionService extends Service {
                 </div>
                 
                 <p class="form-note">
-                    By creating an account, you agree to our <a href="/privacy-policy" target="_blank">Privacy Policy</a>.
+                    By creating an account, you agree to our <a href="/legal/#privacy" target="_blank">Privacy Policy</a>.
                     We'll send you a password via email to complete your account setup.
                 </p>
             </form>

@@ -454,7 +454,7 @@
                     title: 'Property Features',
                     text: text,
                     url: url
-                }).catch(err => console.log('Error sharing:', err));
+                });
             } else {
                 // Fallback to copying link
                 this.copyToClipboard(url);

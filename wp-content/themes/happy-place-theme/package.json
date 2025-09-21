@@ -1,11 +1,12 @@
 {
   "name": "happy-place-theme",
-  "version": "3.2.0",
+  "version": "1.0.0",
   "description": "Optimized WordPress theme with intelligent asset loading",
   "main": "index.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:production": "npm run build && npm run optimize:production",
     "preview": "vite preview",
     "clean": "rimraf dist",
     "watch": "vite build --watch",
@@ -15,7 +16,9 @@
     "js:build": "npm run build && npm run js:optimize",
     "js:optimize": "node scripts/optimize-js.js",
     "assets:audit": "node scripts/audit-assets.js",
-    "assets:clean": "node scripts/clean-unused.js"
+    "assets:clean": "node scripts/clean-unused.js",
+    "optimize:production": "node scripts/production-optimize-simple.js",
+    "test:performance": "npm run build:production && npm run preview"
   },
   "keywords": [
     "wordpress",
@@ -32,7 +35,7 @@
     "@vitejs/plugin-legacy": "^5.4.3",
     "autoprefixer": "^10.4.21",
     "brotli-size": "^4.0.0",
-    "chalk": "^5.3.0",
+    "chalk": "^5.6.2",
     "cross-env": "^7.0.3",
     "cssnano": "^6.1.2",
     "fs-extra": "^11.2.0",
@@ -50,5 +53,9 @@
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
+  },
+  "dependencies": {
+    "ora": "^9.0.0",
+    "sharp": "^0.34.4"
   }
 }

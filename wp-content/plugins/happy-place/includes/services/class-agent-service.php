@@ -29,14 +29,10 @@ class AgentService extends Service {
             return;
         }
         
-        // Hook into user registration to create agent posts
-        add_action('user_register', [$this, 'maybe_create_agent_post']);
-        
-        // Hook into profile updates
-        add_action('profile_update', [$this, 'sync_user_to_agent_post']);
-        
-        // Hook into agent post saves
-        add_action('save_post_agent', [$this, 'sync_agent_post_to_user'], 10, 2);
+        // Agent-User synchronization hooks (disabled until user system requirements are finalized)
+        // add_action('user_register', [$this, 'maybe_create_agent_post']);
+        // add_action('profile_update', [$this, 'sync_user_to_agent_post']);
+        // add_action('save_post_agent', [$this, 'sync_agent_post_to_user'], 10, 2);
         
         // Add agent capabilities
         add_action('init', [$this, 'add_agent_capabilities']);

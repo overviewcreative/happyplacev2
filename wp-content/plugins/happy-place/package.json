@@ -1,6 +1,6 @@
 {
   "name": "happy-place",
-  "version": "3.0.0",
+  "version": "1.0.0",
   "description": "Advanced WordPress real estate platform with comprehensive property management, agent tools, marketing suite, and MLS compliance",
   "main": "happy-place.php",
   "scripts": {

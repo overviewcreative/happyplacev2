@@ -22,8 +22,8 @@
         }
 
         init() {
-            console.log('🔗 Universal Form Handler: Compatibility bridge active');
-            console.log('ℹ️ Form handling delegated to HPH.Forms unified system');
+            if (typeof window.hphDebug !== 'undefined' && window.hphDebug) {
+            }
             
             // This handler is now purely a compatibility bridge
             // All form handling is done by HPH.Forms to prevent duplicate submissions
@@ -31,9 +31,11 @@
             // Wait a moment to ensure HPH.Forms loads first
             $(document).ready(() => {
                 if (typeof HPH !== 'undefined' && HPH.Forms) {
-                    console.log('✅ Universal Form Handler: HPH.Forms unified system detected');
+                    if (typeof window.hphDebug !== 'undefined' && window.hphDebug) {
+                    }
                 } else {
-                    console.error('❌ Universal Form Handler: HPH.Forms not loaded! Forms may not work properly.');
+                    if (typeof window.hphDebug !== 'undefined' && window.hphDebug) {
+                    }
                 }
             });
         }
@@ -45,12 +47,10 @@
         
         // Deprecated: Form handling is now done by HPH.Forms
         basicFormHandling() {
-            console.warn('⚠️ basicFormHandling() is deprecated. HPH.Forms handles all form submissions.');
         }
 
         // Deprecated: Form submission is now done by HPH.Forms  
         handleFormSubmission(e) {
-            console.warn('⚠️ handleFormSubmission() is deprecated. HPH.Forms handles all form submissions.');
         }
     }
 

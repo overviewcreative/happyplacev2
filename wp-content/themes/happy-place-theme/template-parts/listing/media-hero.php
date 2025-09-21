@@ -366,7 +366,7 @@ wp_add_inline_script('hph-components',
 );
 
 // Enqueue the media hero JavaScript
-wp_enqueue_script('hph-media-hero', get_template_directory_uri() . '/assets/js/components/listing/media-hero.js', ['hph-components'], '1.0.0', true);
+// wp_enqueue_script('hph-media-hero', get_template_directory_uri() . '/assets/js/components/listing/media-hero.js', ['hph-components'], '1.0.0', true);
 ?>
 
 <style>

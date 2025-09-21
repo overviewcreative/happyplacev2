@@ -117,12 +117,12 @@ $recent_listings = get_posts([
             <!-- Quick Actions -->
             <div class="hph-flex-shrink-0 hph-hidden lg:hph-block">
                 <?php if ($is_agent): ?>
-                    <button id="overview-quickAddListingBtn-header" class="hph-btn hph-btn--primary">
+                    <button id="overview-quickAddListingBtn-header" class="hph-btn hph-btn-primary">
                         <i class="fas fa-plus"></i>
                         <?php _e('Add Listing', 'happy-place-theme'); ?>
                     </button>
                 <?php else: ?>
-                    <a href="<?php echo home_url('/listings/'); ?>" class="hph-btn hph-btn--primary">
+                    <a href="<?php echo home_url('/listings/'); ?>" class="hph-btn hph-btn-primary">
                         <i class="fas fa-search"></i>
                         <?php _e('Search Properties', 'happy-place-theme'); ?>
                     </a>
@@ -143,7 +143,7 @@ $recent_listings = get_posts([
                 <h3 class="hph-card__title">
                     <?php echo $is_agent ? __('Recent Listings', 'happy-place-theme') : __('Recently Viewed', 'happy-place-theme'); ?>
                 </h3>
-                <a href="<?php echo $is_agent ? '?section=listings' : '?section=favorites'; ?>" class="hph-btn hph-btn--link hph-btn--sm">
+                <a href="<?php echo $is_agent ? '?section=listings' : '?section=favorites'; ?>" class="hph-btn hph-btn-link hph-btn-sm">
                     <?php _e('View All', 'happy-place-theme'); ?>
                 </a>
             </div>
@@ -189,28 +189,28 @@ $recent_listings = get_posts([
             <div class="hph-card__content">
                 <div class="hph-dashboard-list">
                     <?php if ($is_agent): ?>
-                        <a href="?section=create-listing" class="hph-btn hph-btn--secondary hph-btn--full">
+                        <a href="?section=create-listing" class="hph-btn hph-btn-secondary w-full">
                             <i class="fas fa-plus"></i>
                             <?php _e('Create New Listing', 'happy-place-theme'); ?>
                         </a>
-                        <a href="?section=leads" class="hph-btn hph-btn--secondary hph-btn--full">
+                        <a href="?section=leads" class="hph-btn hph-btn-secondary w-full">
                             <i class="fas fa-users"></i>
                             <?php _e('Manage Leads', 'happy-place-theme'); ?>
                         </a>
-                        <a href="?section=analytics" class="hph-btn hph-btn--secondary hph-btn--full">
+                        <a href="?section=analytics" class="hph-btn hph-btn-secondary w-full">
                             <i class="fas fa-chart-bar"></i>
                             <?php _e('View Analytics', 'happy-place-theme'); ?>
                         </a>
                     <?php else: ?>
-                        <a href="/listings/" class="hph-btn hph-btn--secondary hph-btn--full">
+                        <a href="/listings/" class="hph-btn hph-btn-secondary w-full">
                             <i class="fas fa-search"></i>
                             <?php _e('Search Properties', 'happy-place-theme'); ?>
                         </a>
-                        <a href="?section=favorites" class="hph-btn hph-btn--secondary hph-btn--full">
+                        <a href="?section=favorites" class="hph-btn hph-btn-secondary w-full">
                             <i class="fas fa-heart"></i>
                             <?php _e('Saved Properties', 'happy-place-theme'); ?>
                         </a>
-                        <a href="?section=searches" class="hph-btn hph-btn--secondary hph-btn--full">
+                        <a href="?section=searches" class="hph-btn hph-btn-secondary w-full">
                             <i class="fas fa-bookmark"></i>
                             <?php _e('Saved Searches', 'happy-place-theme'); ?>
                         </a>
@@ -234,7 +234,7 @@ $recent_listings = get_posts([
                         <p class="hph-text-secondary hph-mb-md">
                             <?php _e('Market data will be available soon', 'happy-place-theme'); ?>
                         </p>
-                        <button class="hph-btn hph-btn--primary hph-btn--sm">
+                        <button class="hph-btn hph-btn-primary hph-btn-sm">
                             <?php _e('Learn More', 'happy-place-theme'); ?>
                         </button>
                     </div>
@@ -244,7 +244,7 @@ $recent_listings = get_posts([
                         <p class="hph-text-secondary hph-mb-md">
                             <?php _e('We\'ll notify you when new properties match your searches', 'happy-place-theme'); ?>
                         </p>
-                        <a href="?section=searches" class="hph-btn hph-btn--primary hph-btn--sm">
+                        <a href="?section=searches" class="hph-btn hph-btn-primary hph-btn-sm">
                             <?php _e('Manage Alerts', 'happy-place-theme'); ?>
                         </a>
                     </div>

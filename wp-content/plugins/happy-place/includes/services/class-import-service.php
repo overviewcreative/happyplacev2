@@ -150,10 +150,20 @@ class ImportService extends Service {
                         continue;
                     }
                     
-                    // Check for duplicates
-                    if ($this->is_duplicate($listing_data)) {
-                        $this->log_import_error($actual_row, 'Duplicate listing found');
-                        $results['skipped']++;
+                    // Check for duplicates and update if found
+                    $existing_listing = $this->find_existing_listing($listing_data);
+                    if ($existing_listing) {
+                        // Update existing listing
+                        $listing_data['ID'] = $existing_listing->ID;
+                        $updated_id = $this->update_existing_listing($existing_listing->ID, $listing_data);
+                        
+                        if ($updated_id && !is_wp_error($updated_id)) {
+                            $this->log("Updated existing listing {$updated_id} for row {$actual_row}", 'info', 'IMPORT');
+                            $results['updated']++;
+                        } else {
+                            $this->log_import_error($actual_row, 'Failed to update existing listing: ' . ($updated_id ? $updated_id->get_error_message() : 'Unknown error'));
+                            $results['failed']++;
+                        }
                         continue;
                     }
                     
@@ -525,6 +535,15 @@ class ImportService extends Service {
                 $value = $this->transform_field_value($value, $field_config['transform']);
             }
             
+            // Special handling for full address parsing
+            if ($listing_field === 'full_address_to_parse' && !empty($value)) {
+                $parsed_address = $this->parse_full_address($value);
+                if ($parsed_address) {
+                    $listing_data = array_merge($listing_data, $parsed_address);
+                }
+                continue;
+            }
+            
             // Handle nested fields (like address)
             if (strpos($listing_field, '.') !== false) {
                 $parts = explode('.', $listing_field);
@@ -643,12 +662,12 @@ class ImportService extends Service {
     }
     
     /**
-     * Check if listing is duplicate
+     * Find existing listing by MLS number or address
      * 
      * @param array $listing_data Listing data
-     * @return bool True if duplicate found
+     * @return \WP_Post|null Existing listing post or null
      */
-    private function is_duplicate(array $listing_data): bool {
+    private function find_existing_listing(array $listing_data): ?\WP_Post {
         $args = [
             'post_type' => 'listing',
             'post_status' => ['publish', 'draft', 'pending'],
@@ -656,29 +675,134 @@ class ImportService extends Service {
             'meta_query' => []
         ];
         
-        // Check by MLS number if available
+        // Check by MLS number first (most reliable)
         if (!empty($listing_data['mls_number'])) {
             $args['meta_query'][] = [
                 'key' => 'mls_number',
                 'value' => $listing_data['mls_number'],
                 'compare' => '='
             ];
-        }
-        // Check by address if no MLS number
-        elseif (!empty($listing_data['address']['street_address'])) {
-            $args['meta_query'][] = [
-                'key' => 'street_address',
-                'value' => $listing_data['address']['street_address'],
-                'compare' => '='
-            ];
-        }
-        // Check by title as fallback
-        else {
-            $args['s'] = $listing_data['title'];
+            
+            $query = new \WP_Query($args);
+            if ($query->have_posts()) {
+                return $query->posts[0];
+            }
         }
         
-        $query = new \WP_Query($args);
-        return $query->have_posts();
+        // Check by full address components if available
+        if (!empty($listing_data['street_number']) && !empty($listing_data['street_name'])) {
+            $args['meta_query'] = [
+                'relation' => 'AND',
+                [
+                    'key' => 'street_number',
+                    'value' => $listing_data['street_number'],
+                    'compare' => '='
+                ],
+                [
+                    'key' => 'street_name',
+                    'value' => $listing_data['street_name'],
+                    'compare' => '='
+                ]
+            ];
+            
+            // Add city if available for more precise matching
+            if (!empty($listing_data['city'])) {
+                $args['meta_query'][] = [
+                    'key' => 'city',
+                    'value' => $listing_data['city'],
+                    'compare' => '='
+                ];
+            }
+            
+            $query = new \WP_Query($args);
+            if ($query->have_posts()) {
+                return $query->posts[0];
+            }
+        }
+        
+        // Fallback: Check by legacy address field if available
+        elseif (!empty($listing_data['address']['street_address'])) {
+            $args['meta_query'] = [
+                [
+                    'key' => 'street_address',
+                    'value' => $listing_data['address']['street_address'],
+                    'compare' => '='
+                ]
+            ];
+            
+            $query = new \WP_Query($args);
+            if ($query->have_posts()) {
+                return $query->posts[0];
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Update existing listing with new data
+     * 
+     * @param int $listing_id Existing listing ID
+     * @param array $listing_data New listing data
+     * @return int|\WP_Error Updated listing ID or error
+     */
+    private function update_existing_listing(int $listing_id, array $listing_data) {
+        // Prepare post data for update
+        $post_data = [
+            'ID' => $listing_id,
+            'post_type' => 'listing',
+            'post_status' => 'publish'
+        ];
+        
+        // Update basic post fields if provided
+        if (!empty($listing_data['post_title'])) {
+            $post_data['post_title'] = $listing_data['post_title'];
+        }
+        
+        if (!empty($listing_data['post_content'])) {
+            $post_data['post_content'] = $listing_data['post_content'];
+        }
+        
+        // Update the post
+        $result = wp_update_post($post_data, true);
+        
+        if (is_wp_error($result)) {
+            return $result;
+        }
+        
+        // Update ACF fields
+        foreach ($listing_data as $field_name => $field_value) {
+            // Skip WordPress core fields
+            if (in_array($field_name, ['ID', 'post_title', 'post_content', 'post_status', 'post_type'])) {
+                continue;
+            }
+            
+            // Update ACF field
+            update_field($field_name, $field_value, $listing_id);
+        }
+        
+        // Update taxonomies if provided
+        if (!empty($listing_data['status'])) {
+            wp_set_object_terms($listing_id, $listing_data['status'], 'listing_status');
+        }
+        
+        if (!empty($listing_data['property_type'])) {
+            wp_set_object_terms($listing_id, $listing_data['property_type'], 'property_type');
+        }
+        
+        do_action('hp_listing_updated', $listing_id, $listing_data);
+        
+        return $listing_id;
+    }
+    
+    /**
+     * Check if listing is duplicate (legacy method - kept for compatibility)
+     * 
+     * @param array $listing_data Listing data
+     * @return bool True if duplicate found
+     */
+    private function is_duplicate(array $listing_data): bool {
+        return $this->find_existing_listing($listing_data) !== null;
     }
     
     /**
@@ -693,137 +817,575 @@ class ImportService extends Service {
      */
     private function load_default_mappings(): void {
         $this->default_mappings = [
-            'title' => 'title',
-            'property title' => 'title',
-            'listing title' => 'title',
-            'name' => 'title',
-            
-            // Basic Information
+            // Basic Post Information
             'title' => 'post_title',
             'listing title' => 'post_title',
             'property title' => 'post_title',
+            'name' => 'post_title',
             
-            'description' => 'property_description',
+            'description' => 'post_content',
             'property description' => 'property_description',
             'listing description' => 'property_description',
+            'content' => 'post_content',
             
+            // Core Listing Fields
             'marketing title' => 'property_title',
             'property highlights' => 'property_highlights',
+            'key highlights' => 'property_highlights',
+            'highlights' => 'property_highlights',
             
-            // Pricing
-            'price' => 'price',
-            'listing price' => 'price',
-            'asking price' => 'price',
-            'sale price' => 'price',
+            // Pricing & Financial
+            'price' => 'listing_price',
+            'listing price' => 'listing_price',
+            'asking price' => 'listing_price',
+            'sale price' => 'listing_price',
+            'cost' => 'listing_price',
             
             'property taxes' => 'property_taxes',
             'taxes' => 'property_taxes',
+            'annual property tax' => 'property_taxes',
+            'tax' => 'property_taxes',
+            
             'hoa' => 'hoa_fees',
             'hoa fees' => 'hoa_fees',
             'homeowner fees' => 'hoa_fees',
+            'association fees' => 'hoa_fees',
             
             'buyer commission' => 'buyer_commission',
             'commission' => 'buyer_commission',
+            'buyer agent commission' => 'buyer_commission',
+            
             'insurance' => 'estimated_insurance',
+            'estimated insurance' => 'estimated_insurance',
+            'monthly insurance' => 'estimated_insurance',
+            'est monthly insurance' => 'estimated_insurance',
+            
             'utilities' => 'estimated_utilities',
+            'estimated utilities' => 'estimated_utilities',
+            'monthly utilities' => 'estimated_utilities',
+            'est monthly utilities' => 'estimated_utilities',
+            
+            'tax id' => 'tax_id',
+            'parcel number' => 'tax_id',
+            'tax parcel' => 'tax_id',
+            
+            'price per sqft' => 'price_per_sqft',
+            'price per sq ft' => 'price_per_sqft',
+            'cost per sqft' => 'price_per_sqft',
             
             // Property Details
             'bedrooms' => 'bedrooms',
             'beds' => 'bedrooms',
             'bedroom' => 'bedrooms',
             'bed' => 'bedrooms',
+            'br' => 'bedrooms',
             
             'bathrooms full' => 'bathrooms_full',
             'full baths' => 'bathrooms_full',
             'full bathrooms' => 'bathrooms_full',
+            'full bath' => 'bathrooms_full',
             
             'bathrooms half' => 'bathrooms_half',
             'half baths' => 'bathrooms_half',
             'half bathrooms' => 'bathrooms_half',
+            'half bath' => 'bathrooms_half',
+            'powder rooms' => 'bathrooms_half',
             
-            // Legacy bathroom mapping (split into full/half)
+            // Legacy bathroom mapping (will be split into full/half if needed)
             'bathrooms' => 'bathrooms_full',
             'baths' => 'bathrooms_full',
             'bathroom' => 'bathrooms_full',
             'bath' => 'bathrooms_full',
+            'ba' => 'bathrooms_full',
             
             'square feet' => 'square_feet',
             'sqft' => 'square_feet',
             'sq ft' => 'square_feet',
             'size' => 'square_feet',
+            'square footage' => 'square_feet',
+            'floor area' => 'square_feet',
             
             'lot size acres' => 'lot_size_acres',
             'acres' => 'lot_size_acres',
             'lot acres' => 'lot_size_acres',
+            'acreage' => 'lot_size_acres',
             
             'lot size sqft' => 'lot_size_sqft',
             'lot size' => 'lot_size_sqft',
             'lot' => 'lot_size_sqft',
+            'lot square feet' => 'lot_size_sqft',
+            'lot sq ft' => 'lot_size_sqft',
             
             'year built' => 'year_built',
             'built' => 'year_built',
             'construction year' => 'year_built',
+            'built year' => 'year_built',
+            'yr built' => 'year_built',
             
-            'property type' => 'property_type',
-            'type' => 'property_type',
+            'garage spaces' => 'garage_spaces',
+            'garage' => 'garage_spaces',
+            'car garage' => 'garage_spaces',
+            'parking spaces' => 'garage_spaces',
+            
+            'architectural style' => 'property_style',
+            'style' => 'property_style',
+            'home style' => 'property_style',
+            'architecture' => 'property_style',
+            'structure type' => 'property_style',
+            
+            'listing date' => 'listing_date',
+            'date listed' => 'listing_date',
+            'listed' => 'listing_date',
+            'list date' => 'listing_date',
+            
+            'days on market' => 'days_on_market',
+            'dom' => 'days_on_market',
+            'days listed' => 'days_on_market',
+            'market days' => 'days_on_market',
+            'cdom' => 'days_on_market',
+            
+            'stories' => 'stories',
+            'levels' => 'stories',
+            'floors' => 'stories',
+            'story' => 'stories',
+            'levels/stories' => 'stories',
+            
+            'condition' => 'condition',
+            'property condition' => 'condition',
+            'home condition' => 'condition',
+            
+            'featured' => 'is_featured',
+            'is featured' => 'is_featured',
+            'featured listing' => 'is_featured',
             
             // Address Fields
             'street number' => 'street_number',
             'number' => 'street_number',
             'house number' => 'street_number',
+            'address number' => 'street_number',
+            
+            'street dir prefix' => 'street_dir_prefix',
+            'prefix' => 'street_dir_prefix',
+            'direction prefix' => 'street_dir_prefix',
             
             'street name' => 'street_name',
             'street' => 'street_name',
+            'road' => 'street_name',
+            'road name' => 'street_name',
             
             'street type' => 'street_type',
             'street suffix' => 'street_type',
             'suffix' => 'street_type',
+            'road type' => 'street_type',
             
-            'address' => 'street_name', // Legacy mapping
-            'street address' => 'street_name',
+            'street dir suffix' => 'street_dir_suffix',
+            'direction suffix' => 'street_dir_suffix',
+            'suffix direction' => 'street_dir_suffix',
+            
+            'unit' => 'unit_number',
+            'unit number' => 'unit_number',
+            'apt' => 'unit_number',
+            'apartment' => 'unit_number',
+            'suite' => 'unit_number',
+            
+            // This is the key one for full address parsing
+            'address' => 'full_address_to_parse',
+            'full address' => 'full_address_to_parse',
+            'street address' => 'full_address_to_parse',
+            'property address' => 'full_address_to_parse',
+            'complete address' => 'full_address_to_parse',
+            'full street address' => 'full_address_to_parse',
             
             'city' => 'city',
+            'municipality' => 'city',
+            'town' => 'city',
+            
             'state' => 'state',
+            'province' => 'state',
+            'region' => 'state',
+            
             'zip' => 'zip_code',
             'zip code' => 'zip_code',
             'postal code' => 'zip_code',
+            'postal' => 'zip_code',
+            
             'county' => 'county',
+            'parish' => 'county',
             
             'parcel number' => 'parcel_number',
             'parcel' => 'parcel_number',
             'parcel id' => 'parcel_number',
+            'tax parcel' => 'parcel_number',
+            
+            'subdivision' => 'subdivision',
+            'neighborhood' => 'subdivision',
+            'development' => 'subdivision',
+            'community' => 'subdivision',
+            
+            'school district' => 'school_district',
+            'district' => 'school_district',
+            'schools' => 'school_district',
+            
+            'zoning' => 'zoning',
+            'zone' => 'zoning',
+            'zoned' => 'zoning',
+            
+            'flood zone' => 'flood_zone',
+            'flood' => 'flood_zone',
+            'fema zone' => 'flood_zone',
+            
+            // Location & Coordinates
+            'latitude' => 'latitude',
+            'lat' => 'latitude',
+            'geo lat' => 'latitude',
+            
+            'longitude' => 'longitude',
+            'lng' => 'longitude',
+            'lon' => 'longitude',
+            'geo lng' => 'longitude',
+            'geo lon' => 'longitude',
             
             // Listing Information
             'mls' => 'mls_number',
             'mls number' => 'mls_number',
             'mls #' => 'mls_number',
+            'mls id' => 'mls_number',
             'listing id' => 'mls_number',
+            'multiple listing' => 'mls_number',
             
             'status' => 'status',
             'listing status' => 'status',
-            
-            'listing date' => 'listing_date',
-            'date listed' => 'listing_date',
+            'property status' => 'status',
             
             'sold date' => 'sold_date',
             'date sold' => 'sold_date',
+            'close date' => 'sold_date',
+            'closing date' => 'sold_date',
             
-            'days on market' => 'days_on_market',
-            'dom' => 'days_on_market',
+            'close price' => 'sold_price',
+            'sold price' => 'sold_price',
+            'sale price' => 'sold_price',
+            'final price' => 'sold_price',
             
-            // Location
-            'latitude' => 'latitude',
-            'lat' => 'latitude',
-            'longitude' => 'longitude',
-            'lng' => 'longitude',
-            'lon' => 'longitude',
+            'basement' => 'basement',
+            'basement yn' => 'basement',
+            'has basement' => 'basement',
             
-            // Additional
+            'fireplaces' => 'fireplaces',
+            'fireplaces total' => 'fireplaces',
+            'fireplace count' => 'fireplaces',
+            
+            // Agent & Office Information
+            'listing agent' => 'listing_agent',
+            'agent' => 'listing_agent',
+            'primary agent' => 'listing_agent',
+            'lead agent' => 'listing_agent',
+            
+            'co listing agent' => 'co_listing_agent',
+            'co agent' => 'co_listing_agent',
+            'second agent' => 'co_listing_agent',
+            
+            'listing office' => 'listing_office',
+            'office' => 'listing_office',
+            'brokerage' => 'listing_office',
+            'company' => 'listing_office',
+            
+            'office phone' => 'listing_office_phone',
+            'listing office phone' => 'listing_office_phone',
+            'broker phone' => 'listing_office_phone',
+            
+            // Construction & Features
+            'builder' => 'builder',
+            'contractor' => 'builder',
+            'construction company' => 'builder',
+            
+            'roof type' => 'roof_type',
+            'roof' => 'roof_type',
+            'roofing' => 'roof_type',
+            
+            'foundation' => 'foundation_type',
+            'foundation type' => 'foundation_type',
+            
+            'exterior materials' => 'exterior_materials',
+            'exterior' => 'exterior_materials',
+            'siding' => 'exterior_materials',
+            
+            'flooring' => 'flooring_types',
+            'flooring types' => 'flooring_types',
+            'floor types' => 'flooring_types',
+            'floors' => 'flooring_types',
+            
+            'heating system' => 'heating_system',
+            'heating' => 'heating_system',
+            'heat' => 'heating_system',
+            
+            'heating fuel' => 'heating_fuel',
+            'heat fuel' => 'heating_fuel',
+            
+            'cooling system' => 'cooling_system',
+            'cooling' => 'cooling_system',
+            'ac' => 'cooling_system',
+            'air conditioning' => 'air_conditioning',
+            
+            'cooling fuel' => 'cooling_fuel',
+            'ac fuel' => 'cooling_fuel',
+            
+            'water source' => 'water_source',
+            'water' => 'water_source',
+            
+            'sewer system' => 'sewer_system',
+            'sewer' => 'sewer_system',
+            'septic' => 'sewer_system',
+            
+            'electric service' => 'electric_service',
+            'electrical' => 'electric_service',
+            'electric' => 'electric_service',
+            
+            'hot water' => 'hot_water',
+            'water heater' => 'water_heater',
+            'hw' => 'hot_water',
+            
+            'construction materials' => 'construction_materials',
+            'materials' => 'construction_materials',
+            
+            // Features & Amenities
+            'interior features' => 'interior_features',
+            'interior' => 'interior_features',
+            'inside features' => 'interior_features',
+            
+            'exterior features' => 'exterior_features',
+            'outside features' => 'exterior_features',
+            'yard features' => 'exterior_features',
+            
+            'property features' => 'property_features',
+            'features' => 'property_features',
+            'amenities' => 'property_features',
+            
+            // Pool & Spa
+            'pool' => 'has_pool',
+            'swimming pool' => 'has_pool',
+            'has pool' => 'has_pool',
+            
+            'pool type' => 'pool_type',
+            'pool style' => 'pool_type',
+            
+            'spa' => 'has_spa',
+            'hot tub' => 'has_spa',
+            'jacuzzi' => 'has_spa',
+            'has spa' => 'has_spa',
+            
+            'garage type' => 'garage_type',
+            'garage style' => 'garage_type',
+            'parking type' => 'garage_type',
+            
+            // Media & Virtual Tours
+            'primary photo' => 'primary_photo',
+            'main photo' => 'primary_photo',
+            'featured photo' => 'primary_photo',
+            
+            'photo gallery' => 'photo_gallery',
+            'photos' => 'photo_gallery',
+            'images' => 'photo_gallery',
+            'gallery' => 'photo_gallery',
+            
+            'virtual tour' => 'virtual_tour_url',
+            'virtual tour url' => 'virtual_tour_url',
+            'tour link' => 'virtual_tour_url',
+            '3d tour' => 'virtual_tour_url',
+            
+            'video' => 'video_url',
+            'video url' => 'video_url',
+            'video tour' => 'video_url',
+            'youtube' => 'video_url',
+            
+            'floor plans' => 'floor_plans',
+            'floorplan' => 'floor_plans',
+            'blueprints' => 'floor_plans',
+            
+            // Additional Content
             'showing instructions' => 'showing_instructions',
             'instructions' => 'showing_instructions',
+            'show instructions' => 'showing_instructions',
+            'showing notes' => 'showing_instructions',
+            
             'internal notes' => 'internal_notes',
-            'notes' => 'internal_notes'
+            'notes' => 'internal_notes',
+            'private notes' => 'internal_notes',
+            'admin notes' => 'internal_notes',
+            'agent notes' => 'internal_notes'
         ];
+    }
+    
+    /**
+     * Parse full address into components
+     * 
+     * @param string $full_address Complete address string
+     * @return array Parsed address components
+     */
+    private function parse_full_address(string $full_address): array {
+        $address_parts = [];
+        
+        // Clean the address
+        $address = trim($full_address);
+        if (empty($address)) {
+            return $address_parts;
+        }
+        
+        // Split by comma for initial parsing
+        $parts = array_map('trim', explode(',', $address));
+        
+        if (count($parts) >= 2) {
+            // Last part is typically "State ZIP" or just "ZIP"
+            $last_part = array_pop($parts);
+            
+            // Extract state and ZIP from last part
+            if (preg_match('/([A-Z]{2})\s+(\d{5}(-\d{4})?)/', $last_part, $matches)) {
+                $address_parts['state'] = $matches[1];
+                $address_parts['zip_code'] = $matches[2];
+            } elseif (preg_match('/^(\d{5}(-\d{4})?)$/', $last_part, $matches)) {
+                // Just ZIP code
+                $address_parts['zip_code'] = $matches[1];
+            } else {
+                // Might be a state name or other format
+                $state_zip = $this->extract_state_zip_from_string($last_part);
+                if ($state_zip) {
+                    $address_parts = array_merge($address_parts, $state_zip);
+                }
+            }
+            
+            // Second to last is typically city
+            if (count($parts) >= 1) {
+                $address_parts['city'] = array_pop($parts);
+            }
+            
+            // Remaining parts form the street address
+            if (!empty($parts)) {
+                $street_address = implode(', ', $parts);
+                $street_parts = $this->parse_street_address($street_address);
+                $address_parts = array_merge($address_parts, $street_parts);
+            }
+        } else {
+            // Single part - try to parse as street address only
+            $street_parts = $this->parse_street_address($address);
+            $address_parts = array_merge($address_parts, $street_parts);
+        }
+        
+        return $address_parts;
+    }
+    
+    /**
+     * Parse street address into components
+     * 
+     * @param string $street_address Street portion of address
+     * @return array Street address components
+     */
+    private function parse_street_address(string $street_address): array {
+        $parts = [];
+        $address = trim($street_address);
+        
+        if (empty($address)) {
+            return $parts;
+        }
+        
+        // Common street types for matching
+        $street_types = [
+            'ST', 'STREET', 'AVE', 'AVENUE', 'BLVD', 'BOULEVARD', 'RD', 'ROAD',
+            'DR', 'DRIVE', 'LN', 'LANE', 'CT', 'COURT', 'CIR', 'CIRCLE',
+            'PL', 'PLACE', 'WAY', 'TRL', 'TRAIL', 'PKWY', 'PARKWAY',
+            'TER', 'TERRACE', 'SQ', 'SQUARE', 'LOOP', 'PATH', 'WALK'
+        ];
+        
+        // Directional prefixes/suffixes
+        $directions = ['N', 'S', 'E', 'W', 'NE', 'NW', 'SE', 'SW', 'NORTH', 'SOUTH', 'EAST', 'WEST'];
+        
+        // Split into words
+        $words = preg_split('/\s+/', strtoupper($address));
+        
+        // Extract unit number if present (patterns like "APT 2", "UNIT B", "#5")
+        $unit_patterns = ['APT', 'APARTMENT', 'UNIT', 'SUITE', 'STE', '#'];
+        for ($i = 0; $i < count($words); $i++) {
+            if (in_array($words[$i], $unit_patterns) && isset($words[$i + 1])) {
+                $parts['unit_number'] = $words[$i + 1];
+                // Remove unit info from words array
+                array_splice($words, $i, 2);
+                break;
+            } elseif (substr($words[$i], 0, 1) === '#') {
+                $parts['unit_number'] = substr($words[$i], 1);
+                array_splice($words, $i, 1);
+                break;
+            }
+        }
+        
+        if (empty($words)) {
+            return $parts;
+        }
+        
+        // First word is typically the street number
+        if (preg_match('/^\d+[A-Z]?$/', $words[0])) {
+            $parts['street_number'] = array_shift($words);
+        }
+        
+        // Check for directional prefix
+        if (!empty($words) && in_array($words[0], $directions)) {
+            $parts['street_dir_prefix'] = array_shift($words);
+        }
+        
+        // Look for street type and directional suffix from the end
+        $street_name_words = $words;
+        
+        // Check for directional suffix
+        if (!empty($words) && in_array(end($words), $directions)) {
+            $parts['street_dir_suffix'] = array_pop($street_name_words);
+        }
+        
+        // Check for street type
+        if (!empty($street_name_words) && in_array(end($street_name_words), $street_types)) {
+            $parts['street_type'] = array_pop($street_name_words);
+        }
+        
+        // Remaining words form the street name
+        if (!empty($street_name_words)) {
+            $parts['street_name'] = implode(' ', $street_name_words);
+        }
+        
+        return $parts;
+    }
+    
+    /**
+     * Extract state and ZIP from a string
+     * 
+     * @param string $text Text to parse
+     * @return array State and ZIP if found
+     */
+    private function extract_state_zip_from_string(string $text): array {
+        $parts = [];
+        
+        // Try various patterns
+        $patterns = [
+            '/([A-Z]{2})\s+(\d{5}(-\d{4})?)/',  // "CA 90210"
+            '/(\d{5}(-\d{4})?)\s+([A-Z]{2})/',  // "90210 CA"
+            '/(\d{5}(-\d{4})?)/',               // Just ZIP
+        ];
+        
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, strtoupper($text), $matches)) {
+                if (isset($matches[3])) {
+                    // Pattern with state after ZIP
+                    $parts['zip_code'] = $matches[1];
+                    $parts['state'] = $matches[3];
+                } elseif (isset($matches[2]) && strlen($matches[1]) === 2) {
+                    // Pattern with state before ZIP
+                    $parts['state'] = $matches[1];
+                    $parts['zip_code'] = $matches[2];
+                } elseif (preg_match('/^\d{5}/', $matches[1])) {
+                    // Just ZIP code
+                    $parts['zip_code'] = $matches[1];
+                }
+                break;
+            }
+        }
+        
+        return $parts;
     }
     
     /**

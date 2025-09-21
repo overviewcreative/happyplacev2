@@ -310,12 +310,8 @@ function hpt_get_team_member_photo($team_member_id, $size = 'medium') {
         );
     }
     
-    // Return placeholder
-    return array(
-        'id' => 0,
-        'url' => get_template_directory_uri() . '/assets/images/team-placeholder.jpg',
-        'alt' => __('Team member photo', 'happy-place-theme'),
-    );
+    // Return fallback using centralized system
+    return hph_get_typed_fallback_image('staff', $size);
 }
 
 /**

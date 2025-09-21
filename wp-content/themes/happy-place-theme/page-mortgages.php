@@ -16,6 +16,7 @@ get_header(); ?>
         'style' => 'gradient',
         'theme' => 'primary',
         'height' => 'lg',
+        'is_top_of_page' => true,
         'background_image' => function_exists('hph_get_image_url') ? hph_get_image_url('mortgage-hero.jpg') : '',
         'parallax' => true,
         'overlay' => 'gradient',
@@ -847,7 +848,7 @@ window.addEventListener('resize', function() {
 .hph-mortgage-calculator-section .hph-container {
     max-width: var(--hph-container-xl);
     margin: 0 auto;
-    padding: 0 var(--hph-padding-lg);
+    padding: 0 var(--hph-space-6);
 }
 
 /* Section Header */
@@ -858,7 +859,7 @@ window.addEventListener('resize', function() {
 
 .hph-mortgage-calculator-section .hph-badge {
     display: inline-block;
-    padding: var(--hph-padding-sm) var(--hph-padding-lg);
+    padding: var(--hph-space-2) var(--hph-space-6);
     background: var(--hph-gradient-primary);
     color: var(--hph-white);
     border-radius: var(--hph-radius-full);
@@ -866,7 +867,7 @@ window.addEventListener('resize', function() {
     font-weight: var(--hph-font-semibold);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    margin-bottom: var(--hph-space-lg);
+    margin-bottom: var(--hph-space-6);
     box-shadow: var(--hph-shadow-primary);
 }
 
@@ -874,7 +875,7 @@ window.addEventListener('resize', function() {
     font-size: var(--hph-text-4xl);
     font-weight: var(--hph-font-bold);
     color: var(--hph-text-color);
-    margin: 0 0 var(--hph-space-md) 0;
+    margin: 0 0 var(--hph-space-4) 0;
     line-height: var(--hph-leading-tight);
     font-family: var(--hph-font-display);
 }
@@ -917,13 +918,13 @@ window.addEventListener('resize', function() {
 }
 
 .hph-calculator-form h3 {
-    margin: 0 0 var(--hph-space-xl) 0;
+    margin: 0 0 var(--hph-space-8) 0;
     font-size: var(--hph-text-xl);
     font-weight: var(--hph-font-semibold);
     color: var(--hph-text-color);
     display: flex;
     align-items: center;
-    gap: var(--hph-space-sm);
+    gap: var(--hph-space-2);
 }
 
 .hph-calculator-form h3::before {
@@ -933,13 +934,13 @@ window.addEventListener('resize', function() {
 
 #mortgage-calculator-form {
     display: grid;
-    gap: var(--hph-space-lg);
+    gap: var(--hph-space-6);
 }
 
 /* Form Groups and Labels */
 .hph-form-group label {
     display: block;
-    margin-bottom: var(--hph-space-xs);
+    margin-bottom: var(--hph-space-1);
     font-weight: var(--hph-font-medium);
     color: var(--hph-text-color);
     font-size: var(--hph-text-sm);
@@ -975,7 +976,7 @@ window.addEventListener('resize', function() {
 /* Input with Currency Symbol */
 .hph-form-group [style*="position: relative"] span {
     position: absolute;
-    left: var(--hph-space-md);
+    left: var(--hph-space-4);
     top: 50%;
     transform: translateY(-50%);
     color: var(--hph-text-muted);
@@ -1014,7 +1015,7 @@ window.addEventListener('resize', function() {
 }
 
 .hph-payment-summary h3 {
-    margin: 0 0 var(--hph-space-md) 0;
+    margin: 0 0 var(--hph-space-4) 0;
     font-size: var(--hph-text-lg);
     font-weight: var(--hph-font-medium);
     opacity: 0.9;
@@ -1026,7 +1027,7 @@ window.addEventListener('resize', function() {
     font-size: var(--hph-text-5xl);
     font-weight: var(--hph-font-extrabold);
     line-height: var(--hph-leading-none);
-    margin-bottom: var(--hph-space-sm);
+    margin-bottom: var(--hph-space-2);
     position: relative;
     z-index: 2;
     font-family: var(--hph-font-display);
@@ -1050,13 +1051,13 @@ window.addEventListener('resize', function() {
 }
 
 .hph-payment-breakdown h4 {
-    margin: 0 0 var(--hph-space-lg) 0;
+    margin: 0 0 var(--hph-space-6) 0;
     font-size: var(--hph-text-xl);
     font-weight: var(--hph-font-semibold);
     color: var(--hph-text-color);
     display: flex;
     align-items: center;
-    gap: var(--hph-space-sm);
+    gap: var(--hph-space-2);
 }
 
 .hph-payment-breakdown h4::before {
@@ -1073,16 +1074,16 @@ window.addEventListener('resize', function() {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--hph-space-md) 0;
+    padding: var(--hph-space-4) 0;
     border-bottom: var(--hph-border-width) solid var(--hph-border-color-light);
     transition: var(--hph-transition-fast);
 }
 
 .hph-payment-breakdown > div > div:hover {
     background-color: var(--hph-gray-25);
-    margin: 0 calc(-1 * var(--hph-space-md));
-    padding-left: var(--hph-space-md);
-    padding-right: var(--hph-space-md);
+    margin: 0 calc(-1 * var(--hph-space-4));
+    padding-left: var(--hph-space-4);
+    padding-right: var(--hph-space-4);
     border-radius: var(--hph-radius-md);
 }
 
@@ -1107,18 +1108,18 @@ window.addEventListener('resize', function() {
 .hph-loan-summary {
     background: var(--hph-gray-25);
     border-radius: var(--hph-radius-lg);
-    padding: var(--hph-padding-lg);
+    padding: var(--hph-space-6);
     border: var(--hph-border-width) solid var(--hph-border-color);
 }
 
 .hph-loan-summary h4 {
-    margin: 0 0 var(--hph-space-md) 0;
+    margin: 0 0 var(--hph-space-4) 0;
     font-size: var(--hph-text-lg);
     font-weight: var(--hph-font-semibold);
     color: var(--hph-text-color);
     display: flex;
     align-items: center;
-    gap: var(--hph-space-sm);
+    gap: var(--hph-space-2);
 }
 
 .hph-loan-summary h4::before {
@@ -1135,7 +1136,7 @@ window.addEventListener('resize', function() {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--hph-space-xs) 0;
+    padding: var(--hph-space-1) 0;
 }
 
 .hph-loan-summary span:first-child {
@@ -1151,7 +1152,7 @@ window.addEventListener('resize', function() {
 /* Disclaimer */
 .hph-mortgage-calculator-section [style*="margin-top: var(--hph-spacing-2xl)"] {
     margin-top: var(--hph-space-2xl);
-    padding: var(--hph-padding-lg);
+    padding: var(--hph-space-6);
     background: var(--hph-primary-25);
     border-radius: var(--hph-radius-lg);
     text-align: center;
@@ -1188,7 +1189,7 @@ window.addEventListener('resize', function() {
 .hph-cta-content h2 {
     font-size: var(--hph-text-3xl);
     font-weight: var(--hph-font-bold);
-    margin: 0 0 var(--hph-space-lg) 0;
+    margin: 0 0 var(--hph-space-6) 0;
     line-height: var(--hph-leading-tight);
     font-family: var(--hph-font-display);
 }
@@ -1197,11 +1198,11 @@ window.addEventListener('resize', function() {
     font-size: var(--hph-text-lg);
     opacity: 0.9;
     line-height: var(--hph-leading-relaxed);
-    margin: 0 0 var(--hph-space-xl) 0;
+    margin: 0 0 var(--hph-space-8) 0;
 }
 
 .hph-cta-content ul {
-    margin: 0 0 var(--hph-space-xl) 0;
+    margin: 0 0 var(--hph-space-8) 0;
     padding: 0;
     list-style: none;
     display: grid;
@@ -1211,7 +1212,7 @@ window.addEventListener('resize', function() {
 .hph-cta-content li {
     display: flex;
     align-items: center;
-    gap: var(--hph-space-sm);
+    gap: var(--hph-space-2);
     font-size: var(--hph-text-base);
 }
 
@@ -1222,16 +1223,16 @@ window.addEventListener('resize', function() {
 
 /* Contact Info Card */
 .hph-cta-content > div[style*="padding"] {
-    padding: var(--hph-padding-lg);
+    padding: var(--hph-space-6);
     background: rgba(255, 255, 255, 0.1);
     border-radius: var(--hph-radius-lg);
     backdrop-filter: blur(10px);
     border: var(--hph-border-width) solid rgba(255, 255, 255, 0.2);
-    margin-bottom: var(--hph-space-xl);
+    margin-bottom: var(--hph-space-8);
 }
 
 .hph-cta-content h4 {
-    margin: 0 0 var(--hph-space-xs) 0;
+    margin: 0 0 var(--hph-space-1) 0;
     font-size: var(--hph-text-xl);
     font-weight: var(--hph-font-semibold);
 }
@@ -1246,7 +1247,7 @@ window.addEventListener('resize', function() {
 }
 
 .hph-mortgage-form h3 {
-    margin: 0 0 var(--hph-space-sm) 0;
+    margin: 0 0 var(--hph-space-2) 0;
     color: var(--hph-text-color);
     font-size: var(--hph-text-xl);
     font-weight: var(--hph-font-semibold);
@@ -1255,7 +1256,7 @@ window.addEventListener('resize', function() {
 }
 
 .hph-mortgage-form > div > p {
-    margin: 0 0 var(--hph-space-xl) 0;
+    margin: 0 0 var(--hph-space-8) 0;
     color: var(--hph-text-muted);
     text-align: center;
     font-size: var(--hph-text-base);
@@ -1286,14 +1287,14 @@ window.addEventListener('resize', function() {
 
 .hph-mortgage-form label {
     display: block;
-    margin-bottom: var(--hph-space-xs);
+    margin-bottom: var(--hph-space-1);
     color: var(--hph-text-color);
     font-weight: var(--hph-font-medium);
     font-size: var(--hph-text-sm);
 }
 
 .hph-mortgage-form .hph-form-group {
-    margin-bottom: var(--hph-space-lg);
+    margin-bottom: var(--hph-space-6);
 }
 
 .hph-mortgage-form [style*="grid-template-columns"] {
@@ -1322,12 +1323,12 @@ window.addEventListener('resize', function() {
 }
 
 .hph-mortgage-form button i {
-    margin-right: var(--hph-space-sm);
+    margin-right: var(--hph-space-2);
 }
 
 /* Privacy Notice */
 .hph-mortgage-form p:last-child {
-    margin: var(--hph-space-lg) 0 0 0;
+    margin: var(--hph-space-6) 0 0 0;
     font-size: var(--hph-text-xs);
     color: var(--hph-text-muted);
     text-align: center;
@@ -1362,7 +1363,7 @@ window.addEventListener('resize', function() {
     
     .hph-calculator-form,
     .hph-mortgage-form > div {
-        padding: var(--hph-padding-lg);
+        padding: var(--hph-space-6);
     }
     
     .hph-payment-summary #monthly-payment {

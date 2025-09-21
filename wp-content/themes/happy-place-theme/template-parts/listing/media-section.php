@@ -355,7 +355,7 @@ wp_add_inline_script('hph-components',
 );
 
 // Enqueue JavaScript
-wp_enqueue_script('hph-media-tabs', get_template_directory_uri() . '/assets/js/components/listing/media-tabs.js', [], '1.0.0', true);
+// wp_enqueue_script('hph-media-tabs', get_template_directory_uri() . '/assets/js/components/listing/media-tabs.js', [], '1.0.0', true);
 ?>
 
 <style>

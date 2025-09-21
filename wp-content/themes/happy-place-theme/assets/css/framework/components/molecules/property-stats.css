@@ -1,0 +1,306 @@
+/**
+ * Property Statistics Molecule
+ * Reusable property stats display for hero sections, cards, and listings
+ *
+ * @package HappyPlaceTheme
+ */
+
+/* ================================================
+   PROPERTY STATS CONTAINER - MOLECULE
+   ================================================ */
+
+.hph-property-stats {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+/* Horizontal layout (default) */
+.hph-property-stats--horizontal {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+/* Vertical layout */
+.hph-property-stats--vertical {
+  flex-direction: column;
+}
+
+/* Grid layout for many items */
+.hph-property-stats--grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1.5rem;
+}
+
+/* ================================================
+   PROPERTY STAT ITEM - MOLECULE
+   ================================================ */
+
+.hph-property-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0; /* Allow flex shrinking */
+}
+
+/* Vertical alignment variant */
+.hph-property-stat--vertical {
+  flex-direction: column;
+  text-align: center;
+  gap: 0.5rem;
+}
+
+/* ================================================
+   STAT ICON - ATOM
+   ================================================ */
+
+.hph-property-stat__icon {
+  font-size: 1.25rem;
+  opacity: 0.8;
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+  color: var(--hph-primary);
+  transition: color 0.2s ease;
+}
+
+/* Icon size variants */
+.hph-property-stat__icon--sm {
+  font-size: 1rem;
+  width: 16px;
+}
+
+.hph-property-stat__icon--lg {
+  font-size: 1.5rem;
+  width: 24px;
+}
+
+/* ================================================
+   STAT INFO CONTAINER - MOLECULE
+   ================================================ */
+
+.hph-property-stat__info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Horizontal info layout */
+.hph-property-stat__info--horizontal {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+/* ================================================
+   STAT VALUE & LABEL - ATOMS
+   ================================================ */
+
+.hph-property-stat__value {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--hph-gray-900);
+}
+
+.hph-property-stat__label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.8;
+  margin-top: 0.125rem;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--hph-gray-600);
+}
+
+/* ================================================
+   SIZE VARIANTS
+   ================================================ */
+
+/* Small variant */
+.hph-property-stats--sm .hph-property-stat__value {
+  font-size: 1rem;
+}
+
+.hph-property-stats--sm .hph-property-stat__label {
+  font-size: 0.625rem;
+}
+
+.hph-property-stats--sm .hph-property-stat__icon {
+  font-size: 1rem;
+  width: 16px;
+}
+
+/* Large variant */
+.hph-property-stats--lg .hph-property-stat__value {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.hph-property-stats--lg .hph-property-stat__label {
+  font-size: 0.875rem;
+}
+
+.hph-property-stats--lg .hph-property-stat__icon {
+  font-size: 1.5rem;
+  width: 24px;
+}
+
+/* ================================================
+   COLOR VARIANTS
+   ================================================ */
+
+/* Light variant for dark backgrounds */
+.hph-property-stats--light .hph-property-stat__value {
+  color: var(--hph-white);
+}
+
+.hph-property-stats--light .hph-property-stat__label {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.hph-property-stats--light .hph-property-stat__icon {
+  color: var(--hph-primary-200);
+}
+
+/* Dark variant for light backgrounds */
+.hph-property-stats--dark .hph-property-stat__value {
+  color: var(--hph-gray-900);
+}
+
+.hph-property-stats--dark .hph-property-stat__label {
+  color: var(--hph-gray-600);
+}
+
+.hph-property-stats--dark .hph-property-stat__icon {
+  color: var(--hph-primary-600);
+}
+
+/* ================================================
+   RESPONSIVE DESIGN
+   ================================================ */
+
+/* Tablet adjustments */
+@media (max-width: 1024px) {
+  .hph-property-stats {
+    gap: 1.25rem;
+  }
+
+  .hph-property-stats--grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 1.25rem;
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .hph-property-stats {
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .hph-property-stat {
+    gap: 0.5rem;
+    min-width: calc(50% - 0.5rem);
+  }
+
+  .hph-property-stat__icon {
+    font-size: 1.1rem;
+    width: 18px;
+  }
+
+  .hph-property-stat__value {
+    font-size: 1.1rem;
+  }
+
+  .hph-property-stat__label {
+    font-size: 0.55rem;
+  }
+
+  /* Grid becomes 2 columns on mobile */
+  .hph-property-stats--grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+}
+
+/* Small mobile adjustments */
+@media (max-width: 480px) {
+  .hph-property-stats {
+    gap: 0.75rem;
+  }
+
+  .hph-property-stat {
+    gap: 0.375rem;
+    min-width: calc(50% - 0.375rem);
+  }
+
+  .hph-property-stat__icon {
+    font-size: 1rem;
+    width: 16px;
+  }
+
+  .hph-property-stat__value {
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  /* Hide labels on very small screens */
+  .hph-property-stats--hide-labels-mobile .hph-property-stat__label {
+    display: none;
+  }
+}
+
+/* ================================================
+   ACCESSIBILITY
+   ================================================ */
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .hph-property-stat__value {
+    font-weight: 700;
+  }
+
+  .hph-property-stat__icon {
+    opacity: 1;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .hph-property-stat__icon {
+    transition: none;
+  }
+}
+
+/* ================================================
+   USAGE EXAMPLES
+   ================================================ */
+
+/*
+ * This component can be used in multiple contexts:
+ *
+ * Hero sections:
+ * <div class="hph-property-stats hph-property-stats--light">
+ *   <div class="hph-property-stat">
+ *     <i class="fas fa-bed hph-property-stat__icon"></i>
+ *     <div class="hph-property-stat__info">
+ *       <span class="hph-property-stat__value">3</span>
+ *       <span class="hph-property-stat__label">Bedrooms</span>
+ *     </div>
+ *   </div>
+ * </div>
+ *
+ * Listing cards:
+ * <div class="hph-property-stats hph-property-stats--sm">
+ *   ...
+ * </div>
+ *
+ * Property details:
+ * <div class="hph-property-stats hph-property-stats--grid hph-property-stats--lg">
+ *   ...
+ * </div>
+ */

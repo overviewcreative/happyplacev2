@@ -1,0 +1,405 @@
+{
+  "key": "group_hpl_city",
+  "title": "Happy Place Local - City Fields",
+  "fields": [
+    {
+      "key": "field_hpl_city_state",
+      "label": "State",
+      "name": "state",
+      "type": "text",
+      "instructions": "State abbreviation (e.g., DE, CA)",
+      "required": 1,
+      "conditional_logic": 0,
+      "wrapper": {
+        "width": "33",
+        "class": "",
+        "id": ""
+      },
+      "default_value": "",
+      "placeholder": "DE",
+      "prepend": "",
+      "append": "",
+      "maxlength": 2
+    },
+    {
+      "key": "field_hpl_city_county",
+      "label": "County",
+      "name": "county",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "conditional_logic": 0,
+      "wrapper": {
+        "width": "33",
+        "class": "",
+        "id": ""
+      },
+      "default_value": "",
+      "placeholder": "",
+      "prepend": "",
+      "append": "",
+      "maxlength": ""
+    },
+    {
+      "key": "field_hpl_city_population",
+      "label": "Population",
+      "name": "population",
+      "type": "number",
+      "instructions": "",
+      "required": 0,
+      "conditional_logic": 0,
+      "wrapper": {
+        "width": "34",
+        "class": "",
+        "id": ""
+      },
+      "default_value": "",
+      "placeholder": "",
+      "prepend": "",
+      "append": "",
+      "min": 0,
+      "max": "",
+      "step": 1
+    },
+    {
+      "key": "field_hpl_city_lat",
+      "label": "Latitude",
+      "name": "lat",
+      "type": "number",
+      "instructions": "",
+      "required": 0,
+      "conditional_logic": 0,
+      "wrapper": {
+        "width": "50",
+        "class": "",
+        "id": ""
+      },
+      "default_value": "",
+      "placeholder": "39.7391536",
+      "prepend": "",
+      "append": "",
+      "min": -90,
+      "max": 90,
+      "step": "any"
+    },
+    {
+      "key": "field_hpl_city_lng",
+      "label": "Longitude",
+      "name": "lng",
+      "type": "number",
+      "instructions": "",
+      "required": 0,
+      "conditional_logic": 0,
+      "wrapper": {
+        "width": "50",
+        "class": "",
+        "id": ""
+      },
+      "default_value": "",
+      "placeholder": "-75.5397878",
+      "prepend": "",
+      "append": "",
+      "min": -180,
+      "max": 180,
+      "step": "any"
+    },
+    {
+      "key": "field_hpl_city_tagline",
+      "label": "Tagline",
+      "name": "tagline",
+      "type": "text",
+      "instructions": "Short catchphrase for the city",
+      "required": 0,
+      "conditional_logic": 0,
+      "wrapper": {
+        "width": "",
+        "class": "",
+        "id": ""
+      },
+      "default_value": "",
+      "placeholder": "Where History Meets Hospitality",
+      "prepend": "",
+      "append": "",
+      "maxlength": 100
+    },
+    {
+      "key": "field_hpl_city_description",
+      "label": "Description",
+      "name": "description",
+      "type": "wysiwyg",
+      "instructions": "Full description of the city",
+      "required": 0,
+      "conditional_logic": 0,
+      "wrapper": {
+        "width": "",
+        "class": "",
+        "id": ""
+      },
+      "default_value": "",
+      "tabs": "all",
+      "toolbar": "full",
+      "media_upload": 1,
+      "delay": 1
+    },
+    {
+      "key": "field_hpl_city_hero_image",
+      "label": "Hero Image",
+      "name": "hero_image",
+      "type": "image",
+      "instructions": "Main promotional image for the city",
+      "required": 0,
+      "conditional_logic": 0,
+      "wrapper": {
+        "width": "",
+        "class": "",
+        "id": ""
+      },
+      "return_format": "array",
+      "preview_size": "medium",
+      "library": "all",
+      "min_width": "",
+      "min_height": "",
+      "min_size": "",
+      "max_width": "",
+      "max_height": "",
+      "max_size": "",
+      "mime_types": ""
+    },
+    {
+      "key": "field_hpl_city_gallery",
+      "label": "Gallery",
+      "name": "gallery",
+      "type": "gallery",
+      "instructions": "Additional images of the city",
+      "required": 0,
+      "conditional_logic": 0,
+      "wrapper": {
+        "width": "",
+        "class": "",
+        "id": ""
+      },
+      "return_format": "array",
+      "preview_size": "medium",
+      "insert": "append",
+      "library": "all",
+      "min": "",
+      "max": "",
+      "min_width": "",
+      "min_height": "",
+      "min_size": "",
+      "max_width": "",
+      "max_height": "",
+      "max_size": "",
+      "mime_types": ""
+    },
+    {
+      "key": "field_hpl_city_external_links",
+      "label": "External Links",
+      "name": "external_links",
+      "type": "repeater",
+      "instructions": "Links to relevant external resources",
+      "required": 0,
+      "conditional_logic": 0,
+      "wrapper": {
+        "width": "",
+        "class": "",
+        "id": ""
+      },
+      "collapsed": "",
+      "min": 0,
+      "max": 0,
+      "layout": "table",
+      "button_label": "Add Link",
+      "sub_fields": [
+        {
+          "key": "field_hpl_city_link_title",
+          "label": "Title",
+          "name": "title",
+          "type": "text",
+          "instructions": "",
+          "required": 1,
+          "conditional_logic": 0,
+          "wrapper": {
+            "width": "30",
+            "class": "",
+            "id": ""
+          },
+          "default_value": "",
+          "placeholder": "City Website",
+          "prepend": "",
+          "append": "",
+          "maxlength": ""
+        },
+        {
+          "key": "field_hpl_city_link_url",
+          "label": "URL",
+          "name": "url",
+          "type": "url",
+          "instructions": "",
+          "required": 1,
+          "conditional_logic": 0,
+          "wrapper": {
+            "width": "50",
+            "class": "",
+            "id": ""
+          },
+          "default_value": "",
+          "placeholder": ""
+        },
+        {
+          "key": "field_hpl_city_link_type",
+          "label": "Type",
+          "name": "type",
+          "type": "select",
+          "instructions": "",
+          "required": 0,
+          "conditional_logic": 0,
+          "wrapper": {
+            "width": "20",
+            "class": "",
+            "id": ""
+          },
+          "choices": {
+            "official": "Official",
+            "tourism": "Tourism",
+            "news": "News",
+            "social": "Social Media",
+            "other": "Other"
+          },
+          "default_value": "official",
+          "allow_null": 0,
+          "multiple": 0,
+          "ui": 0,
+          "return_format": "value",
+          "ajax": 0,
+          "placeholder": ""
+        }
+      ]
+    },
+    {
+      "key": "field_hpl_city_related_places",
+      "label": "Related Places",
+      "name": "related_places",
+      "type": "relationship",
+      "instructions": "Associated local places in this city",
+      "required": 0,
+      "conditional_logic": 0,
+      "wrapper": {
+        "width": "50",
+        "class": "",
+        "id": ""
+      },
+      "post_type": [
+        "local_place"
+      ],
+      "taxonomy": [],
+      "filters": [
+        "search"
+      ],
+      "elements": [
+        "featured_image"
+      ],
+      "min": "",
+      "max": "",
+      "return_format": "object"
+    },
+    {
+      "key": "field_hpl_city_featured_places",
+      "label": "Featured Places",
+      "name": "featured_places",
+      "type": "relationship",
+      "instructions": "Top places to highlight for this city",
+      "required": 0,
+      "conditional_logic": 0,
+      "wrapper": {
+        "width": "50",
+        "class": "",
+        "id": ""
+      },
+      "post_type": [
+        "local_place"
+      ],
+      "taxonomy": [],
+      "filters": [
+        "search"
+      ],
+      "elements": [
+        "featured_image"
+      ],
+      "min": "",
+      "max": 6,
+      "return_format": "object"
+    },
+    {
+      "key": "field_hpl_city_upcoming_events",
+      "label": "Upcoming Events",
+      "name": "upcoming_events",
+      "type": "relationship",
+      "instructions": "Events happening in this city",
+      "required": 0,
+      "conditional_logic": 0,
+      "wrapper": {
+        "width": "50",
+        "class": "",
+        "id": ""
+      },
+      "post_type": [
+        "local_event"
+      ],
+      "taxonomy": [],
+      "filters": [
+        "search"
+      ],
+      "elements": [
+        "featured_image"
+      ],
+      "min": "",
+      "max": "",
+      "return_format": "object"
+    },
+    {
+      "key": "field_hpl_city_featured_stories",
+      "label": "Featured Stories",
+      "name": "featured_stories",
+      "type": "relationship",
+      "instructions": "Blog posts or stories about this city",
+      "required": 0,
+      "conditional_logic": 0,
+      "wrapper": {
+        "width": "50",
+        "class": "",
+        "id": ""
+      },
+      "post_type": [
+        "post"
+      ],
+      "taxonomy": [],
+      "filters": [
+        "search"
+      ],
+      "elements": [
+        "featured_image"
+      ],
+      "min": "",
+      "max": 3,
+      "return_format": "object"
+    }
+  ],
+  "location": [
+    [
+      {
+        "param": "post_type",
+        "operator": "==",
+        "value": "city"
+      }
+    ]
+  ],
+  "menu_order": 0,
+  "position": "normal",
+  "style": "default",
+  "label_placement": "top",
+  "instruction_placement": "label",
+  "hide_on_screen": "",
+  "active": true,
+  "description": ""
+}

@@ -39,8 +39,8 @@
             // Cookie consent
             this.initCookieConsent();
             
-            // Theme switcher (if applicable)
-            this.initThemeSwitcher();
+            // Theme switcher removed (incomplete implementation)
+            // TODO: Re-implement comprehensive dark mode in future version
         },
         
         /**
@@ -178,7 +178,7 @@
                         <div class="hph-cookie-consent-actions">
                             <button type="button" class="hph-accept-cookies hph-btn hph-btn-primary hph-btn-sm">Accept All</button>
                             <button type="button" class="hph-decline-cookies hph-btn hph-btn-outline hph-btn-sm">Decline</button>
-                            <a href="/privacy-policy" class="hph-text-sm hph-underline">Privacy Policy</a>
+                            <a href="/legal/#privacy" class="hph-text-sm hph-underline">Privacy Policy</a>
                         </div>
                     </div>
                 </div>
@@ -722,64 +722,6 @@
                 
                 printWindow.document.close();
             }
-        },
-        
-        /**
-         * Initialize theme switcher
-         */
-        initThemeSwitcher: function() {
-            // Basic theme switcher implementation
-            var $themeSwitcher = $('.theme-switcher, [data-theme-switcher]');
-            
-            if ($themeSwitcher.length === 0) {
-                // No theme switcher found, just return
-                return;
-            }
-            
-            // Get current theme from localStorage or default
-            var currentTheme = localStorage.getItem('hph-theme') || 'light';
-            $('body').attr('data-theme', currentTheme);
-            
-            // Update switcher UI
-            $themeSwitcher.each(function() {
-                var $switcher = $(this);
-                if ($switcher.is('select')) {
-                    $switcher.val(currentTheme);
-                } else {
-                    $switcher.toggleClass('active', currentTheme === 'dark');
-                }
-            });
-            
-            // Handle theme switching
-            $themeSwitcher.on('change click', function(e) {
-                var $switcher = $(this);
-                var newTheme;
-                
-                if ($switcher.is('select')) {
-                    newTheme = $switcher.val();
-                } else {
-                    e.preventDefault();
-                    newTheme = currentTheme === 'light' ? 'dark' : 'light';
-                }
-                
-                // Apply theme
-                $('body').attr('data-theme', newTheme);
-                localStorage.setItem('hph-theme', newTheme);
-                currentTheme = newTheme;
-                
-                // Update all switchers
-                $themeSwitcher.each(function() {
-                    var $s = $(this);
-                    if ($s.is('select')) {
-                        $s.val(newTheme);
-                    } else {
-                        $s.toggleClass('active', newTheme === 'dark');
-                    }
-                });
-                
-                // Trigger custom event
-                $(document).trigger('theme-changed', [newTheme]);
-            });
         }
     };
     

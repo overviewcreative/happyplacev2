@@ -74,13 +74,11 @@
 .hph-gap-4 { gap: var(--hph-gap-md, 1rem) !important; }
 .hph-gap-6 { gap: var(--hph-gap-lg, 1.5rem) !important; }
 
-.hph-p-3 { padding: var(--hph-padding-sm, 0.75rem) !important; }
-.hph-p-6 { padding: var(--hph-padding-lg, 1.5rem) !important; }
 
 .hph-m-0 { margin: 0 !important; }
-.hph-mb-1 { margin-bottom: var(--hph-margin-xs, 0.25rem) !important; }
-.hph-mb-2 { margin-bottom: var(--hph-margin-sm, 0.5rem) !important; }
-.hph-mt-6 { margin-top: var(--hph-margin-lg, 1.5rem) !important; }
+.hph-mb-1 { margin-bottom: var(--hph-space-1, 0.25rem) !important; }
+.hph-mb-2 { margin-bottom: var(--hph-space-2, 0.5rem) !important; }
+.hph-mt-6 { margin-top: var(--hph-space-6, 1.5rem) !important; }
 
 /* Typography utilities */
 .hph-text-3xl { font-size: var(--hph-text-3xl, 1.875rem) !important; }
@@ -176,7 +174,7 @@
 
 /* Archive specific button classes */
 .hph-view-btn {
-    padding: var(--hph-padding-sm, 0.75rem) var(--hph-padding-md, 1rem);
+    padding: var(--hph-space-2, 0.75rem) var(--hph-space-4, 1rem);
     background: transparent;
     border: none;
     border-radius: var(--hph-border-radius, 0.375rem);
@@ -208,7 +206,7 @@
 
 /* Load more button styles */
 .hph-btn-load-more {
-    padding: var(--hph-padding-md, 1rem) var(--hph-padding-2xl, 2rem);
+    padding: var(--hph-space-4, 1rem) var(--hph-space-12, 2rem);
     background: var(--hph-primary, #50bae1);
     color: var(--hph-white, #ffffff);
     border: none;
@@ -230,16 +228,15 @@
 
 /* Additional spacing utilities */
 .hph-mt-2xl { margin-top: var(--hph-margin-2xl, 2rem) !important; }
-.hph-mt-md { margin-top: var(--hph-margin-md, 1rem) !important; }
-.hph-mb-md { margin-bottom: var(--hph-margin-md, 1rem) !important; }
-.hph-mb-lg { margin-bottom: var(--hph-margin-lg, 1.5rem) !important; }
-.hph-p-2xl { padding: var(--hph-padding-2xl, 2rem) !important; }
-.hph-p-lg { padding: var(--hph-padding-lg, 1.5rem) !important; }
-.hph-p-md { padding: var(--hph-padding-md, 1rem) !important; }
-.hph-py-md { padding-top: var(--hph-padding-md, 1rem) !important; padding-bottom: var(--hph-padding-md, 1rem) !important; }
-.hph-py-xl { padding-top: var(--hph-padding-xl, 1.75rem) !important; padding-bottom: var(--hph-padding-xl, 1.75rem) !important; }
-.hph-px-lg { padding-left: var(--hph-padding-lg, 1.5rem) !important; padding-right: var(--hph-padding-lg, 1.5rem) !important; }
-.hph-px-xl { padding-left: var(--hph-padding-xl, 1.75rem) !important; padding-right: var(--hph-padding-xl, 1.75rem) !important; }
+.hph-mt-md { margin-top: var(--hph-space-4, 1rem) !important; }
+.hph-mb-md { margin-bottom: var(--hph-space-4, 1rem) !important; }
+.hph-mb-lg { margin-bottom: var(--hph-space-6, 1.5rem) !important; }
+.hph-p-lg { padding: var(--hph-space-6, 1.5rem) !important; }
+.hph-p-md { padding: var(--hph-space-4, 1rem) !important; }
+.hph-py-md { padding-top: var(--hph-space-4, 1rem) !important; padding-bottom: var(--hph-space-4, 1rem) !important; }
+.hph-py-xl { padding-top: var(--hph-space-8, 1.75rem) !important; padding-bottom: var(--hph-space-8, 1.75rem) !important; }
+.hph-px-lg { padding-left: var(--hph-space-6, 1.5rem) !important; padding-right: var(--hph-space-6, 1.5rem) !important; }
+.hph-px-xl { padding-left: var(--hph-space-8, 1.75rem) !important; padding-right: var(--hph-space-8, 1.75rem) !important; }
 
 /* Additional Z-index utilities */
 .hph-z-1 { z-index: 1 !important; }
@@ -265,14 +262,14 @@
 .hph-shadow-xl { box-shadow: var(--hph-shadow-xl, 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)) !important; }
 
 /* Additional positioning */
-.hph-right-md { right: var(--hph-padding-md, 1rem) !important; }
+.hph-right-md { right: var(--hph-space-4, 1rem) !important; }
 
 /* Filter tab specific utilities */
 .hph-filter-tab {
     display: flex;
     align-items: center;
     gap: var(--hph-gap-xs, 0.5rem);
-    padding: var(--hph-padding-xs, 0.5rem) var(--hph-padding-md, 1rem);
+    padding: var(--hph-space-1, 0.5rem) var(--hph-space-4, 1rem);
     border-radius: var(--hph-border-radius, 0.375rem);
     font-size: var(--hph-text-sm, 0.875rem);
     font-weight: var(--hph-font-medium, 500);

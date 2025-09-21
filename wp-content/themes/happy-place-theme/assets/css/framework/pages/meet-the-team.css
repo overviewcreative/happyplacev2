@@ -1,0 +1,152 @@
+/**
+ * Meet The Team Additional Styles
+ * Enhanced card styling with better padding and flexbox layout
+ */
+
+/* ==========================================================================
+   Meet The Team Grid Layout
+   ========================================================================== */
+
+/* Ensure proper flexbox alignment for the team grid */
+.hph-results-grid .hph-grid {
+    display: grid;
+    align-items: stretch; /* Ensure all cards have equal height */
+    justify-items: stretch; /* Ensure cards stretch to fill grid cells */
+}
+
+/* ==========================================================================
+   Enhanced Card Styling for Team Members
+   ========================================================================== */
+
+/* Target team member cards specifically on meet-the-team page */
+body.page-template-meet-the-team .hph-card,
+body.page-template-meet-the-team .hph-universal-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Ensure cards fill their grid cell */
+    min-height: 300px; /* Minimum height for consistency */
+}
+
+/* Enhanced padding for card body */
+body.page-template-meet-the-team .hph-card-body {
+    flex: 1; /* Allow body to expand */
+    display: flex;
+    flex-direction: column;
+    padding: var(--hph-spacing-lg); /* Add padding to the body wrapper */
+}
+
+/* Enhanced content spacing */
+body.page-template-meet-the-team .hph-card-content {
+    flex: 1; /* Allow content to expand and fill available space */
+    padding: 0; /* Remove duplicate padding since body has it */
+    display: flex;
+    flex-direction: column;
+    gap: var(--hph-spacing-md); /* Better vertical spacing between elements */
+}
+
+/* Ensure title and subtitle have proper spacing */
+body.page-template-meet-the-team .hph-card-title {
+    margin-bottom: var(--hph-spacing-sm);
+    font-weight: var(--hph-font-weight-semibold);
+    line-height: var(--hph-line-height-tight);
+}
+
+body.page-template-meet-the-team .hph-card-subtitle {
+    margin-bottom: var(--hph-spacing-md);
+    color: var(--hph-primary);
+    font-size: var(--hph-font-size-sm);
+    font-weight: var(--hph-font-weight-medium);
+}
+
+/* Push card actions to bottom */
+body.page-template-meet-the-team .hph-card-actions {
+    margin-top: auto; /* Push actions to bottom */
+    padding-top: var(--hph-spacing-md);
+    border-top: 1px solid var(--hph-border-color-light);
+}
+
+/* Enhanced button styling for contact actions */
+body.page-template-meet-the-team .hph-card-actions .hph-btn {
+    width: 100%;
+    justify-content: center;
+    padding: var(--hph-spacing-sm) var(--hph-spacing-md);
+    margin-bottom: var(--hph-spacing-xs);
+}
+
+body.page-template-meet-the-team .hph-card-actions .hph-btn:last-child {
+    margin-bottom: 0;
+}
+
+/* ==========================================================================
+   Staff Card Variations
+   ========================================================================== */
+
+.hph-card--staff {
+    .hph-card__subtitle {
+        &--secondary {
+            color: var(--hph-color-secondary);
+        }
+    }
+}
+
+/* ==========================================================================
+   Avatar Variations for Team Members
+   ========================================================================== */
+
+.hph-avatar {
+    &--primary {
+        border-color: var(--hph-color-primary);
+    }
+    
+    &--secondary {
+        border-color: var(--hph-color-secondary);
+    }
+}
+
+/* ==========================================================================
+   Featured Card Modifier
+   ========================================================================== */
+
+.hph-card--featured {
+    position: relative;
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(
+            90deg,
+            var(--hph-color-primary),
+            var(--hph-color-secondary)
+        );
+        border-radius: var(--hph-radius-lg) var(--hph-radius-lg) 0 0;
+    }
+    
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--hph-shadow-xl);
+    }
+}
+
+/* ==========================================================================
+   Main Layout Variations
+   ========================================================================== */
+
+.hph-main--meet-the-team {
+    .hph-section {
+        &:first-of-type {
+            padding-top: 0;
+        }
+    }
+    
+    .hph-results-bar {
+        text-align: center;
+        
+        &__count {
+            font-size: var(--hph-text-lg);
+        }
+    }
+}

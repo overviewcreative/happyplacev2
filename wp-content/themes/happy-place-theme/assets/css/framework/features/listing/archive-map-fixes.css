@@ -1,0 +1,724 @@
+/* ================================================================
+   ARCHIVE MAP VIEW - ESSENTIAL FUNCTIONALITY ONLY
+   ================================================================ */
+/* 
+ * CLEANED FILE: Hero duplicates moved to temp-hero-duplicates.css
+ * Blog styling moved to temp-blog-styling.css
+ * Keeping ONLY essential map view functionality
+ */
+
+/* ================================================================
+   MAP MARKER OPTIMIZATIONS
+   ================================================================ */
+
+/* Optimized listing markers - reduced !important usage */
+.hph-map-marker,
+.hph-listing-marker {
+    min-width: 90px;
+    max-width: 110px;
+    padding: 6px;
+}
+
+/* Marker pin styling */
+.hph-marker-pin {
+    background: var(--hph-white, #ffffff);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 2px solid var(--hph-primary);
+    padding: 4px 8px;
+    position: relative;
+    transform-origin: bottom center;
+    transition: all 0.3s ease;
+}
+
+.hph-marker-pin::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid var(--hph-primary);
+}
+
+/* Marker price styling */
+.hph-marker-price {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--hph-primary);
+    white-space: nowrap;
+    line-height: 1.2;
+}
+
+/* Hover effects */
+.hph-map-marker:hover .hph-marker-pin {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Adjust marker content for smaller size */
+.hph-listing-marker .hph-marker-content {
+    gap: 4px;
+    padding: 4px 6px;
+}
+
+.hph-listing-marker .hph-marker-icon {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+}
+
+.hph-listing-marker .hph-marker-text {
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+/* ================================================================
+   MAP VIEW LAYOUT - ESSENTIAL FUNCTIONALITY
+   ================================================================ */
+
+/* Map view container - hidden by default */
+.hph-listing-archive .hph-view-content[data-view-content="map"]:not(.active) {
+    display: none;
+}
+
+/* Map view container - shown when active */
+body.post-type-archive-listing .hph-listing-archive .hph-view-content[data-view-content="map"].active,
+body.archive .hph-listing-archive .hph-view-content[data-view-content="map"].active,
+.hph-listing-archive .hph-view-content[data-view-content="map"].active {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 100;
+    background: #000;
+    margin: 0;
+    padding: 0;
+    border: none;
+    box-sizing: border-box;
+}
+
+/* Map view when body has map class */
+body.hph-view-map .hph-view-content[data-view-content="map"],
+body.hph-view-map .hph-view-content[data-view-content="map"].active {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 100;
+    background: #000;
+    margin: 0;
+    padding: 0;
+    border: none;
+    box-sizing: border-box;
+}
+
+/* Prevent scrolling in map view */
+body.hph-view-map {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* Remove padding from containers in map view */
+body.hph-view-map .hph-listing-archive,
+body.hph-view-map .hph-container,
+body.hph-view-map .container {
+    margin: 0;
+    padding: 0;
+}
+
+/* ================================================================
+   MAP VIEW HEADER MANAGEMENT
+   ================================================================ */
+
+/* Hide regular site header in map view */
+body.hph-view-map .hph-site-header-enhanced__wrapper,
+body.hph-view-map .hph-topbar,
+body.hph-view-map .hph-site-header-enhanced,
+body.hph-view-map .hph-site-header-enhanced__search-bar,
+body.hph-view-map .hph-site-header-enhanced__mobile-menu,
+body.hph-view-map .hph-site-header-enhanced__mobile-overlay {
+    display: none;
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    left: -9999px;
+    z-index: -1000;
+    pointer-events: none;
+}
+
+/* Show specialized map header in map view */
+body.hph-view-map .hph-map-header {
+    display: flex;
+    visibility: visible;
+    opacity: 1;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    pointer-events: auto;
+}
+
+/* Hide specialized map header when NOT in map view */
+body:not(.hph-view-map) .hph-map-header {
+    display: none;
+}
+
+/* ================================================================
+   GRID AND LIST VIEW LAYERING
+   ================================================================ */
+
+/* Reset z-index issues when switching away from map view */
+body.hph-view-grid .hph-view-content[data-view-content="grid"],
+body.hph-view-list .hph-view-content[data-view-content="list"] {
+    position: relative;
+    z-index: 1;
+    display: block;
+    background: transparent;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    height: auto;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+}
+
+/* Ensure grid and list containers are properly visible */
+body.hph-view-grid .hph-listings-grid,
+body.hph-view-list .hph-listings-list {
+    z-index: 1;
+    position: relative;
+    background: transparent;
+}
+
+/* Reset any fixed positioning from map view */
+body:not(.hph-view-map) .hph-view-content {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: auto;
+    height: auto;
+    z-index: 1;
+}
+
+/* Hide hero section and standard views ONLY in map view */
+body.hph-view-map .hph-archive-hero-section,
+body.hph-view-map .hph-archive-listing-hero,
+body.hph-view-map .hph-standard-views-container {
+    display: none;
+}
+
+/* Legacy body class support */
+body.map-view-active .hph-archive-hero-section,
+body.map-view-active .hph-archive-listing-hero,
+body.map-view-active .hph-standard-views-container {
+    display: none;
+}
+
+/* ================================================================
+   MAP CANVAS AND PANEL LAYOUT
+   ================================================================ */
+
+/* Map canvas - full height, no padding */
+.hph-map-canvas {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+/* Adjust map canvas width when sidebar is active */
+.hph-listing-archive .hph-view-content[data-view-content="map"].active .hph-map-canvas {
+    width: 80vw; /* 80% width, leaving 20% for sidebar */
+    padding-top: 0; /* No padding - map goes under header */
+    height: 100vh; /* Full height */
+    top: 0;
+}
+
+/* Map loading state */
+.hph-map-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+.hph-map-loading i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Archive header search auto-expansion */
+.hph-search-bar.archive-auto-expanded {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Map panel positioning - sidebar behind header */
+.hph-map-panel {
+    position: fixed;
+    top: 110px; /* Start below header + topbar (70px + 40px) */
+    right: 0;
+    width: 20vw; /* Force 20% viewport width */
+    min-width: 350px;
+    height: calc(100vh - 110px); /* Full viewport height minus header + topbar */
+    background: white;
+    border-left: 1px solid #e5e7eb;
+    overflow: hidden; /* Prevent panel itself from scrolling */
+    z-index: 500; /* Below header but above map */
+    box-sizing: border-box;
+}
+
+/* ================================================================
+   RESPONSIVE MAP PANEL
+   ================================================================ */
+
+@media (max-width: 1200px) {
+    .hph-map-panel {
+        width: 25vw; /* Slightly wider on smaller screens */
+        min-width: 320px;
+    }
+    
+    .hph-listing-archive .hph-view-content[data-view-content="map"].active .hph-map-canvas {
+        width: 75vw; /* Adjust for wider sidebar */
+        padding-top: 0;
+        height: 100vh;
+    }
+}
+
+@media (max-width: 768px) {
+    .hph-map-panel {
+        width: 100vw;
+        min-width: unset;
+        height: 55vh; /* Increased to 55% for better scrolling */
+        top: 45vh; /* Adjusted top position */
+        border-left: none;
+        border-top: 1px solid #e5e7eb;
+    }
+    
+    .hph-listing-archive .hph-view-content[data-view-content="map"].active .hph-map-canvas {
+        width: 100vw;
+        height: calc(45vh - 60px); /* Account for mobile header */
+        margin-top: 60px; /* Account for mobile header */
+        padding-top: 0; /* No padding */
+    }
+    
+    .hph-map-panel-content {
+        height: calc(100% - 60px); /* Smaller header on mobile */
+    }
+}
+
+/* Map panel header styling - simplified */
+.hph-map-panel-header {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: transparent;
+    padding: 12px;
+    z-index: 10;
+}
+
+.hph-map-panel-close {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #374151;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.hph-map-panel-close:hover {
+    background: white;
+    transform: scale(1.05);
+    color: #1f2937;
+}
+
+/* Map panel content should be scrollable */
+.hph-map-panel-content {
+    padding: 0;
+    height: 100%; /* Full height */
+    overflow-y: auto; /* Only the content scrolls */
+}
+
+.hph-map-listings {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* Map card styling for sidebar layout */
+.hph-map-card {
+    border-bottom: 1px solid #f3f4f6;
+    padding: 16px 20px;
+    transition: background-color 0.2s ease;
+}
+
+.hph-map-card:hover {
+    background-color: #f9fafb;
+}
+
+.hph-map-card:last-child {
+    border-bottom: none;
+}
+
+/* Ensure hero sections are conditionally hidden */
+[data-hide-in-views*="map"] {
+    display: block;
+}
+
+body.map-view-active [data-hide-in-views*="map"] {
+    display: none !important;
+}
+
+/* ================================================================
+   ENHANCED POPUP STYLING
+   ================================================================ */
+
+/* Enhanced popup container */
+.mapboxgl-popup-content {
+    padding: 0;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    max-width: 320px;
+    background: white;
+    overflow: hidden;
+}
+
+/* Enhanced popup tip (arrow) styling */
+.mapboxgl-popup-tip {
+    border-top-color: white;
+    border-bottom-color: white;
+}
+
+/* Popup close button */
+.mapboxgl-popup-close-button {
+    color: var(--hph-gray-500);
+    font-size: 16px;
+    padding: 8px;
+    right: 8px;
+    top: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    transition: all 0.2s ease;
+}
+
+.mapboxgl-popup-close-button:hover {
+    color: var(--hph-gray-700);
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.05);
+}
+
+/* ================================================================
+   MAP POPUP STYLING - FRAMEWORK INTEGRATION
+   ================================================================ */
+/* 
+ * Map popups use existing hph-listing-card--map framework classes
+ * from listing-card.css for consistent styling across the site.
+ */
+
+/* ================================================================
+   MAP CARD STYLING FOR SIDEBAR
+   ================================================================ */
+
+.hph-map-card {
+    border-bottom: 1px solid #f3f4f6;
+    padding: 16px 20px;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+}
+
+.hph-map-card:hover {
+    background-color: #f9fafb;
+}
+
+.hph-map-card:last-child {
+    border-bottom: none;
+}
+
+.hph-map-card.active {
+    background-color: #eff6ff;
+    border-left: 3px solid var(--hph-primary);
+}
+
+/* Map card content layout */
+.hph-map-card-content {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.hph-map-card-image {
+    width: 80px;
+    height: 60px;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #f3f4f6;
+}
+
+.hph-map-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hph-map-card-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.hph-map-card-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 4px 0;
+}
+
+.hph-map-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 4px 0;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.hph-map-card-address {
+    font-size: 12px;
+    color: #6b7280;
+    margin: 0 0 8px 0;
+    line-height: 1.3;
+}
+
+.hph-map-card-features {
+    display: flex;
+    gap: 8px;
+    font-size: 11px;
+    color: #6b7280;
+}
+
+.hph-map-card-features .feature {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.hph-map-card-features .feature i {
+    font-size: 10px;
+}
+
+/* ================================================================
+   MOBILE RESPONSIVENESS
+   ================================================================ */
+
+@media (max-width: 768px) {
+    /* Smaller markers on mobile */
+    .hph-map-marker,
+    .hph-listing-marker {
+        min-width: 75px;
+        max-width: 90px;
+        padding: 4px;
+    }
+    
+    .hph-marker-pin {
+        padding: 3px 6px;
+    }
+    
+    .hph-marker-price {
+        font-size: 11px;
+    }
+    
+    .hph-listing-marker .hph-marker-icon {
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+    }
+    
+    .hph-listing-marker .hph-marker-text {
+        font-size: 10px;
+    }
+    
+    /* Adjust popup for mobile */
+    .mapboxgl-popup-content {
+        max-width: 280px;
+    }
+    
+    .hph-popup-image {
+        height: 120px;
+    }
+    
+    .hph-popup-details {
+        padding: 12px;
+    }
+    
+    .hph-popup-price {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Extra small markers on very small screens */
+    .hph-map-marker,
+    .hph-listing-marker {
+        min-width: 60px;
+        max-width: 75px;
+    }
+    
+    .hph-marker-pin {
+        padding: 2px 4px;
+    }
+    
+    .hph-marker-price {
+        font-size: 10px;
+    }
+    
+    .hph-listing-marker .hph-marker-icon {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .hph-popup-actions {
+        flex-direction: column;
+        gap: 6px;
+    }
+}
+
+/* ================================================================
+   MAP MARKER STYLES - MOVED FROM JS
+   ================================================================ */
+
+.hph-map-marker {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.hph-map-marker:hover {
+    z-index: 1000;
+}
+
+.hph-marker-pin {
+    background: var(--hph-primary, #0073aa);
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 1.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    position: relative;
+    min-width: 60px;
+    text-align: center;
+}
+
+.hph-marker-pin::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid var(--hph-primary, #0073aa);
+}
+
+.hph-map-marker.highlighted .hph-marker-pin {
+    background: var(--hph-accent, #00a0d2);
+    transform: scale(1.1);
+}
+
+.hph-map-marker.highlighted .hph-marker-pin::after {
+    border-top-color: var(--hph-accent, #00a0d2);
+}
+
+.hph-map-popup {
+    text-align: center;
+}
+
+.hph-popup-price {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--hph-primary, #0073aa);
+    margin-bottom: 0.25rem;
+}
+
+.hph-popup-address {
+    font-size: 0.875rem;
+    color: var(--hph-gray-700, #374151);
+}
+
+.hph-map-card.highlighted {
+    border-color: var(--hph-accent, #00a0d2);
+    box-shadow: 0 4px 12px rgba(0, 160, 210, 0.2);
+}
+
+.hph-map-error {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--hph-gray-50, #f9fafb);
+}
+
+.hph-error-content {
+    text-align: center;
+    color: var(--hph-gray-600, #6b7280);
+}
+
+.hph-error-content i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--hph-warning, #f59e0b);
+}
+
+.hph-error-content h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--hph-gray-900, #111827);
+}
+
+

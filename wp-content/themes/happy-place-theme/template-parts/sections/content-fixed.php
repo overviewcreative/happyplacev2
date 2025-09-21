@@ -100,30 +100,30 @@ function getContentImageStyles($style, $size) {
     <div class="hph-container" style="max-width: var(--hph-max-width); margin: 0 auto; padding: 0 var(--hph-padding-base);">
         
         <?php if ($badge || $headline || $subheadline || $content): ?>
-        <div style="text-align: <?php echo esc_attr($alignment); ?>; margin-bottom: var(--hph-margin-xl);">
+        <div style="text-align: <?php echo esc_attr($alignment); ?>; margin-bottom: var(--hph-space-8);">
             <?php if ($badge): ?>
             <span style="
                 display: inline-block;
                 background: var(--hph-primary);
                 color: white;
-                padding: var(--hph-padding-xs) var(--hph-padding-sm);
+                padding: var(--hph-space-1) var(--hph-space-2);
                 border-radius: var(--hph-radius-full);
                 font-size: var(--hph-text-sm);
                 font-weight: 600;
                 letter-spacing: 0.05em;
                 text-transform: uppercase;
-                margin-bottom: var(--hph-margin-md);
+                margin-bottom: var(--hph-space-4);
             "><?php echo esc_html($badge); ?></span>
             <?php endif; ?>
             
             <?php if ($headline): ?>
-            <h2 style="font-size: var(--hph-text-4xl); font-weight: 700; line-height: var(--hph-leading-tight); color: var(--hph-gray-900); margin-bottom: var(--hph-margin-md);">
+            <h2 style="font-size: var(--hph-text-4xl); font-weight: 700; line-height: var(--hph-leading-tight); color: var(--hph-gray-900); margin-bottom: var(--hph-space-4);">
                 <?php echo esc_html($headline); ?>
             </h2>
             <?php endif; ?>
             
             <?php if ($subheadline): ?>
-            <p style="font-size: var(--hph-text-xl); color: var(--hph-gray-600); margin-bottom: var(--hph-margin-lg); font-weight: 500;">
+            <p style="font-size: var(--hph-text-xl); color: var(--hph-gray-600); margin-bottom: var(--hph-space-6); font-weight: 500;">
                 <?php echo esc_html($subheadline); ?>
             </p>
             <?php endif; ?>
@@ -170,15 +170,15 @@ function getContentImageStyles($style, $size) {
         
         <!-- Buttons -->
         <?php if (!empty($buttons)): ?>
-        <div style="text-align: <?php echo esc_attr($alignment); ?>; margin-top: var(--hph-margin-xl);">
+        <div style="text-align: <?php echo esc_attr($alignment); ?>; margin-top: var(--hph-space-8);">
             <?php foreach ($buttons as $button): ?>
             <a href="<?php echo esc_url($button['url'] ?? '#'); ?>" 
                style="
                    display: inline-flex;
                    align-items: center;
                    gap: 0.5rem;
-                   padding: var(--hph-padding-md) var(--hph-padding-lg);
-                   margin: 0 var(--hph-margin-sm) var(--hph-margin-sm) 0;
+                   padding: var(--hph-space-4) var(--hph-space-6);
+                   margin: 0 var(--hph-space-2) var(--hph-space-2) 0;
                    background: <?php echo ($button['style'] ?? 'primary') === 'primary' ? 'var(--hph-primary)' : 'transparent'; ?>;
                    color: <?php echo ($button['style'] ?? 'primary') === 'primary' ? 'white' : 'var(--hph-primary)'; ?>;
                    border: 2px solid var(--hph-primary);

@@ -1,56 +1,21 @@
 <?php
 /**
  * Template Name: Dashboard Under Construction
- * Description: Password-protected under construction page for the agent dashboard
+ * Description: Under construction page for the agent dashboard
  */
 
-// Password protection
-if (!is_user_logged_in() && !is_admin()) {
-    // Show password form if not logged in
-    if (!isset($_POST['dashboard_password'])) {
-        get_header(); ?>
-        
-        <main id="main-content" class="site-main">
-            <div class="hph-container" style="padding: 4rem 1.5rem; text-align: center; min-height: 60vh; display: flex; flex-direction: column; justify-content: center;">
-                <div style="max-width: 400px; margin: 0 auto;">
-                    <i class="fas fa-lock" style="font-size: 3rem; color: var(--hph-primary); margin-bottom: 2rem;"></i>
-                    <h1 style="margin-bottom: 1rem;">Dashboard Access</h1>
-                    <p style="color: var(--hph-gray-600); margin-bottom: 2rem;">This page is password protected. Please enter the password to continue.</p>
-                    
-                    <form method="post" style="display: flex; flex-direction: column; gap: 1rem;">
-                        <input 
-                            type="password" 
-                            name="dashboard_password" 
-                            placeholder="Enter password"
-                            style="padding: 0.75rem; border: 1px solid var(--hph-gray-300); border-radius: 0.5rem; font-size: 1rem;"
-                            required
-                        >
-                        <button 
-                            type="submit" 
-                            style="padding: 0.75rem; background: var(--hph-primary); color: white; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer;"
-                        >
-                            Access Dashboard
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </main>
-        
-        <?php get_footer();
-        exit;
-    } else {
-        // Check password (you can change this to any password you want)
-        $correct_password = 'dashboard2024'; // Change this password
-        if ($_POST['dashboard_password'] !== $correct_password) {
-            // Redirect back with error
-            wp_redirect(add_query_arg('error', '1', get_permalink()));
-            exit;
-        }
-        // Password is correct, continue to show the page
-    }
-}
-
-get_header(); ?>
+// Don't show admin bar for clean look
+show_admin_bar(false);
+?>
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+<head>
+    <meta charset="<?php bloginfo('charset'); ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?php wp_title('|', true, 'right'); ?><?php bloginfo('name'); ?> - Agent Dashboard</title>
+    <?php wp_head(); ?>
+</head>
+<body <?php body_class('agent-dashboard'); ?>>
 
 <main id="main-content" class="site-main">
     
@@ -62,69 +27,36 @@ get_header(); ?>
         'style' => 'gradient',
         'theme' => 'primary',
         'height' => 'lg',
+        'is_top_of_page' => true,
         'background_image' => '',
         'parallax' => false,
         'overlay' => 'gradient',
         'alignment' => 'center',
         'headline' => 'Agent Dashboard Coming Soon',
-        'subheadline' => 'Your comprehensive real estate management platform is under development',
-        'content' => 'We\'re building something amazing for you. In the meantime, access your essential tools and forms below.',
+        'subheadline' => "We're building something pretty cool for you. In the meantime, access your essential tools and forms below.",
         'content_width' => 'normal',
         'fade_in' => true,
         'scroll_indicator' => false,
-        'section_id' => 'dashboard-hero'
+        'section_id' => 'dashboard-hero',
+        'buttons' => array(
+            array(
+                'text' => 'Agent Huddle',
+                'url' => 'http://meet.google.com/raq-afya-anv',
+                'style' => 'white',
+                'size' => 'm',
+                'target' => '_blank'
+            ),
+            'button' => array(
+                    'text' => 'Open Cheatsheet',
+                    'url' => 'https://docs.google.com/document/d/1XVswBY6Wsx9W6JckpVqmWbvxh6kyaeaFLZNbOyQUNb4/edit?usp=drive_link',
+                    'style' => 'primary',
+                    'size' => 'm',
+                    'target' => '_blank'
+            ),
+        ),
     ));
     
-    // ============================================
-    // Construction Status Section
-    // ============================================
-    ?>
-    <section style="padding: 4rem 0; background: var(--hph-gray-50);">
-        <div class="hph-container" style="max-width: var(--hph-container-xl); margin: 0 auto; padding: 0 1.5rem; text-align: center;">
-            <div style="max-width: 800px; margin: 0 auto;">
-                <div style="margin-bottom: 3rem;">
-                    <span style="display: inline-block; padding: 0.5rem 1rem; background: var(--hph-primary-100); color: var(--hph-primary-700); border-radius: 2rem; font-size: 0.875rem; font-weight: 600; margin-bottom: 1.5rem;">
-                        🚧 Under Construction
-                    </span>
-                    <h2 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--hph-gray-900);">
-                        Building Your Digital Headquarters
-                    </h2>
-                    <p style="font-size: 1.125rem; color: var(--hph-gray-600); line-height: 1.6;">
-                        We're crafting a powerful dashboard that will streamline your workflow, manage your listings, track your leads, and provide insightful analytics. While we put the finishing touches on your new command center, you can access your essential tools below.
-                    </p>
-                </div>
-                
-                <!-- Progress Indicators -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-top: 3rem;">
-                    <div style="text-align: center;">
-                        <div style="width: 60px; height: 60px; background: var(--hph-success); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
-                            <i class="fas fa-check" style="color: white; font-size: 1.5rem;"></i>
-                        </div>
-                        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem;">Planning Complete</h3>
-                        <p style="color: var(--hph-gray-600); font-size: 0.875rem;">Architecture & design finalized</p>
-                    </div>
-                    
-                    <div style="text-align: center;">
-                        <div style="width: 60px; height: 60px; background: var(--hph-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
-                            <i class="fas fa-code" style="color: white; font-size: 1.5rem;"></i>
-                        </div>
-                        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem;">Development Active</h3>
-                        <p style="color: var(--hph-gray-600); font-size: 0.875rem;">Core features being built</p>
-                    </div>
-                    
-                    <div style="text-align: center;">
-                        <div style="width: 60px; height: 60px; background: var(--hph-gray-300); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
-                            <i class="fas fa-rocket" style="color: white; font-size: 1.5rem;"></i>
-                        </div>
-                        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem;">Launch Soon</h3>
-                        <p style="color: var(--hph-gray-600); font-size: 0.875rem;">Testing & final preparations</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
     
-    <?php
     // ============================================
     // Available Tools & Forms Section
     // ============================================
@@ -138,15 +70,23 @@ get_header(); ?>
         'badge' => 'Available Now',
         'headline' => 'Essential Agent Tools',
         'subheadline' => 'Access your most important forms and management tools',
-        'content' => 'While we finish building your comprehensive dashboard, these essential tools remain available to keep your business running smoothly.',
-        'icon_style' => 'gradient',
         'icon_position' => 'top',
         'animation' => true,
         'section_id' => 'dashboard-tools',
         'features' => array(
+            array(
+                'title' => 'Agent Cheatsheet',
+                'content' => 'Helpful links and resources for Parker Group',
+                'button' => array(
+                    'text' => 'Open Cheatsheet',
+                    'url' => 'https://docs.google.com/document/d/1XVswBY6Wsx9W6JckpVqmWbvxh6kyaeaFLZNbOyQUNb4/edit?usp=drive_link',
+                    'style' => 'primary',
+                    'size' => 'md',
+                    'target' => '_blank'
+                )
+            ),
             // Lead Generation Forms
             array(
-                'icon' => 'fas fa-camera',
                 'title' => 'Schedule Listing Photography & Content',
                 'content' => 'Request professional photos, virtual tour, and floorplans for your property listings.',
                 'button' => array(
@@ -158,7 +98,6 @@ get_header(); ?>
                 )
             ),
             array(
-                'icon' => 'fas fa-star',
                 'title' => 'Listing Spotlight Request',
                 'content' => 'Request a featured listing spot on our homepage and marketing channels.',
                 'button' => array(
@@ -170,7 +109,6 @@ get_header(); ?>
                 )
             ),
             array(
-                'icon' => 'fas fa-smile',
                 'title' => 'Happy Place of The Week Request',
                 'content' => 'Request to have your listing featured as our Happy Place of the Week on WRDE.',
                 'button' => array(
@@ -184,7 +122,6 @@ get_header(); ?>
             
             // Client Management
             array(
-                'icon' => 'fas fa-brain',
                 'title' => 'Continuing Education + Licensure Submission',
                 'content' => 'Submit your CE credits and license renewals for tracking and reimbursement.',
                 'button' => array(
@@ -196,7 +133,6 @@ get_header(); ?>
                 )
             ),
             array(
-                'icon' => 'fas fa-calendar-check',
                 'title' => 'One on One with Julie',
                 'content' => 'Book your personal coaching session with Julie to strategize your business growth.',
                 'button' => array(
@@ -208,7 +144,6 @@ get_header(); ?>
                 )
             ),
             array(
-                'icon' => 'fas fa-star',
                 'title' => 'Open House Marketing Request',
                 'content' => 'Request flyers, signs and promotion for an upcoming open houses.',
                 'button' => array(
@@ -222,7 +157,6 @@ get_header(); ?>
             
             // Property & Marketing
             array(
-                'icon' => 'fas fa-lock',
                 'title' => 'Lockbox & Signage Request',
                 'content' => 'Request lockboxes, yard signs, and directional signage for your listings.',
                 'button' => array(
@@ -234,7 +168,6 @@ get_header(); ?>
                 )
             ),
             array(
-                'icon' => 'fas fa-clipboard-list',
                 'title' => 'EMD and Mutual Release Requests',
                 'content' => 'Submit Earnest Money Deposit requests for your transactions.',
                 'button' => array(
@@ -246,7 +179,6 @@ get_header(); ?>
                 )
             ),
             array(
-                'icon' => 'fas fa-handshake',
                 'title' => 'New Buyer Contact Submission',
                 'content' => 'Submit buyer contract for trasaction coordination and processing.',
                 'button' => array(
@@ -260,7 +192,6 @@ get_header(); ?>
             
             // Administrative & Reports
             array(
-                'icon' => 'fas fa-dollar-sign',
                 'title' => 'Pay your Annual E&O',
                 'content' => 'Submit your Errors & Omissions insurance payment. Due annually by November 1.',
                 'button' => array(
@@ -272,7 +203,6 @@ get_header(); ?>
                 )
             ),
             array(
-                'icon' => 'fas fa-cogs',
                 'title' => 'RealtyFlow CRM',
                 'content' => 'Access your comprehensive customer relationship management system.',
                 'button' => array(
@@ -337,7 +267,9 @@ get_header(); ?>
         )
     ));
     ?>
-    
+
 </main>
 
-<?php get_footer(); ?>
+<?php wp_footer(); ?>
+</body>
+</html>

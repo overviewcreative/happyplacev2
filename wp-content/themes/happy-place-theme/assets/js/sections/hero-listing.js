@@ -12,7 +12,6 @@
 
     // Check for required dependencies
     if (typeof $ === 'undefined') {
-        console.error('HeroListing: jQuery is required');
         return;
     }
 
@@ -65,7 +64,6 @@
             
             // Initialize only if we have slides or it's a valid hero section
             if (this.totalSlides === 0 && !this.$hero.find('.hph-hero__content').length) {
-                console.warn('Hero component initialized but no slides or content found');
                 return false;
             }
             
@@ -521,8 +519,8 @@
         if ($hero && $hero.length > 0) {
             heroInstance = $hero.data('heroInstance');
         }
-        
-        console.log('Lightbox Debug:', {
+
+        console.log('Hero debug info:', {
             listingId: listingId,
             heroFound: $hero ? $hero.length : 0,
             heroInstance: heroInstance,
@@ -530,7 +528,6 @@
         });
         
         if (!heroInstance || !heroInstance.images || heroInstance.images.length === 0) {
-            console.error('No hero instance or images found');
             alert('No photos available');
             return;
         }

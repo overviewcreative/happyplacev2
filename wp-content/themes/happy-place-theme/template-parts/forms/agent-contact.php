@@ -231,7 +231,7 @@ if ($args['calendly_enabled'] && $agent_data) {
                 data-agent-id="<?php echo esc_attr($args['agent_id']); ?>"
                 data-listing-id="<?php echo esc_attr($args['listing_id']); ?>"
             >
-                <?php wp_nonce_field('hph_agent_contact', 'agent_contact_nonce'); ?>
+                <?php wp_nonce_field('hph_route_form_nonce', 'nonce'); ?>
                 
                 <!-- Hidden Fields -->
                 <input type="hidden" name="form_type" value="agent_contact">
@@ -424,7 +424,7 @@ if ($args['calendly_enabled'] && $agent_data) {
                 <!-- Quick Actions -->
                 <div class="hph-form-actions">
                     <div class="hph-primary-action">
-                        <button type="submit" class="hph-btn hph-btn-primary hph-btn-full">
+                        <button type="submit" class="hph-btn hph-btn-primary w-full">
                             <i class="fas fa-paper-plane"></i>
                             <?php echo esc_html($args['submit_text']); ?>
                         </button>

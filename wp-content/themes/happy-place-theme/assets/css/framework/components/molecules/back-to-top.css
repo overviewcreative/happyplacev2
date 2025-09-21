@@ -53,17 +53,8 @@
     }
 }
 
-/* Dark theme support */
-.hph-theme-dark .back-to-top,
-[data-theme="dark"] .back-to-top {
-    background: var(--hph-gray-700);
-    color: var(--hph-gray-100);
-}
-
-.hph-theme-dark .back-to-top:hover,
-[data-theme="dark"] .back-to-top:hover {
-    background: var(--hph-gray-600);
-}
+/* Dark theme support - Removed incomplete implementation */
+/* TODO: Re-implement comprehensive dark mode in future version */
 
 /* High contrast mode */
 @media (prefers-contrast: high) {

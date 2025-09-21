@@ -17,41 +17,41 @@ if (function_exists('hph_register_template_part')) {
 // Default arguments
 $defaults = array(
     // Hero settings
-    'style' => 'gradient',
-    'theme' => 'primary',
-    'height' => 'lg',
-    'background_image' => '',
-    'background_video' => '',
-    'overlay' => 'dark',
-    'overlay_opacity' => '40',
-    'gradient_overlay' => '',
-    'alignment' => 'center',
-    'content_width' => 'normal',
-    'parallax' => false,
-    'fade_in' => true,
+    'style' => 'gradient', // Options: 'gradient', 'image', 'solid'
+    'theme' => 'primary', // Options: 'primary', 'dark', 'light'
+    'height' => 'lg', // Options: 'sm', 'md', 'lg', 'xl', 'full'
+    'background_image' => '', // URL to background image
+    'background_video' => '', // URL to background video
+    'overlay' => 'dark', // Options: 'dark', 'light', 'none'
+    'overlay_opacity' => '40', // Percentage: 0-100
+    'gradient_overlay' => '', // CSS variable name for gradient overlay
+    'alignment' => 'center', // Options: 'left', 'center', 'right'
+    'content_width' => 'normal', // Options: 'narrow', 'normal', 'wide', 'full'
+    'parallax' => false, // Boolean: true/false
+    'fade_in' => true, // Boolean: true/false
     
     // Content settings
-    'badge' => '',
-    'badge_icon' => '',
-    'headline' => 'Find Your Dream Home',
-    'subheadline' => 'Search through thousands of properties to find the perfect one for you',
-    'content' => '',
-    'show_stats' => true,
+    'badge' => '', // Badge text to display above headline
+    'badge_icon' => '', // Font Awesome icon class for badge
+    'headline' => 'Find Your Dream Home', // Main headline text
+    'subheadline' => 'Search through thousands of properties to find the perfect one for you', // Subheadline text
+    'content' => '', // Additional content text
+    'show_stats' => true, // Boolean: true/false
     'stats' => array(), // Array of stats like ['listings' => 1234, 'agents' => 50, 'cities' => 25]
     
     // Search settings
-    'show_search' => true,
-    'search_placeholder' => 'Enter city, zip, address, or MLS#',
-    'search_action' => '',
-    'show_filters' => true,
-    'show_advanced_filters' => true,
+    'show_search' => false, // Boolean: true/false - DISABLED FOR NOW
+    'search_placeholder' => 'Enter city, zip, address, or MLS#', // Search input placeholder text
+    'search_action' => '', // URL for search form submission
+    'show_filters' => true, // Boolean: true/false
+    'show_advanced_filters' => true, // Boolean: true/false
     'filter_layout' => 'inline', // Options: 'inline', 'dropdown', 'sidebar'
-    'show_quick_searches' => true,
-    'quick_searches' => array(),
+    'show_quick_searches' => true, // Boolean: true/false
+    'quick_searches' => array(), // Array of quick search links with 'label' and 'url'
     
     // Additional settings
-    'section_id' => '',
-    'scroll_indicator' => false
+    'section_id' => '', // HTML ID for the section
+    'scroll_indicator' => false // Boolean: true/false - show scroll down indicator
 );
 
 // Merge with provided args
@@ -247,18 +247,18 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
     <?php endif; ?>
     
     <!-- Content Container -->
-    <div class="hph-hero-container" style="position: relative; z-index: 2; width: 100%; padding: var(--hph-padding-xl) var(--hph-padding-lg);">
+    <div class="hph-hero-container" style="position: relative; z-index: 2; width: 100%; padding: var(--hph-space-8) var(--hph-space-6);">
         <div class="hph-hero-inner" style="<?php echo $container_max_width; ?> margin-left: auto; margin-right: auto;">
             <div class="hph-hero-content" style="display: flex; flex-direction: column; <?php echo $content_justify; ?> gap: var(--hph-gap-lg); <?php echo $text_align_style; ?>">
                 
                 <?php if ($badge): ?>
                 <!-- Badge -->
-                <div style="margin-bottom: var(--hph-margin-sm);">
+                <div style="margin-bottom: var(--hph-space-2);">
                     <?php 
                     $badge_bg = !empty($theme_config['badge_bg']) ? $theme_config['badge_bg'] : 'rgba(255, 255, 255, 0.2)';
                     $badge_color = !empty($theme_config['badge_color']) ? $theme_config['badge_color'] : 'currentColor';
                     ?>
-                    <span style="display: inline-flex; align-items: center; gap: var(--hph-gap-sm); padding: var(--hph-padding-sm) var(--hph-padding-md); background: <?php echo $badge_bg; ?>; color: <?php echo $badge_color; ?>; backdrop-filter: blur(10px); border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
+                    <span style="display: inline-flex; align-items: center; gap: var(--hph-gap-sm); padding: var(--hph-space-2) var(--hph-space-4); background: <?php echo $badge_bg; ?>; color: <?php echo $badge_color; ?>; backdrop-filter: blur(10px); border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
                         <?php if ($badge_icon): ?>
                         <i class="<?php echo esc_attr($badge_icon); ?>"></i>
                         <?php endif; ?>
@@ -270,7 +270,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                 <?php if ($headline): ?>
                 <!-- Hero Headline -->
                 <h1 class="hph-hero-headline <?php echo $fade_in ? 'hph-animate-fade-in-up' : ''; ?>" 
-                    style="margin: 0 0 var(--hph-margin-md) 0; font-size: var(--hph-text-5xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
+                    style="margin: 0 0 var(--hph-space-4) 0; font-size: var(--hph-text-5xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
                     <?php echo esc_html($headline); ?>
                 </h1>
                 <?php endif; ?>
@@ -278,7 +278,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                 <?php if ($subheadline): ?>
                 <!-- Hero Subheadline -->
                 <h2 class="hph-hero-subheadline <?php echo $fade_in ? 'hph-animate-fade-in-up' : ''; ?>" 
-                    style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); line-height: var(--hph-leading-snug); opacity: 0.9;">
+                    style="margin: 0 0 var(--hph-space-6) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); line-height: var(--hph-leading-snug); opacity: 0.9;">
                     <?php echo esc_html($subheadline); ?>
                 </h2>
                 <?php endif; ?>
@@ -286,7 +286,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                 <?php if ($content): ?>
                 <!-- Hero Content -->
                 <div class="hph-hero-content-text <?php echo $fade_in ? 'hph-animate-fade-in-up' : ''; ?>" 
-                     style="margin: 0 0 var(--hph-margin-xl) 0; font-size: var(--hph-text-lg); line-height: var(--hph-leading-normal); opacity: 0.85;">
+                     style="margin: 0 0 var(--hph-space-8) 0; font-size: var(--hph-text-lg); line-height: var(--hph-leading-normal); opacity: 0.85;">
                     <?php echo wp_kses_post($content); ?>
                 </div>
                 <?php endif; ?>
@@ -294,41 +294,43 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                 <?php if ($show_search): ?>
                 <!-- Search Form -->
                 <div class="hph-hero-search <?php echo $fade_in ? 'hph-animate-fade-in-up' : ''; ?>" 
-                     style="width: 100%; margin: var(--hph-margin-lg) 0;">
+                     style="width: 100%; margin: var(--hph-space-6) 0;">
                     
                     <?php
                     $search_bg = !empty($theme_config['search_bg']) ? $theme_config['search_bg'] : 'rgba(255, 255, 255, 0.95)';
                     $search_text = !empty($theme_config['search_text']) ? $theme_config['search_text'] : 'var(--hph-gray-900)';
                     ?>
                     
-                    <form class="hph-hero-search-form" 
-                          action="<?php echo esc_url($search_action); ?>" 
+                    <form class="hph-hero-search-form"
+                          action="<?php echo esc_url($search_action); ?>"
                           method="GET"
-                          style="background: <?php echo $search_bg; ?>; color: <?php echo $search_text; ?>; padding: var(--hph-padding-lg); border-radius: var(--hph-radius-xl); box-shadow: var(--hph-shadow-2xl); backdrop-filter: blur(10px);">
-                        
+                          data-ajax-search
+                          style="background: <?php echo $search_bg; ?>; color: <?php echo $search_text; ?>; padding: var(--hph-space-6); border-radius: var(--hph-radius-xl); box-shadow: var(--hph-shadow-2xl); backdrop-filter: blur(10px);">
+
                         <input type="hidden" name="type" value="listing">
+                        <input type="hidden" name="post_type" value="listing">
                         
                         <?php if ($show_filters && $filter_layout === 'inline'): ?>
                         <!-- Inline Filters Layout -->
-                        <div class="hph-search-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--hph-gap-md); margin-bottom: var(--hph-margin-md);">
+                        <div class="hph-search-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--hph-gap-md); margin-bottom: var(--hph-space-4);">
                             
                             <!-- Search Input -->
                             <div class="hph-search-input-wrapper" style="grid-column: 1 / -1; position: relative;">
-                                <i class="fas fa-search" style="position: absolute; left: var(--hph-padding-md); top: 50%; transform: translateY(-50%); color: var(--hph-gray-400); pointer-events: none;"></i>
+                                <i class="fas fa-search" style="position: absolute; left: var(--hph-space-4); top: 50%; transform: translateY(-50%); color: var(--hph-gray-400); pointer-events: none;"></i>
                                 <input type="text" 
                                        name="s" 
                                        class="hph-search-input" 
                                        placeholder="<?php echo esc_attr($search_placeholder); ?>"
                                        autocomplete="off"
-                                       style="width: 100%; padding: var(--hph-padding-md) var(--hph-padding-md) var(--hph-padding-md) calc(var(--hph-padding-md) * 3); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-lg); font-size: var(--hph-text-lg); background: var(--hph-white); color: var(--hph-gray-900); transition: all 0.3s ease; box-shadow: var(--hph-shadow-sm);"
+                                       style="width: 100%; padding: var(--hph-space-4) var(--hph-space-4) var(--hph-space-4) calc(var(--hph-space-4) * 3); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-lg); font-size: var(--hph-text-lg); background: var(--hph-white); color: var(--hph-gray-900); transition: all 0.3s ease; box-shadow: var(--hph-shadow-sm);"
                                        onfocus="this.style.borderColor='var(--hph-primary)'; this.style.boxShadow='0 0 0 3px rgba(var(--hph-primary-rgb), 0.1)';"
                                        onblur="this.style.borderColor='var(--hph-gray-200)'; this.style.boxShadow='var(--hph-shadow-sm)';">
-                                <div class="hph-search-suggestions"></div>
+                                <!-- <div class="hph-search-suggestions"></div> TODO: Fix autocomplete functionality -->
                             </div>
                             
                             <!-- Property Type -->
                             <select name="property_type" class="hph-search-select" 
-                                    style="padding: var(--hph-padding-md); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-lg); font-size: var(--hph-text-base); background: var(--hph-white); color: var(--hph-gray-900); cursor: pointer; transition: all 0.3s ease;"
+                                    style="padding: var(--hph-space-4); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-lg); font-size: var(--hph-text-base); background: var(--hph-white); color: var(--hph-gray-900); cursor: pointer; transition: all 0.3s ease;"
                                     onfocus="this.style.borderColor='var(--hph-primary)';"
                                     onblur="this.style.borderColor='var(--hph-gray-200)';">
                                 <option value="">All Types</option>
@@ -341,7 +343,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                             
                             <!-- Price Range -->
                             <select name="price_range" class="hph-search-select"
-                                    style="padding: var(--hph-padding-md); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-lg); font-size: var(--hph-text-base); background: var(--hph-white); color: var(--hph-gray-900); cursor: pointer; transition: all 0.3s ease;"
+                                    style="padding: var(--hph-space-4); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-lg); font-size: var(--hph-text-base); background: var(--hph-white); color: var(--hph-gray-900); cursor: pointer; transition: all 0.3s ease;"
                                     onfocus="this.style.borderColor='var(--hph-primary)';"
                                     onblur="this.style.borderColor='var(--hph-gray-200)';">
                                 <option value="">Price Range</option>
@@ -354,7 +356,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                             
                             <!-- Beds -->
                             <select name="bedrooms" class="hph-search-select"
-                                    style="padding: var(--hph-padding-md); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-lg); font-size: var(--hph-text-base); background: var(--hph-white); color: var(--hph-gray-900); cursor: pointer; transition: all 0.3s ease;"
+                                    style="padding: var(--hph-space-4); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-lg); font-size: var(--hph-text-base); background: var(--hph-white); color: var(--hph-gray-900); cursor: pointer; transition: all 0.3s ease;"
                                     onfocus="this.style.borderColor='var(--hph-primary)';"
                                     onblur="this.style.borderColor='var(--hph-gray-200)';">
                                 <option value="">Beds</option>
@@ -367,7 +369,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                             
                             <!-- Baths -->
                             <select name="bathrooms" class="hph-search-select"
-                                    style="padding: var(--hph-padding-md); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-lg); font-size: var(--hph-text-base); background: var(--hph-white); color: var(--hph-gray-900); cursor: pointer; transition: all 0.3s ease;"
+                                    style="padding: var(--hph-space-4); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-lg); font-size: var(--hph-text-base); background: var(--hph-white); color: var(--hph-gray-900); cursor: pointer; transition: all 0.3s ease;"
                                     onfocus="this.style.borderColor='var(--hph-primary)';"
                                     onblur="this.style.borderColor='var(--hph-gray-200)';">
                                 <option value="">Baths</option>
@@ -380,7 +382,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                             <?php if ($show_advanced_filters): ?>
                             <!-- Square Feet -->
                             <select name="sqft_range" class="hph-search-select"
-                                    style="padding: var(--hph-padding-md); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-lg); font-size: var(--hph-text-base); background: var(--hph-white); color: var(--hph-gray-900); cursor: pointer; transition: all 0.3s ease;"
+                                    style="padding: var(--hph-space-4); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-lg); font-size: var(--hph-text-base); background: var(--hph-white); color: var(--hph-gray-900); cursor: pointer; transition: all 0.3s ease;"
                                     onfocus="this.style.borderColor='var(--hph-primary)';"
                                     onblur="this.style.borderColor='var(--hph-gray-200)';">
                                 <option value="">Square Feet</option>
@@ -393,7 +395,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                             
                             <!-- Status -->
                             <select name="status" class="hph-search-select"
-                                    style="padding: var(--hph-padding-md); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-lg); font-size: var(--hph-text-base); background: var(--hph-white); color: var(--hph-gray-900); cursor: pointer; transition: all 0.3s ease;"
+                                    style="padding: var(--hph-space-4); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-lg); font-size: var(--hph-text-base); background: var(--hph-white); color: var(--hph-gray-900); cursor: pointer; transition: all 0.3s ease;"
                                     onfocus="this.style.borderColor='var(--hph-primary)';"
                                     onblur="this.style.borderColor='var(--hph-gray-200)';">
                                 <option value="">Any Status</option>
@@ -409,13 +411,13 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                         <!-- Simple Search Layout -->
                         <div class="hph-search-simple" style="display: flex; gap: var(--hph-gap-md); align-items: center;">
                             <div class="hph-search-input-wrapper" style="flex: 1; position: relative;">
-                                <i class="fas fa-search" style="position: absolute; left: var(--hph-padding-md); top: 50%; transform: translateY(-50%); color: var(--hph-gray-400); pointer-events: none;"></i>
+                                <i class="fas fa-search" style="position: absolute; left: var(--hph-space-4); top: 50%; transform: translateY(-50%); color: var(--hph-gray-400); pointer-events: none;"></i>
                                 <input type="text" 
                                        name="s" 
                                        class="hph-search-input" 
                                        placeholder="<?php echo esc_attr($search_placeholder); ?>"
                                        autocomplete="off"
-                                       style="width: 100%; padding: var(--hph-padding-md) var(--hph-padding-md) var(--hph-padding-md) calc(var(--hph-padding-md) * 3); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-lg); font-size: var(--hph-text-lg); background: var(--hph-white); color: var(--hph-gray-900); transition: all 0.3s ease;"
+                                       style="width: 100%; padding: var(--hph-space-4) var(--hph-space-4) var(--hph-space-4) calc(var(--hph-space-4) * 3); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-lg); font-size: var(--hph-text-lg); background: var(--hph-white); color: var(--hph-gray-900); transition: all 0.3s ease;"
                                        onfocus="this.style.borderColor='var(--hph-primary)';"
                                        onblur="this.style.borderColor='var(--hph-gray-200)';">
                             </div>
@@ -423,10 +425,10 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                         <?php endif; ?>
                         
                         <!-- Action Buttons -->
-                        <div class="hph-search-actions" style="display: flex; gap: var(--hph-gap-md); justify-content: <?php echo $alignment === 'center' ? 'center' : ($alignment === 'right' ? 'flex-end' : 'flex-start'); ?>; margin-top: var(--hph-margin-lg);">
+                        <div class="hph-search-actions" style="display: flex; gap: var(--hph-gap-md); justify-content: <?php echo $alignment === 'center' ? 'center' : ($alignment === 'right' ? 'flex-end' : 'flex-start'); ?>; margin-top: var(--hph-space-6);">
                             <!-- Submit Button -->
                             <button type="submit" class="hph-search-submit"
-                                    style="padding: var(--hph-padding-md) var(--hph-padding-xl); background: var(--hph-primary); color: var(--hph-white); border: none; border-radius: var(--hph-radius-lg); font-size: var(--hph-text-lg); font-weight: var(--hph-font-semibold); cursor: pointer; display: inline-flex; align-items: center; gap: var(--hph-gap-sm); transition: all 0.3s ease; box-shadow: var(--hph-shadow-lg);"
+                                    style="padding: var(--hph-space-4) var(--hph-space-8); background: var(--hph-primary); color: var(--hph-white); border: none; border-radius: var(--hph-radius-lg); font-size: var(--hph-text-lg); font-weight: var(--hph-font-semibold); cursor: pointer; display: inline-flex; align-items: center; gap: var(--hph-gap-sm); transition: all 0.3s ease; box-shadow: var(--hph-shadow-lg);"
                                     onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--hph-shadow-xl)';"
                                     onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--hph-shadow-lg)';">
                                 <i class="fas fa-search"></i>
@@ -437,7 +439,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                             <!-- Advanced Search Link -->
                             <a href="<?php echo esc_url(home_url('/advanced-search/')); ?>" 
                                class="hph-advanced-search"
-                               style="padding: var(--hph-padding-md) var(--hph-padding-xl); background: transparent; color: var(--hph-primary); border: 2px solid var(--hph-primary); border-radius: var(--hph-radius-lg); font-size: var(--hph-text-lg); font-weight: var(--hph-font-semibold); text-decoration: none; display: inline-flex; align-items: center; gap: var(--hph-gap-sm); transition: all 0.3s ease;"
+                               style="padding: var(--hph-space-4) var(--hph-space-8); background: transparent; color: var(--hph-primary); border: 2px solid var(--hph-primary); border-radius: var(--hph-radius-lg); font-size: var(--hph-text-lg); font-weight: var(--hph-font-semibold); text-decoration: none; display: inline-flex; align-items: center; gap: var(--hph-gap-sm); transition: all 0.3s ease;"
                                onmouseover="this.style.background='var(--hph-primary)'; this.style.color='var(--hph-white)';"
                                onmouseout="this.style.background='transparent'; this.style.color='var(--hph-primary)';">
                                 <i class="fas fa-sliders-h"></i>
@@ -452,12 +454,12 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                 <?php if ($show_quick_searches && !empty($quick_searches)): ?>
                 <!-- Quick Search Links -->
                 <div class="hph-quick-searches <?php echo $fade_in ? 'hph-animate-fade-in-up' : ''; ?>" 
-                     style="display: flex; flex-wrap: wrap; gap: var(--hph-gap-md); align-items: center; justify-content: <?php echo $alignment === 'center' ? 'center' : ($alignment === 'right' ? 'flex-end' : 'flex-start'); ?>; margin-top: var(--hph-margin-md); opacity: 0.9;">
+                     style="display: flex; flex-wrap: wrap; gap: var(--hph-gap-md); align-items: center; justify-content: <?php echo $alignment === 'center' ? 'center' : ($alignment === 'right' ? 'flex-end' : 'flex-start'); ?>; margin-top: var(--hph-space-4); opacity: 0.9;">
                     <span class="hph-quick-label" style="font-weight: var(--hph-font-semibold);">Quick Search:</span>
                     <?php foreach ($quick_searches as $quick): ?>
                     <a href="<?php echo esc_url($quick['url']); ?>" 
                        class="hph-quick-link"
-                       style="padding: var(--hph-padding-sm) var(--hph-padding-md); background: rgba(255, 255, 255, 0.2); color: currentColor; backdrop-filter: blur(10px); border-radius: var(--hph-radius-full); text-decoration: none; font-size: var(--hph-text-sm); transition: all 0.3s ease;"
+                       style="padding: var(--hph-space-2) var(--hph-space-4); background: rgba(255, 255, 255, 0.2); color: currentColor; backdrop-filter: blur(10px); border-radius: var(--hph-radius-full); text-decoration: none; font-size: var(--hph-text-sm); transition: all 0.3s ease;"
                        onmouseover="this.style.background='rgba(255, 255, 255, 0.3)';"
                        onmouseout="this.style.background='rgba(255, 255, 255, 0.2)';">
                         <?php echo esc_html($quick['label']); ?>
@@ -469,10 +471,10 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                 <?php if ($show_stats && !empty($stats)): ?>
                 <!-- Statistics -->
                 <div class="hph-hero-stats <?php echo $fade_in ? 'hph-animate-fade-in-up' : ''; ?>" 
-                     style="display: flex; flex-wrap: wrap; gap: var(--hph-gap-xl); justify-content: <?php echo $alignment === 'center' ? 'center' : ($alignment === 'right' ? 'flex-end' : 'flex-start'); ?>; margin-top: var(--hph-margin-xl); padding-top: var(--hph-padding-xl); border-top: 1px solid rgba(255, 255, 255, 0.2);">
+                     style="display: flex; flex-wrap: wrap; gap: var(--hph-gap-xl); justify-content: <?php echo $alignment === 'center' ? 'center' : ($alignment === 'right' ? 'flex-end' : 'flex-start'); ?>; margin-top: var(--hph-space-8); padding-top: var(--hph-space-8); border-top: 1px solid rgba(255, 255, 255, 0.2);">
                     <?php foreach ($stats as $stat_key => $stat_value): ?>
                     <div class="hph-stat" style="text-align: center;">
-                        <div style="font-size: var(--hph-text-3xl); font-weight: var(--hph-font-bold); margin-bottom: var(--hph-margin-sm);">
+                        <div style="font-size: var(--hph-text-3xl); font-weight: var(--hph-font-bold); margin-bottom: var(--hph-space-2);">
                             <?php echo esc_html(number_format($stat_value)); ?>
                         </div>
                         <div style="font-size: var(--hph-text-sm); text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.8;">
@@ -489,9 +491,9 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
     
     <?php if ($scroll_indicator): ?>
     <!-- Scroll Indicator -->
-    <div class="hph-hero-scroll" style="position: absolute; bottom: var(--hph-margin-lg); left: 50%; transform: translateX(-50%); cursor: pointer; transition: opacity 0.3s ease;">
+    <div class="hph-hero-scroll" style="position: absolute; bottom: var(--hph-space-6); left: 50%; transform: translateX(-50%); cursor: pointer; transition: opacity 0.3s ease;">
         <div class="hph-scroll-indicator" style="display: flex; flex-direction: column; align-items: center; color: currentColor; opacity: 0.75;">
-            <span style="font-size: var(--hph-text-sm); margin-bottom: var(--hph-margin-sm); font-weight: var(--hph-font-medium);">Scroll</span>
+            <span style="font-size: var(--hph-text-sm); margin-bottom: var(--hph-space-2); font-weight: var(--hph-font-medium);">Scroll</span>
             <div style="width: 2rem; height: 2.5rem; border: 2px solid currentColor; border-radius: var(--hph-radius-full); position: relative;">
                 <div class="hph-scroll-dot" style="position: absolute; top: 0.5rem; left: 50%; width: 0.25rem; height: 0.5rem; background: currentColor; border-radius: var(--hph-radius-full); transform: translateX(-50%); animation: bounce 1.5s infinite;"></div>
             </div>

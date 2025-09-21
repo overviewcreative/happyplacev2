@@ -33,7 +33,7 @@ $post_types = [
 
 <div class="hph-search-form-wrapper" 
      data-form-id="<?php echo esc_attr($form_id); ?>"
-     style="background: var(--hph-white); border-radius: var(--hph-radius-lg); padding: var(--hph-padding-lg); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);">
+     style="background: var(--hph-white); border-radius: var(--hph-radius-lg); padding: var(--hph-space-6); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);">
     <form 
         class="hph-search-form <?php echo $advanced_mode ? 'hph-advanced-mode' : 'hph-simple-mode'; ?>" 
         id="<?php echo esc_attr($form_id); ?>"

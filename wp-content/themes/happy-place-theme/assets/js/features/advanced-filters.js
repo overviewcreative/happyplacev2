@@ -15,7 +15,6 @@ class HPHAdvancedFilters {
         this.container = document.getElementById(componentId);
         
         if (!this.container) {
-            console.error('Advanced Filters container not found:', componentId);
             return;
         }
         
@@ -224,7 +223,6 @@ class HPHAdvancedFilters {
             }
             
         } catch (error) {
-            console.error('NLP processing error:', error);
         } finally {
             this.hideProcessing();
         }
@@ -601,7 +599,6 @@ class HPHAdvancedFilters {
             }
             
         } catch (error) {
-            console.error('Save search error:', error);
             this.showNotification('Failed to save search', 'error');
         }
     }
@@ -642,7 +639,6 @@ class HPHAdvancedFilters {
             }
             
         } catch (error) {
-            console.error('Update results error:', error);
             this.showNotification('Failed to update results', 'error');
         }
     }

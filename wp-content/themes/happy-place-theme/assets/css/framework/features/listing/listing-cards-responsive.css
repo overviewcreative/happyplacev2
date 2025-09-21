@@ -1,0 +1,460 @@
+/**
+ * Mobile-First Responsive Listing Cards
+ * Optimized view modes for Grid, List, and Map layouts
+ *
+ * @package HappyPlaceTheme
+ * @version 4.0.0
+ */
+
+/* ================================================
+   MOBILE-FIRST CARD FOUNDATION
+   ================================================ */
+
+/* Base card with mobile-first approach */
+.hph-listing-card {
+    background: var(--hph-white);
+    border-radius: var(--hph-card-border-radius);
+    border: 1px solid var(--hph-border-color, var(--hph-gray-200));
+    transition: var(--hph-card-transition);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* Ensure minimum touch target height */
+    min-height: 120px;
+}
+
+/* ================================================
+   GRID VIEW - OPTIMIZED (KEEP EXISTING HERO STYLE)
+   Grid view is already well-optimized, no changes needed
+   ================================================ */
+
+/* Grid view uses existing .hph-listing-card--grid implementation */
+
+/* ================================================
+   LIST VIEW - MOBILE-FIRST REDESIGN
+   ================================================ */
+
+/* Mobile-first: Stacked layout - Support both naming conventions */
+.hph-listing-card--list,
+.hph-card-horizontal,
+.hph-universal-card.hph-listing-card .hph-card-horizontal {
+    flex-direction: column;
+    border-radius: var(--hph-radius-md);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-bottom: 1rem;
+}
+
+.hph-listing-card--list:hover,
+.hph-card-horizontal:hover,
+.hph-universal-card.hph-listing-card .hph-card-horizontal:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* List view media - works with actual base card structure */
+.hph-card-horizontal .hph-card-media {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.hph-card-horizontal .hph-card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.hph-card-horizontal:hover .hph-card-image {
+    transform: scale(1.02);
+}
+
+/* Content area - mobile-first with actual structure */
+.hph-card-horizontal .hph-card-body {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex-grow: 1;
+}
+
+.hph-card-horizontal .hph-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex-grow: 1;
+}
+
+/* Price styling - targets actual structure */
+.hph-card-horizontal .hph-card-price {
+    font-size: 1.375rem;
+    font-weight: var(--hph-font-bold);
+    color: var(--hph-primary);
+    margin: 0 0 0.5rem 0;
+}
+
+/* Title styling - targets actual structure */
+.hph-card-horizontal .hph-card-title {
+    font-size: 1.125rem;
+    font-weight: var(--hph-font-semibold);
+    margin: 0;
+    line-height: 1.3;
+}
+
+.hph-card-horizontal .hph-card-title a {
+    color: var(--hph-text-color);
+    text-decoration: none;
+    /* Expand clickable area for better mobile UX */
+    display: block;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+}
+
+.hph-card-horizontal .hph-card-title a:hover {
+    color: var(--hph-primary);
+}
+
+/* Subtitle (location) styling */
+.hph-card-horizontal .hph-card-subtitle {
+    font-size: 0.875rem;
+    color: var(--hph-gray-600);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Meta items - targets actual structure */
+.hph-card-horizontal .hph-card-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.hph-card-horizontal .hph-card-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--hph-gray-700);
+    /* Ensure readable touch targets */
+    min-height: 32px;
+}
+
+.hph-card-horizontal .hph-card-meta-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--hph-gray-500);
+}
+
+/* Desktop: Horizontal layout - Support actual template structure */
+@media (min-width: 768px) {
+    .hph-listing-card--list,
+    .hph-card-horizontal,
+    .hph-universal-card.hph-listing-card .hph-card-horizontal {
+        flex-direction: row;
+        margin-bottom: 0.75rem;
+    }
+
+    .hph-card-horizontal .hph-card-media {
+        width: 280px;
+        height: auto;
+        min-height: 200px;
+    }
+
+    .hph-card-horizontal .hph-card-body {
+        padding: 1.25rem;
+        justify-content: space-between;
+    }
+
+    .hph-card-horizontal .hph-card-meta {
+        grid-template-columns: repeat(4, 1fr);
+        margin-top: auto;
+    }
+}
+
+/* Large desktop: More spacious layout - Support actual template structure */
+@media (min-width: 1200px) {
+    .hph-card-horizontal .hph-card-media {
+        width: 320px;
+    }
+
+    .hph-card-horizontal .hph-card-body {
+        padding: 1.5rem;
+    }
+
+    .hph-card-horizontal .hph-card-price {
+        font-size: 1.5rem;
+    }
+
+    .hph-card-horizontal .hph-card-title {
+        font-size: 1.25rem;
+    }
+}
+
+/* ================================================
+   MAP VIEW - MOBILE-FIRST REDESIGN
+   ================================================ */
+
+/* Mobile-first: Compact horizontal layout - Support all naming conventions */
+.hph-listing-card--map,
+.hph-card-compact,
+.hph-universal-card.hph-listing-card .hph-card-compact {
+    flex-direction: row;
+    background: var(--hph-white);
+    border: 1px solid var(--hph-border-color);
+    border-radius: var(--hph-radius-md);
+    padding: 0;
+    margin-bottom: 1px;
+    /* Touch-friendly minimum height */
+    min-height: 88px;
+    transition: all 0.2s ease;
+}
+
+.hph-listing-card--map:hover,
+.hph-listing-card--map.is-active,
+.hph-card-compact:hover,
+.hph-card-compact.is-active,
+.hph-universal-card.hph-listing-card .hph-card-compact:hover,
+.hph-universal-card.hph-listing-card .hph-card-compact.is-active {
+    border-color: var(--hph-primary);
+    box-shadow: 0 2px 8px rgba(var(--hph-primary-rgb), 0.15);
+    background: var(--hph-primary-50, #f0f9ff);
+}
+
+/* Map card structure - Support base card template */
+.hph-card-compact {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    /* Ensure full card is clickable */
+    min-height: 44px;
+}
+
+/* Image - mobile-optimized size - Support base card template */
+.hph-card-compact .hph-card-media {
+    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+    border-radius: var(--hph-radius-sm);
+    overflow: hidden;
+    background: var(--hph-gray-100);
+}
+
+.hph-card-compact .hph-card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Content - optimized for narrow space - Support base card template */
+.hph-card-compact .hph-card-body {
+    flex: 1;
+    min-width: 0; /* Prevent flex item from overflowing */
+    padding: 0; /* Override base card padding for compact view */
+}
+
+.hph-card-compact .hph-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+/* Price - prominent but compact - Support base card template */
+.hph-card-compact .hph-card-price {
+    font-size: 1rem;
+    font-weight: var(--hph-font-bold);
+    color: var(--hph-primary);
+    margin: 0;
+    line-height: 1.2;
+}
+
+/* Title - truncated for map view - Support base card template */
+.hph-card-compact .hph-card-title {
+    font-size: 0.875rem;
+    font-weight: var(--hph-font-medium);
+    color: var(--hph-text-color);
+    margin: 0;
+    line-height: 1.3;
+    /* Single line truncation for map view */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hph-card-compact .hph-card-title a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Subtitle (location) - compact - Support base card template */
+.hph-card-compact .hph-card-subtitle {
+    font-size: 0.75rem;
+    color: var(--hph-gray-600);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+}
+
+/* Stats - minimal for map view - Support base card template */
+.hph-card-compact .hph-card-meta {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--hph-gray-600);
+    margin-top: 0.25rem;
+}
+
+.hph-card-compact .hph-card-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+    white-space: nowrap;
+}
+
+.hph-card-compact .hph-card-meta-icon {
+    width: 12px;
+    height: 12px;
+    color: var(--hph-gray-500);
+}
+
+/* Tablet: Slightly larger map cards */
+@media (min-width: 768px) {
+    .hph-listing-card--map,
+    .hph-card-compact,
+    .hph-universal-card.hph-listing-card .hph-card-compact {
+        min-height: 100px;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .hph-card-compact .hph-card-media {
+        width: 80px;
+        height: 80px;
+    }
+
+    .hph-card-compact .hph-card-price {
+        font-size: 1.125rem;
+    }
+
+    .hph-card-compact .hph-card-title {
+        font-size: 0.9375rem;
+    }
+
+    .hph-card-compact .hph-card-subtitle,
+    .hph-card-compact .hph-card-meta {
+        font-size: 0.8125rem;
+    }
+}
+
+/* Desktop: Full-sized map cards */
+@media (min-width: 1024px) {
+    .hph-listing-card--map,
+    .hph-card-compact,
+    .hph-universal-card.hph-listing-card .hph-card-compact {
+        min-height: 120px;
+        padding: 1.25rem;
+    }
+
+    .hph-card-compact .hph-card-media {
+        width: 100px;
+        height: 100px;
+    }
+
+    .hph-card-compact .hph-card-price {
+        font-size: 1.25rem;
+    }
+
+    .hph-card-compact .hph-card-title {
+        font-size: 1rem;
+    }
+
+    .hph-card-compact .hph-card-meta {
+        gap: 0.75rem;
+    }
+}
+
+/* ================================================
+   ACCESSIBILITY & REDUCED MOTION
+   ================================================ */
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .hph-listing-card--list,
+    .hph-listing-card--map {
+        border-width: 2px;
+    }
+
+    .hph-listing-card--map:hover,
+    .hph-listing-card--map.is-active {
+        border-width: 3px;
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .hph-listing-card--list,
+    .hph-listing-card--map,
+    .hph-list-card__image,
+    .hph-map-card__image {
+        transition: none;
+    }
+
+    .hph-listing-card--list:hover {
+        transform: none;
+    }
+
+    .hph-listing-card--list:hover .hph-list-card__image {
+        transform: none;
+    }
+}
+
+/* Focus states for keyboard navigation */
+.hph-listing-card--list:focus-within,
+.hph-listing-card--map:focus-within {
+    outline: 2px solid var(--hph-primary);
+    outline-offset: 2px;
+}
+
+/* ================================================
+   TOUCH OPTIMIZATIONS
+   ================================================ */
+
+/* iOS touch callout disable for better UX */
+.hph-listing-card--list,
+.hph-listing-card--map {
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Ensure all interactive elements meet 44px minimum */
+.hph-list-card__title a,
+.hph-map-card__container {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+}
+
+/* Touch-friendly spacing */
+@media (max-width: 767px) {
+    .hph-listing-card--list {
+        margin-bottom: 1.25rem;
+    }
+
+    .hph-list-card__content {
+        padding: 1.25rem;
+    }
+
+    .hph-map-card__container {
+        padding: 1rem;
+    }
+}

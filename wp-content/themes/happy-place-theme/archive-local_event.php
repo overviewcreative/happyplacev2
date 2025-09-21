@@ -9,8 +9,8 @@
 // Enqueue required assets
 wp_enqueue_style('hph-local-events', get_template_directory_uri() . '/assets/css/framework/features/local/local-archive.css', ['hph-framework'], '1.0.0');
 wp_enqueue_style('hph-event-timeline', get_template_directory_uri() . '/assets/css/framework/features/local/event-timeline.css', ['hph-framework'], '1.0.0');
-wp_enqueue_script('hph-local-filters', get_template_directory_uri() . '/assets/js/components/local/local-filters.js', ['hph-framework'], '1.0.0', true);
-wp_enqueue_script('hph-archive-events', get_template_directory_uri() . '/assets/js/pages/archive-events.js', ['hph-framework'], '1.0.0', true);
+// wp_enqueue_script('hph-local-filters', get_template_directory_uri() . '/assets/js/components/local/local-filters.js', ['hph-framework'], '1.0.0', true);
+// wp_enqueue_script('hph-archive-events', get_template_directory_uri() . '/assets/js/pages/archive-events.js', ['hph-framework'], '1.0.0', true);
 
 // Build query args from filters
 $paged = get_query_var('paged') ? get_query_var('paged') : 1;
@@ -178,16 +178,16 @@ get_header();
                 
                 <!-- Quick Date Filters -->
                 <div class="hph-quick-filters">
-                    <a href="?date=today" class="hph-btn hph-btn--outline <?php echo $date_filter === 'today' ? 'is-active' : ''; ?>">
+                    <a href="?date=today" class="hph-btn hph-btn-outline-primary <?php echo $date_filter === 'today' ? 'is-active' : ''; ?>">
                         Today
                     </a>
-                    <a href="?date=tomorrow" class="hph-btn hph-btn--outline <?php echo $date_filter === 'tomorrow' ? 'is-active' : ''; ?>">
+                    <a href="?date=tomorrow" class="hph-btn hph-btn-outline-primary <?php echo $date_filter === 'tomorrow' ? 'is-active' : ''; ?>">
                         Tomorrow
                     </a>
-                    <a href="?date=this-weekend" class="hph-btn hph-btn--outline <?php echo $date_filter === 'this-weekend' ? 'is-active' : ''; ?>">
+                    <a href="?date=this-weekend" class="hph-btn hph-btn-outline-primary <?php echo $date_filter === 'this-weekend' ? 'is-active' : ''; ?>">
                         This Weekend
                     </a>
-                    <a href="?date=this-week" class="hph-btn hph-btn--outline <?php echo $date_filter === 'this-week' ? 'is-active' : ''; ?>">
+                    <a href="?date=this-week" class="hph-btn hph-btn-outline-primary <?php echo $date_filter === 'this-week' ? 'is-active' : ''; ?>">
                         This Week
                     </a>
                 </div>
@@ -225,15 +225,15 @@ get_header();
                 
                 <div class="hph-archive__controls">
                     <div class="hph-view-toggle" data-view-toggle>
-                        <button type="button" class="hph-view-toggle__btn is-active" data-view="timeline">
+                        <button type="button" class="hph-view-btn is-active" data-view="timeline">
                             <i class="hph-icon hph-icon--timeline"></i>
                             Timeline
                         </button>
-                        <button type="button" class="hph-view-toggle__btn" data-view="grid">
+                        <button type="button" class="hph-view-btn" data-view="grid">
                             <i class="hph-icon hph-icon--grid"></i>
                             Grid
                         </button>
-                        <button type="button" class="hph-view-toggle__btn" data-view="calendar">
+                        <button type="button" class="hph-view-btn" data-view="calendar">
                             <i class="hph-icon hph-icon--calendar"></i>
                             Calendar
                         </button>
@@ -270,9 +270,9 @@ get_header();
                             <div class="hph-timeline__events">
                                 <?php foreach ($event_ids as $event_id): ?>
                                     <div class="hph-timeline__item">
-                                        <?php get_template_part('template-parts/components/local/event-card', null, [
-                                            'event_id' => $event_id,
-                                            'variant' => 'timeline'
+                                        <?php hph_component('universal-card', [
+                                            'post_id' => $event_id,
+                                            'layout' => 'horizontal'
                                         ]); ?>
                                     </div>
                                 <?php endforeach; ?>
@@ -288,9 +288,9 @@ get_header();
                     while ($events_query->have_posts()): $events_query->the_post(); 
                     ?>
                         <div class="hph-grid__item">
-                            <?php get_template_part('template-parts/components/local/event-card', null, [
-                                'event_id' => get_the_ID(),
-                                'variant' => 'default'
+                            <?php hph_component('universal-card', [
+                                'post_id' => get_the_ID(),
+                                'layout' => 'vertical'
                             ]); ?>
                         </div>
                     <?php endwhile; ?>
@@ -321,7 +321,7 @@ get_header();
                                 Try adjusting your filters to find upcoming events.
                             <?php endif; ?>
                         </p>
-                        <a href="<?php echo esc_url(get_post_type_archive_link('local_event')); ?>" class="hph-btn hph-btn--primary">
+                        <a href="<?php echo esc_url(get_post_type_archive_link('local_event')); ?>" class="hph-btn hph-btn-primary">
                             View All Events
                         </a>
                     </div>
@@ -372,7 +372,7 @@ get_header();
                 </div>
                 <form class="hph-cta__form hph-newsletter-form" action="/newsletter-signup" method="post">
                     <input type="email" name="email" class="hph-input" placeholder="Enter your email" required>
-                    <button type="submit" class="hph-btn hph-btn--primary">Subscribe</button>
+                    <button type="submit" class="hph-btn hph-btn-primary">Subscribe</button>
                 </form>
             </div>
         </div>

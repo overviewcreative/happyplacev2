@@ -26,10 +26,9 @@ class HPH_Unified_Dashboard_Components {
         $current_user = wp_get_current_user();
         $is_admin = in_array('administrator', $current_user->roles);
         $is_agent = in_array('agent', $current_user->roles);
-        $is_listing_owner = $listing['author_id'] == $current_user->ID;
-        
-        // Determine if user can edit this listing
-        $can_edit = $is_admin || ($is_agent && $is_listing_owner);
+
+        // Use bridge function for permission checking
+        $can_edit = hpt_can_user_edit_listing($listing['id']);
         
         // Get listing meta
         $street_address = get_post_meta($listing['id'], '_listing_address', true) ?: $listing['title'];
@@ -75,7 +74,7 @@ class HPH_Unified_Dashboard_Components {
                 
                 <!-- Quick View Button -->
                 <div class="hph-card__quick-actions">
-                    <button class="hph-btn hph-btn--icon hph-btn--ghost" 
+                    <button class="hph-btn hph-btn-icon hph-btn-ghost" 
                             data-action="quick-view-listing" 
                             data-listing-id="<?php echo esc_attr($listing['id']); ?>"
                             title="Quick View">
@@ -142,10 +141,10 @@ class HPH_Unified_Dashboard_Components {
                                        step="1000"
                                        min="0">
                                 <div class="hph-inline-edit__actions">
-                                    <button class="hph-btn hph-btn--xs hph-btn--success" data-action="save-inline">
+                                    <button class="hph-btn hph-btn-xs hph-btn-success" data-action="save-inline">
                                         <i class="fas fa-check"></i>
                                     </button>
-                                    <button class="hph-btn hph-btn--xs hph-btn--secondary" data-action="cancel-inline">
+                                    <button class="hph-btn hph-btn-xs hph-btn-secondary" data-action="cancel-inline">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 </div>
@@ -175,10 +174,10 @@ class HPH_Unified_Dashboard_Components {
                                 <option value="coming-soon" <?php selected($listing['status'], 'coming-soon'); ?>>Coming Soon</option>
                             </select>
                             <div class="hph-inline-edit__actions">
-                                <button class="hph-btn hph-btn--xs hph-btn--success" data-action="save-inline">
+                                <button class="hph-btn hph-btn-xs hph-btn-success" data-action="save-inline">
                                     <i class="fas fa-check"></i>
                                 </button>
-                                <button class="hph-btn hph-btn--xs hph-btn--secondary" data-action="cancel-inline">
+                                <button class="hph-btn hph-btn-xs hph-btn-secondary" data-action="cancel-inline">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
@@ -191,7 +190,7 @@ class HPH_Unified_Dashboard_Components {
             <div class="hph-card__actions">
                 <div class="hph-card__actions-primary">
                     <?php if ($can_edit): ?>
-                        <button class="hph-btn hph-btn--primary hph-btn--sm" 
+                        <button class="hph-btn hph-btn-primary hph-btn-sm" 
                                 data-action="edit-listing-full" 
                                 data-listing-id="<?php echo esc_attr($listing['id']); ?>">
                             <i class="fas fa-edit"></i>
@@ -200,7 +199,7 @@ class HPH_Unified_Dashboard_Components {
                     <?php endif; ?>
                     
                     <a href="<?php echo esc_url($listing['permalink']); ?>" 
-                       class="hph-btn hph-btn--secondary hph-btn--sm"
+                       class="hph-btn hph-btn-secondary hph-btn-sm"
                        target="_blank">
                         <i class="fas fa-external-link-alt"></i>
                         View Public
@@ -209,14 +208,14 @@ class HPH_Unified_Dashboard_Components {
                 
                 <?php if ($can_edit): ?>
                     <div class="hph-card__actions-secondary">
-                        <button class="hph-btn hph-btn--ghost hph-btn--xs" 
+                        <button class="hph-btn hph-btn-ghost hph-btn-xs" 
                                 data-action="duplicate-listing" 
                                 data-listing-id="<?php echo esc_attr($listing['id']); ?>"
                                 title="Duplicate Listing">
                             <i class="fas fa-copy"></i>
                         </button>
                         
-                        <button class="hph-btn hph-btn--ghost hph-btn--xs hph-btn--danger" 
+                        <button class="hph-btn hph-btn-ghost hph-btn-xs hph-btn-danger" 
                                 data-action="delete-listing" 
                                 data-listing-id="<?php echo esc_attr($listing['id']); ?>"
                                 title="Delete Listing">
@@ -584,15 +583,15 @@ class HPH_Unified_Dashboard_Components {
                         <div class="hph-form__group">
                             <div class="hph-checkbox-grid">
                                 <?php foreach ($property_features as $feature): ?>
-                                    <label class="hph-checkbox-item">
+                                    <div class="hph-form-check hph-form-check-inline">
                                         <input type="checkbox" 
                                                name="property_features[]" 
                                                value="<?php echo esc_attr($feature->term_id); ?>"
-                                               class="hph-checkbox">
-                                        <span class="hph-checkbox-label">
+                                               class="hph-form-check-input">
+                                        <label class="hph-form-check-label">
                                             <?php echo esc_html($feature->name); ?>
-                                        </span>
-                                    </label>
+                                        </label>
+                                    </div>
                                 <?php endforeach; ?>
                             </div>
                         </div>
@@ -694,19 +693,19 @@ class HPH_Unified_Dashboard_Components {
             <!-- Form Actions -->
             <div class="hph-form__actions">
                 <div class="hph-form__actions-primary">
-                    <button type="submit" class="hph-btn hph-btn--primary hph-btn--large">
+                    <button type="submit" class="hph-btn hph-btn-primary hph-btn-lg">
                         <i class="fas fa-save"></i>
                         <?php echo $is_edit ? 'Update Listing' : 'Create Listing'; ?>
                     </button>
                     
-                    <button type="button" class="hph-btn hph-btn--secondary" data-action="save-draft">
+                    <button type="button" class="hph-btn hph-btn-secondary" data-action="save-draft">
                         <i class="fas fa-file-alt"></i>
                         Save as Draft
                     </button>
                 </div>
                 
                 <div class="hph-form__actions-secondary">
-                    <button type="button" class="hph-btn hph-btn--ghost" data-action="cancel">
+                    <button type="button" class="hph-btn hph-btn-ghost" data-action="cancel">
                         <i class="fas fa-times"></i>
                         Cancel
                     </button>
@@ -772,7 +771,7 @@ class HPH_Unified_Dashboard_Components {
                 
                 <div class="hph-modal__footer">
                     <?php foreach ($actions as $action): ?>
-                        <button class="hph-btn hph-btn--<?php echo esc_attr($action['type']); ?>" 
+                        <button class="hph-btn hph-btn-<?php echo esc_attr($action['type']); ?>" 
                                 data-action="<?php echo esc_attr($action['action']); ?>">
                             <?php if (isset($action['icon'])): ?>
                                 <i class="fas fa-<?php echo esc_attr($action['icon']); ?>"></i>
@@ -844,7 +843,7 @@ class HPH_Unified_Dashboard_Components {
                             <?php if (!empty($actions)): ?>
                                 <td class="hph-table__cell hph-table__cell--actions">
                                     <?php foreach ($actions as $action): ?>
-                                        <button class="hph-btn hph-btn--<?php echo esc_attr($action['type']); ?> hph-btn--xs" 
+                                        <button class="hph-btn hph-btn-<?php echo esc_attr($action['type']); ?> hph-btn-xs" 
                                                 data-action="<?php echo esc_attr($action['action']); ?>"
                                                 <?php if (isset($action['data'])): ?>
                                                     <?php foreach ($action['data'] as $key => $value): ?>

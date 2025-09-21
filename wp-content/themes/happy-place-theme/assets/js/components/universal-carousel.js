@@ -15,6 +15,14 @@ class HphUniversalCarousel {
         this.nextButton = element.querySelector('[data-carousel-next]');
         this.dots = Array.from(element.querySelectorAll('.hph-carousel__dot'));
         this.loading = element.querySelector('[data-carousel-loading]');
+
+        console.log('Universal Carousel initialized:', {
+            track: !!this.track,
+            slides: this.slides.length,
+            prevButton: !!this.prevButton,
+            nextButton: !!this.nextButton,
+            dots: this.dots.length
+        });
         
         // Configuration from data attributes
         this.config = {
@@ -22,7 +30,8 @@ class HphUniversalCarousel {
             autoplay: element.dataset.autoplay === 'true',
             autoplaySpeed: parseInt(element.dataset.autoplaySpeed) || 5000,
             showNavigation: element.dataset.showNavigation === 'true',
-            showDots: element.dataset.showDots === 'true'
+            showDots: element.dataset.showDots === 'true',
+            infinite: element.dataset.infinite !== 'false' // Default to true for infinite loop
         };
         
         // State
@@ -63,22 +72,27 @@ class HphUniversalCarousel {
     }
     
     init() {
-        if (this.totalSlides === 0) return;
-        
-        this.calculateDimensions();
-        this.setupResponsive();
-        this.bindEvents();
-        this.updateCarousel();
-        
-        if (this.config.autoplay) {
-            this.startAutoplay();
+        if (this.totalSlides === 0) {
+            return;
         }
-        
-        // Initialize accessibility
-        this.setupAccessibility();
-        
-        // Mark as initialized
-        this.container.classList.add('is-initialized');
+
+        // Delay initialization slightly to ensure elements are fully rendered
+        setTimeout(() => {
+            this.calculateDimensions();
+            this.setupResponsive();
+            this.bindEvents();
+            this.updateCarousel();
+
+            if (this.config.autoplay) {
+                this.startAutoplay();
+            }
+
+            // Initialize accessibility
+            this.setupAccessibility();
+
+            // Mark as initialized
+            this.container.classList.add('is-initialized');
+        }, 100);
     }
     
     setupResponsive() {
@@ -100,35 +114,6 @@ class HphUniversalCarousel {
         clearTimeout(this.resizeTimeout);
         this.resizeTimeout = setTimeout(() => {
             this.calculateDimensions();
-            this.updateCarousel();
-        }, 250);
-    }
-    
-    updateSlidesPerView() {
-        const containerWidth = this.container.offsetWidth;
-        let newSlidesPerView = this.config.slidesToShow;
-        
-        // Apply responsive breakpoints
-        Object.values(this.config.breakpoints).forEach(breakpoint => {
-            if (containerWidth <= breakpoint.breakpoint) {
-                newSlidesPerView = breakpoint.slides;
-            }
-        });
-        
-        if (newSlidesPerView !== this.slidesPerView) {
-            this.slidesPerView = newSlidesPerView;
-            this.maxIndex = Math.max(0, this.totalSlides - this.slidesPerView);
-            this.currentIndex = Math.min(this.currentIndex, this.maxIndex);
-            
-            // Update CSS custom property for slide width
-            this.container.style.setProperty('--slides-per-view', this.slidesPerView);
-        }
-    }
-    
-    handleResize() {
-        clearTimeout(this.resizeTimeout);
-        this.resizeTimeout = setTimeout(() => {
-            this.updateSlidesPerView();
             this.updateCarousel();
         }, 250);
     }
@@ -224,16 +209,26 @@ class HphUniversalCarousel {
     
     goToPrevious() {
         if (this.isAnimating) return;
-        
-        const newIndex = Math.max(0, this.currentIndex - this.slidesPerView);
-        this.goToSlide(newIndex);
+
+        if (this.config.infinite && this.currentIndex === 0) {
+            // Jump to end for infinite loop
+            this.goToSlide(this.maxIndex);
+        } else {
+            const newIndex = Math.max(0, this.currentIndex - this.slidesPerView);
+            this.goToSlide(newIndex);
+        }
     }
-    
+
     goToNext() {
         if (this.isAnimating) return;
-        
-        const newIndex = Math.min(this.maxIndex, this.currentIndex + this.slidesPerView);
-        this.goToSlide(newIndex);
+
+        if (this.config.infinite && this.currentIndex >= this.maxIndex) {
+            // Jump to beginning for infinite loop
+            this.goToSlide(0);
+        } else {
+            const newIndex = Math.min(this.maxIndex, this.currentIndex + this.slidesPerView);
+            this.goToSlide(newIndex);
+        }
     }
     
     goToSlide(index) {
@@ -279,12 +274,22 @@ class HphUniversalCarousel {
     }
     
     updateNavigationStates() {
-        if (this.prevButton) {
-            this.prevButton.disabled = this.currentIndex === 0;
-        }
-        
-        if (this.nextButton) {
-            this.nextButton.disabled = this.currentIndex === this.maxIndex;
+        if (this.config.infinite) {
+            // Never disable buttons in infinite mode
+            if (this.prevButton) {
+                this.prevButton.disabled = false;
+            }
+            if (this.nextButton) {
+                this.nextButton.disabled = false;
+            }
+        } else {
+            if (this.prevButton) {
+                this.prevButton.disabled = this.currentIndex === 0;
+            }
+
+            if (this.nextButton) {
+                this.nextButton.disabled = this.currentIndex === this.maxIndex;
+            }
         }
     }
     
@@ -346,11 +351,7 @@ class HphUniversalCarousel {
         if (!this.config.autoplay) return;
         
         this.autoplayInterval = setInterval(() => {
-            if (this.currentIndex >= this.maxIndex) {
-                this.goToSlide(0); // Loop back to start
-            } else {
-                this.goToNext();
-            }
+            this.goToNext(); // Use the enhanced goToNext that handles infinite loop
         }, this.config.autoplaySpeed);
     }
     
@@ -410,21 +411,37 @@ class HphUniversalCarousel {
 }
 
 // Initialize all carousels on page load
-document.addEventListener('DOMContentLoaded', function() {
+function initializeCarousels() {
     const carousels = document.querySelectorAll('.hph-carousel__container');
     const carouselInstances = [];
-    
-    carousels.forEach(carousel => {
-        const instance = new HphUniversalCarousel(carousel);
-        carouselInstances.push(instance);
-        
-        // Store instance on element for external access
-        carousel.hphCarousel = instance;
+
+    carousels.forEach((carousel, index) => {
+        try {
+            const instance = new HphUniversalCarousel(carousel);
+            carouselInstances.push(instance);
+
+            // Store instance on element for external access
+            carousel.hphCarousel = instance;
+        } catch (error) {
+        }
     });
-    
+
     // Store global reference
     window.HphCarousels = carouselInstances;
-});
+}
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeCarousels);
+} else {
+    // DOM already loaded
+    initializeCarousels();
+}
+
+// Also initialize if jQuery is available
+if (typeof jQuery !== 'undefined') {
+    jQuery(document).ready(initializeCarousels);
+}
 
 // Export class for module usage
 if (typeof module !== 'undefined' && module.exports) {

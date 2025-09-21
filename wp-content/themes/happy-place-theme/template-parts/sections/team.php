@@ -66,25 +66,25 @@ switch ($theme) {
 // Padding styles
 switch ($padding) {
     case 'sm':
-        $section_styles[] = 'padding-top: var(--hph-padding-lg)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-lg)';
+        $section_styles[] = 'padding-top: var(--hph-space-6)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-6)';
         break;
     case 'md':
-        $section_styles[] = 'padding-top: var(--hph-padding-xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-8)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-8)';
         break;
     case 'lg':
-        $section_styles[] = 'padding-top: var(--hph-padding-2xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-2xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-12)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-12)';
         break;
     case '2xl':
-        $section_styles[] = 'padding-top: var(--hph-padding-4xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-4xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-24)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-24)';
         break;
     case 'xl':
     default:
-        $section_styles[] = 'padding-top: var(--hph-padding-3xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-3xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-16)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-16)';
         break;
 }
 
@@ -93,8 +93,8 @@ $container_styles = array(
     'position: relative',
     'margin-left: auto',
     'margin-right: auto',
-    'padding-left: var(--hph-padding-lg)',
-    'padding-right: var(--hph-padding-lg)'
+    'padding-left: var(--hph-space-6)',
+    'padding-right: var(--hph-space-6)'
 );
 
 switch ($container) {
@@ -161,7 +161,7 @@ if ($style === 'grid' || $style === 'cards') {
     $grid_styles[] = 'gap: var(--hph-gap-xl)';
     $grid_styles[] = 'overflow-x: auto';
     $grid_styles[] = 'scroll-snap-type: x mandatory';
-    $grid_styles[] = 'padding-bottom: var(--hph-padding-sm)';
+    $grid_styles[] = 'padding-bottom: var(--hph-space-2)';
 }
 
 // Image styles based on image_style
@@ -203,12 +203,12 @@ function getImageStyles($image_style) {
         
         <?php if ($badge || $headline || $subheadline || $content): ?>
         <!-- Section Header -->
-        <div style="margin-bottom: var(--hph-margin-3xl); <?php echo $header_alignment; ?> <?php echo $animation ? 'animation: fadeInUp 0.8s ease-out;' : ''; ?>">
+        <div style="margin-bottom: var(--hph-space-16); <?php echo $header_alignment; ?> <?php echo $animation ? 'animation: fadeInUp 0.8s ease-out;' : ''; ?>">
             
             <?php if ($badge): ?>
             <!-- Badge -->
-            <div style="margin-bottom: var(--hph-margin-lg);">
-                <span style="display: inline-block; padding: var(--hph-padding-sm) var(--hph-padding-md); background: var(--hph-primary-100); color: var(--hph-primary-700); border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
+            <div style="margin-bottom: var(--hph-space-6);">
+                <span style="display: inline-block; padding: var(--hph-space-2) var(--hph-space-4); background: var(--hph-primary-100); color: var(--hph-primary-700); border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
                     <?php echo esc_html($badge); ?>
                 </span>
             </div>
@@ -216,14 +216,14 @@ function getImageStyles($image_style) {
             
             <?php if ($headline): ?>
             <!-- Headline -->
-            <h2 style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-4xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
+            <h2 style="margin: 0 0 var(--hph-space-6) 0; font-size: var(--hph-text-4xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
                 <?php echo esc_html($headline); ?>
             </h2>
             <?php endif; ?>
             
             <?php if ($subheadline): ?>
             <!-- Subheadline -->
-            <p style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); opacity: 0.9;">
+            <p style="margin: 0 0 var(--hph-space-6) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); opacity: 0.9;">
                 <?php echo esc_html($subheadline); ?>
             </p>
             <?php endif; ?>
@@ -261,7 +261,7 @@ function getImageStyles($image_style) {
                     $item_styles[] = 'background: var(--hph-white)';
                     $item_styles[] = 'border-radius: var(--hph-radius-xl)';
                     $item_styles[] = 'box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1)';
-                    $item_styles[] = 'padding: var(--hph-padding-xl)';
+                    $item_styles[] = 'padding: var(--hph-space-8)';
                     $item_styles[] = 'transition: all 300ms ease';
                     $item_styles[] = 'text-align: center';
                 } elseif ($style === 'list') {
@@ -291,7 +291,7 @@ function getImageStyles($image_style) {
                 
                 <?php if ($member['image']): ?>
                 <!-- Member Image -->
-                <div style="<?php echo $style === 'list' ? 'flex-shrink: 0; width: 120px;' : 'margin-bottom: var(--hph-margin-lg);'; ?>">
+                <div style="<?php echo $style === 'list' ? 'flex-shrink: 0; width: 120px;' : 'margin-bottom: var(--hph-space-6);'; ?>">
                     <img 
                         src="<?php echo esc_url($member['image']); ?>" 
                         alt="<?php echo esc_attr($member['name']); ?>"
@@ -306,32 +306,32 @@ function getImageStyles($image_style) {
                     
                     <?php if ($member['name']): ?>
                     <!-- Name -->
-                    <h3 style="margin: 0 0 var(--hph-margin-sm) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
+                    <h3 style="margin: 0 0 var(--hph-space-2) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
                         <?php echo esc_html($member['name']); ?>
                     </h3>
                     <?php endif; ?>
                     
                     <?php if ($member['position']): ?>
                     <!-- Position -->
-                    <p style="margin: 0 0 var(--hph-margin-md) 0; font-size: var(--hph-text-base); font-weight: var(--hph-font-medium); color: var(--hph-primary); opacity: 0.9;">
+                    <p style="margin: 0 0 var(--hph-space-4) 0; font-size: var(--hph-text-base); font-weight: var(--hph-font-medium); color: var(--hph-primary); opacity: 0.9;">
                         <?php echo esc_html($member['position']); ?>
                     </p>
                     <?php endif; ?>
                     
                     <?php if ($show_bio && $member['bio']): ?>
                     <!-- Bio -->
-                    <p style="margin: 0 0 var(--hph-margin-lg) 0; color: var(--hph-gray-600); line-height: var(--hph-leading-relaxed); font-size: var(--hph-text-sm);">
+                    <p style="margin: 0 0 var(--hph-space-6) 0; color: var(--hph-gray-600); line-height: var(--hph-leading-relaxed); font-size: var(--hph-text-sm);">
                         <?php echo wp_kses_post($member['bio']); ?>
                     </p>
                     <?php endif; ?>
                     
                     <?php if ($member['email'] || $member['phone']): ?>
                     <!-- Contact Info -->
-                    <div style="margin-bottom: var(--hph-margin-lg); font-size: var(--hph-text-sm);">
+                    <div style="margin-bottom: var(--hph-space-6); font-size: var(--hph-text-sm);">
                         <?php if ($member['email']): ?>
-                        <p style="margin: 0 0 var(--hph-margin-xs) 0;">
+                        <p style="margin: 0 0 var(--hph-space-1) 0;">
                             <a href="mailto:<?php echo esc_attr($member['email']); ?>" style="color: var(--hph-primary); text-decoration: none;">
-                                <i class="fas fa-envelope" style="margin-right: var(--hph-margin-xs);"></i>
+                                <i class="fas fa-envelope" style="margin-right: var(--hph-space-1);"></i>
                                 <?php echo esc_html($member['email']); ?>
                             </a>
                         </p>
@@ -340,7 +340,7 @@ function getImageStyles($image_style) {
                         <?php if ($member['phone']): ?>
                         <p style="margin: 0;">
                             <a href="tel:<?php echo esc_attr($member['phone']); ?>" style="color: var(--hph-primary); text-decoration: none;">
-                                <i class="fas fa-phone" style="margin-right: var(--hph-margin-xs);"></i>
+                                <i class="fas fa-phone" style="margin-right: var(--hph-space-1);"></i>
                                 <?php echo esc_html($member['phone']); ?>
                             </a>
                         </p>
@@ -453,7 +453,7 @@ function getImageStyles($image_style) {
     
     .hph-team-section [style*="display: flex"] .hph-team-member > div:first-child {
         width: 120px !important;
-        margin: 0 auto var(--hph-margin-lg) auto;
+        margin: 0 auto var(--hph-space-6) auto;
     }
 }
 

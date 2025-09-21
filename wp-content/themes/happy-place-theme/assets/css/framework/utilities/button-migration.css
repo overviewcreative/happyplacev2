@@ -1,0 +1,84 @@
+/* ================================================
+   BUTTON MIGRATION UTILITY
+   Backwards compatibility layer for gradual BEM adoption
+   ================================================ */
+
+/* ================================================
+   LEGACY CLASS MAPPING
+   Maps old button classes to new BEM structure
+   ================================================ */
+
+
+
+
+/* ================================================
+   TRANSITION HELPERS
+   Classes to assist with gradual migration
+   ================================================ */
+
+
+/* ================================================
+   ICON COMPATIBILITY
+   Ensure icons work during transition
+   ================================================ */
+
+/* Legacy icon support in new buttons */
+.hph-button .fa,
+.hph-button .fas,
+.hph-button .far,
+.hph-button .fal,
+.hph-button .fab {
+  color: inherit;
+  font-size: inherit;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+}
+
+/* New icon support in legacy buttons */
+.hph-btn .hph-button__icon,
+.hph-btn .hph-icon {
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* ================================================
+   MIGRATION WARNINGS (Development Only)
+   Add visual indicators for deprecated classes
+   ================================================ */
+
+
+/* ================================================
+   PROGRESSIVE ENHANCEMENT
+   Enhance old buttons without breaking functionality
+   ================================================ */
+
+/* Improve accessibility for legacy buttons */
+.hph-btn:not(.hph-button) {
+  min-height: 44px; /* Ensure minimum touch target */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure proper icon sizing in legacy buttons */
+.hph-btn:not(.hph-button) .fa,
+.hph-btn:not(.hph-button) .fas,
+.hph-btn:not(.hph-button) .far,
+.hph-btn:not(.hph-button) .fal,
+.hph-btn:not(.hph-button) .fab {
+  margin: 0 !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+/* ================================================
+   JAVASCRIPT MIGRATION HELPERS
+   Classes for JS to target during migration
+   ================================================ */
+
+
+
+
+/* File: /assets/css/framework/utilities/button-migration.css */

@@ -101,7 +101,7 @@ $is_agent = in_array('agent', $user_roles) || in_array('administrator', $user_ro
                     </div>
                     
                     <div class="hph-form-actions">
-                        <button type="button" class="hph-btn hph-btn-outline" id="cancelContactAgent">
+                        <button type="button" class="hph-btn hph-btn-outline-primary" id="cancelContactAgent">
                             <?php _e('Cancel', 'happy-place-theme'); ?>
                         </button>
                         <button type="submit" class="hph-btn hph-btn-primary">
@@ -181,7 +181,7 @@ $is_agent = in_array('agent', $user_roles) || in_array('administrator', $user_ro
                     </div>
                     
                     <div class="hph-form-actions">
-                        <button type="button" class="hph-btn hph-btn-outline" id="cancelScheduleTour">
+                        <button type="button" class="hph-btn hph-btn-outline-primary" id="cancelScheduleTour">
                             <?php _e('Cancel', 'happy-place-theme'); ?>
                         </button>
                         <button type="submit" class="hph-btn hph-btn-primary">
@@ -228,7 +228,7 @@ $is_agent = in_array('agent', $user_roles) || in_array('administrator', $user_ro
                         </div>
                         
                         <div class="hph-form-actions">
-                            <button type="button" class="hph-btn hph-btn-outline" id="cancelAddNote">
+                            <button type="button" class="hph-btn hph-btn-outline-primary" id="cancelAddNote">
                                 <?php _e('Cancel', 'happy-place-theme'); ?>
                             </button>
                             <button type="submit" class="hph-btn hph-btn-primary">
@@ -267,7 +267,7 @@ $is_agent = in_array('agent', $user_roles) || in_array('administrator', $user_ro
                         </div>
                         
                         <div class="hph-form-actions">
-                            <button type="button" class="hph-btn hph-btn-outline" id="cancelUpdateStatus">
+                            <button type="button" class="hph-btn hph-btn-outline-primary" id="cancelUpdateStatus">
                                 <?php _e('Cancel', 'happy-place-theme'); ?>
                             </button>
                             <button type="submit" class="hph-btn hph-btn-primary">
@@ -289,7 +289,7 @@ $is_agent = in_array('agent', $user_roles) || in_array('administrator', $user_ro
                         <label for="shareUrl" class="hph-form-label"><?php _e('Property URL', 'happy-place-theme'); ?></label>
                         <div class="hph-input-group">
                             <input type="text" id="shareUrl" class="hph-form-input" readonly>
-                            <button type="button" class="hph-btn hph-btn-outline" id="copyUrlBtn">
+                            <button type="button" class="hph-btn hph-btn-outline-primary" id="copyUrlBtn">
                                 <span class="hph-icon-copy"></span>
                                 <?php _e('Copy', 'happy-place-theme'); ?>
                             </button>
@@ -316,7 +316,7 @@ $is_agent = in_array('agent', $user_roles) || in_array('administrator', $user_ro
                     </div>
                     
                     <div class="hph-form-actions">
-                        <button type="button" class="hph-btn hph-btn-outline" id="cancelShare">
+                        <button type="button" class="hph-btn hph-btn-outline-primary" id="cancelShare">
                             <?php _e('Close', 'happy-place-theme'); ?>
                         </button>
                     </div>
@@ -354,7 +354,7 @@ $is_agent = in_array('agent', $user_roles) || in_array('administrator', $user_ro
                         <?php _e('Something went wrong. Please try again.', 'happy-place-theme'); ?>
                     </p>
                     <div class="hph-form-actions">
-                        <button type="button" class="hph-btn hph-btn-outline" id="closeError">
+                        <button type="button" class="hph-btn hph-btn-outline-primary" id="closeError">
                             <?php _e('Close', 'happy-place-theme'); ?>
                         </button>
                         <button type="button" class="hph-btn hph-btn-primary" id="retryAction">

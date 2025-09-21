@@ -41,8 +41,19 @@ if (!$city_name) {
 }
 
 // Don't show section if no city or coordinates
-if (!$city_name || !$coordinates) {
+if (!$city_name && !$coordinates) {
+    // Debug: Log what we found
+    if (WP_DEBUG) {
+        error_log('Simple Map Debug - City: ' . ($city_name ?: 'not found') . ', Coordinates: ' . ($coordinates ? json_encode($coordinates) : 'not found'));
+    }
     return;
+}
+
+// If we have city but no coordinates, try to geocode or use a default location
+if (!$coordinates && $city_name) {
+    // For now, let's use a default coordinate for the city center
+    // This should be replaced with proper geocoding
+    $coordinates = ['lat' => 39.0, 'lng' => -75.5]; // Default Delaware coordinates
 }
 
 // Get address data for map
@@ -53,6 +64,19 @@ $listing_data = [
     'longitude' => $coordinates['lng'],
     'permalink' => get_permalink($listing_id),
 ];
+
+// Get price for popup
+$listing_price = 0;
+if (function_exists('hpt_get_listing_data')) {
+    try {
+        $listing_info = hpt_get_listing_data($listing_id);
+        $listing_price = $listing_info['price'] ?? 0;
+    } catch (Exception $e) {
+        $listing_price = get_field('listing_price', $listing_id) ?: 0;
+    }
+} else {
+    $listing_price = get_field('listing_price', $listing_id) ?: 0;
+}
 
 // Get full address
 if (function_exists('hpt_get_listing_address')) {
@@ -169,28 +193,31 @@ if ($city_post) {
 
 ?>
 
-<section class="hph-city-location-section hph-py-xl">
+<section class="hph-section hph-mb-lg">
     <div class="hph-container">
         
         <!-- Section Header -->
-        <h2 class="hph-text-3xl hph-font-bold hph-mb-lg">
-            About <?php echo esc_html($city_name); ?>
-            <?php if (!empty($city_data['state'])) : ?>
-                <span class="hph-text-gray-600 hph-font-normal">, <?php echo esc_html($city_data['state']); ?></span>
-            <?php endif; ?>
-        </h2>
+        <div class="hph-section__header hph-mb-md">
+            <h2 class="hph-section__title hph-text-xl hph-font-bold">
+                About <?php echo esc_html($city_name); ?>
+                <?php if (!empty($city_data['state'])) : ?>
+                    <span class="hph-text-gray-600 hph-font-normal">, <?php echo esc_html($city_data['state']); ?></span>
+                <?php endif; ?>
+            </h2>
+        </div>
         
         <!-- Map -->
-        <div class="hph-map-wrapper hph-mb-xl">
-            <div class="hph-rounded-lg hph-overflow-hidden hph-shadow-lg">
-                <div id="<?php echo esc_attr($map_id); ?>" 
-                     style="height: 400px;"
-                     data-hph-map="true"
-                     data-map-center="<?php echo esc_attr(json_encode($map_options['center'])); ?>"
-                     data-map-zoom="<?php echo esc_attr($map_options['zoom']); ?>"
-                     data-map-style="<?php echo esc_attr($map_options['style']); ?>">
+        <div class="hph-section__content">
+            <div class="hph-map-wrapper hph-mb-xl">
+                <div class="hph-rounded-lg hph-overflow-hidden hph-shadow-lg">
+                    <div id="<?php echo esc_attr($map_id); ?>" 
+                         style="height: 400px;"
+                         data-hph-map="true"
+                         data-map-center="<?php echo esc_attr(json_encode($map_options['center'])); ?>"
+                         data-map-zoom="<?php echo esc_attr($map_options['zoom']); ?>"
+                         data-map-style="<?php echo esc_attr($map_options['style']); ?>">
+                    </div>
                 </div>
-            </div>
             
             <!-- Map Actions Bar -->
             <div class="hph-flex hph-justify-between hph-items-center hph-mt-md">
@@ -213,21 +240,20 @@ if ($city_post) {
                     ?>
                     <a href="<?php echo esc_url($directions_url); ?>" 
                        target="_blank"
-                       class="hph-btn hph-btn--primary hph-btn--sm">
+                       class="hph-btn hph-btn-primary hph-btn-sm">
                         <i class="fas fa-directions hph-mr-2"></i>
                         Get Directions
                     </a>
                 </div>
             </div>
-        </div>
-        
-        <?php if ($city_post && !empty($city_data)) : ?>
-        
-        <!-- City Information -->
-        <div class="hph-city-info">
             
-            <?php if (!empty($city_data['image']) || !empty($city_data['description'])) : ?>
-            <div class="hph-grid hph-grid-cols-1 hph-grid-cols-lg-2 hph-gap-xl hph-mb-xl">
+            <?php if ($city_post && !empty($city_data)) : ?>
+            
+            <!-- City Information -->
+            <div class="hph-city-info">
+                
+                <?php if (!empty($city_data['image']) || !empty($city_data['description'])) : ?>
+                <div class="hph-grid hph-grid-cols-1 hph-grid-cols-lg-2 hph-gap-xl hph-mb-xl">
                 
                 <?php if (!empty($city_data['image'])) : ?>
                 <div>
@@ -339,23 +365,33 @@ window.hph_mapbox_config = window.hph_mapbox_config || {};
 window.hph_mapbox_config.access_token = '<?php echo esc_js($mapbox_token); ?>';
 
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, checking for mapboxgl...');
     if (typeof mapboxgl !== 'undefined') {
+        console.log('Mapbox GL JS is loaded');
         mapboxgl.accessToken = '<?php echo esc_js($mapbox_token); ?>';
+        
+        var mapCenter = <?php echo json_encode($map_options['center']); ?>;
+        console.log('Map center coordinates:', mapCenter);
         
         var map = new mapboxgl.Map({
             container: '<?php echo esc_js($map_id); ?>',
             style: '<?php echo esc_js($map_options['style']); ?>',
-            center: <?php echo json_encode($map_options['center']); ?>,
+            center: mapCenter,
             zoom: <?php echo esc_js($map_options['zoom']); ?>
         });
         
         map.addControl(new mapboxgl.NavigationControl());
         
+        // Create simple marker with HPH primary color
         var marker = new mapboxgl.Marker({
-            color: 'var(--hph-primary)'
+            color: '#50bae1'
         })
-        .setLngLat(<?php echo json_encode($map_options['center']); ?>)
+        .setLngLat(mapCenter)
         .addTo(map);
+        
+        console.log('Marker added to map at coordinates:', mapCenter);
+    } else {
+        console.error('Mapbox GL JS is not loaded');
     }
 });
 </script>

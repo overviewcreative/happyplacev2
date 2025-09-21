@@ -208,12 +208,14 @@ jQuery(document).ready(function($) {
                 { value: 'property_highlights', label: 'Property Highlights' },
                 
                 // Pricing & Financial
-                { value: 'price', label: 'Price' },
+                { value: 'listing_price', label: 'Listing Price' },
                 { value: 'property_taxes', label: 'Property Taxes' },
                 { value: 'hoa_fees', label: 'HOA Fees' },
                 { value: 'buyer_commission', label: 'Buyer Commission' },
                 { value: 'estimated_insurance', label: 'Estimated Insurance' },
                 { value: 'estimated_utilities', label: 'Estimated Utilities' },
+                { value: 'tax_id', label: 'Tax ID / Parcel Number' },
+                { value: 'price_per_sqft', label: 'Price per Sq Ft' },
                 
                 // Property Details
                 { value: 'bedrooms', label: 'Bedrooms' },
@@ -223,28 +225,83 @@ jQuery(document).ready(function($) {
                 { value: 'lot_size_acres', label: 'Lot Size (Acres)' },
                 { value: 'lot_size_sqft', label: 'Lot Size (Square Feet)' },
                 { value: 'year_built', label: 'Year Built' },
-                { value: 'property_type', label: 'Property Type' },
+                { value: 'garage_spaces', label: 'Garage Spaces' },
+                { value: 'property_style', label: 'Architectural Style' },
+                { value: 'listing_date', label: 'Listing Date' },
+                { value: 'days_on_market', label: 'Days on Market' },
+                { value: 'stories', label: 'Stories/Levels' },
+                { value: 'condition', label: 'Property Condition' },
+                { value: 'is_featured', label: 'Featured Listing' },
                 
-                // Address Fields
+                // Address Fields (Complete Set)
+                { value: 'full_address_to_parse', label: '🔍 Full Address (Auto-Parse)' },
                 { value: 'street_number', label: 'Street Number' },
+                { value: 'street_dir_prefix', label: 'Street Direction Prefix' },
                 { value: 'street_name', label: 'Street Name' },
                 { value: 'street_type', label: 'Street Type (St, Ave, etc.)' },
+                { value: 'street_dir_suffix', label: 'Street Direction Suffix' },
+                { value: 'unit_number', label: 'Unit/Apt Number' },
                 { value: 'city', label: 'City' },
                 { value: 'state', label: 'State' },
                 { value: 'zip_code', label: 'ZIP Code' },
                 { value: 'county', label: 'County' },
                 { value: 'parcel_number', label: 'Parcel Number' },
-                
-                // Listing Information
-                { value: 'mls_number', label: 'MLS Number' },
-                { value: 'status', label: 'Status' },
-                { value: 'listing_date', label: 'Listing Date' },
-                { value: 'sold_date', label: 'Sold Date' },
-                { value: 'days_on_market', label: 'Days on Market' },
+                { value: 'subdivision', label: 'Subdivision/Neighborhood' },
+                { value: 'school_district', label: 'School District' },
+                { value: 'zoning', label: 'Zoning' },
+                { value: 'flood_zone', label: 'Flood Zone' },
                 
                 // Location Data
                 { value: 'latitude', label: 'Latitude' },
                 { value: 'longitude', label: 'Longitude' },
+                
+                // Listing Information
+                { value: 'mls_number', label: 'MLS Number' },
+                { value: 'status', label: 'Status' },
+                { value: 'sold_date', label: 'Sold Date' },
+                
+                // Agent & Office Information
+                { value: 'listing_agent', label: 'Listing Agent' },
+                { value: 'co_listing_agent', label: 'Co-Listing Agent' },
+                { value: 'listing_office', label: 'Listing Office' },
+                { value: 'listing_office_phone', label: 'Office Phone' },
+                
+                // Construction & Building Details
+                { value: 'builder', label: 'Builder' },
+                { value: 'roof_type', label: 'Roof Type' },
+                { value: 'foundation_type', label: 'Foundation Type' },
+                { value: 'exterior_materials', label: 'Exterior Materials' },
+                { value: 'flooring_types', label: 'Flooring Types' },
+                { value: 'heating_system', label: 'Heating System' },
+                { value: 'heating_fuel', label: 'Heating Fuel' },
+                { value: 'cooling_system', label: 'Cooling System' },
+                { value: 'cooling_fuel', label: 'Cooling Fuel' },
+                { value: 'water_source', label: 'Water Source' },
+                { value: 'sewer_system', label: 'Sewer System' },
+                { value: 'electric_service', label: 'Electric Service' },
+                { value: 'hot_water', label: 'Hot Water System' },
+                { value: 'construction_materials', label: 'Construction Materials' },
+                
+                // Features & Amenities
+                { value: 'interior_features', label: 'Interior Features' },
+                { value: 'exterior_features', label: 'Exterior Features' },
+                { value: 'property_features', label: 'Property Features' },
+                
+                // Pool & Recreation
+                { value: 'has_pool', label: 'Has Swimming Pool' },
+                { value: 'pool_type', label: 'Pool Type' },
+                { value: 'has_spa', label: 'Has Spa/Hot Tub' },
+                { value: 'garage_type', label: 'Garage Type' },
+                { value: 'air_conditioning', label: 'Air Conditioning' },
+                { value: 'heating', label: 'Heating System' },
+                { value: 'water_heater', label: 'Water Heater' },
+                
+                // Media & Virtual Tours
+                { value: 'primary_photo', label: 'Primary Photo' },
+                { value: 'photo_gallery', label: 'Photo Gallery' },
+                { value: 'virtual_tour_url', label: 'Virtual Tour URL' },
+                { value: 'video_url', label: 'Video Tour URL' },
+                { value: 'floor_plans', label: 'Floor Plans' },
                 
                 // Additional Info
                 { value: 'showing_instructions', label: 'Showing Instructions' },

@@ -612,7 +612,7 @@
   border: 1px solid var(--hph-border-color);
   border-radius: var(--hph-radius-lg);
   overflow: hidden;
-  padding: var(hph-space-md);
+  padding: var(--hph-space-4);
 }
 
   .hph-card-header {
@@ -1041,21 +1041,14 @@
 }
 
 /* ================================================
-   BUTTONS
+   DASHBOARD BUTTON MODIFIERS
    ================================================ */
-  .hph-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.625rem 1.25rem;
-  border: 1px solid transparent;
-  border-radius: var(--hph-radius-md);
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-decoration: none;
+/* Dashboard-specific button styling - extends base .hph-btn */
+.hph-btn--dashboard {
+  gap: var(--hph-space-2); /* 0.5rem */
+  padding: var(--hph-space-2) var(--hph-space-5); /* 0.625rem 1.25rem */
+  font-size: var(--hph-text-sm); /* 0.875rem */
+  font-weight: var(--hph-font-medium); /* 500 */
 }
 
   .hph-btn-primary {

@@ -404,7 +404,6 @@
             
             saveTimeout = setTimeout(function() {
                 // Auto-save logic here
-                console.log('Auto-saving...');
             }, 2000);
         });
     }

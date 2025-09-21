@@ -45,7 +45,7 @@ $street_address = trim(get_field('street_number', $listing_id) . ' ' .
 <div class="sidebar-widget">
     
     <!-- Agent Photo - Large Centered -->
-    <div style="text-align: center; margin-bottom: 1.5rem;">
+    <div class="hph-text-center hph-mb-lg">
         <?php 
         $agent_photo = null;
         if ($agent_data['photo']) {
@@ -57,45 +57,45 @@ $street_address = trim(get_field('street_number', $listing_id) . ' ' .
         }
         
         if ($agent_photo): ?>
-            <div style="width: 200px; height: 200px; margin: 0 auto; border-radius: 50%; overflow: hidden; background: linear-gradient(135deg, #87CEEB 0%, #4A90E2 100%); padding: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <div style="width: 200px; height: 200px; margin: 0 auto; border-radius: var(--hph-radius-full); overflow: hidden; background: linear-gradient(135deg, var(--hph-primary) 0%, var(--hph-primary-600) 100%); padding: var(--hph-space-4); box-shadow: var(--hph-shadow-md);">
                 <img src="<?php echo esc_url($agent_photo); ?>" 
                      alt="<?php echo esc_attr($agent_data['name']); ?>" 
-                     style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                     style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--hph-radius-full);">
             </div>
         <?php else: ?>
-            <div style="width: 200px; height: 200px; margin: 0 auto; border-radius: 50%; background: linear-gradient(135deg, #87CEEB 0%, #4A90E2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 4rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <div style="width: 200px; height: 200px; margin: 0 auto; border-radius: var(--hph-radius-full); background: linear-gradient(135deg, var(--hph-primary) 0%, var(--hph-primary-600) 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: var(--hph-text-4xl); box-shadow: var(--hph-shadow-md);">
                 <i class="fas fa-user-tie"></i>
             </div>
         <?php endif; ?>
     </div>
     
     <!-- Agent Name and Title -->
-    <div style="text-align: center; margin-bottom: 1.5rem;">
-        <h3 style="font-size: 1.5rem; font-weight: 600; color: #2d3748; margin: 0 0 0.5rem 0;">
+    <div class="hph-text-center hph-mb-lg">
+        <h3 class="hph-text-xl hph-font-semibold hph-m-0 hph-mb-sm" style="color: var(--hph-text-color);">
             <?php echo esc_html($agent_data['name']); ?>
         </h3>
-        <div style="font-size: 0.875rem; font-weight: 500; color: #87CEEB; text-transform: uppercase; letter-spacing: 0.5px;">
+        <div class="hph-text-sm hph-font-medium hph-uppercase" style="color: var(--hph-primary); letter-spacing: 0.5px;">
             <?php echo esc_html($agent_data['title']); ?>
         </div>
     </div>
     
     <!-- Contact Information -->
-    <div style="text-align: center; margin-bottom: 1.5rem;">
+    <div class="hph-text-center hph-mb-lg">
         <?php if ($agent_data['phone']): ?>
-            <div style="margin-bottom: 0.75rem;">
-                <i class="fas fa-phone" style="color: #87CEEB; margin-right: 8px; width: 16px;"></i>
-                <a href="tel:<?php echo esc_attr($agent_data['phone']); ?>" 
-                   style="color: #4a5568; text-decoration: none; font-weight: 500;">
+            <div class="hph-mb-sm">
+                <i class="fas fa-phone" style="color: var(--hph-primary); margin-right: 10px; width: 18px; font-size: 14px;"></i>
+                <a href="tel:<?php echo esc_attr($agent_data['phone']); ?>"
+                   class="contact-link phone-link" style="color: var(--hph-gray-700); text-decoration: none; font-weight: 500; font-size: 15px;">
                     <?php echo esc_html($agent_data['phone']); ?>
                 </a>
             </div>
         <?php endif; ?>
-        
+
         <?php if ($agent_data['email']): ?>
             <div>
-                <i class="fas fa-envelope" style="color: #87CEEB; margin-right: 8px; width: 16px;"></i>
-                <a href="mailto:<?php echo esc_attr($agent_data['email']); ?>" 
-                   style="color: #87CEEB; text-decoration: none; font-weight: 500;">
+                <i class="fas fa-envelope" style="color: var(--hph-primary); margin-right: 10px; width: 18px; font-size: 14px;"></i>
+                <a href="mailto:<?php echo esc_attr($agent_data['email']); ?>"
+                   class="contact-link email-link" style="color: var(--hph-gray-700); text-decoration: none; font-weight: 500; font-size: 15px;">
                     <?php echo esc_html($agent_data['email']); ?>
                 </a>
             </div>
@@ -103,59 +103,61 @@ $street_address = trim(get_field('street_number', $listing_id) . ' ' .
     </div>
     
     <!-- Call and Email Buttons -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.5rem;">
+    <div class="hph-grid hph-gap-sm hph-mb-lg" style="grid-template-columns: 1fr 1fr;">
         <?php if ($agent_data['phone']): ?>
-            <a href="tel:<?php echo esc_attr($agent_data['phone']); ?>" 
-               style="background: #87CEEB; color: white; padding: 0.75rem; border-radius: 6px; text-align: center; text-decoration: none; font-weight: 500; transition: all 0.2s;">
-                <i class="fas fa-phone" style="margin-right: 6px;"></i>Call
+            <a href="tel:<?php echo esc_attr($agent_data['phone']); ?>"
+               class="action-button call-button" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 16px; background: var(--hph-primary); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">
+                <i class="fas fa-phone" style="font-size: 14px;"></i>
+                <span>Call</span>
             </a>
         <?php endif; ?>
-        
+
         <?php if ($agent_data['email']): ?>
-            <a href="mailto:<?php echo esc_attr($agent_data['email']); ?>" 
-               style="background: #87CEEB; color: white; padding: 0.75rem; border-radius: 6px; text-align: center; text-decoration: none; font-weight: 500; transition: all 0.2s;">
-                <i class="fas fa-envelope" style="margin-right: 6px;"></i>Email
+            <a href="mailto:<?php echo esc_attr($agent_data['email']); ?>"
+               class="action-button email-button" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 16px; background: var(--hph-primary); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; transition: all 0.3s ease;">
+                <i class="fas fa-envelope" style="font-size: 14px;"></i>
+                <span>Email</span>
             </a>
         <?php endif; ?>
     </div>
     
     <!-- Contact Agent Section Header -->
-    <div style="text-align: center; margin: 2rem 0 1rem 0; padding-bottom: 0.75rem; border-bottom: 2px solid #e2e8f0; position: relative;">
-        <h4 style="font-size: 1.25rem; font-weight: 600; color: #2d3748; margin: 0;">Contact Agent</h4>
-        <div style="position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%); width: 3rem; height: 2px; background: #87CEEB;"></div>
+    <div class="hph-text-center hph-my-xl hph-pb-sm hph-relative" style="border-bottom: 2px solid var(--hph-gray-200);">
+        <h4 class="hph-text-lg hph-font-semibold hph-m-0" style="color: var(--hph-text-color);">Contact Agent</h4>
+        <div class="hph-absolute hph-bottom-0 hph-h-px" style="left: 50%; transform: translateX(-50%); width: 3rem; margin-bottom: -2px; background: var(--hph-primary);"></div>
     </div>
     
     <!-- Contact Form -->
     <form class="agent-contact-form" id="agent-contact-form-<?php echo $listing_id; ?>">
         
-        <div style="margin-bottom: 1rem;">
+        <div class="hph-mb-md">
             <input type="text" 
                    name="name" 
                    placeholder="Your Name" 
                    required 
-                   style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.875rem; background: #f7fafc; transition: all 0.2s;">
+                   class="hph-w-full hph-py-sm hph-px-md hph-border hph-text-sm hph-transition-all" style="border-color: var(--hph-gray-200); background: var(--hph-gray-50); border-radius: var(--hph-input-radius);">
         </div>
         
-        <div style="margin-bottom: 1rem;">
+        <div class="hph-mb-md">
             <input type="email" 
                    name="email" 
                    placeholder="Your Email" 
                    required 
-                   style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.875rem; background: #f7fafc; transition: all 0.2s;">
+                   class="hph-w-full hph-py-sm hph-px-md hph-border hph-text-sm hph-transition-all" style="border-color: var(--hph-gray-200); background: var(--hph-gray-50); border-radius: var(--hph-input-radius);">
         </div>
         
-        <div style="margin-bottom: 1rem;">
+        <div class="hph-mb-md">
             <input type="tel" 
                    name="phone" 
                    placeholder="Your Phone" 
-                   style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.875rem; background: #f7fafc; transition: all 0.2s;">
+                   class="hph-w-full hph-py-sm hph-px-md hph-border hph-text-sm hph-transition-all" style="border-color: var(--hph-gray-200); background: var(--hph-gray-50); border-radius: var(--hph-input-radius);">
         </div>
         
-        <div style="margin-bottom: 1.5rem;">
+        <div class="hph-mb-lg">
             <textarea name="message" 
                       rows="4" 
                       placeholder="I'm interested in <?php echo esc_attr($property_title); ?><?php if ($street_address): ?> at <?php echo esc_attr($street_address); ?><?php endif; ?>" 
-                      style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.875rem; background: #f7fafc; resize: vertical; min-height: 100px; transition: all 0.2s;"></textarea>
+                      class="hph-w-full hph-py-sm hph-px-md hph-border hph-text-sm hph-transition-all" style="border-color: var(--hph-gray-200); background: var(--hph-gray-50); border-radius: var(--hph-input-radius); resize: vertical; min-height: 100px;"></textarea>
         </div>
         
         <!-- Hidden fields -->
@@ -165,11 +167,11 @@ $street_address = trim(get_field('street_number', $listing_id) . ' ' .
         <input type="hidden" name="route_type" value="property_inquiry">
         <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('hph_lead_nonce'); ?>">
         
-        <div id="form-message-<?php echo $listing_id; ?>" style="display: none; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem; font-size: 0.875rem;"></div>
-        
-        <button type="submit" 
-                style="width: 100%; background: #87CEEB; color: white; padding: 1rem; border: none; border-radius: 6px; font-weight: 500; cursor: pointer; transition: all 0.2s; font-size: 1rem;">
-            <i class="fas fa-paper-plane" style="margin-right: 8px;"></i>
+        <div id="form-message-<?php echo $listing_id; ?>" class="hph-hidden hph-py-sm hph-px-md hph-mb-md hph-text-sm" style="border-radius: var(--hph-radius-md);"></div>
+
+        <button type="submit"
+                class="submit-button" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px 20px; background: var(--hph-primary); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; transition: all 0.3s ease;">
+            <i class="fas fa-paper-plane" style="font-size: 14px;"></i>
             <span class="submit-text">Send Message</span>
         </button>
         
@@ -178,45 +180,69 @@ $street_address = trim(get_field('street_number', $listing_id) . ' ' .
 </div>
 
 <style>
-/* Hover effects for buttons */
-.sidebar-widget a[href^="tel"]:hover,
-.sidebar-widget a[href^="mailto"]:hover {
-    background: #4A90E2 !important;
+/* Contact link hover effects */
+.contact-link:hover {
+    color: var(--hph-primary) !important;
+    text-decoration: underline;
+}
+
+/* Action button hover effects */
+.action-button:hover {
+    background: #2980b9 !important;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(135, 206, 235, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
-.sidebar-widget input:focus,
-.sidebar-widget textarea:focus {
-    outline: none;
-    border-color: #87CEEB;
-    background: white;
-    box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.1);
+.action-button:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-.sidebar-widget button:hover {
-    background: #4A90E2 !important;
+/* Submit button hover effects */
+.submit-button:hover {
+    background: #2980b9 !important;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(135, 206, 235, 0.4);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
-.sidebar-widget button:disabled {
-    background: #a0aec0 !important;
+.submit-button:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.submit-button:disabled {
+    background: var(--hph-gray-400) !important;
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
+    opacity: 0.7;
 }
 
+/* Form input focus styles */
+.sidebar-widget input:focus,
+.sidebar-widget textarea:focus {
+    outline: none;
+    border-color: var(--hph-primary);
+    background: var(--hph-white);
+    box-shadow: 0 0 0 3px rgba(80, 186, 225, 0.1);
+}
+
+/* Form messages */
 .form-message-success {
-    background: #f0fff4;
-    border: 1px solid #9ae6b4;
-    color: #2f855a;
+    background: var(--hph-success-light);
+    border: 1px solid var(--hph-success);
+    color: var(--hph-success-dark);
 }
 
 .form-message-error {
-    background: #fed7d7;
-    border: 1px solid #feb2b2;
-    color: #c53030;
+    background: var(--hph-danger-light);
+    border: 1px solid var(--hph-danger);
+    color: var(--hph-danger-dark);
+}
+
+/* Icon styling consistency */
+.sidebar-widget .fas {
+    vertical-align: middle;
 }
 </style>
 
@@ -273,29 +299,29 @@ document.addEventListener('DOMContentLoaded', function() {
 <?php else: ?>
 
 <!-- No Agent Fallback -->
-<div class="sidebar-widget" style="text-align: center;">
-    <div style="width: 120px; height: 120px; margin: 0 auto 1.5rem; border-radius: 50%; background: linear-gradient(135deg, #87CEEB 0%, #4A90E2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
+<div class="sidebar-widget hph-text-center">
+    <div style="width: 120px; height: 120px; margin: 0 auto var(--hph-space-6); border-radius: var(--hph-radius-full); background: linear-gradient(135deg, var(--hph-primary) 0%, var(--hph-primary-600) 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: var(--hph-text-3xl);">
         <i class="fas fa-building"></i>
     </div>
-    <h3 style="font-size: 1.25rem; color: #2d3748; margin-bottom: 1rem;">Contact for Information</h3>
-    <p style="color: #4a5568; margin-bottom: 1.5rem;">For details about this property, please contact us.</p>
+    <h3 class="hph-text-lg hph-mb-md" style="color: var(--hph-text-color);">Contact for Information</h3>
+    <p class="hph-mb-lg" style="color: var(--hph-text-light);">For details about this property, please contact us.</p>
     
     <form class="general-contact-form" id="general-contact-form-<?php echo $listing_id; ?>">
-        <div style="margin-bottom: 1rem;">
+        <div class="hph-mb-md">
             <input type="text" name="name" placeholder="Your Name" required 
-                   style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.875rem; background: #f7fafc;">
+                   class="hph-w-full hph-py-sm hph-px-md hph-border hph-text-sm" style="border-color: var(--hph-gray-200); background: var(--hph-gray-50); border-radius: var(--hph-input-radius);">
         </div>
-        <div style="margin-bottom: 1rem;">
+        <div class="hph-mb-md">
             <input type="email" name="email" placeholder="Your Email" required 
-                   style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.875rem; background: #f7fafc;">
+                   class="hph-w-full hph-py-sm hph-px-md hph-border hph-text-sm" style="border-color: var(--hph-gray-200); background: var(--hph-gray-50); border-radius: var(--hph-input-radius);">
         </div>
-        <div style="margin-bottom: 1rem;">
+        <div class="hph-mb-md">
             <input type="tel" name="phone" placeholder="Your Phone" 
-                   style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.875rem; background: #f7fafc;">
+                   class="hph-w-full hph-py-sm hph-px-md hph-border hph-text-sm" style="border-color: var(--hph-gray-200); background: var(--hph-gray-50); border-radius: var(--hph-input-radius);">
         </div>
-        <div style="margin-bottom: 1.5rem;">
+        <div class="hph-mb-lg">
             <textarea name="message" rows="4" placeholder="I'm interested in <?php echo esc_attr($property_title); ?><?php if ($street_address): ?> at <?php echo esc_attr($street_address); ?><?php endif; ?>" 
-                      style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.875rem; background: #f7fafc; resize: vertical; min-height: 100px;"></textarea>
+                      class="hph-w-full hph-py-sm hph-px-md hph-border hph-text-sm" style="border-color: var(--hph-gray-200); background: var(--hph-gray-50); border-radius: var(--hph-input-radius); resize: vertical; min-height: 100px;"></textarea>
         </div>
         
         <input type="hidden" name="listing_id" value="<?php echo esc_attr($listing_id); ?>">
@@ -303,14 +329,62 @@ document.addEventListener('DOMContentLoaded', function() {
         <input type="hidden" name="route_type" value="property_inquiry">
         <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('hph_lead_nonce'); ?>">
         
-        <div id="general-form-message-<?php echo $listing_id; ?>" style="display: none;" class="form-message"></div>
-        
-        <button type="submit" 
-                style="width: 100%; background: #87CEEB; color: white; padding: 1rem; border: none; border-radius: 6px; font-weight: 500; cursor: pointer; transition: all 0.2s; font-size: 1rem;">
-            <i class="fas fa-paper-plane" style="margin-right: 8px;"></i>
+        <div id="general-form-message-<?php echo $listing_id; ?>" class="hph-hidden form-message"></div>
+
+        <button type="submit"
+                class="submit-button" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px 20px; background: var(--hph-primary); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; transition: all 0.3s ease;">
+            <i class="fas fa-paper-plane" style="font-size: 14px;"></i>
             <span class="submit-text">Send Message</span>
         </button>
     </form>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Mobile form toggle functionality
+    if (window.innerWidth <= 480) {
+        const formHeader = document.querySelector('.sidebar-widget .hph-text-center.hph-my-xl');
+        const contactForm = document.querySelector('.sidebar-widget .agent-contact-form');
+        
+        if (formHeader && contactForm) {
+            formHeader.style.cursor = 'pointer';
+            formHeader.style.userSelect = 'none';
+            
+            formHeader.addEventListener('click', function() {
+                const isExpanded = this.classList.contains('expanded');
+                
+                if (isExpanded) {
+                    this.classList.remove('expanded');
+                    contactForm.style.display = 'none';
+                } else {
+                    this.classList.add('expanded');
+                    contactForm.style.display = 'block';
+                }
+            });
+        }
+    }
+    
+    // Responsive adjustments on window resize
+    window.addEventListener('resize', function() {
+        const formHeader = document.querySelector('.sidebar-widget .hph-text-center.hph-my-xl');
+        const contactForm = document.querySelector('.sidebar-widget .agent-contact-form');
+        
+        if (formHeader && contactForm) {
+            if (window.innerWidth > 480) {
+                // Desktop/tablet - always show form
+                contactForm.style.display = 'block';
+                formHeader.classList.remove('expanded');
+                formHeader.style.cursor = 'default';
+            } else {
+                // Mobile - hide form by default
+                if (!formHeader.classList.contains('expanded')) {
+                    contactForm.style.display = 'none';
+                }
+                formHeader.style.cursor = 'pointer';
+            }
+        }
+    });
+});
+</script>
 
 <?php endif; ?>

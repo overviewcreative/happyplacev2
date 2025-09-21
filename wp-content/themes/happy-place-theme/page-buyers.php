@@ -16,13 +16,17 @@ get_header();
     // Hero Section - For Home Buyers
     // ============================================
     get_template_part('template-parts/sections/hero', null, array(
-        'style' => 'gradient',
-        'theme' => 'primary',
+        'style' => 'image',
+        'theme' => 'dark',
+        'overlay' => 'dark',
         'height' => 'lg',
-        'background_image' => function_exists('hph_get_image_url') ? hph_get_image_url('buyers-hero.jpg') : '',
-        'parallax' => true,
-        'overlay' => 'gradient',
-        'alignment' => 'center',
+        'is_top_of_page' => true,
+        'background_image' => hph_add_fastly_optimization(get_template_directory_uri() . '/assets/images/hero-bg5.jpg', 'full'),
+        'ken_burns' => true,
+        'ken_burns_direction' => 'pan-right',
+        'ken_burns_duration' => 28,
+        'overlay' => 'dark',
+        'alignment' => 'right',
         'headline' => 'Find Your Dream Home',
         'subheadline' => 'Expert guidance and comprehensive support throughout your home buying journey',
         'content' => 'Whether you\'re a first-time buyer or looking to upgrade, we\'ll help you navigate the market and find the perfect property that fits your lifestyle and budget.',
@@ -30,9 +34,9 @@ get_header();
         'buttons' => array(
             array(
                 'text' => 'Browse Properties',
-                'url' => '/listing/',
-                'style' => 'white',
-                'size' => 'xl',
+                'url' => '/listings/',
+                'style' => 'primary',
+                'size' => 'm',
                 'icon' => 'fas fa-search',
                 'icon_position' => 'right'
             ),
@@ -40,7 +44,7 @@ get_header();
                 'text' => 'Get Pre-Approved',
                 'url' => '/contact/',
                 'style' => 'outline-white',
-                'size' => 'xl',
+                'size' => 'm',
                 'icon' => 'fas fa-calculator'
             )
         ),
@@ -50,70 +54,17 @@ get_header();
 
     <?php
     // ============================================
-    // Process Section - Home Buying Process
-    // ============================================
-    get_template_part('template-parts/sections/process', null, array(
-        'background' => 'light',
-        'padding' => 'xl',
-        'badge' => 'The Buying Process',
-        'headline' => 'Your Path to Homeownership',
-        'subheadline' => 'Follow our proven step-by-step process to make your home buying experience smooth and successful',
-        'layout' => 'timeline',
-        'steps' => array(
-            array(
-                'number' => '01',
-                'title' => 'Get Pre-Approved',
-                'content' => 'Start with mortgage pre-approval to understand your budget and show sellers you\'re a serious buyer. We\'ll connect you with trusted lenders.',
-                'icon' => 'fas fa-calculator'
-            ),
-            array(
-                'number' => '02',
-                'title' => 'Define Your Needs',
-                'content' => 'Work with our agents to identify your must-haves, nice-to-haves, and deal-breakers. We\'ll help you prioritize features within your budget.',
-                'icon' => 'fas fa-list-check'
-            ),
-            array(
-                'number' => '03',
-                'title' => 'Search & Tour Properties',
-                'content' => 'Access our extensive database and schedule tours of homes that match your criteria. We\'ll provide market insights for each property.',
-                'icon' => 'fas fa-home'
-            ),
-            array(
-                'number' => '04',
-                'title' => 'Make an Offer',
-                'content' => 'When you find "the one," we\'ll help you craft a competitive offer and handle all negotiations to get you the best possible deal.',
-                'icon' => 'fas fa-handshake'
-            ),
-            array(
-                'number' => '05',
-                'title' => 'Inspection & Appraisal',
-                'content' => 'Coordinate professional inspections and appraisals to ensure the property is in good condition and priced fairly.',
-                'icon' => 'fas fa-search-plus'
-            ),
-            array(
-                'number' => '06',
-                'title' => 'Finalize & Close',
-                'content' => 'Complete final paperwork, coordinate with lenders, and attend closing to receive your keys. Congratulations on your new home!',
-                'icon' => 'fas fa-key'
-            )
-        ),
-        'section_id' => 'process-buyers'
-    ));
-    ?>
-
-    <?php
-    // ============================================
     // Features Section - Why Buy With Us
     // ============================================
     get_template_part('template-parts/sections/features', null, array(
         'layout' => 'grid',
-        'background' => 'white',
+        'background' => 'dark',
         'padding' => 'xl',
         'columns' => 3,
-        'badge' => 'Why Choose Happy Place',
-        'headline' => 'Your Trusted Home Buying Partner',
-        'subheadline' => 'Experience the difference of working with dedicated buyer specialists',
-        'content' => 'Our buyer-focused approach ensures you have all the tools, knowledge, and support needed to make confident decisions.',
+        'alignment' => 'center',
+        'badge' => 'Discover the Difference',
+        'headline' => 'Buying a home is more than just scrolling.',
+        'subheadline' => 'Looking is fun. Buying is serious.',
         'features' => array(
             array(
                 'icon' => 'fas fa-search',
@@ -156,18 +107,32 @@ get_header();
     // ============================================
     // Featured Properties Section
     // ============================================
-    get_template_part('template-parts/sections/featured-properties', null, array(
-        'background' => 'light',
-        'padding' => 'xl',
-        'badge' => 'Properties for Buyers',
-        'headline' => 'Homes Perfect for You',
-        'subheadline' => 'Explore properties that match what buyers are looking for right now',
-        'properties_count' => 6,
-        'show_filters' => true,
-        'layout' => 'grid',
-        'section_id' => 'featured-buyers'
-    ));
     ?>
+    <section class="hph-bg-gray-50 hph-py-3xl">
+        <div class="hph-container">
+            <div class="hph-text-center hph-mb-2xl">
+                <h2 class="hph-text-4xl hph-font-bold hph-text-primary hph-mb-md">
+                    <i class="hph-icon hph-icon--home hph-mr-sm"></i>
+                    New & Featured Listings
+                </h2>
+                <p class="hph-text-lg hph-text-gray-600 hph-max-w-2xl hph-mx-auto">
+                    Explore properties that match what buyers are looking for right now
+                </p>
+            </div>
+        </div>
+
+        <?php get_template_part('template-parts/components/universal-carousel', null, array(
+            'post_type' => 'listing',
+            'posts_per_page' => 20,
+            'card_variant' => 'default',
+            'slides_to_show' => 1,
+            'show_navigation' => true,
+            'show_dots' => true,
+            'autoplay' => true,
+            'autoplay_speed' => 5000,
+            'carousel_id' => 'featured-buyers-carousel'
+        )); ?>
+    </section>
 
     <?php
     // ============================================
@@ -251,10 +216,11 @@ get_header();
             ),
             array(
                 'text' => 'Contact a Buyer Agent',
-                'url' => '/contact/',
+                'url' => '#',
                 'style' => 'outline-white',
                 'size' => 'xl',
-                'icon' => 'fas fa-user'
+                'icon' => 'fas fa-user',
+                'data_attributes' => 'data-modal-form="general-contact" data-modal-id="hph-consultation-modal" data-modal-title="Contact a Buyer Agent" data-modal-subtitle="Let\'s discuss your home buying goals and find the perfect property for you."'
             )
         ),
         'form' => array(

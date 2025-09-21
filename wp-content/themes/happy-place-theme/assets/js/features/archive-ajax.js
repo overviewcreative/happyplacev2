@@ -17,31 +17,31 @@
 
     // Archive AJAX manager
     const ArchiveAjax = {
-        // Configuration
+        // Configuration - check if hphArchive global exists
         config: {
-            ajaxUrl: hphArchive?.ajaxUrl || '/wp-admin/admin-ajax.php',
-            nonce: hphArchive?.nonce || '',
-            postType: hphArchive?.postType || 'listing',
-            currentView: hphArchive?.currentView || 'grid',
-            currentSort: hphArchive?.currentSort || 'date_desc',
+            ajaxUrl: (typeof hphArchive !== 'undefined' && hphArchive?.ajaxUrl) || '/wp-admin/admin-ajax.php',
+            nonce: (typeof hphArchive !== 'undefined' && hphArchive?.nonce) || '',
+            postType: (typeof hphArchive !== 'undefined' && hphArchive?.postType) || 'listing',
+            currentView: (typeof hphArchive !== 'undefined' && hphArchive?.currentView) || 'grid',
+            currentSort: (typeof hphArchive !== 'undefined' && hphArchive?.currentSort) || 'date_desc',
             currentPage: 1,
             perPage: 12,
-            autoFilter: hphArchive?.autoFilter !== false,
+            autoFilter: (typeof hphArchive === 'undefined') || (hphArchive?.autoFilter !== false),
             debounceDelay: 300
         },
 
         // Cache selectors
         selectors: {
-            container: '.hph-archive-layout',
-            resultsContainer: '[data-results-container]',
+            container: '.hph-archive-layout, .hph-listings-container',
+            resultsContainer: '[data-results-container], [data-ajax-results]',
             loadingContainer: '.hph-loading-skeleton',
-            filtersForm: '.hph-archive-filters form, .hph-search-form',
-            viewButtons: '.hph-view-toggle button',
+            filtersForm: '.hph-archive-filters form, .hph-search-form, .hph-hero-search-form',
+            viewButtons: '.hph-view-toggle button, .hph-view-btn',
             sortSelect: '.hph-sort-select',
             perPageSelect: '.hph-per-page-select',
             pagination: '.hph-pagination a',
             clearFilters: '.hpt-clear-filters',
-            resultsCount: '.hph-results-count',
+            resultsCount: '.hph-results-count, [data-results-count]',
             noResults: '.hph-empty-state'
         },
 
@@ -279,7 +279,7 @@
             this.showLoadingState();
 
             const requestData = {
-                action: 'hpt_archive_ajax',
+                action: 'hph_archive_ajax',
                 nonce: this.config.nonce,
                 post_type: this.config.postType,
                 action_type: actionType,
@@ -336,10 +336,9 @@
 
         // Handle AJAX errors
         handleError(xhr, status, error) {
-            console.error('Archive AJAX Error:', status, error);
             
             // Show user-friendly error message
-            const errorMessage = hphArchive?.strings?.error || 'Unable to load results. Please try again.';
+            const errorMessage = (typeof hphArchive !== 'undefined' && hphArchive?.strings?.error) || 'Unable to load results. Please try again.';
             this.showErrorMessage(errorMessage);
             
             // Trigger custom event
@@ -431,12 +430,18 @@
             $(this.selectors.filtersForm).find('input[type="text"], input[type="number"], textarea').val('');
             $(this.selectors.filtersForm).find('input[type="checkbox"], input[type="radio"]').prop('checked', false);
             $(this.selectors.filtersForm).find('select').prop('selectedIndex', 0);
-            
+
+            // Also clear any search inputs throughout the page (header, hero, etc.)
+            $('.hph-search-input, #hero-search-input, #header-search-input, input[name="s"]').val('');
+
+            // Hide any clear buttons that might be visible
+            $('.hph-btn-clear').hide();
+
             // Reset state
             this.state.currentFilters = {};
             this.state.searchQuery = '';
             this.config.currentPage = 1;
-            
+
             // Perform request
             this.performAjaxRequest('clear_filters');
         },

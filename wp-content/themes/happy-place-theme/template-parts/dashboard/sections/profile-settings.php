@@ -91,7 +91,7 @@ $is_agent = in_array('agent', $user->roles) || in_array('administrator', $user->
                         <?php echo get_avatar($user->ID, 120, '', '', ['class' => 'hph-profile-avatar']); ?>
                     </div>
                     <div class="hph-photo-actions">
-                        <button type="button" class="hph-btn hph-btn-outline hph-btn-sm">
+                        <button type="button" class="hph-btn hph-btn-outline-primary hph-btn-sm">
                             <i class="fas fa-camera"></i>
                             Change Photo
                         </button>
@@ -165,7 +165,7 @@ $is_agent = in_array('agent', $user->roles) || in_array('administrator', $user->
                             <h4>Change Password</h4>
                             <p>Update your account password for security</p>
                         </div>
-                        <button type="button" class="hph-btn hph-btn-outline hph-btn-sm" id="changePasswordBtn">
+                        <button type="button" class="hph-btn hph-btn-outline-primary hph-btn-sm" id="changePasswordBtn">
                             <i class="fas fa-key"></i>
                             Change Password
                         </button>

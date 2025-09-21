@@ -101,7 +101,7 @@ if (empty($active_filters) || !$filters_args['show_active_filters']) {
                 <?php endforeach; ?>
                 
                 <?php if ($filters_args['show_clear_all']) : ?>
-                    <button class="hph-btn hph-btn--ghost hph-btn--sm hph-clear-all-filters">
+                    <button class="hph-btn hph-btn-ghost hph-btn-sm hph-clear-all-filters">
                         <i class="fas fa-times-circle"></i>
                         <?php _e('Clear All', 'happy-place-theme'); ?>
                     </button>

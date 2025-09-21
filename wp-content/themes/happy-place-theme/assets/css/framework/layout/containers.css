@@ -30,6 +30,15 @@
   padding-right: var(--hph-container-padding, 1.5rem);
 }
 
+/* Full width container - no max-width constraint for archive pages */
+.hph-full-width-container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--hph-container-padding, 1.5rem);
+  padding-right: var(--hph-container-padding, 1.5rem);
+}
+
 /* Container sizes - Only use these when you specifically need narrower content */
 .hph-container-sm {
   max-width: var(--hph-container-sm, 640px) !important;

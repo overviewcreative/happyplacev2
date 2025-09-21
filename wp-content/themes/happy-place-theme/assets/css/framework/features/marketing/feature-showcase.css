@@ -898,22 +898,22 @@
    LAYOUT-SPECIFIC STYLES
    ================================================ */
 .hph-layout-grid-cards .hph-grid {
-  gap: var(--hph-space-lg);
+  gap: var(--hph-space-6);
 }
 
 .hph-layout-icon-features .hph-grid {
-  gap: var(--hph-space-xl);
+  gap: var(--hph-space-8);
   text-align: center;
 }
 
 .hph-layout-stats-row .hph-grid {
-  gap: var(--hph-space-lg);
+  gap: var(--hph-space-6);
   text-align: center;
 }
 
 .hph-layout-three-column .hph-grid,
 .hph-layout-four-column .hph-grid {
-  gap: var(--hph-space-lg);
+  gap: var(--hph-space-6);
 }
 
 /* ================================================
@@ -1893,4 +1893,3 @@
     color: var(--hph-gray-100);
 }
 
-/* File Location: /wp-content/themes/happy-place/assets/css/pages/showcase.css */

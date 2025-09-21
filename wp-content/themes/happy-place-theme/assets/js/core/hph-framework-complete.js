@@ -26,7 +26,8 @@
 // ================================================
 
 // Load base components (these would be imported/concatenated in a build process)
-console.log('HPH Framework JS: Loading base components...');
+if (typeof window.hphDebug !== 'undefined' && window.hphDebug) {
+}
 
 // Base component initialization would go here
 // This is a placeholder for a build system that would concatenate:
@@ -40,7 +41,8 @@ console.log('HPH Framework JS: Loading base components...');
 // Structural JavaScript for layout elements
 // ================================================
 
-console.log('HPH Framework JS: Loading layout components...');
+if (typeof window.hphDebug !== 'undefined' && window.hphDebug) {
+}
 
 // Layout component initialization would go here
 // This would include:
@@ -53,7 +55,8 @@ console.log('HPH Framework JS: Loading layout components...');
 // Feature-specific JavaScript modules
 // ================================================
 
-console.log('HPH Framework JS: Loading feature components...');
+if (typeof window.hphDebug !== 'undefined' && window.hphDebug) {
+}
 
 // Component initialization would go here
 // This would include all components from:
@@ -67,7 +70,8 @@ console.log('HPH Framework JS: Loading feature components...');
 // Section-specific JavaScript
 // ================================================
 
-console.log('HPH Framework JS: Loading section components...');
+if (typeof window.hphDebug !== 'undefined' && window.hphDebug) {
+}
 
 // Section initialization would go here
 // This would include:
@@ -78,7 +82,8 @@ console.log('HPH Framework JS: Loading section components...');
 // Page-specific JavaScript
 // ================================================
 
-console.log('HPH Framework JS: Loading page components...');
+if (typeof window.hphDebug !== 'undefined' && window.hphDebug) {
+}
 
 // Page initialization would go here
 // This would include:
@@ -89,7 +94,8 @@ console.log('HPH Framework JS: Loading page components...');
 // Helper functions and utilities
 // ================================================
 
-console.log('HPH Framework JS: Loading utilities...');
+if (typeof window.hphDebug !== 'undefined' && window.hphDebug) {
+}
 
 // Utility initialization would go here
 // This would include:
@@ -101,12 +107,14 @@ console.log('HPH Framework JS: Loading utilities...');
 // ================================================
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('HPH Framework JS Complete: All components loaded');
+    if (typeof window.hphDebug !== 'undefined' && window.hphDebug) {
+    }
     
     // Initialize framework
     if (typeof HPH !== 'undefined' && typeof HPH.init === 'function') {
         HPH.init();
-        console.log('HPH Framework: Initialized successfully');
+        if (typeof window.hphDebug !== 'undefined' && window.hphDebug) {
+        }
     }
 });
 

@@ -38,6 +38,65 @@
         min-width: 44px;
         min-height: 44px;
         touch-action: manipulation;
+        /* Fix mobile button press states */
+        -webkit-tap-highlight-color: transparent;
+        transition: background-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    
+    /* Mobile-safe navigation button positioning with minimal movement */
+    .hph-hero__nav-btn.hph-mobile-nav-safe.hph-hero__nav-btn--left {
+        left: 0.5rem; /* Closer to edge for easier thumb reach */
+    }
+    
+    .hph-hero__nav-btn.hph-mobile-nav-safe.hph-hero__nav-btn--right {
+        right: 0.5rem; /* Closer to edge for easier thumb reach */
+    }
+    
+    /* Override hover transforms on mobile to prevent stuck states */
+    .hph-hero__nav-btn.hph-mobile-nav-safe:hover,
+    .hph-hero__nav-btn.hph-mobile-nav-safe:active,
+    .hph-hero__nav-btn.hph-mobile-nav-safe:focus {
+        transform: translateY(-50%) !important; /* Keep original position */
+        background: rgba(0, 0, 0, 0.9);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Touch feedback for mobile navigation buttons */
+    .hph-hero__nav-btn.hph-mobile-nav-safe:active {
+        background: rgba(0, 0, 0, 0.95) !important;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4) !important;
+    }
+    
+    /* Mobile optimized photo navigation positioning */
+    .hph-hero__photo-nav.hph-mobile-nav-optimized {
+        top: 5rem; /* Reduced from 8rem to avoid overlapping content */
+        right: 0.5rem; /* Moved closer to edge */
+        flex-wrap: wrap; /* Allow wrapping on very small screens */
+        max-width: calc(100vw - 1rem); /* Ensure it doesn't overflow */
+    }
+    
+    /* Fix gallery button press states */
+    .hph-hero__gallery-btn,
+    .hph-hero__photo-nav .hph-hero__gallery-btn {
+        -webkit-tap-highlight-color: transparent !important;
+        transition: background-color 0.15s ease, box-shadow 0.15s ease !important;
+    }
+    
+    /* Minimal movement for gallery buttons on mobile */
+    .hph-hero__gallery-btn:hover,
+    .hph-hero__photo-nav .hph-hero__gallery-btn:hover,
+    .hph-hero__gallery-btn:active,
+    .hph-hero__photo-nav .hph-hero__gallery-btn:active {
+        transform: none !important; /* No movement on mobile */
+        background: rgba(255, 255, 255, 1) !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    /* Active state feedback for gallery buttons */
+    .hph-hero__gallery-btn:active,
+    .hph-hero__photo-nav .hph-hero__gallery-btn:active {
+        background: rgba(245, 245, 245, 1) !important;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2) !important;
     }
     
     .hph-hero__actions {
@@ -47,17 +106,214 @@
     .hph-hero__btn {
         min-height: 44px;
         touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        transition: background-color 0.15s ease, box-shadow 0.15s ease;
     }
     
-    /* Gallery mode mobile optimizations */
+    /* Fix action button press states */
+    .hph-hero__btn:hover,
+    .hph-hero__btn:active,
+    .hph-hero__btn:focus {
+        transform: none !important; /* No movement on mobile */
+    }
+    
+    .hph-hero__btn:active {
+        filter: brightness(0.95);
+    }
+    
+    /* Fix image fill toggle button press states */
+    .hph-hero__image-fill-toggle.hph-mobile-fill-toggle {
+        -webkit-tap-highlight-color: transparent;
+        transition: background-color 0.15s ease, box-shadow 0.15s ease;
+        touch-action: manipulation;
+        min-width: 44px;
+        min-height: 44px;
+    }
+    
+    .hph-hero__image-fill-toggle.hph-mobile-fill-toggle:hover,
+    .hph-hero__image-fill-toggle.hph-mobile-fill-toggle:active,
+    .hph-hero__image-fill-toggle.hph-mobile-fill-toggle:focus {
+        transform: none !important; /* No scale animation on mobile */
+        background: rgba(0, 0, 0, 0.9);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .hph-hero__image-fill-toggle.hph-mobile-fill-toggle:active {
+        background: rgba(0, 0, 0, 0.95) !important;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4) !important;
+    }
+    
+    /* Mobile content optimizations - tighter vertical spacing */
+    .hph-hero__overlay.hph-mobile-content-optimized {
+        padding: 3rem 0 1.5rem; /* Reduced from 8rem 0 2rem */
+    }
+    
+    .hph-hero__info.hph-mobile-info-compact {
+        max-width: 100%; /* Use full width on mobile */
+    }
+    
+    .hph-hero__info.hph-mobile-info-compact .hph-hero__title {
+        font-size: 1.75rem; /* Slightly smaller title on mobile */
+        margin-bottom: 0.375rem; /* Tighter spacing */
+    }
+    
+    .hph-hero__info.hph-mobile-info-compact .hph-hero__location {
+        margin-bottom: 0.75rem; /* Tighter spacing */
+    }
+    
+    .hph-hero__info.hph-mobile-info-compact .hph-hero__price-wrapper {
+        margin-bottom: 1rem; /* Tighter spacing */
+    }
+    
+    .hph-hero__info.hph-mobile-info-compact .hph-hero__stats {
+        margin-bottom: 1.25rem; /* Tighter spacing */
+        gap: 0.75rem; /* Smaller gaps between stats */
+    }
+    
+    /* Mobile action button optimizations */
+    .hph-hero__actions.hph-mobile-actions-compact {
+        gap: 0.75rem; /* Tighter button spacing */
+        margin-top: 1rem; /* Reduced margin */
+    }
+    
+    /* Hide button text on very small screens but keep icons */
+    .hph-mobile-btn-text {
+        display: inline; /* Show by default */
+    }
+    
+    /* Enhanced gallery mode mobile optimizations */
     .hph-hero--gallery-mode .hph-hero__gallery {
         touch-action: pan-x pinch-zoom;
+        /* Better touch handling */
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
+    }
+    
+    /* Improved gallery navigation for touch */
+    .hph-hero--gallery-mode .hph-hero__nav-btn {
+        opacity: 0.8; /* Slightly transparent in gallery mode */
+        transition: opacity 0.2s ease, background-color 0.15s ease;
+    }
+    
+    .hph-hero--gallery-mode .hph-hero__nav-btn:active {
+        opacity: 1;
     }
     
     .hph-hero__gallery-controls {
         padding: 1rem;
         background: rgba(0, 0, 0, 0.8);
         border-radius: 0.75rem 0.75rem 0 0;
+        /* Better touch handling */
+        touch-action: manipulation;
+    }
+    
+    /* Gallery strip touch optimizations */
+    .hph-hero__gallery-strip {
+        touch-action: pan-x;
+        -webkit-overflow-scrolling: touch;
+        padding: 1rem;
+    }
+    
+    .hph-hero__gallery-thumb {
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+    
+    .hph-hero__gallery-thumb:active {
+        opacity: 0.7;
+        transform: scale(0.95);
+    }
+}
+
+/* Additional optimizations for smaller mobile screens */
+@media (max-width: 480px) {
+    .hph-hero__photo-nav.hph-mobile-nav-optimized {
+        top: 4rem; /* Even tighter positioning */
+        gap: 0.5rem; /* Smaller gap between elements */
+    }
+    
+    .hph-hero__photo-count,
+    .hph-hero__gallery-btn {
+        font-size: 0.75rem !important;
+        padding: 0.375rem 0.5rem !important;
+        /* Ensure no movement on small screens */
+        transition: background-color 0.15s ease, box-shadow 0.15s ease !important;
+    }
+    
+    /* Override any transforms for small screens */
+    .hph-hero__photo-count:active,
+    .hph-hero__gallery-btn:active,
+    .hph-hero__gallery-btn:hover {
+        transform: none !important;
+        background: rgba(255, 255, 255, 0.95) !important;
+    }
+    
+    .hph-hero__overlay.hph-mobile-content-optimized {
+        padding: 2rem 0 1rem; /* Even tighter on very small screens */
+    }
+    
+    .hph-hero__info.hph-mobile-info-compact .hph-hero__title {
+        font-size: 1.5rem; /* Smaller title for very small screens */
+        line-height: 1.2;
+    }
+    
+    .hph-hero__info.hph-mobile-info-compact .hph-hero__stats {
+        gap: 0.5rem; /* Even smaller gaps */
+    }
+    
+    .hph-hero__actions.hph-mobile-actions-compact {
+        gap: 0.5rem;
+        grid-template-columns: 1fr; /* Stack buttons on very small screens */
+    }
+    
+    /* Hide button text on very small screens */
+    .hph-mobile-btn-text {
+        display: none;
+    }
+    
+    .hph-hero__btn i {
+        margin-right: 0; /* Remove margin when text is hidden */
+    }
+    
+    /* Enhanced small screen navigation */
+    .hph-hero__nav-btn.hph-mobile-nav-safe {
+        width: 40px;
+        height: 40px;
+        /* Ensure buttons are properly positioned and don't move */
+    }
+    
+    .hph-hero__nav-btn.hph-mobile-nav-safe:active {
+        background: rgba(0, 0, 0, 0.95) !important;
+        transform: translateY(-50%) !important; /* Maintain position */
+    }
+    
+    /* Image fill toggle optimizations for small screens */
+    .hph-hero__image-fill-toggle.hph-mobile-fill-toggle {
+        bottom: 120px; /* Adjust for smaller screens */
+        right: 0.5rem;
+        font-size: 0.75rem;
+        padding: 0.375rem 0.75rem;
+    }
+    
+    .hph-hero__image-fill-toggle.hph-mobile-fill-toggle .fill-mode-text {
+        display: none; /* Hide text on very small screens */
+    }
+    
+    .hph-hero__image-fill-toggle.hph-mobile-fill-toggle i {
+        margin-right: 0; /* Remove margin when text is hidden */
+    }
+    
+    /* Better gallery thumbnails for small screens */
+    .hph-hero__gallery-thumb {
+        min-width: 50px;
+        min-height: 35px;
+    }
+    
+    .hph-hero__gallery-thumb:active {
+        opacity: 0.6;
+        transform: scale(0.9);
     }
 }
 
@@ -154,12 +410,24 @@
    SIDEBAR MOBILE STACKING
    ================================================ */
 
-/* Full width mobile sidebar */
+/* Full width mobile sidebar with proper ordering */
 @media (max-width: 1023px) {
+    .hph-listing-layout {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .hph-listing-main {
+        order: 1;
+    }
+    
     .hph-listing-sidebar-wrapper {
+        order: 2;
         margin-top: 2rem;
         padding-top: 2rem;
         border-top: 2px solid var(--hph-gray-200);
+        position: relative !important; /* Override sticky positioning */
+        top: auto !important;
     }
     
     .hph-sidebar-widget {
@@ -218,6 +486,292 @@
         padding: 0.5rem 0.75rem;
         top: 0.5rem;
         left: 0.5rem;
+    }
+}
+
+/* ================================================
+   AGENT SIDEBAR MOBILE OPTIMIZATIONS
+   ================================================ */
+
+/* Hide mobile agent card on desktop */
+.hph-mobile-agent-card {
+    display: none;
+}
+
+/* Hide floating schedule button on desktop */
+.hph-floating-schedule-btn {
+    display: none;
+}
+
+/* Hide sidebar components on mobile and show mobile-specific agent card */
+@media (max-width: 768px) {
+    /* Hide agent card and mortgage calculator in sidebar on mobile */
+    .hph-listing-sidebar-wrapper .sidebar-widget:has(.agent-contact-form),
+    .hph-listing-sidebar-wrapper .sidebar-widget .hph-text-center:first-child,
+    .hph-listing-sidebar-wrapper .hph-mortgage-calculator,
+    .hph-listing-sidebar-wrapper .hph-open-houses-widget {
+        display: none !important;
+    }
+    
+    /* Mobile-specific agent card in main content */
+    .hph-mobile-agent-card {
+        display: block; /* Show on mobile */
+        background: linear-gradient(135deg, #ffffff 0%, #fafbfc 100%);
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 1.25rem;
+        margin: 1.5rem 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Add subtle background pattern */
+    .hph-mobile-agent-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100px;
+        height: 100px;
+        background: radial-gradient(circle, rgba(81, 186, 224, 0.05) 0%, transparent 70%);
+        border-radius: 50%;
+        transform: translate(30px, -30px);
+        pointer-events: none;
+    }
+    
+    /* Card content wrapper */
+    .hph-mobile-agent-card .card-content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+    }
+    
+    .hph-mobile-agent-card .agent-photo {
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: 0 auto 1rem;
+        background: linear-gradient(135deg, var(--hph-primary) 0%, var(--hph-primary-600) 100%);
+        padding: 3px;
+        box-shadow: 0 6px 20px rgba(81, 186, 224, 0.25);
+        position: relative;
+    }
+    
+    .hph-mobile-agent-card .agent-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        background: white;
+    }
+    
+    .hph-mobile-agent-card .agent-photo-placeholder {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--hph-primary) 0%, var(--hph-primary-600) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.75rem;
+    }
+    
+    /* Agent name and title */
+    .hph-mobile-agent-card .agent-name {
+        font-size: 1.375rem;
+        font-weight: 700;
+        color: var(--hph-gray-900);
+        margin: 0 0 0.25rem 0;
+        line-height: 1.2;
+    }
+    
+    .hph-mobile-agent-card .agent-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--hph-primary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 1rem;
+    }
+    
+    /* Contact information - horizontal layout */
+    .hph-mobile-agent-card .agent-contact {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-bottom: 1.25rem;
+        flex-wrap: wrap;
+    }
+    
+    .hph-mobile-agent-card .contact-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.375rem;
+        min-width: 0;
+    }
+    
+    .hph-mobile-agent-card .contact-item i {
+        display: none; /* Hide contact icons on mobile */
+    }
+    
+    .hph-mobile-agent-card .contact-item a {
+        display: none; /* Hide phone and email text on mobile */
+    }
+    
+    /* Action buttons - full width and stacked */
+    .hph-mobile-agent-card .agent-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        width: 100%;
+    }
+    
+    .hph-mobile-agent-card .agent-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.625rem;
+        padding: 0.875rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.9375rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        width: 100%;
+        border: 2px solid transparent;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Primary button (Call) - use normal theme button styles */
+    .hph-mobile-agent-card .agent-btn:first-child {
+        background: var(--hph-primary);
+        color: white;
+        border: 2px solid var(--hph-primary);
+    }
+    
+    .hph-mobile-agent-card .agent-btn:first-child:hover {
+        background: var(--hph-primary-600);
+        border-color: var(--hph-primary-600);
+    }
+    
+    /* Secondary button (Email) */
+    .hph-mobile-agent-card .agent-btn--secondary {
+        background: white;
+        color: var(--hph-primary);
+        border: 2px solid var(--hph-primary);
+    }
+    
+    .hph-mobile-agent-card .agent-btn--secondary:hover {
+        background: var(--hph-primary);
+        color: white;
+    }
+    
+    /* Schedule button */
+    .hph-mobile-agent-card .agent-btn--schedule {
+        background: var(--hph-success, #10b981);
+        color: white;
+        border: 2px solid var(--hph-success, #10b981);
+    }
+    
+    .hph-mobile-agent-card .agent-btn--schedule:hover {
+        background: var(--hph-success-600, #059669);
+        border-color: var(--hph-success-600, #059669);
+    }
+    
+    .hph-mobile-agent-card .agent-btn i {
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+    
+    /* Floating Schedule Button */
+    .hph-floating-schedule-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        background: var(--hph-success, #10b981);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 16px 24px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+        transition: all 0.3s ease;
+        white-space: nowrap;
+    }
+    
+    .hph-floating-schedule-btn:hover {
+        background: var(--hph-success-dark, #059669);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(16, 185, 129, 0.5);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .hph-floating-schedule-btn i {
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+}
+
+/* Very small mobile - more compact layout */
+@media (max-width: 480px) {
+    .hph-mobile-agent-card {
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 12px;
+    }
+    
+    .hph-mobile-agent-card .agent-photo {
+        width: 90px;
+        height: 90px;
+        margin-bottom: 0.875rem;
+    }
+    
+    .hph-mobile-agent-card .agent-name {
+        font-size: 1.25rem;
+    }
+    
+    .hph-mobile-agent-card .agent-title {
+        font-size: 0.8125rem;
+        margin-bottom: 0.875rem;
+    }
+    
+    .hph-mobile-agent-card .agent-contact {
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .hph-mobile-agent-card .agent-btn {
+        padding: 0.8125rem 1.25rem;
+        font-size: 0.875rem;
+        gap: 0.5rem;
+    }
+    
+    .hph-mobile-agent-card .agent-btn i {
+        font-size: 0.9375rem;
+    }
+    
+    /* Smaller floating button on very small screens */
+    .hph-floating-schedule-btn {
+        bottom: 15px;
+        right: 15px;
+        padding: 12px 18px;
+        font-size: 13px;
+    }
+    
+    .hph-floating-schedule-btn i {
+        font-size: 14px;
     }
 }
 
@@ -369,20 +923,23 @@
 }
 
 /* ================================================
-   DARK MODE MOBILE OPTIMIZATIONS
+   DARK MODE MOBILE OPTIMIZATIONS - DISABLED
    ================================================ */
 
+/* Dark mode styling temporarily disabled */
+/*
 @media (max-width: 768px) and (prefers-color-scheme: dark) {
     .hph-hero__overlay {
         background: rgba(0, 0, 0, 0.7);
     }
-    
+
     .hph-map-title {
         background: rgba(0, 0, 0, 0.8);
         color: white;
     }
-    
+
     .hph-breadcrumb {
         background: var(--hph-gray-900);
     }
 }
+*/

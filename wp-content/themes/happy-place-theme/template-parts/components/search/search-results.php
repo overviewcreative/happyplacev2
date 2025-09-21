@@ -171,12 +171,9 @@ $is_mixed_search = $post_type === 'all' && is_array($results) && isset($results[
                 <div class="results-grid <?php echo esc_attr($view_mode); ?>-view" data-post-type="<?php echo esc_attr($post_type); ?>">
                     <?php foreach ($results as $post): ?>
                         <?php 
-                        // Determine card component path
-                        $card_component = 'template-parts/components/' . get_post_type($post) . '/card';
-                        
-                        hph_component(get_post_type($post) . '-card', [
-                            'post' => $post,
-                            'view_mode' => $view_mode,
+                        hph_component('universal-card', [
+                            'post_id' => $post->ID,
+                            'layout' => $view_mode === 'list' ? 'horizontal' : 'vertical',
                             'show_type_badge' => false
                         ]); 
                         ?>

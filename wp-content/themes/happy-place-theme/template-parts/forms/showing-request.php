@@ -37,9 +37,24 @@ if ($args['listing_id']) {
         'bedrooms' => get_field('bedrooms', $args['listing_id']),
         'bathrooms_full' => get_field('bathrooms_full', $args['listing_id']),
         'square_feet' => get_field('square_feet', $args['listing_id']),
-        'featured_image' => get_the_post_thumbnail_url($args['listing_id'], 'medium'),
+        'featured_image' => '',
         'agent_id' => get_field('listing_agent', $args['listing_id']) ?: $args['agent_id']
     ];
+    
+    // Get primary photo from ACF field
+    $primary_photo = get_field('primary_photo', $args['listing_id']);
+    if ($primary_photo) {
+        if (is_array($primary_photo)) {
+            $property_data['featured_image'] = $primary_photo['sizes']['medium'] ?? $primary_photo['url'];
+        } elseif (is_numeric($primary_photo)) {
+            $property_data['featured_image'] = wp_get_attachment_image_url($primary_photo, 'medium');
+        }
+    }
+    
+    // Fallback to WordPress featured image if primary photo not set
+    if (!$property_data['featured_image']) {
+        $property_data['featured_image'] = get_the_post_thumbnail_url($args['listing_id'], 'medium');
+    }
     
     // Get agent information
     if ($property_data['agent_id']) {
@@ -175,8 +190,9 @@ $route_type = $args['calendly_enabled'] ? 'showing_with_booking' : 'showing_requ
     <?php endif; ?>
 
     <div class="hph-showing-options">
-        <?php if ($args['calendly_enabled'] && $args['calendly_priority']): ?>
-        <!-- Calendly Booking Option (Primary) -->
+        <?php if (false && $args['calendly_enabled'] && $args['calendly_priority']): ?>
+        <!-- Temporarily disabled - Book Instantly section -->
+        <!--
         <div class="hph-booking-option hph-booking-primary">
             <div class="hph-booking-header">
                 <div class="hph-booking-icon">
@@ -189,7 +205,7 @@ $route_type = $args['calendly_enabled'] ? 'showing_with_booking' : 'showing_requ
                     </p>
                 </div>
             </div>
-            
+
             <div class="hph-booking-actions">
                 <button type="button" class="hph-btn hph-btn-primary hph-btn-lg hph-calendly-trigger"
                         data-property-id="<?php echo esc_attr($args['listing_id']); ?>"
@@ -203,6 +219,7 @@ $route_type = $args['calendly_enabled'] ? 'showing_with_booking' : 'showing_requ
         <div class="hph-option-divider">
             <span><?php _e('or', 'happy-place-theme'); ?></span>
         </div>
+        -->
         <?php endif; ?>
 
         <!-- Request Form Option -->
@@ -220,20 +237,22 @@ $route_type = $args['calendly_enabled'] ? 'showing_with_booking' : 'showing_requ
             </div>
 
             <!-- Showing Request Form -->
-            <form 
-                class="<?php echo implode(' ', $form_classes); ?>" 
-                data-route-type="<?php echo esc_attr($route_type); ?>"
+            <form
+                class="<?php echo implode(' ', $form_classes); ?>"
+                data-route-type="showing-request"
                 data-property-id="<?php echo esc_attr($args['listing_id']); ?>"
                 data-agent-id="<?php echo esc_attr($agent_data['agent_id'] ?? $args['agent_id']); ?>"
             >
-                <?php wp_nonce_field('hph_showing_request', 'showing_nonce'); ?>
-                
+                <?php wp_nonce_field('hph_contact_form_' . $args['listing_id'], 'nonce'); ?>
+                <input type="hidden" name="listing_nonce" value="<?php echo wp_create_nonce('hph_contact_form_' . $args['listing_id']); ?>">
+
                 <!-- Hidden Fields -->
-                <input type="hidden" name="form_type" value="showing_request">
-                <input type="hidden" name="property_id" value="<?php echo esc_attr($args['listing_id']); ?>">
+                <input type="hidden" name="form_type" value="tour">
+                <input type="hidden" name="listing_id" value="<?php echo esc_attr($args['listing_id']); ?>">
                 <input type="hidden" name="agent_id" value="<?php echo esc_attr($agent_data['agent_id'] ?? $args['agent_id']); ?>">
-                <input type="hidden" name="property_title" value="<?php echo esc_attr($property_data['title'] ?? ''); ?>">
-                <input type="hidden" name="source_url" value="<?php echo esc_url(get_permalink()); ?>">
+                <input type="hidden" name="listing_title" value="<?php echo esc_attr($property_data['title'] ?? ''); ?>">
+                <input type="hidden" name="listing_url" value="<?php echo esc_url(get_permalink()); ?>">
+                <input type="hidden" name="listing_price" value="<?php echo esc_attr($property_data['price'] ?? ''); ?>">
 
                 <div class="hph-form-row">
                     <!-- First Name -->
@@ -242,12 +261,12 @@ $route_type = $args['calendly_enabled'] ? 'showing_with_booking' : 'showing_requ
                             <?php _e('First Name', 'happy-place-theme'); ?>
                             <span class="hph-required">*</span>
                         </label>
-                        <input 
-                            type="text" 
-                            id="showing-first-name" 
-                            name="first_name" 
-                            class="hph-form-input" 
-                            required 
+                        <input
+                            type="text"
+                            id="showing-first-name"
+                            name="contact_name"
+                            class="hph-form-input"
+                            required
                             placeholder="<?php _e('John', 'happy-place-theme'); ?>"
                         >
                     </div>
@@ -258,12 +277,11 @@ $route_type = $args['calendly_enabled'] ? 'showing_with_booking' : 'showing_requ
                             <?php _e('Last Name', 'happy-place-theme'); ?>
                             <span class="hph-required">*</span>
                         </label>
-                        <input 
-                            type="text" 
-                            id="showing-last-name" 
-                            name="last_name" 
-                            class="hph-form-input" 
-                            required 
+                        <input
+                            type="text"
+                            id="showing-last-name"
+                            name="contact_last_name"
+                            class="hph-form-input"
                             placeholder="<?php _e('Smith', 'happy-place-theme'); ?>"
                         >
                     </div>
@@ -276,12 +294,12 @@ $route_type = $args['calendly_enabled'] ? 'showing_with_booking' : 'showing_requ
                             <?php _e('Email', 'happy-place-theme'); ?>
                             <span class="hph-required">*</span>
                         </label>
-                        <input 
-                            type="email" 
-                            id="showing-email" 
-                            name="email" 
-                            class="hph-form-input" 
-                            required 
+                        <input
+                            type="email"
+                            id="showing-email"
+                            name="contact_email"
+                            class="hph-form-input"
+                            required
                             placeholder="<?php _e('john@example.com', 'happy-place-theme'); ?>"
                         >
                     </div>
@@ -292,12 +310,12 @@ $route_type = $args['calendly_enabled'] ? 'showing_with_booking' : 'showing_requ
                             <?php _e('Phone', 'happy-place-theme'); ?>
                             <span class="hph-required">*</span>
                         </label>
-                        <input 
-                            type="tel" 
-                            id="showing-phone" 
-                            name="phone" 
-                            class="hph-form-input" 
-                            required 
+                        <input
+                            type="tel"
+                            id="showing-phone"
+                            name="contact_phone"
+                            class="hph-form-input"
+                            required
                             placeholder="<?php _e('(555) 123-4567', 'happy-place-theme'); ?>"
                         >
                     </div>
@@ -378,11 +396,11 @@ $route_type = $args['calendly_enabled'] ? 'showing_with_booking' : 'showing_requ
                     <label for="special-requirements" class="hph-form-label">
                         <?php _e('Special Requirements or Questions', 'happy-place-theme'); ?>
                     </label>
-                    <textarea 
-                        id="special-requirements" 
-                        name="special_requirements" 
-                        class="hph-form-textarea" 
-                        rows="3" 
+                    <textarea
+                        id="special-requirements"
+                        name="contact_message"
+                        class="hph-form-textarea"
+                        rows="3"
                         placeholder="<?php _e('Any accessibility needs, specific areas of interest, or questions about the property...', 'happy-place-theme'); ?>"
                     ></textarea>
                 </div>
@@ -418,7 +436,7 @@ $route_type = $args['calendly_enabled'] ? 'showing_with_booking' : 'showing_requ
 
                 <!-- Form Actions -->
                 <div class="hph-form-buttons">
-                    <button type="submit" class="hph-btn hph-btn-primary hph-btn-full">
+                    <button type="submit" class="hph-btn hph-btn-primary w-full">
                         <i class="fas fa-calendar-plus"></i>
                         <?php echo esc_html($args['submit_text']); ?>
                     </button>

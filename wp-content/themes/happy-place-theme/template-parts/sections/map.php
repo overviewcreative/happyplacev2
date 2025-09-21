@@ -61,20 +61,20 @@ $section_styles = array(
 if ($padding !== 'none') {
     switch ($padding) {
         case 'sm':
-            $section_styles[] = 'padding-top: var(--hph-padding-lg)';
-            $section_styles[] = 'padding-bottom: var(--hph-padding-lg)';
+            $section_styles[] = 'padding-top: var(--hph-space-6)';
+            $section_styles[] = 'padding-bottom: var(--hph-space-6)';
             break;
         case 'md':
-            $section_styles[] = 'padding-top: var(--hph-padding-xl)';
-            $section_styles[] = 'padding-bottom: var(--hph-padding-xl)';
+            $section_styles[] = 'padding-top: var(--hph-space-8)';
+            $section_styles[] = 'padding-bottom: var(--hph-space-8)';
             break;
         case 'lg':
-            $section_styles[] = 'padding-top: var(--hph-padding-2xl)';
-            $section_styles[] = 'padding-bottom: var(--hph-padding-2xl)';
+            $section_styles[] = 'padding-top: var(--hph-space-12)';
+            $section_styles[] = 'padding-bottom: var(--hph-space-12)';
             break;
         case 'xl':
-            $section_styles[] = 'padding-top: var(--hph-padding-3xl)';
-            $section_styles[] = 'padding-bottom: var(--hph-padding-3xl)';
+            $section_styles[] = 'padding-top: var(--hph-space-16)';
+            $section_styles[] = 'padding-bottom: var(--hph-space-16)';
             break;
     }
 }
@@ -84,8 +84,8 @@ $container_styles = array();
 if ($container !== 'full') {
     $container_styles[] = 'margin-left: auto';
     $container_styles[] = 'margin-right: auto';
-    $container_styles[] = 'padding-left: var(--hph-padding-lg)';
-    $container_styles[] = 'padding-right: var(--hph-padding-lg)';
+    $container_styles[] = 'padding-left: var(--hph-space-6)';
+    $container_styles[] = 'padding-right: var(--hph-space-6)';
     
     switch ($container) {
         case 'narrow':
@@ -243,12 +243,12 @@ if (function_exists('wp_enqueue_script')) {
             
             <?php if (!$mapbox_token): ?>
             <!-- No Token Error -->
-            <div class="hph-map-error" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: var(--hph-padding-xl); text-align: center; color: var(--hph-gray-600);">
-                <div class="hph-map-error-icon" style="font-size: 3rem; color: var(--hph-warning); margin-bottom: var(--hph-margin-md);">
+            <div class="hph-map-error" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: var(--hph-space-8); text-align: center; color: var(--hph-gray-600);">
+                <div class="hph-map-error-icon" style="font-size: 3rem; color: var(--hph-warning); margin-bottom: var(--hph-space-4);">
                     <i class="fas fa-map-marked-alt"></i>
                 </div>
                 <div class="hph-map-error-message">
-                    <h4 style="margin: 0 0 var(--hph-margin-sm) 0; font-size: var(--hph-text-lg); font-weight: 600; color: var(--hph-gray-900);">
+                    <h4 style="margin: 0 0 var(--hph-space-2) 0; font-size: var(--hph-text-lg); font-weight: 600; color: var(--hph-gray-900);">
                         Map Configuration Required
                     </h4>
                     <p style="margin: 0; font-size: var(--hph-text-sm);">
@@ -260,7 +260,7 @@ if (function_exists('wp_enqueue_script')) {
             <!-- Loading State -->
             <div class="hph-map-loading" style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--hph-gray-500);">
                 <div style="text-align: center;">
-                    <i class="fas fa-spinner fa-spin" style="font-size: var(--hph-text-2xl); margin-bottom: var(--hph-margin-sm);"></i>
+                    <i class="fas fa-spinner fa-spin" style="font-size: var(--hph-text-2xl); margin-bottom: var(--hph-space-2);"></i>
                     <p style="margin: 0; font-size: var(--hph-text-sm);">Loading map...</p>
                 </div>
             </div>
@@ -410,12 +410,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Show error state
         mapContainer.innerHTML = `
-            <div class="hph-map-error" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: var(--hph-padding-xl); text-align: center; color: var(--hph-gray-600);">
-                <div class="hph-map-error-icon" style="font-size: 3rem; color: var(--hph-danger); margin-bottom: var(--hph-margin-md);">
+            <div class="hph-map-error" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: var(--hph-space-8); text-align: center; color: var(--hph-gray-600);">
+                <div class="hph-map-error-icon" style="font-size: 3rem; color: var(--hph-danger); margin-bottom: var(--hph-space-4);">
                     <i class="fas fa-exclamation-triangle"></i>
                 </div>
                 <div class="hph-map-error-message">
-                    <h4 style="margin: 0 0 var(--hph-margin-sm) 0; font-size: var(--hph-text-lg); font-weight: 600; color: var(--hph-gray-900);">
+                    <h4 style="margin: 0 0 var(--hph-space-2) 0; font-size: var(--hph-text-lg); font-weight: 600; color: var(--hph-gray-900);">
                         Map Loading Error
                     </h4>
                     <p style="margin: 0; font-size: var(--hph-text-sm);">
@@ -444,11 +444,11 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 .hph-popup-details {
-    padding: var(--hph-padding-lg, 20px);
+    padding: var(--hph-space-6, 20px);
 }
 
 .hph-popup-title {
-    margin: 0 0 var(--hph-margin-sm, 8px) 0;
+    margin: 0 0 var(--hph-space-2, 8px) 0;
     font-size: var(--hph-text-lg, 18px);
     font-weight: 600;
     color: var(--hph-gray-900, #111827);
@@ -473,7 +473,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     .hph-popup-details {
-        padding: var(--hph-padding-md, 16px);
+        padding: var(--hph-space-4, 16px);
     }
 }
 

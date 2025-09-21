@@ -209,23 +209,34 @@
 
         /**
          * Initialize autocomplete functionality
+         * DISABLED: Using HPH framework search-autocomplete component instead
          */
         initAutocomplete() {
+            // Skip autocomplete initialization - using framework component
+            if ($('#header-search-input').length || $('.hph-site-header-enhanced').length) {
+                return;
+            }
+
             const self = this;
             let autocompleteTimeout;
 
-            // Create autocomplete container if it doesn't exist
+            // Only initialize for non-header search inputs
             if (!$('.search-autocomplete-results').length) {
-                $('.hph-search-input, input[name="s"]').each(function() {
+                $('.hph-search-input:not(#header-search-input), input[name="s"]:not(#header-search-input)').each(function() {
                     const $input = $(this);
-                    if (!$input.next('.search-autocomplete-results').length) {
+                    if (!$input.next('.search-autocomplete-results').length && !$input.siblings('.hph-search-results').length) {
                         $input.after('<div class="search-autocomplete-results" style="display:none;"></div>');
                     }
                 });
             }
 
-            // Autocomplete on input
-            $(document).on('input.searchFilters', '.hph-search-input, input[name="s"]', function() {
+            // Autocomplete on input - DISABLED for header search
+            $(document).on('input.searchFilters', '.hph-search-input:not(#header-search-input), input[name="s"]:not(#header-search-input)', function() {
+                // Skip if this is the header search input
+                if ($(this).attr('id') === 'header-search-input' || $(this).closest('.hph-site-header-enhanced').length) {
+                    return;
+                }
+
                 const $input = $(this);
                 const query = $input.val().trim();
                 const $results = $input.next('.search-autocomplete-results');
@@ -277,7 +288,7 @@
                 url: this.config.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'hpt_search_autocomplete',
+                    action: 'hph_search_autocomplete',
                     q: query,
                     nonce: this.config.nonce,
                     types: ['listing', 'agent', 'city', 'community']
@@ -307,7 +318,6 @@
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('Autocomplete error:', error);
                     $resultsContainer.html('<div class="autocomplete-error">Search failed. Please try again.</div>').show();
                 }
             });

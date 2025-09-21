@@ -1,0 +1,324 @@
+/**
+ * SEARCH INPUT ATOM
+ * Specialized search input component extending hph-form-input
+ *
+ * Provides consistent search input styling with proper icon positioning,
+ * close button integration, and autocomplete dropdown compatibility.
+ *
+ * @package HappyPlaceTheme
+ * @version 4.0.0
+ */
+
+/* ================================================
+   SEARCH INPUT BASE
+   Extends .hph-form-input from form-input.css
+   ================================================ */
+
+.hph-search-input {
+  /* Inherits all styles from .hph-form-input */
+  position: relative;
+  padding-left: calc(var(--hph-input-padding-x) * 2.5); /* Space for search icon */
+  background-image: none; /* Remove any default browser search styling */
+}
+
+/* Remove browser default search decorations */
+.hph-search-input::-webkit-search-decoration,
+.hph-search-input::-webkit-search-cancel-button,
+.hph-search-input::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+  display: none;
+}
+
+.hph-search-input::-moz-search-decoration,
+.hph-search-input::-moz-search-cancel-button {
+  display: none;
+}
+
+/* ================================================
+   SEARCH INPUT WITH FLOATING ICONS
+   Uses atomic .hph-input-floating pattern
+   ================================================ */
+
+.hph-search-input-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+/* Search Icon (Prefix) */
+.hph-search-input-wrapper .hph-search-input-icon {
+  position: absolute;
+  left: var(--hph-input-padding-x);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--hph-text-muted);
+  font-size: var(--hph-input-font-size);
+  pointer-events: none;
+  z-index: 4;
+  transition: color 0.2s ease;
+}
+
+/* Icon color changes on focus */
+.hph-search-input-wrapper .hph-search-input:focus + .hph-search-input-icon,
+.hph-search-input-wrapper .hph-search-input:focus ~ .hph-search-input-icon {
+  color: var(--hph-primary);
+}
+
+/* Close Button (Suffix) */
+.hph-search-input-wrapper .hph-search-input-close {
+  position: absolute;
+  right: var(--hph-input-padding-x);
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--hph-text-muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: var(--hph-radius);
+  font-size: 0.875rem;
+  z-index: 4;
+  transition: all 0.2s ease;
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Show close button when input has value or is active */
+.hph-search-input-wrapper.has-value .hph-search-input-close,
+.hph-search-input-wrapper.is-active .hph-search-input-close {
+  opacity: 1;
+  visibility: visible;
+}
+
+.hph-search-input-wrapper .hph-search-input-close:hover {
+  background: var(--hph-gray-100);
+  color: var(--hph-text-primary);
+}
+
+.hph-search-input-wrapper .hph-search-input-close:focus {
+  outline: 2px solid var(--hph-primary);
+  outline-offset: 2px;
+}
+
+/* Adjust input padding when close button is present */
+.hph-search-input-wrapper.has-close .hph-search-input {
+  padding-right: calc(var(--hph-input-padding-x) * 2.5);
+}
+
+/* ================================================
+   SIZE VARIATIONS
+   ================================================ */
+
+/* Small Size */
+.hph-search-input--sm {
+  min-height: var(--hph-input-height-sm);
+  padding: var(--hph-input-padding-y-sm) var(--hph-input-padding-x-sm);
+  padding-left: calc(var(--hph-input-padding-x-sm) * 2.5);
+  font-size: var(--hph-input-font-size-sm);
+  border-radius: var(--hph-input-radius-sm);
+}
+
+.hph-search-input-wrapper--sm .hph-search-input-icon,
+.hph-search-input-wrapper--sm .hph-search-input-close {
+  font-size: var(--hph-input-font-size-sm);
+}
+
+.hph-search-input-wrapper--sm .hph-search-input-icon {
+  left: var(--hph-input-padding-x-sm);
+}
+
+.hph-search-input-wrapper--sm .hph-search-input-close {
+  right: var(--hph-input-padding-x-sm);
+}
+
+.hph-search-input-wrapper--sm.has-close .hph-search-input {
+  padding-right: calc(var(--hph-input-padding-x-sm) * 2.5);
+}
+
+/* Large Size */
+.hph-search-input--lg {
+  min-height: var(--hph-input-height-lg);
+  padding: var(--hph-input-padding-y-lg) var(--hph-input-padding-x-lg);
+  padding-left: calc(var(--hph-input-padding-x-lg) * 2.5);
+  font-size: var(--hph-input-font-size-lg);
+  border-radius: var(--hph-input-radius-lg);
+}
+
+.hph-search-input-wrapper--lg .hph-search-input-icon,
+.hph-search-input-wrapper--lg .hph-search-input-close {
+  font-size: var(--hph-input-font-size-lg);
+}
+
+.hph-search-input-wrapper--lg .hph-search-input-icon {
+  left: var(--hph-input-padding-x-lg);
+}
+
+.hph-search-input-wrapper--lg .hph-search-input-close {
+  right: var(--hph-input-padding-x-lg);
+}
+
+.hph-search-input-wrapper--lg.has-close .hph-search-input {
+  padding-right: calc(var(--hph-input-padding-x-lg) * 2.5);
+}
+
+/* ================================================
+   SEARCH INPUT STATES
+   ================================================ */
+
+/* Active/Focus State */
+.hph-search-input-wrapper.is-active .hph-search-input,
+.hph-search-input:focus {
+  border-color: var(--hph-input-border-focus);
+  box-shadow: var(--hph-input-focus-shadow);
+}
+
+/* Error State */
+.hph-search-input--error {
+  border-color: var(--hph-input-error-color);
+}
+
+.hph-search-input--error:focus {
+  border-color: var(--hph-input-error-color);
+  box-shadow: var(--hph-input-error-shadow);
+}
+
+.hph-search-input-wrapper--error .hph-search-input-icon {
+  color: var(--hph-input-error-color);
+}
+
+/* Success State */
+.hph-search-input--success {
+  border-color: var(--hph-input-success-color);
+}
+
+.hph-search-input--success:focus {
+  border-color: var(--hph-input-success-color);
+  box-shadow: var(--hph-input-success-shadow);
+}
+
+.hph-search-input-wrapper--success .hph-search-input-icon {
+  color: var(--hph-input-success-color);
+}
+
+/* ================================================
+   AUTOCOMPLETE INTEGRATION
+   ================================================ */
+
+/* Container for search input + autocomplete */
+.hph-search-input-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+/* Ensure autocomplete dropdown appears correctly */
+.hph-search-input-container .hph-search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1050;
+  margin-top: 0.25rem;
+}
+
+/* Input styling when autocomplete is active */
+.hph-search-input-container.has-autocomplete-active .hph-search-input {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-color: var(--hph-primary);
+}
+
+/* ================================================
+   SEARCH INPUT VARIANTS
+   ================================================ */
+
+/* Header Search Variant */
+.hph-search-input--header {
+  background: var(--hph-gray-50);
+  border-color: var(--hph-gray-200);
+}
+
+.hph-search-input--header:focus {
+  background: var(--hph-white);
+}
+
+/* Sidebar Search Variant */
+.hph-search-input--sidebar {
+  background: var(--hph-white);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Modal Search Variant */
+.hph-search-input--modal {
+  background: var(--hph-white);
+  border: 2px solid var(--hph-gray-300);
+  font-size: var(--hph-input-font-size-lg);
+  min-height: var(--hph-input-height-lg);
+  padding-left: calc(var(--hph-input-padding-x-lg) * 2.5);
+}
+
+/* ================================================
+   MOBILE RESPONSIVE
+   ================================================ */
+
+@media (max-width: 768px) {
+  .hph-search-input {
+    font-size: var(--hph-input-font-size-sm);
+  }
+
+  .hph-search-input-wrapper .hph-search-input-icon,
+  .hph-search-input-wrapper .hph-search-input-close {
+    font-size: 0.875rem;
+  }
+
+  .hph-search-input-container .hph-search-results {
+    left: -0.5rem;
+    right: -0.5rem;
+  }
+}
+
+/* ================================================
+   ACCESSIBILITY
+   ================================================ */
+
+.hph-search-input:focus-visible {
+  outline: 3px solid var(--hph-primary);
+  outline-offset: 2px;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .hph-search-input {
+    border-width: 3px;
+  }
+
+  .hph-search-input-wrapper .hph-search-input-close:hover {
+    background: HighlightText;
+    color: Highlight;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .hph-search-input,
+  .hph-search-input-wrapper .hph-search-input-icon,
+  .hph-search-input-wrapper .hph-search-input-close {
+    transition: none;
+  }
+}
+
+/* ================================================
+   UTILITY CLASSES
+   ================================================ */
+
+.hph-search-input-clear-on-escape {
+  /* JavaScript will handle clearing input on escape key */
+}
+
+.hph-search-input-auto-focus {
+  /* JavaScript will handle auto-focusing */
+}
+
+.hph-search-input-submit-on-enter {
+  /* JavaScript will handle form submission on enter */
+}

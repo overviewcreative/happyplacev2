@@ -262,31 +262,6 @@ get_header();
     </section>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Password toggle functionality
-    const passwordToggle = document.querySelector('.hph-password-toggle');
-    const passwordInput = document.querySelector('#password');
-    
-    if (passwordToggle && passwordInput) {
-        passwordToggle.addEventListener('click', function() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            
-            // Toggle icon (you could switch between eye/eye-slash icons here)
-            const icon = this.querySelector('svg');
-            if (type === 'text') {
-                icon.style.opacity = '0.6';
-            } else {
-                icon.style.opacity = '1';
-            }
-        });
-    }
-
-    // Form input focus effects
-    const inputs = document.querySelectorAll('.hph-form-input');
-    inputs.forEach(input => {
-        input.addEventListener('focus', function() {
                         <div class="hph-text-center">
                             <div class="hph-text-3xl hph-mb-2">📊</div>
                             <h3 class="hph-text-sm hph-font-medium hph-text-gray-900 hph-mb-1">
@@ -304,113 +279,119 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Enhanced login form functionality
-    const loginForm = document.querySelector('.hph-login-form');
-    const passwordToggle = document.querySelector('.hph-password-toggle');
-    const passwordInput = document.querySelector('#password');
-    const submitButton = loginForm?.querySelector('.hph-btn');
-    
-    // Password toggle functionality
-    if (passwordToggle && passwordInput) {
-        passwordToggle.addEventListener('click', function() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            
-            // Toggle icon opacity to indicate state
-            const icon = this.querySelector('svg');
-            if (icon) {
-                icon.style.opacity = type === 'text' ? '0.6' : '1';
-            }
-        });
-    }
+if (window.HPH) {
+    HPH.register('loginPage', function() {
+        return {
+            init: function() {
+                this.initPasswordToggle();
+                this.initFormEffects();
+                this.initFormValidation();
+                this.initAccessibility();
+            },
 
-    // Form input focus effects
-    const inputs = document.querySelectorAll('.hph-form-input');
-    inputs.forEach(input => {
-        input.addEventListener('focus', function() {
-            this.classList.add('hph-form-input-focused');
-        });
-        
-        input.addEventListener('blur', function() {
-            this.classList.remove('hph-form-input-focused');
-        });
+            initPasswordToggle: function() {
+                const passwordToggle = document.querySelector('.hph-password-toggle');
+                const passwordInput = document.querySelector('#password');
+
+                if (passwordToggle && passwordInput) {
+                    HPH.events.on(passwordToggle, 'click', () => {
+                        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                        passwordInput.setAttribute('type', type);
+
+                        const icon = passwordToggle.querySelector('svg');
+                        if (icon) {
+                            icon.style.opacity = type === 'text' ? '0.6' : '1';
+                        }
+                    });
+                }
+            },
+
+            initFormEffects: function() {
+                const inputs = document.querySelectorAll('.hph-form-input');
+                inputs.forEach(input => {
+                    HPH.events.on(input, 'focus', function() {
+                        this.classList.add('hph-form-input-focused');
+                    });
+
+                    HPH.events.on(input, 'blur', function() {
+                        this.classList.remove('hph-form-input-focused');
+                    });
+                });
+            },
+
+            initFormValidation: function() {
+                const loginForm = document.querySelector('.hph-login-form');
+                const submitButton = loginForm?.querySelector('.hph-btn');
+
+                if (loginForm) {
+                    HPH.events.on(loginForm, 'submit', (e) => {
+                        const username = loginForm.querySelector('#username').value.trim();
+                        const password = loginForm.querySelector('#password').value;
+
+                        if (!username || !password) {
+                            e.preventDefault();
+                            this.showAlert('Please fill in all required fields.', 'error');
+                            return;
+                        }
+
+                        if (submitButton) {
+                            submitButton.disabled = true;
+                            loginForm.classList.add('is-loading');
+                            submitButton.textContent = 'Signing In...';
+                        }
+                    });
+                }
+            },
+
+            showAlert: function(message, type = 'info') {
+                const existingAlerts = document.querySelectorAll('.hph-alert');
+                existingAlerts.forEach(alert => alert.remove());
+
+                const alert = document.createElement('div');
+                alert.className = `hph-alert hph-alert-${type} hph-mb-lg`;
+                alert.innerHTML = `<p class="hph-mb-0">${message}</p>`;
+
+                const form = document.querySelector('.hph-login-form');
+                if (form) {
+                    form.parentNode.insertBefore(alert, form);
+                }
+
+                setTimeout(() => {
+                    if (alert.parentNode) {
+                        alert.remove();
+                    }
+                }, 5000);
+            },
+
+            initAccessibility: function() {
+                const usernameInput = document.querySelector('#username');
+                const passwordField = document.querySelector('#password');
+                const passwordToggle = document.querySelector('.hph-password-toggle');
+
+                if (usernameInput) {
+                    usernameInput.setAttribute('aria-label', 'Username or Email Address');
+                }
+
+                if (passwordField) {
+                    passwordField.setAttribute('aria-label', 'Password');
+                }
+
+                if (passwordToggle) {
+                    passwordToggle.setAttribute('tabindex', '0');
+                    passwordToggle.setAttribute('role', 'button');
+                    passwordToggle.setAttribute('aria-label', 'Toggle password visibility');
+
+                    HPH.events.on(passwordToggle, 'keydown', function(e) {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            this.click();
+                        }
+                    });
+                }
+            }
+        };
     });
-
-    // Form validation
-    if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
-            const username = loginForm.querySelector('#username').value.trim();
-            const password = loginForm.querySelector('#password').value;
-            
-            // Basic client-side validation
-            if (!username || !password) {
-                e.preventDefault();
-                showAlert('Please fill in all required fields.', 'error');
-                return;
-            }
-            
-            // Show loading state
-            if (submitButton) {
-                submitButton.disabled = true;
-                loginForm.classList.add('is-loading');
-                submitButton.textContent = 'Signing In...';
-            }
-        });
-    }
-
-    // Alert system
-    function showAlert(message, type = 'info') {
-        // Remove existing alerts
-        const existingAlerts = document.querySelectorAll('.hph-alert');
-        existingAlerts.forEach(alert => alert.remove());
-        
-        // Create new alert
-        const alert = document.createElement('div');
-        alert.className = `hph-alert hph-alert-${type} hph-mb-lg`;
-        alert.innerHTML = `<p class="hph-mb-0">${message}</p>`;
-        
-        // Insert before form
-        const form = document.querySelector('.hph-login-form');
-        if (form) {
-            form.parentNode.insertBefore(alert, form);
-        }
-        
-        // Auto-remove after 5 seconds
-        setTimeout(() => {
-            if (alert.parentNode) {
-                alert.remove();
-            }
-        }, 5000);
-    }
-
-    // Enhanced accessibility
-    // Add ARIA labels for better screen reader support
-    const usernameInput = document.querySelector('#username');
-    const passwordField = document.querySelector('#password');
-    
-    if (usernameInput) {
-        usernameInput.setAttribute('aria-label', 'Username or Email Address');
-    }
-    
-    if (passwordField) {
-        passwordField.setAttribute('aria-label', 'Password');
-    }
-    
-    // Handle keyboard navigation for password toggle
-    if (passwordToggle) {
-        passwordToggle.setAttribute('tabindex', '0');
-        passwordToggle.setAttribute('role', 'button');
-        passwordToggle.setAttribute('aria-label', 'Toggle password visibility');
-        
-        passwordToggle.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                this.click();
-            }
-        });
-    }
-});
+}
 </script>
 
 <?php get_footer(); ?>
@@ -679,113 +660,119 @@ document.addEventListener('DOMContentLoaded', function() {
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Enhanced login form functionality
-    const loginForm = document.querySelector('.hph-login-form');
-    const passwordToggle = document.querySelector('.hph-password-toggle');
-    const passwordInput = document.querySelector('#password');
-    const submitButton = loginForm?.querySelector('.hph-btn');
-    
-    // Password toggle functionality
-    if (passwordToggle && passwordInput) {
-        passwordToggle.addEventListener('click', function() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            
-            // Toggle icon opacity to indicate state
-            const icon = this.querySelector('svg');
-            if (icon) {
-                icon.style.opacity = type === 'text' ? '0.6' : '1';
-            }
-        });
-    }
+if (window.HPH) {
+    HPH.register('loginPage', function() {
+        return {
+            init: function() {
+                this.initPasswordToggle();
+                this.initFormEffects();
+                this.initFormValidation();
+                this.initAccessibility();
+            },
 
-    // Form input focus effects
-    const inputs = document.querySelectorAll('.hph-form-input');
-    inputs.forEach(input => {
-        input.addEventListener('focus', function() {
-            this.classList.add('hph-form-input-focused');
-        });
-        
-        input.addEventListener('blur', function() {
-            this.classList.remove('hph-form-input-focused');
-        });
+            initPasswordToggle: function() {
+                const passwordToggle = document.querySelector('.hph-password-toggle');
+                const passwordInput = document.querySelector('#password');
+
+                if (passwordToggle && passwordInput) {
+                    HPH.events.on(passwordToggle, 'click', () => {
+                        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                        passwordInput.setAttribute('type', type);
+
+                        const icon = passwordToggle.querySelector('svg');
+                        if (icon) {
+                            icon.style.opacity = type === 'text' ? '0.6' : '1';
+                        }
+                    });
+                }
+            },
+
+            initFormEffects: function() {
+                const inputs = document.querySelectorAll('.hph-form-input');
+                inputs.forEach(input => {
+                    HPH.events.on(input, 'focus', function() {
+                        this.classList.add('hph-form-input-focused');
+                    });
+
+                    HPH.events.on(input, 'blur', function() {
+                        this.classList.remove('hph-form-input-focused');
+                    });
+                });
+            },
+
+            initFormValidation: function() {
+                const loginForm = document.querySelector('.hph-login-form');
+                const submitButton = loginForm?.querySelector('.hph-btn');
+
+                if (loginForm) {
+                    HPH.events.on(loginForm, 'submit', (e) => {
+                        const username = loginForm.querySelector('#username').value.trim();
+                        const password = loginForm.querySelector('#password').value;
+
+                        if (!username || !password) {
+                            e.preventDefault();
+                            this.showAlert('Please fill in all required fields.', 'error');
+                            return;
+                        }
+
+                        if (submitButton) {
+                            submitButton.disabled = true;
+                            loginForm.classList.add('is-loading');
+                            submitButton.textContent = 'Signing In...';
+                        }
+                    });
+                }
+            },
+
+            showAlert: function(message, type = 'info') {
+                const existingAlerts = document.querySelectorAll('.hph-alert');
+                existingAlerts.forEach(alert => alert.remove());
+
+                const alert = document.createElement('div');
+                alert.className = `hph-alert hph-alert-${type} hph-mb-lg`;
+                alert.innerHTML = `<p class="hph-mb-0">${message}</p>`;
+
+                const form = document.querySelector('.hph-login-form');
+                if (form) {
+                    form.parentNode.insertBefore(alert, form);
+                }
+
+                setTimeout(() => {
+                    if (alert.parentNode) {
+                        alert.remove();
+                    }
+                }, 5000);
+            },
+
+            initAccessibility: function() {
+                const usernameInput = document.querySelector('#username');
+                const passwordField = document.querySelector('#password');
+                const passwordToggle = document.querySelector('.hph-password-toggle');
+
+                if (usernameInput) {
+                    usernameInput.setAttribute('aria-label', 'Username or Email Address');
+                }
+
+                if (passwordField) {
+                    passwordField.setAttribute('aria-label', 'Password');
+                }
+
+                if (passwordToggle) {
+                    passwordToggle.setAttribute('tabindex', '0');
+                    passwordToggle.setAttribute('role', 'button');
+                    passwordToggle.setAttribute('aria-label', 'Toggle password visibility');
+
+                    HPH.events.on(passwordToggle, 'keydown', function(e) {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            this.click();
+                        }
+                    });
+                }
+            }
+        };
     });
-
-    // Form validation
-    if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
-            const username = loginForm.querySelector('#username').value.trim();
-            const password = loginForm.querySelector('#password').value;
-            
-            // Basic client-side validation
-            if (!username || !password) {
-                e.preventDefault();
-                showAlert('Please fill in all required fields.', 'error');
-                return;
-            }
-            
-            // Show loading state
-            if (submitButton) {
-                submitButton.disabled = true;
-                loginForm.classList.add('is-loading');
-                submitButton.textContent = 'Signing In...';
-            }
-        });
-    }
-
-    // Alert system
-    function showAlert(message, type = 'info') {
-        // Remove existing alerts
-        const existingAlerts = document.querySelectorAll('.hph-alert');
-        existingAlerts.forEach(alert => alert.remove());
-        
-        // Create new alert
-        const alert = document.createElement('div');
-        alert.className = `hph-alert hph-alert-${type} hph-mb-lg`;
-        alert.innerHTML = `<p class="hph-mb-0">${message}</p>`;
-        
-        // Insert before form
-        const form = document.querySelector('.hph-login-form');
-        if (form) {
-            form.parentNode.insertBefore(alert, form);
-        }
-        
-        // Auto-remove after 5 seconds
-        setTimeout(() => {
-            if (alert.parentNode) {
-                alert.remove();
-            }
-        }, 5000);
-    }
-
-    // Enhanced accessibility
-    // Add ARIA labels for better screen reader support
-    const usernameInput = document.querySelector('#username');
-    const passwordField = document.querySelector('#password');
-    
-    if (usernameInput) {
-        usernameInput.setAttribute('aria-label', 'Username or Email Address');
-    }
-    
-    if (passwordField) {
-        passwordField.setAttribute('aria-label', 'Password');
-    }
-    
-    // Handle keyboard navigation for password toggle
-    if (passwordToggle) {
-        passwordToggle.setAttribute('tabindex', '0');
-        passwordToggle.setAttribute('role', 'button');
-        passwordToggle.setAttribute('aria-label', 'Toggle password visibility');
-        
-        passwordToggle.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                this.click();
-            }
-        });
-    }
-});
+}
 </script>
 
 <?php get_footer(); ?>

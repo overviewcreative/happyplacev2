@@ -84,32 +84,3 @@
   outline-offset: 2px;
 }
 
-/* High Contrast Mode Adjustments */
-@media screen and (prefers-contrast: high) {
-  :root {
-    --hph-primary: #0066cc;
-    --hph-secondary: #994d1a;
-    --hph-tertiary: #2d4a1c;
-    
-    --hph-success: #006600;
-    --hph-warning: #994d00;
-    --hph-danger: #cc0000;
-    --hph-info: #003366;
-  }
-  
-  .text-high-contrast {
-    color: #000000;
-  }
-  
-  .text-high-contrast-light {
-    color: #ffffff;
-  }
-  
-  .focus-contrast:focus {
-    outline: 3px solid #000000;
-  }
-  
-  .focus-contrast-light:focus {
-    outline: 3px solid #ffffff;
-  }
-}

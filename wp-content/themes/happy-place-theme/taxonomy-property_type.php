@@ -9,13 +9,12 @@
  * @since 3.0.0
  */
 
-// Enqueue archive-specific assets BEFORE wp_head() runs
-wp_enqueue_style('hph-archive-enhanced', get_template_directory_uri() . '/assets/css/framework/features/listing/archive-enhanced.css', ['hph-framework'], '1.0.0');
-wp_enqueue_style('hph-archive-map-fixes', get_template_directory_uri() . '/assets/css/archive-map-fixes.css', ['hph-framework'], filemtime(get_template_directory() . '/assets/css/archive-map-fixes.css'));
-wp_enqueue_script('hph-archive-enhanced', get_template_directory_uri() . '/assets/js/pages/archive-listing-enhanced.js', ['hph-framework'], '1.0.0', true);
+// Archive-specific assets now handled by Vite Asset Loader automatically
+// wp_enqueue_style('hph-archive-enhanced', get_template_directory_uri() . '/assets/css/framework/features/listing/archive-enhanced.css', ['hph-framework'], '1.0.0');
+// wp_enqueue_script('hph-archive-enhanced', get_template_directory_uri() . '/assets/js/pages/archive-listing-enhanced.js', ['hph-framework'], '1.0.0', true);
 
-// Enqueue HPH Map component for map view
-wp_enqueue_script('hph-map-component', get_template_directory_uri() . '/assets/js/components/hph-map.js', ['hph-framework'], '1.0.0', true);
+// Map component now included in archive bundle
+// wp_enqueue_script('hph-map-component', get_template_directory_uri() . '/assets/js/components/hph-map.js', ['hph-framework'], '1.0.0', true);
 
 // Enqueue Mapbox GL JS if we have a token
 $mapbox_token = '';

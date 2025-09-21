@@ -1,0 +1,210 @@
+/**
+ * Social Link Atom
+ * Reusable social media link button component
+ *
+ * @package HappyPlaceTheme
+ */
+
+/* ================================================
+   SOCIAL LINK ATOM - BASE
+   ================================================ */
+
+.hph-social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--hph-white);
+  border-radius: var(--hph-radius-full);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 0.875rem;
+  border: 1px solid transparent;
+}
+
+.hph-social-link:hover {
+  background: var(--hph-primary);
+  color: var(--hph-white);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.hph-social-link:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.25);
+}
+
+.hph-social-link:active {
+  transform: translateY(0);
+}
+
+/* ================================================
+   SOCIAL LINK SIZES
+   ================================================ */
+
+.hph-social-link--xs {
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.75rem;
+}
+
+.hph-social-link--sm {
+  width: 1.75rem;
+  height: 1.75rem;
+  font-size: 0.8125rem;
+}
+
+.hph-social-link--lg {
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1rem;
+}
+
+.hph-social-link--xl {
+  width: 3rem;
+  height: 3rem;
+  font-size: 1.125rem;
+}
+
+/* ================================================
+   SOCIAL LINK VARIANTS
+   ================================================ */
+
+/* Light variant for dark backgrounds */
+.hph-social-link--light {
+  background: var(--hph-white);
+  color: var(--hph-gray-700);
+  border-color: var(--hph-gray-200);
+}
+
+.hph-social-link--light:hover {
+  background: var(--hph-primary);
+  color: var(--hph-white);
+  border-color: var(--hph-primary);
+}
+
+/* Dark variant for light backgrounds */
+.hph-social-link--dark {
+  background: var(--hph-gray-900);
+  color: var(--hph-white);
+  border-color: var(--hph-gray-700);
+}
+
+.hph-social-link--dark:hover {
+  background: var(--hph-primary);
+  color: var(--hph-white);
+  border-color: var(--hph-primary);
+}
+
+/* Outline variant */
+.hph-social-link--outline {
+  background: transparent;
+  border-color: currentColor;
+}
+
+.hph-social-link--outline:hover {
+  background: currentColor;
+  color: var(--hph-white);
+}
+
+/* Ghost variant (minimal) */
+.hph-social-link--ghost {
+  background: transparent;
+  border-color: transparent;
+}
+
+.hph-social-link--ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ================================================
+   SOCIAL LINK STATES
+   ================================================ */
+
+.hph-social-link:disabled,
+.hph-social-link.is-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.hph-social-link.is-active {
+  background: var(--hph-primary);
+  color: var(--hph-white);
+  border-color: var(--hph-primary);
+}
+
+/* ================================================
+   PLATFORM-SPECIFIC HOVER COLORS
+   ================================================ */
+
+.hph-social-link[href*="facebook"]:hover {
+  background: #1877f2;
+}
+
+.hph-social-link[href*="twitter"]:hover,
+.hph-social-link[href*="x.com"]:hover {
+  background: #1da1f2;
+}
+
+.hph-social-link[href*="instagram"]:hover {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+
+.hph-social-link[href*="linkedin"]:hover {
+  background: #0077b5;
+}
+
+.hph-social-link[href*="youtube"]:hover {
+  background: #ff0000;
+}
+
+.hph-social-link[href*="tiktok"]:hover {
+  background: #000000;
+}
+
+.hph-social-link[href*="pinterest"]:hover {
+  background: #bd081c;
+}
+
+/* ================================================
+   ACCESSIBILITY
+   ================================================ */
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .hph-social-link {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .hph-social-link {
+    transition: none;
+  }
+}
+
+/* Focus management */
+.hph-social-link:focus-visible {
+  outline: 2px solid var(--hph-primary);
+  outline-offset: 2px;
+}
+
+/* ================================================
+   USAGE EXAMPLES
+   ================================================ */
+
+/*
+ * Basic social link:
+ * <a href="https://facebook.com/company" class="hph-social-link" aria-label="Follow us on Facebook">
+ *   <i class="fab fa-facebook-f"></i>
+ * </a>
+ *
+ * Large outline social link:
+ * <a href="https://instagram.com/company" class="hph-social-link hph-social-link--lg hph-social-link--outline" aria-label="Follow us on Instagram">
+ *   <i class="fab fa-instagram"></i>
+ * </a>
+ */

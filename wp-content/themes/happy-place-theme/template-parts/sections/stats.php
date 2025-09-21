@@ -16,23 +16,23 @@ if (function_exists('hph_register_template_part')) {
 // Default arguments
 $defaults = array(
     'style' => 'cards', // Options: 'cards', 'counters', 'minimal', 'gradient-cards', 'outlined'
-    'theme' => 'primary', // Color theme: 'primary', 'white', 'dark', 'light', 'gradient'
+    'theme' => 'primary', // Options: 'primary', 'white', 'dark', 'light', 'gradient'
     'layout' => 'grid', // Options: 'grid', 'inline', 'stacked'
-    'padding' => 'xl',
-    'content_width' => 'normal',
-    'alignment' => 'center',
-    'columns' => 0, // Auto-detect from stats count
-    'background_image' => '',
-    'overlay' => 'dark',
-    'badge' => '',
-    'headline' => '',
-    'subheadline' => '',
-    'content' => '',
-    'stats' => array(),
-    'animate_counters' => true,
-    'counter_duration' => 2000,
-    'hover_effects' => true,
-    'section_id' => ''
+    'padding' => 'xl', // Options: 'sm', 'md', 'lg', 'xl', '2xl'
+    'content_width' => 'normal', // Options: 'narrow', 'normal', 'wide', 'full'
+    'alignment' => 'center', // Options: 'left', 'center', 'right'
+    'columns' => 0, // Number of columns (0 = auto-detect, 1-6)
+    'background_image' => '', // URL to background image
+    'overlay' => 'dark', // Options: 'dark', 'light', 'primary', 'none'
+    'badge' => '', // Badge text to display above headline
+    'headline' => '', // Main headline text
+    'subheadline' => '', // Subheadline text below headline
+    'content' => '', // Additional content text
+    'stats' => array(), // Array of stat objects with number, label, icon, etc.
+    'animate_counters' => true, // Boolean: true/false - animate numbers counting up
+    'counter_duration' => 2000, // Milliseconds for counter animation (500-5000)
+    'hover_effects' => true, // Boolean: true/false - enable card hover effects
+    'section_id' => '' // HTML ID for the section
 );
 
 // Merge with provided args
@@ -94,25 +94,25 @@ if ($background_image) {
 // Padding styles
 switch ($padding) {
     case 'sm':
-        $section_styles[] = 'padding-top: var(--hph-padding-lg)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-lg)';
+        $section_styles[] = 'padding-top: var(--hph-space-6)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-6)';
         break;
     case 'md':
-        $section_styles[] = 'padding-top: var(--hph-padding-xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-8)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-8)';
         break;
     case 'lg':
-        $section_styles[] = 'padding-top: var(--hph-padding-2xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-2xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-12)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-12)';
         break;
     case '2xl':
-        $section_styles[] = 'padding-top: var(--hph-padding-4xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-4xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-24)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-24)';
         break;
     case 'xl':
     default:
-        $section_styles[] = 'padding-top: var(--hph-padding-3xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-3xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-16)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-16)';
         break;
 }
 
@@ -122,8 +122,8 @@ $container_styles = array(
     'z-index: 1',
     'margin-left: auto',
     'margin-right: auto',
-    'padding-left: var(--hph-padding-lg)',
-    'padding-right: var(--hph-padding-lg)'
+    'padding-left: var(--hph-space-6)',
+    'padding-right: var(--hph-space-6)'
 );
 
 switch ($content_width) {
@@ -232,12 +232,12 @@ if ($background_image) {
         
         <?php if ($badge || $headline || $subheadline || $content): ?>
         <!-- Section Header -->
-        <div style="margin-bottom: var(--hph-margin-3xl); <?php echo $header_alignment; ?>">
+        <div style="margin-bottom: var(--hph-space-16); <?php echo $header_alignment; ?>">
             
             <?php if ($badge): ?>
             <!-- Badge -->
-            <div style="margin-bottom: var(--hph-margin-lg);">
-                <span style="display: inline-block; padding: var(--hph-padding-sm) var(--hph-padding-md); background: rgba(255, 255, 255, 0.15); color: currentColor; border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
+            <div style="margin-bottom: var(--hph-space-6);">
+                <span style="display: inline-block; padding: var(--hph-space-2) var(--hph-space-4); background: rgba(255, 255, 255, 0.15); color: currentColor; border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
                     <?php echo esc_html($badge); ?>
                 </span>
             </div>
@@ -245,14 +245,14 @@ if ($background_image) {
             
             <?php if ($headline): ?>
             <!-- Headline -->
-            <h2 style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-4xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
+            <h2 style="margin: 0 0 var(--hph-space-6) 0; font-size: var(--hph-text-4xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
                 <?php echo esc_html($headline); ?>
             </h2>
             <?php endif; ?>
             
             <?php if ($subheadline): ?>
             <!-- Subheadline -->
-            <p style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); opacity: 0.9;">
+            <p style="margin: 0 0 var(--hph-space-6) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); opacity: 0.9;">
                 <?php echo esc_html($subheadline); ?>
             </p>
             <?php endif; ?>

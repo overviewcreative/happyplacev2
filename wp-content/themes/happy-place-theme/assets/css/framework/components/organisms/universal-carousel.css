@@ -10,7 +10,7 @@
    ============================================================================ */
 :root {
     --hph-carousel-primary: var(--hph-primary);
-    --hph-carousel-gap: var(--hph-spacing-lg);
+    --hph-carousel-gap: var(--hph-spacing-2xl); /* Increased to 2xl for much more space */
     --hph-carousel-border-radius: var(--hph-border-radius-lg);
     --hph-carousel-transition: var(--hph-transition);
     --hph-carousel-nav-size: 3rem;
@@ -26,6 +26,7 @@
     padding: var(--hph-spacing-section) 0;
     position: relative;
     overflow: hidden;
+    background: transparent; /* Make carousel background transparent */
 }
 
 /* Color Scheme Variations - Using HPH Variables Only */
@@ -117,29 +118,37 @@
 
 /* Dynamic responsive slides - viewport-based instead of fixed counts */
 .hph-carousel__slide {
-    flex: 0 0 280px; /* Fixed minimum width for compact cards */
+    flex: 0 0 280px; /* Mobile: single card width */
     max-width: 280px;
+    background: transparent; /* Ensure no background color on slides */
 }
 
-/* Responsive slide widths based on viewport, not data attributes */
+/* Responsive slide widths based on viewport - better spacing for listings */
 @media (min-width: 480px) {
     .hph-carousel__slide {
-        flex: 0 0 260px;
-        max-width: 260px;
+        flex: 0 0 320px; /* Wider for better card proportions */
+        max-width: 320px;
     }
 }
 
 @media (min-width: 768px) {
     .hph-carousel__slide {
-        flex: 0 0 280px;
-        max-width: 280px;
+        flex: 0 0 350px; /* Even wider on tablet for listing cards */
+        max-width: 350px;
     }
 }
 
 @media (min-width: 1024px) {
     .hph-carousel__slide {
-        flex: 0 0 300px;
-        max-width: 300px;
+        flex: 0 0 380px; /* Desktop: proper listing card width */
+        max-width: 380px;
+    }
+}
+
+@media (min-width: 1280px) {
+    .hph-carousel__slide {
+        flex: 0 0 400px; /* Large desktop: full-width listing cards */
+        max-width: 400px;
     }
 }
 
@@ -159,6 +168,7 @@
 
 .hph-carousel__slide-content {
     height: 100%;
+    background: transparent; /* Ensure slide content has no background */
 }
 
 /* ============================================================================
@@ -178,7 +188,7 @@
     justify-content: center;
     cursor: pointer;
     transition: var(--hph-carousel-transition);
-    z-index: 2;
+    z-index: 10; /* Increased z-index to ensure visibility */
     box-shadow: var(--hph-carousel-shadow);
     color: var(--hph-carousel-primary);
     font-weight: var(--hph-font-weight-medium, 500);
@@ -308,7 +318,7 @@
 
 @media (max-width: 768px) {
     :root {
-        --hph-carousel-gap: var(--hph-spacing-md);
+        --hph-carousel-gap: var(--hph-spacing-xl); /* Increased from lg to xl for mobile */
         --hph-carousel-nav-size: 2.5rem;
     }
     
@@ -340,13 +350,13 @@
     .hph-universal-carousel {
         padding: var(--hph-spacing-section-xs) 0;
     }
-    
+
     .hph-carousel__track {
-        gap: var(--hph-spacing-sm);
+        gap: var(--hph-spacing-lg); /* Increased to lg for mobile spacing */
     }
-    
+
     :root {
-        --hph-carousel-gap: var(--hph-spacing-sm);
+        --hph-carousel-gap: var(--hph-spacing-lg); /* Increased to lg for mobile */
         --hph-carousel-dot-size: 0.625rem;
     }
 }
@@ -355,48 +365,21 @@
    POST TYPE SPECIFIC STYLES
    ============================================================================ */
 
-/* Listings Carousel */
-.hph-carousel-listing {
-    background: linear-gradient(135deg, var(--hph-primary-light), var(--hph-white));
+/* Post Type Specific Styles - Transparent backgrounds to blend with sections */
+.hph-carousel-listing,
+.hph-carousel-agent,
+.hph-carousel-local_place,
+.hph-carousel-local_event,
+.hph-carousel-community,
+.hph-carousel-city,
+.hph-carousel-open_house,
+.hph-carousel-post {
+    background: transparent;
 }
 
-/* Agents Carousel */
-.hph-carousel-agent {
-    background: linear-gradient(135deg, var(--hph-gray-50), var(--hph-white));
-}
-
+/* Agent carousel specific alignment */
 .hph-carousel-agent .hph-carousel__slide-content {
     text-align: center;
-}
-
-/* Places Carousel */
-.hph-carousel-local_place {
-    background: linear-gradient(135deg, var(--hph-tertiary-light), var(--hph-white));
-}
-
-/* Events Carousel */
-.hph-carousel-local_event {
-    background: linear-gradient(135deg, var(--hph-info-light), var(--hph-white));
-}
-
-/* Communities Carousel */
-.hph-carousel-community {
-    background: linear-gradient(135deg, var(--hph-success-light), var(--hph-white));
-}
-
-/* Cities Carousel */
-.hph-carousel-city {
-    background: linear-gradient(135deg, var(--hph-primary-50), var(--hph-white));
-}
-
-/* Open Houses Carousel */
-.hph-carousel-open_house {
-    background: linear-gradient(135deg, var(--hph-orange-light), var(--hph-white));
-}
-
-/* Posts Carousel */
-.hph-carousel-post {
-    background: linear-gradient(135deg, var(--hph-gray-100), var(--hph-white));
 }
 
 /* ============================================================================

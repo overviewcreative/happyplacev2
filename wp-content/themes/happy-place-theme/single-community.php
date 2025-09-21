@@ -158,18 +158,18 @@ if ($price_range_min && $price_range_max) {
                 
                 <!-- Hero Actions -->
                 <div class="hph-hero-actions hph-flex hph-flex-wrap hph-gap-4">
-                    <a href="#community-listings" class="hph-btn hph-btn--primary hph-btn--lg">
+                    <a href="#community-listings" class="hph-btn hph-btn-primary hph-btn-lg">
                         <i class="fas fa-search hph-mr-2"></i>
                         View Available Homes
                     </a>
                     
                     <?php if ($website): ?>
-                    <a href="<?php echo esc_url($website); ?>" target="_blank" rel="noopener" class="hph-btn hph-btn--outline-white hph-btn--lg">
+                    <a href="<?php echo esc_url($website); ?>" target="_blank" rel="noopener" class="hph-btn hph-btn-outline-primary-white hph-btn-lg">
                         <i class="fas fa-external-link-alt hph-mr-2"></i>
                         Visit Website
                     </a>
                     <?php else: ?>
-                    <a href="#community-contact" class="hph-btn hph-btn--outline-white hph-btn--lg">
+                    <a href="#community-contact" class="hph-btn hph-btn-outline-primary-white hph-btn-lg">
                         <i class="fas fa-envelope hph-mr-2"></i>
                         Get Information
                     </a>
@@ -345,14 +345,17 @@ if ($price_range_min && $price_range_max) {
             <!-- Listings Grid -->
             <div class="hph-listings-grid hph-grid hph-grid-cols-1 md:hph-grid-cols-2 lg:hph-grid-cols-3 hph-gap-8 hph-mb-12">
                 <?php while ($community_listings->have_posts()): $community_listings->the_post(); ?>
-                    <?php get_template_part('template-parts/components/listing/card-grid'); ?>
+                    <?php hph_component('universal-card', [
+                        'post_id' => get_the_ID(),
+                        'layout' => 'vertical'
+                    ]); ?>
                 <?php endwhile; ?>
             </div>
             
             <!-- View All Button -->
             <div class="hph-text-center">
                 <a href="<?php echo esc_url(add_query_arg(['community' => $community_id], get_post_type_archive_link('listing'))); ?>" 
-                   class="hph-btn hph-btn--primary hph-btn--lg">
+                   class="hph-btn hph-btn-primary hph-btn-lg">
                     <i class="fas fa-search hph-mr-2"></i>
                     View All Properties (<?php echo $community_listings->found_posts; ?>)
                 </a>

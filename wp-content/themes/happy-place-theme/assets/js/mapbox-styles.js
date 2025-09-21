@@ -107,38 +107,70 @@ const HPH_MapboxStyles = {
  * Enhanced Map Themes with Custom Colors
  */
 const HPH_MapThemes = {
-    
-    // Happy Place brand theme
+
+    // Happy Place brand theme - Updated with correct brand colors
     happyPlace: {
-        primary: 'var(--hph-primary)',      // Use CSS variable
-        secondary: '#06b6d4',    // Cyan
-        success: '#10b981',      // Green
-        warning: '#f59e0b',      // Amber
-        danger: '#ef4444',       // Red
-        dark: '#1f2937',         // Dark gray
-        light: '#f9fafb'         // Light gray
+        primary: '#50bae1',      // HPH Primary Blue
+        primaryDark: '#02333A',  // HPH Primary Dark
+        primaryLight: '#e0f2fe', // HPH Primary Light
+        secondary: '#e8a87c',    // HPH Secondary Orange/Peach
+        accent: '#8bc34a',       // HPH Accent Green
+        success: '#8bc34a',      // Use accent green for success
+        warning: '#e8a87c',      // Use secondary for warnings
+        danger: '#ef4444',       // Red for errors
+        dark: '#02333A',         // Use primary dark
+        light: '#eef8fc',        // HPH Primary 25 (lightest)
+        white: '#f8fcff',        // HPH White
+        gray: {
+            50: '#e5f4fa',
+            100: '#d1ebf5',
+            200: '#b8e0ef',
+            300: '#9ed2e7',
+            400: '#7bc0dc',
+            500: '#5faed1',
+            600: '#4790b3',
+            700: '#326d89',
+            800: '#1e4355',
+            900: '#0d2834'
+        }
     },
     
-    // Luxury real estate theme
+    // Luxury real estate theme - HPH variant
     luxury: {
-        primary: '#d4af37',      // Gold
-        secondary: '#2c2c2c',    // Charcoal
-        success: '#8fbc8f',      // Sage green
-        warning: '#cd853f',      // Peru
-        danger: '#8b0000',       // Dark red
-        dark: '#1a1a1a',         // Almost black
-        light: '#f5f5f5'         // Off white
+        primary: '#02333A',      // HPH Primary Dark (elegant)
+        secondary: '#e8a87c',    // HPH Secondary (warm accent)
+        accent: '#d4af37',       // Gold accent for luxury touches
+        success: '#8bc34a',      // HPH Accent Green
+        warning: '#e8a87c',      // HPH Secondary
+        danger: '#ef4444',       // Red
+        dark: '#0d2834',         // HPH Gray 900
+        light: '#f8fcff',        // HPH White
+        overlay: 'rgba(2, 51, 58, 0.9)' // Dark overlay for luxury feel
     },
-    
-    // Modern minimalist theme
+
+    // Professional clean theme
+    professional: {
+        primary: '#4790b3',      // HPH Gray 600 (muted blue)
+        secondary: '#326d89',    // HPH Gray 700
+        accent: '#50bae1',       // HPH Primary (highlights only)
+        success: '#8bc34a',      // HPH Accent Green
+        warning: '#e8a87c',      // HPH Secondary
+        danger: '#ef4444',       // Red
+        dark: '#1e4355',         // HPH Gray 800
+        light: '#eef8fc',        // HPH Light
+        neutral: '#9ed2e7'       // HPH Gray 300
+    },
+
+    // Modern minimalist theme - HPH variant
     minimal: {
-        primary: '#000000',      // Black
-        secondary: '#6b7280',    // Gray
-        success: '#059669',      // Emerald
-        warning: '#d97706',      // Orange
-        danger: '#dc2626',       // Red
-        dark: '#111827',         // Dark
-        light: '#ffffff'         // Pure white
+        primary: '#0d2834',      // HPH Gray 900 (near black)
+        secondary: '#326d89',    // HPH Gray 700
+        accent: '#50bae1',       // HPH Primary (minimal accents)
+        success: '#8bc34a',      // HPH Accent Green
+        warning: '#e8a87c',      // HPH Secondary
+        danger: '#ef4444',       // Red
+        dark: '#02333A',         // HPH Primary Dark
+        light: '#f8fcff'         // HPH White
     }
 };
 

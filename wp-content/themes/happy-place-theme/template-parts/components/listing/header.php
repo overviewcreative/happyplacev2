@@ -139,17 +139,17 @@ $listing = $args['listing_data'];
         
         <?php if ($args['show_actions']): ?>
         <div class="hph-listing-actions hph-flex hph-items-center hph-gap-3">
-            <button type="button" class="hph-btn hph-btn--outline hph-btn--sm" data-action="favorite" data-listing-id="<?php echo esc_attr($listing['id']); ?>">
+            <button type="button" class="hph-btn hph-btn-outline-primary hph-btn-sm" data-action="favorite" data-listing-id="<?php echo esc_attr($listing['id']); ?>">
                 <i class="hph-icon hph-icon-heart" aria-hidden="true"></i>
                 <?php _e('Save', 'happy-place-theme'); ?>
             </button>
             
-            <button type="button" class="hph-btn hph-btn--outline hph-btn--sm" data-action="share" data-listing-id="<?php echo esc_attr($listing['id']); ?>">
+            <button type="button" class="hph-btn hph-btn-outline-primary hph-btn-sm" data-action="share" data-listing-id="<?php echo esc_attr($listing['id']); ?>">
                 <i class="hph-icon hph-icon-share" aria-hidden="true"></i>
                 <?php _e('Share', 'happy-place-theme'); ?>
             </button>
             
-            <button type="button" class="hph-btn hph-btn--outline hph-btn--sm" data-action="print" data-listing-id="<?php echo esc_attr($listing['id']); ?>">
+            <button type="button" class="hph-btn hph-btn-outline-primary hph-btn-sm" data-action="print" data-listing-id="<?php echo esc_attr($listing['id']); ?>">
                 <i class="hph-icon hph-icon-printer" aria-hidden="true"></i>
                 <?php _e('Print', 'happy-place-theme'); ?>
             </button>

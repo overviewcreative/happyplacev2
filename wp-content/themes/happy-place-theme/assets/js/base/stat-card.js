@@ -296,7 +296,6 @@
                     }
                 },
                 error: function() {
-                    console.log('Failed to refresh stat card:', cardId);
                 }
             });
         },

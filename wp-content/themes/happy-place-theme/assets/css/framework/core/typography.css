@@ -539,26 +539,24 @@
   color: var(--hph-primary-500);
 }
 
-.prose a:not(.btn):not(.button):not([class*="btn"]):not(.hph-btn):not(.hph-hero-btn):not(.wp-block-button__link) {
+.prose a:not(.btn):not(.button):not(.hph-btn):not(.hph-hero-btn):not(.wp-block-button__link) {
   color: var(--hph-primary);
   text-decoration: underline;
   font-weight: 500;
 }
 
-.prose a:not(.btn):not(.button):not([class*="btn"]):not(.hph-btn):not(.hph-hero-btn):not(.wp-block-button__link):hover {
+.prose a:not(.btn):not(.button):not(.hph-btn):not(.hph-hero-btn):not(.wp-block-button__link):hover {
   color: var(--hph-primary-dark);
 }
 
 /* Ensure buttons have no underlines */
 .btn,
 .button,
-[class*="btn"],
 .hph-btn,
 .hph-hero-btn,
 .wp-block-button__link,
 a.btn,
 a.button,
-a[class*="btn"],
 a.hph-btn,
 a.hph-hero-btn {
   text-decoration: none !important;
@@ -566,13 +564,11 @@ a.hph-hero-btn {
 
 .btn:hover,
 .button:hover,
-[class*="btn"]:hover,
 .hph-btn:hover,
 .hph-hero-btn:hover,
 .wp-block-button__link:hover,
 a.btn:hover,
 a.button:hover,
-a[class*="btn"]:hover,
 a.hph-btn:hover,
 a.hph-hero-btn:hover {
   text-decoration: none !important;

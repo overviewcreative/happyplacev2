@@ -107,6 +107,14 @@ class HPH_Component_Loader {
                 'args' => array('variant', 'layout', 'image', 'title', 'description')
             ),
             
+            'universal-card' => array(
+                'path' => 'components/universal/card',
+                'name' => 'Universal Card',
+                'description' => 'Universal card component that adapts to any post type',
+                'category' => 'components',
+                'args' => array('post_id', 'post_type', 'layout', 'variant', 'size')
+            ),
+            
             'card-grid' => array(
                 'path' => 'base/card-grid',
                 'name' => 'Card Grid',

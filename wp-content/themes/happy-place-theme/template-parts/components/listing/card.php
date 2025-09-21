@@ -16,24 +16,56 @@ $args = wp_parse_args($component_args, array(
     // Data props
     'listing_id' => get_the_ID(),
     
+    // View type (legacy support)
+    'view_type' => 'grid', // grid, list, map, gallery
+    
     // Display options
     'layout' => 'vertical', // vertical, horizontal, compact
     'variant' => 'default', // default, elevated, bordered, minimal
     'size' => 'md', // sm, md, lg
     'show_agent' => false,
-    'show_favorite' => true,
+    'show_favorite' => false,  // Disable favorite button
     'show_actions' => false,
     'show_stats' => true,
     'show_status' => true,
-    
+    'compact' => false, // for map view
+
+    // Meta display toggles
+    'show_days_on_market' => false,
+    'show_last_updated' => false,
+
     // Behavior
     'clickable' => true,
     'hover_effects' => true,
     
     // HTML
     'class' => '',
-    'attributes' => array()
+    'attributes' => array(),
+
+    // Change tracking data
+    'listing_changes' => [],
+    'listing_badges' => [],
+    'has_recent_changes' => false,
+    'is_new_listing' => false
 ));
+
+// Map view type to layout (legacy support)
+$view_type_map = array(
+    'grid' => 'vertical',
+    'list' => 'horizontal',
+    'map' => 'compact',
+    'gallery' => 'vertical'
+);
+
+if (isset($view_type_map[$args['view_type']])) {
+    $args['layout'] = $view_type_map[$args['view_type']];
+}
+
+// Handle compact flag for map view
+if ($args['compact'] || $args['view_type'] === 'map') {
+    $args['layout'] = 'compact';
+    $args['size'] = 'sm';
+}
 
 // Validate listing
 $listing_id = $args['listing_id'];
@@ -47,7 +79,8 @@ if (!$post || $post->post_type !== 'listing') {
 }
 
 // Use adapter service to transform data
-$adapter_service = hpt_adapter();
+// Temporarily disable adapter service to avoid errors - use bridge functions directly
+$adapter_service = null; // hpt_adapter();
 if (!$adapter_service) {
     // Fallback to direct bridge functions if adapter service unavailable
     $listing = hpt_get_listing($listing_id);
@@ -93,57 +126,93 @@ if ($adapter_service && isset($card_props)) {
     $image_data = null;
     if ($listing['featured_image']) {
         $image_data = array(
-            'url' => $listing['featured_image']['url'] ?? '',
+            'src' => $listing['featured_image']['url'] ?? '',  // Use 'src' instead of 'url'
             'alt' => $listing['featured_image']['alt'] ?? $listing['title'],
-            'width' => $listing['featured_image']['width'] ?? null,
-            'height' => $listing['featured_image']['height'] ?? null
+            'ratio' => 'landscape'
         );
     } elseif (!empty($listing['gallery'])) {
         $first_image = $listing['gallery'][0];
         $image_data = array(
-            'url' => $first_image['url'] ?? '',
+            'src' => $first_image['url'] ?? '',  // Use 'src' instead of 'url'
             'alt' => $first_image['alt'] ?? $listing['title'],
-            'width' => $first_image['width'] ?? null,
-            'height' => $first_image['height'] ?? null
+            'ratio' => 'landscape'
         );
     }
 
-    // Build location string
+    // Build location string - get address properly
+    $address = hpt_get_listing_address($listing_id, 'array');
     $location_parts = array_filter(array(
-        $listing['address']['city'] ?? '',
-        $listing['address']['state'] ?? ''
+        $address['city'] ?? '',
+        $address['state'] ?? ''
     ));
     $location = implode(', ', $location_parts);
 
+    // Get price data
+    $price_raw = hpt_get_listing_price($listing_id);
+    $price_formatted = hpt_get_listing_price_formatted($listing_id);
+    
+    // Get property details
+    $bedrooms = hpt_get_listing_bedrooms($listing_id);
+    $bathrooms = hpt_get_listing_bathrooms($listing_id);
+    $square_feet = hpt_get_listing_square_feet($listing_id);
+    $listing_status = hpt_get_listing_status($listing_id);
+
     // Build property details
     $property_details = array();
-    if ($listing['bedrooms']) {
-        $property_details[] = $listing['bedrooms'] . ' bed' . ($listing['bedrooms'] > 1 ? 's' : '');
+    if ($bedrooms) {
+        $property_details[] = $bedrooms . ' bed' . ($bedrooms > 1 ? 's' : '');
     }
-    if ($listing['bathrooms']) {
-        $property_details[] = $listing['bathrooms'] . ' bath' . ($listing['bathrooms'] > 1 ? 's' : '');
+    if ($bathrooms) {
+        $property_details[] = $bathrooms . ' bath' . ($bathrooms > 1 ? 's' : '');
     }
-    if ($listing['square_feet']) {
-        $property_details[] = number_format($listing['square_feet']) . ' sq ft';
+    if ($square_feet) {
+        $property_details[] = number_format($square_feet) . ' sq ft';
     }
 
-    // Build badges
+    // Build badges - ENHANCED: Use new comprehensive badge system
     $badges = array();
-    if ($args['show_status'] && $listing['listing_status']) {
-        $badges[] = array(
-            'text' => $listing['listing_status'],
-            'variant' => strtolower($listing['listing_status']) === 'active' ? 'success' : 'default',
-            'position' => 'top-left'
-        );
+
+    // Get comprehensive badges from bridge system
+    if (function_exists('hpt_bridge_get_comprehensive_badges')) {
+        $comprehensive_badges = hpt_bridge_get_comprehensive_badges($listing_id, 3);
+
+        foreach ($comprehensive_badges as $badge) {
+            $badges[] = array(
+                'text' => $badge['text'],
+                'variant' => $badge['variant'],
+                'position' => 'top-left',
+                'type' => $badge['type'] ?? 'default',
+                'priority' => $badge['priority'] ?? 5,
+                'data' => $badge['data'] ?? null
+            );
+        }
     }
-    if ($listing['is_featured']) {
+
+    // Add featured badge if we have room and not already included
+    $has_featured = false;
+    foreach ($badges as $badge) {
+        if ($badge['type'] === 'featured') {
+            $has_featured = true;
+            break;
+        }
+    }
+
+    if (!$has_featured && count($badges) < 3 && $listing['is_featured']) {
         $badges[] = array(
             'text' => 'Featured',
             'variant' => 'primary',
             'position' => 'top-right',
-            'icon' => 'star'
+            'icon' => 'star',
+            'type' => 'featured',
+            'priority' => 3
         );
     }
+
+    // Sort by priority and limit to 3
+    usort($badges, function($a, $b) {
+        return $b['priority'] <=> $a['priority'];
+    });
+    $badges = array_slice($badges, 0, 3);
 
     // Build actions
     $actions = array();
@@ -196,59 +265,67 @@ if ($adapter_service && isset($card_props)) {
         );
     }
 
-    // Build stats content
+    // Build stats content with proper structure
     $stats_content = '';
     if ($args['show_stats'] && !empty($property_details)) {
         $stats_content = sprintf(
-            '<div class="hph-listing-stats hph-text-sm hph-text-gray-600 hph-flex hph-flex-wrap hph-gap-x-md hph-gap-y-xs">
+            '<div class="hph-listing-stats">
                 %s
             </div>',
             implode(' • ', array_map('esc_html', $property_details))
         );
     }
 
+    // Build price per sqft if available
+    $price_per_sqft = '';
+    if ($listing['price']['raw'] && $listing['square_feet']) {
+        $per_sqft = round($listing['price']['raw'] / $listing['square_feet']);
+        $price_per_sqft = sprintf(
+            '<div class="hph-listing-price-per-sqft">$%s per sqft</div>',
+            number_format($per_sqft)
+        );
+    }
+
     // Prepare base card arguments (fallback)
     $final_card_args = array(
-        // Content
-        'title' => $listing['address']['street'] ?? $listing['title'],
-        'subtitle' => $location,
-        'content' => $stats_content . $agent_content,
-        'footer' => $args['show_stats'] && $listing['listing_date'] ? 
-                    '<div class="hph-text-xs hph-text-gray-500">Listed ' . date('M j, Y', strtotime($listing['listing_date'])) . '</div>' : '',
+        // Content - properly structured for listings
+        'title' => array(
+            'text' => $address['street'] ?? $listing['title'],
+            'tag' => 'h3'
+        ),
+        'subtitle' => $price_formatted,
+        'description' => $location,
+        'meta_items' => array_filter([
+            $bedrooms ? ['icon' => 'bed', 'text' => $bedrooms . ' bed' . ($bedrooms != 1 ? 's' : '')] : null,
+            $bathrooms ? ['icon' => 'bath', 'text' => $bathrooms . ' bath' . ($bathrooms != 1 ? 's' : '')] : null,
+            $square_feet ? ['icon' => 'ruler-combined', 'text' => number_format($square_feet) . ' sqft'] : null
+        ]),
+        'price_per_sqft' => ($price_raw && $square_feet) ? 
+            '$' . number_format($price_raw / $square_feet) . ' per sqft' : null,
         
         // Media
         'image' => $image_data,
         'badges' => $badges,
         
         // Behavior
-        'href' => $args['clickable'] ? $listing['url'] : '',
-        'target' => '_self',
+        'link_wrapper' => $args['clickable'] ? $listing['url'] : '',
+        'hover_effect' => $args['hover_effects'] ? 'lift' : 'none',
         
         // Appearance
         'variant' => $args['variant'],
         'layout' => $args['layout'],
         'size' => $args['size'],
-        'hover_effects' => $args['hover_effects'],
         
         // Actions
         'actions' => $actions,
-        
-        // Price as overlay or header
-        'header' => array(
-            'content' => sprintf(
-                '<div class="hph-listing-price hph-text-lg hph-font-bold hph-text-primary">%s</div>',
-                esc_html($listing['price']['formatted'] ?? 'Contact for Price')
-            ),
-            'position' => $args['layout'] === 'horizontal' ? 'left' : 'top'
-        ),
         
         // HTML
         'id' => 'listing-card-' . $listing_id,
         'class' => 'hph-listing-card ' . $args['class'],
         'attributes' => array_merge(array(
             'data-listing-id' => $listing_id,
-            'data-listing-status' => $listing['listing_status'],
-            'data-listing-price' => $listing['price']['raw'] ?? 0
+            'data-listing-status' => $listing_status,
+            'data-listing-price' => $price_raw ?? 0
         ), $args['attributes'])
     );
 

@@ -22,8 +22,8 @@ if (!defined('ABSPATH')) {
  * Handle archive AJAX requests (filtering, sorting, pagination)
  */
 if (!function_exists('hpt_handle_archive_ajax')) {
-    add_action('wp_ajax_hpt_archive_ajax', 'hpt_handle_archive_ajax');
-    add_action('wp_ajax_nopriv_hpt_archive_ajax', 'hpt_handle_archive_ajax');
+    add_action('wp_ajax_hph_archive_ajax', 'hpt_handle_archive_ajax');
+    add_action('wp_ajax_nopriv_hph_archive_ajax', 'hpt_handle_archive_ajax');
     
     // Also handle the JavaScript action name
     add_action('wp_ajax_hph_load_listings', 'hpt_handle_archive_ajax');
@@ -84,9 +84,9 @@ if (!function_exists('hpt_handle_archive_ajax')) {
         
         error_log('HPT AJAX: All functions loaded successfully');
         
-        // Verify nonce (support both nonce names)
+        // Verify nonce (support multiple nonce names for compatibility)
         $nonce = $_POST['nonce'] ?? '';
-        if (!wp_verify_nonce($nonce, 'hph_listings_nonce') && !wp_verify_nonce($nonce, 'archive_ajax_nonce')) {
+        if (!wp_verify_nonce($nonce, 'hph_listings_nonce') && !wp_verify_nonce($nonce, 'archive_ajax_nonce') && !wp_verify_nonce($nonce, 'hph_archive_nonce')) {
             error_log('HPT AJAX: Nonce verification failed');
             wp_send_json_error('Security check failed');
             return;
@@ -233,11 +233,8 @@ if (!function_exists('hpt_handle_archive_ajax')) {
                         
                         error_log('HPT AJAX: Card props generated for post ' . $post_id);
                         
-                        // Set the card props as 'args' query var for the template
-                        set_query_var('args', $card_props);
-                        
                         ob_start();
-                        get_template_part('template-parts/base/card');
+                        hph_component('universal-card', $card_props);
                         $card_html = ob_get_clean();
                         
                         if (empty(trim($card_html))) {
@@ -333,6 +330,43 @@ if (!function_exists('hpt_handle_archive_ajax')) {
             $html = ob_get_clean();
         }
 
+        // Build URL for browser history
+        $base_url = get_post_type_archive_link($post_type);
+        $url_params = [];
+
+        // Add search query
+        if (!empty($search)) {
+            $url_params['s'] = $search;
+        }
+
+        // Add view mode if not default
+        if ($view_mode !== 'grid') {
+            $url_params['view'] = $view_mode;
+        }
+
+        // Add sort if not default
+        if ($sort !== 'date_desc') {
+            $url_params['sort'] = $sort;
+        }
+
+        // Add page if not first page
+        if ($paged > 1) {
+            $url_params['paged'] = $paged;
+        }
+
+        // Add active filters
+        foreach ($sanitized_filters as $key => $value) {
+            if (!empty($value)) {
+                $url_params[$key] = $value;
+            }
+        }
+
+        // Build final URL
+        $final_url = $base_url;
+        if (!empty($url_params)) {
+            $final_url = add_query_arg($url_params, $base_url);
+        }
+
         // Build response with all necessary data
         $response_data = [
             'html' => $html,
@@ -350,6 +384,7 @@ if (!function_exists('hpt_handle_archive_ajax')) {
             'search_query' => $search,
             'action_type' => $action_type,
             'has_results' => $archive_query->have_posts(),
+            'url' => $final_url,
             'results_text' => sprintf(
                 _n('%d result found', '%d results found', $archive_query->found_posts, 'happy-place-theme'),
                 $archive_query->found_posts
@@ -777,7 +812,7 @@ if (!function_exists('hph_handle_agent_filter_ajax')) {
                         'show_stats' => true
                     ]);
                     
-                    get_template_part('template-parts/base/card', null, $card_props);
+                    hph_component('universal-card', $card_props);
                 } else {
                     // Fallback to agent card component
                     hph_component('agent-card', ['agent_id' => $agent_id]);
@@ -1077,87 +1112,10 @@ if (!function_exists('hpt_apply_search_sorting')) {
 
 /**
  * Handle search autocomplete AJAX request
+ * REMOVED: Using unified handler in search-ajax.php instead to prevent conflicts
  */
-if (!function_exists('hph_handle_search_autocomplete')) {
-    add_action('wp_ajax_hph_search_autocomplete', 'hph_handle_search_autocomplete');
-    add_action('wp_ajax_nopriv_hph_search_autocomplete', 'hph_handle_search_autocomplete');
-    
-    // Also handle the action that the JavaScript is calling
-    add_action('wp_ajax_hpt_search_autocomplete', 'hph_handle_search_autocomplete');
-    add_action('wp_ajax_nopriv_hpt_search_autocomplete', 'hph_handle_search_autocomplete');
-    
-    function hph_handle_search_autocomplete() {
-        // Get search query
-        $query = sanitize_text_field($_GET['q'] ?? $_POST['q'] ?? '');
-        
-        if (strlen($query) < 2) {
-            wp_send_json_success(['suggestions' => []]);
-            return;
-        }
-        
-        $suggestions = [];
-        
-        // Search listings
-        $listing_args = [
-            'post_type' => 'listing',
-            'posts_per_page' => 5,
-            'post_status' => 'publish',
-            's' => $query,
-            'meta_query' => [
-                'relation' => 'OR',
-                ['key' => 'city', 'value' => $query, 'compare' => 'LIKE'],
-                ['key' => 'street_name', 'value' => $query, 'compare' => 'LIKE'],
-                ['key' => 'zip_code', 'value' => $query, 'compare' => 'LIKE'],
-                ['key' => 'mls_number', 'value' => $query, 'compare' => 'LIKE'],
-            ]
-        ];
-        
-        $listing_query = new WP_Query($listing_args);
-        
-        if ($listing_query->have_posts()) {
-            while ($listing_query->have_posts()) {
-                $listing_query->the_post();
-                $listing_id = get_the_ID();
-                
-                $suggestions[] = [
-                    'type' => 'listing',
-                    'title' => get_the_title(),
-                    'url' => get_permalink(),
-                    'price' => get_field('price', $listing_id),
-                    'city' => get_field('city', $listing_id),
-                    'image' => get_the_post_thumbnail_url($listing_id, 'thumbnail')
-                ];
-            }
-            wp_reset_postdata();
-        }
-        
-        // Search cities/locations
-        $city_args = [
-            'post_type' => 'city',
-            'posts_per_page' => 3,
-            'post_status' => 'publish',
-            's' => $query
-        ];
-        
-        $city_query = new WP_Query($city_args);
-        
-        if ($city_query->have_posts()) {
-            while ($city_query->have_posts()) {
-                $city_query->the_post();
-                
-                $suggestions[] = [
-                    'type' => 'city',
-                    'title' => get_the_title(),
-                    'url' => get_permalink(),
-                    'description' => wp_trim_words(get_the_excerpt(), 10)
-                ];
-            }
-            wp_reset_postdata();
-        }
-        
-        wp_send_json_success(['suggestions' => $suggestions]);
-    }
-}
+// Autocomplete functionality moved to search-ajax.php for unified handling
+// Function removed to prevent conflicts - using search-ajax.php instead
 
 /**
  * Handle load more listings
@@ -1195,45 +1153,15 @@ if (!function_exists('hph_toggle_favorite')) {
     add_action('wp_ajax_nopriv_hph_toggle_favorite', 'hph_toggle_favorite');
     
     function hph_toggle_favorite() {
-        if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => 'Please log in to save favorites']);
+        // Delegate to plugin service for consistent business logic
+        if (class_exists('\HappyPlace\Services\UserInteractionsService')) {
+            $service = new \HappyPlace\Services\UserInteractionsService();
+            $service->handle_toggle_favorite();
+            return;
         }
-        
-        $nonce = $_POST['nonce'] ?? '';
-        if (!wp_verify_nonce($nonce, 'hph_archive_nonce')) {
-            wp_send_json_error(['message' => 'Security check failed']);
-        }
-        
-        $listing_id = intval($_POST['listing_id'] ?? 0);
-        $action = sanitize_text_field($_POST['favorite_action'] ?? 'add');
-        
-        if (!$listing_id) {
-            wp_send_json_error(['message' => 'Invalid listing ID']);
-        }
-        
-        $user_id = get_current_user_id();
-        $favorites = get_user_meta($user_id, 'favorite_listings', true) ?: [];
-        
-        if ($action === 'add') {
-            if (!in_array($listing_id, $favorites)) {
-                $favorites[] = $listing_id;
-                $message = 'Added to favorites';
-            } else {
-                $message = 'Already in favorites';
-            }
-        } else {
-            $favorites = array_diff($favorites, [$listing_id]);
-            $message = 'Removed from favorites';
-        }
-        
-        update_user_meta($user_id, 'favorite_listings', array_values($favorites));
-        
-        wp_send_json_success([
-            'message' => $message,
-            'action' => $action,
-            'listing_id' => $listing_id,
-            'favorites_count' => count($favorites)
-        ]);
+
+        // Fallback if plugin service not available
+        wp_send_json_error('User interactions service not available');
     }
 }
 
@@ -1503,43 +1431,14 @@ if (!function_exists('hph_save_search')) {
     add_action('wp_ajax_nopriv_hph_save_search', 'hph_save_search');
     
     function hph_save_search() {
-        if (!is_user_logged_in()) {
-            wp_send_json_error(['message' => 'Please log in to save searches']);
+        // Delegate to plugin service for consistent business logic
+        if (class_exists('\HappyPlace\Services\UserInteractionsService')) {
+            $service = new \HappyPlace\Services\UserInteractionsService();
+            $service->handle_save_search();
+            return;
         }
-        
-        $nonce = $_POST['nonce'] ?? '';
-        if (!wp_verify_nonce($nonce, 'hph_archive_nonce')) {
-            wp_send_json_error(['message' => 'Security check failed']);
-        }
-        
-        $search_name = sanitize_text_field($_POST['search_name'] ?? '');
-        $search_params = $_POST['search_params'] ?? '';
-        
-        if (!$search_name) {
-            wp_send_json_error(['message' => 'Please enter a name for this search']);
-        }
-        
-        $search_params = json_decode($search_params, true);
-        if (!$search_params) {
-            wp_send_json_error(['message' => 'Invalid search parameters']);
-        }
-        
-        $user_id = get_current_user_id();
-        $saved_searches = get_user_meta($user_id, 'saved_searches', true) ?: [];
-        
-        $saved_searches[] = [
-            'name' => $search_name,
-            'params' => $search_params,
-            'date_saved' => current_time('timestamp'),
-            'post_type' => $search_params['post_type'] ?? 'listing'
-        ];
-        
-        update_user_meta($user_id, 'saved_searches', $saved_searches);
-        
-        wp_send_json_success([
-            'message' => 'Search saved successfully!',
-            'search_name' => $search_name,
-            'total_searches' => count($saved_searches)
-        ]);
+
+        // Fallback if plugin service not available
+        wp_send_json_error('User interactions service not available');
     }
 }

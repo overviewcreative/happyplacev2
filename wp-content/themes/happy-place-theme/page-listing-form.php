@@ -819,7 +819,7 @@ get_header();
                             if (!empty($agent_users)) {
                                 $unlinked_users = [];
                                 foreach ($agent_users as $user) {
-                                    $linked_agent_id = get_user_meta($user->ID, '_synced_agent_id', true);
+                                    $linked_agent_id = hpt_get_user_agent_id($user->ID);
                                     if (!$linked_agent_id || !in_array($linked_agent_id, $options_added)) {
                                         $unlinked_users[] = $user;
                                     }
@@ -864,7 +864,7 @@ get_header();
                             if (!empty($agent_users)) {
                                 $unlinked_users = [];
                                 foreach ($agent_users as $user) {
-                                    $linked_agent_id = get_user_meta($user->ID, '_synced_agent_id', true);
+                                    $linked_agent_id = hpt_get_user_agent_id($user->ID);
                                     if (!$linked_agent_id || !in_array($linked_agent_id, $co_options_added)) {
                                         $unlinked_users[] = $user;
                                     }
@@ -888,16 +888,16 @@ get_header();
                     <div class="form-group">
                         <label for="listing_office">Listing Office</label>
                         <input type="text" id="listing_office" name="listing_office" 
-                               value="<?php echo esc_attr(get_field('listing_office', $listing_id) ?? 'Happy Place Homes'); ?>" 
-                               placeholder="Happy Place Homes">
+                               value="<?php echo esc_attr(get_field('listing_office', $listing_id) ?? 'The Parker Group'); ?>" 
+                               placeholder="The Parker Group">
                         <small>Brokerage name</small>
                     </div>
 
                     <div class="form-group">
                         <label for="listing_office_phone">Office Phone</label>
                         <input type="text" id="listing_office_phone" name="listing_office_phone" 
-                               value="<?php echo esc_attr(get_field('listing_office_phone', $listing_id) ?? ''); ?>" 
-                               placeholder="(302) 555-0123">
+                               value="<?php echo esc_attr(get_field('listing_office_phone', $listing_id) ?? '(302) 217-6692'); ?>" 
+                               placeholder="(302) 217-6692">
                     </div>
                 </div>
             </div>
@@ -938,14 +938,14 @@ get_header();
 
             <!-- Form Actions -->
             <div class="form-actions">
-                <a href="<?php echo home_url('/dashboard/?section=listings'); ?>" class="btn btn-secondary">
+                <a href="<?php echo home_url('/dashboard/?section=listings'); ?>" class="hph-btn hph-btn-secondary">
                     <i class="icon-arrow-left"></i> Cancel
                 </a>
                 <div class="action-buttons">
-                    <button type="button" id="saveDraftBtn" class="btn btn-outline">
+                    <button type="button" id="saveDraftBtn" class="hph-btn hph-btn-outline-primary">
                         <i class="icon-save"></i> Save as Draft
                     </button>
-                    <button type="submit" id="publishBtn" class="btn btn-primary">
+                    <button type="submit" id="publishBtn" class="hph-btn hph-btn-primary">
                         <i class="icon-check"></i> <?php echo $is_edit ? 'Update & Publish' : 'Save & Publish'; ?>
                     </button>
                 </div>

@@ -1,0 +1,292 @@
+/**
+ * Media Organization Admin Styles
+ */
+
+.hpt-media-tools {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.tool-section {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.tool-section h2 {
+    margin-top: 0;
+    color: #23282d;
+}
+
+.tool-section p {
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.tool-section select,
+.tool-section input {
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 10px;
+}
+
+/* Orphaned media results */
+.orphaned-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 15px;
+}
+
+.orphaned-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    margin-bottom: 5px;
+    background: #f9f9f9;
+}
+
+.orphaned-list img {
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.orphaned-list span {
+    flex: 1;
+    font-weight: 500;
+}
+
+.assign-to-listing {
+    white-space: nowrap;
+}
+
+/* Progress indicator */
+#organization-progress {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f0f0f1;
+    border-radius: 4px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    background: #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00a32a, #00ba37);
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.progress-text {
+    margin: 0;
+    font-weight: 500;
+    color: #1d2327;
+}
+
+.success {
+    color: #00a32a;
+    font-weight: 500;
+}
+
+/* Media modal enhancements */
+.hpt-quick-metadata {
+    background: #f6f7f7;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.hpt-quick-metadata h3 {
+    margin: 0 0 15px 0;
+    color: #23282d;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.hpt-quick-metadata label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.hpt-quick-metadata span {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #1d2327;
+}
+
+.hpt-quick-metadata select {
+    width: 100%;
+    padding: 6px 8px;
+}
+
+.apply-to-selected {
+    width: 100%;
+    margin-top: 5px;
+}
+
+/* Drop zones for drag & drop */
+.hpt-drop-zones {
+    position: fixed;
+    top: 32px;
+    right: 20px;
+    z-index: 10001;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    display: none;
+}
+
+.media-frame.mode-grid .hpt-drop-zones {
+    display: block;
+}
+
+.drop-zone {
+    width: 80px;
+    height: 60px;
+    border: 2px dashed #ddd;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.drop-zone:hover,
+.drop-zone.drop-hover {
+    border-color: #0073aa;
+    background: rgba(0, 115, 170, 0.1);
+}
+
+.drop-zone .dashicons {
+    font-size: 20px;
+    color: #666;
+}
+
+.drop-zone span {
+    font-size: 11px;
+    color: #666;
+    margin-top: 2px;
+}
+
+.drop-zone.drop-hover .dashicons,
+.drop-zone.drop-hover span {
+    color: #0073aa;
+}
+
+/* Organized attachment indicators */
+.attachment.organized-exterior::after {
+    content: "=Í";
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(0, 115, 170, 0.9);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+}
+
+.attachment.organized-interior::after {
+    content: "<à";
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(0, 163, 42, 0.9);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+}
+
+.attachment.organized-kitchen::after {
+    content: "<s";
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(220, 138, 0, 0.9);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+}
+
+/* Processing status indicators */
+.status-pending {
+    color: #b32d2e;
+    font-weight: 500;
+}
+
+.status-processing {
+    color: #dba617;
+    font-weight: 500;
+}
+
+.status-complete {
+    color: #00a32a;
+    font-weight: 500;
+}
+
+.status-complete::before {
+    content: " ";
+}
+
+/* Statistics */
+.hpt-media-tools .tool-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.hpt-media-tools .tool-section li {
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hpt-media-tools .tool-section li:last-child {
+    border-bottom: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 782px) {
+    .hpt-media-tools {
+        grid-template-columns: 1fr;
+    }
+
+    .hpt-drop-zones {
+        right: 10px;
+        top: 46px;
+    }
+}

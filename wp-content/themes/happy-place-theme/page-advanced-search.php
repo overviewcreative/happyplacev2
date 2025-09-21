@@ -165,19 +165,19 @@ if (!empty($search_query)) {
     <!-- Hero Section with Search -->
     <section class="hph-hero hph-hero-gradient" 
              style="background: var(--hph-gradient-primary); color: var(--hph-white); padding: var(--hph-padding-3xl) 0; position: relative; overflow: hidden; min-height: 60vh; display: flex; align-items: center;">
-        <div style="max-width: var(--hph-container-xl); margin: 0 auto; padding: 0 var(--hph-padding-lg); width: 100%;">
+        <div style="max-width: var(--hph-container-xl); margin: 0 auto; padding: 0 var(--hph-space-6); width: 100%;">
             <div style="text-align: center; color: var(--hph-white);">
                 
                 <!-- Badge -->
-                <div style="margin-bottom: var(--hph-margin-lg);">
-                    <span style="display: inline-flex; align-items: center; gap: var(--hph-gap-sm); padding: var(--hph-padding-sm) var(--hph-padding-lg); background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border-radius: var(--hph-radius-full); font-size: var(--hph-text-base); font-weight: var(--hph-font-semibold);">
+                <div style="margin-bottom: var(--hph-space-6);">
+                    <span style="display: inline-flex; align-items: center; gap: var(--hph-gap-sm); padding: var(--hph-space-2) var(--hph-space-6); background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border-radius: var(--hph-radius-full); font-size: var(--hph-text-base); font-weight: var(--hph-font-semibold);">
                         <i class="fas fa-search"></i>
                         Advanced Search
                     </span>
                 </div>
                 
                 <!-- Title -->
-                <h1 style="font-size: clamp(var(--hph-text-4xl), 5vw, var(--hph-text-6xl)); font-weight: var(--hph-font-bold); margin: 0 0 var(--hph-margin-lg) 0; line-height: var(--hph-leading-tight);">
+                <h1 style="font-size: clamp(var(--hph-text-4xl), 5vw, var(--hph-text-6xl)); font-weight: var(--hph-font-bold); margin: 0 0 var(--hph-space-6) 0; line-height: var(--hph-leading-tight);">
                     Find What You're Looking For
                 </h1>
                 
@@ -210,11 +210,11 @@ if (!empty($search_query)) {
     <?php if (!empty($search_query)) : ?>
         
         <section style="background: var(--hph-white); padding: var(--hph-padding-3xl) 0;">
-            <div style="max-width: var(--hph-container-2xl); margin: 0 auto; padding: 0 var(--hph-padding-lg);">
+            <div style="max-width: var(--hph-container-2xl); margin: 0 auto; padding: 0 var(--hph-space-6);">
                 
                 <!-- Results Header -->
                 <div style="text-align: center; margin-bottom: var(--hph-margin-2xl);">
-                    <h2 style="font-size: var(--hph-text-3xl); font-weight: var(--hph-font-bold); margin: 0 0 var(--hph-margin-md) 0; color: var(--hph-gray-900);">
+                    <h2 style="font-size: var(--hph-text-3xl); font-weight: var(--hph-font-bold); margin: 0 0 var(--hph-space-4) 0; color: var(--hph-gray-900);">
                         <?php if ($search_type === 'all') : ?>
                             Search Results for "<?php echo esc_html($search_query); ?>"
                         <?php else : ?>
@@ -239,12 +239,12 @@ if (!empty($search_query)) {
                         
                         <?php if (!empty($results['listings'])) : ?>
                             <div style="margin-bottom: var(--hph-margin-3xl);">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--hph-margin-xl); flex-wrap: wrap; gap: var(--hph-gap-md);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--hph-space-8); flex-wrap: wrap; gap: var(--hph-gap-md);">
                                     <h3 style="font-size: var(--hph-text-2xl); font-weight: var(--hph-font-semibold); color: var(--hph-gray-900); margin: 0;">
                                         Properties (<?php echo count($results['listings']); ?>)
                                     </h3>
                                     <a href="<?php echo esc_url(add_query_arg(['s' => $search_query, 'type' => 'listing'])); ?>" 
-                                       style="display: inline-flex; align-items: center; gap: var(--hph-gap-sm); padding: var(--hph-padding-sm) var(--hph-padding-lg); border: 2px solid var(--hph-primary); border-radius: var(--hph-radius-md); color: var(--hph-primary); text-decoration: none; font-size: var(--hph-text-sm); font-weight: var(--hph-font-medium); transition: all 0.2s ease;"
+                                       style="display: inline-flex; align-items: center; gap: var(--hph-gap-sm); padding: var(--hph-space-2) var(--hph-space-6); border: 2px solid var(--hph-primary); border-radius: var(--hph-radius-md); color: var(--hph-primary); text-decoration: none; font-size: var(--hph-text-sm); font-weight: var(--hph-font-medium); transition: all 0.2s ease;"
                                        onmouseover="this.style.background='var(--hph-primary)'; this.style.color='var(--hph-white)'"
                                        onmouseout="this.style.background='transparent'; this.style.color='var(--hph-primary)'">
                                         View All Properties
@@ -258,9 +258,9 @@ if (!empty($search_query)) {
                                     <?php foreach ($results['listings'] as $post) : ?>
                                         <?php setup_postdata($post); ?>
                                         <?php 
-                                        get_template_part('template-parts/components/listing/card', null, [
-                                            'listing_id' => get_the_ID(),
-                                            'variant' => 'elevated',
+                                        hph_component('universal-card', [
+                                            'post_id' => get_the_ID(),
+                                            'layout' => 'vertical',
                                             'show_agent' => true
                                         ]);
                                         ?>
@@ -311,11 +311,10 @@ if (!empty($search_query)) {
                                     <?php foreach ($results['cities'] as $post) : ?>
                                         <?php setup_postdata($post); ?>
                                         <?php 
-                                        // Use unified component system - fallback to base card for city
-                                        get_template_part('template-parts/base/card', null, [
+                                        // Use universal card system for cities
+                                        hph_component('universal-card', [
                                             'post_id' => get_the_ID(),
-                                            'layout' => 'grid',
-                                            'variant' => 'location'
+                                            'layout' => 'vertical'
                                         ]);
                                         ?>
                                     <?php endforeach; ?>
@@ -338,11 +337,10 @@ if (!empty($search_query)) {
                                     <?php foreach ($results['communities'] as $post) : ?>
                                         <?php setup_postdata($post); ?>
                                         <?php 
-                                        // Use unified component system - fallback to base card for community
-                                        get_template_part('template-parts/base/card', null, [
+                                        // Use universal card system for communities
+                                        hph_component('universal-card', [
                                             'post_id' => get_the_ID(),
-                                            'layout' => 'grid',
-                                            'variant' => 'community'
+                                            'layout' => 'vertical'
                                         ]);
                                         ?>
                                     <?php endforeach; ?>
@@ -370,10 +368,10 @@ if (!empty($search_query)) {
                                             'variant' => 'compact'
                                         ]);
                                     } else {
-                                        // Fallback to base card
-                                        get_template_part('template-parts/base/card', null, [
+                                        // Use universal card as fallback
+                                        hph_component('universal-card', [
                                             'post_id' => get_the_ID(),
-                                            'layout' => 'grid'
+                                            'layout' => 'vertical'
                                         ]);
                                     }
                                     ?>
@@ -404,19 +402,19 @@ if (!empty($search_query)) {
                     <!-- No Results -->
                     <div style="text-align: center; padding: var(--hph-padding-3xl); background: var(--hph-gray-50); border-radius: var(--hph-radius-lg); border: 1px solid var(--hph-gray-200);">
                         <div style="max-width: 500px; margin: 0 auto;">
-                            <svg style="width: 4rem; height: 4rem; color: var(--hph-gray-400); margin: 0 auto var(--hph-margin-lg) auto;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg style="width: 4rem; height: 4rem; color: var(--hph-gray-400); margin: 0 auto var(--hph-space-6) auto;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
-                            <h3 style="font-size: var(--hph-text-2xl); font-weight: var(--hph-font-bold); color: var(--hph-gray-900); margin: 0 0 var(--hph-margin-md) 0;">
+                            <h3 style="font-size: var(--hph-text-2xl); font-weight: var(--hph-font-bold); color: var(--hph-gray-900); margin: 0 0 var(--hph-space-4) 0;">
                                 No Results Found
                             </h3>
-                            <p style="color: var(--hph-gray-600); font-size: var(--hph-text-lg); line-height: var(--hph-leading-relaxed); margin: 0 0 var(--hph-margin-xl) 0;">
+                            <p style="color: var(--hph-gray-600); font-size: var(--hph-text-lg); line-height: var(--hph-leading-relaxed); margin: 0 0 var(--hph-space-8) 0;">
                                 We couldn't find anything matching "<?php echo esc_html($search_query); ?>". 
                                 Try different keywords or browse our categories.
                             </p>
                             <div style="display: flex; flex-wrap: wrap; gap: var(--hph-gap-md); justify-content: center;">
                                 <a href="<?php echo esc_url(get_post_type_archive_link('listing')); ?>" 
-                                   style="display: inline-flex; align-items: center; gap: var(--hph-gap-sm); padding: var(--hph-padding-sm) var(--hph-padding-lg); border: 2px solid var(--hph-primary); border-radius: var(--hph-radius-md); background: var(--hph-primary); color: var(--hph-white); text-decoration: none; font-weight: var(--hph-font-semibold); transition: all 0.2s ease;"
+                                   style="display: inline-flex; align-items: center; gap: var(--hph-gap-sm); padding: var(--hph-space-2) var(--hph-space-6); border: 2px solid var(--hph-primary); border-radius: var(--hph-radius-md); background: var(--hph-primary); color: var(--hph-white); text-decoration: none; font-weight: var(--hph-font-semibold); transition: all 0.2s ease;"
                                    onmouseover="this.style.background='var(--hph-primary-600)'; this.style.borderColor='var(--hph-primary-600)'"
                                    onmouseout="this.style.background='var(--hph-primary)'; this.style.borderColor='var(--hph-primary)'">
                                     <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -425,7 +423,7 @@ if (!empty($search_query)) {
                                     Browse Properties
                                 </a>
                                 <a href="<?php echo esc_url(get_post_type_archive_link('agent')); ?>" 
-                                   style="display: inline-flex; align-items: center; gap: var(--hph-gap-sm); padding: var(--hph-padding-sm) var(--hph-padding-lg); border: 2px solid var(--hph-primary); border-radius: var(--hph-radius-md); background: transparent; color: var(--hph-primary); text-decoration: none; font-weight: var(--hph-font-medium); transition: all 0.2s ease;"
+                                   style="display: inline-flex; align-items: center; gap: var(--hph-gap-sm); padding: var(--hph-space-2) var(--hph-space-6); border: 2px solid var(--hph-primary); border-radius: var(--hph-radius-md); background: transparent; color: var(--hph-primary); text-decoration: none; font-weight: var(--hph-font-medium); transition: all 0.2s ease;"
                                    onmouseover="this.style.background='var(--hph-primary)'; this.style.color='var(--hph-white)'"
                                    onmouseout="this.style.background='transparent'; this.style.color='var(--hph-primary)'">
                                     <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">

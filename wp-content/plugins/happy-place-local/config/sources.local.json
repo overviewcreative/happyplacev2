@@ -1,0 +1,19 @@
+{
+  "google": {
+    "api_key": "AIzaSyAg9FL1dH2oEPy-yWgR2LvMQweKO827Csw",
+    "bounds": {
+      "sw": [38.451013, -75.788658],
+      "ne": [39.839007, -74.984165]
+    },
+    "types": ["locality", "establishment"]
+  },
+  "defaults": {
+    "state": "DE"
+  },
+  "wikipedia": {
+    "lang": "en"
+  },
+  "census": {
+    "api_key": ""
+  }
+}

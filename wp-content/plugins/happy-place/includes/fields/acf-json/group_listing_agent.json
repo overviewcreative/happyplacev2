@@ -62,8 +62,8 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "Happy Place Homes",
-            "placeholder": "Happy Place Homes",
+            "default_value": "The Parker Group",
+            "placeholder": "The Parker Group",
             "maxlength": "",
             "prepend": "",
             "append": ""
@@ -82,8 +82,8 @@
                 "class": "",
                 "id": ""
             },
-            "placeholder": "(302) 555-0123",
-            "default_value": "",
+            "placeholder": "(302) 217-6692",
+            "default_value": "(302) 217-6692",
             "maxlength": "",
             "prepend": "",
             "append": ""

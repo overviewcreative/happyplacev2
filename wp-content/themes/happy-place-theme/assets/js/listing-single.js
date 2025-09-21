@@ -231,7 +231,7 @@
             navigator.share({
                 title: document.title,
                 url: window.location.href
-            }).catch(err => console.log('Error sharing:', err));
+            });
         } else {
             // Fallback to copy URL
             copyToClipboard(window.location.href);
@@ -274,7 +274,6 @@
                 showNotification(isFavorited ? 'Removed from favorites' : 'Added to favorites');
             }
         })
-        .catch(err => console.error('Error saving listing:', err));
     };
 
     /**

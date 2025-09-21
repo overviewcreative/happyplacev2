@@ -71,25 +71,25 @@ switch ($background) {
 // Padding styles
 switch ($padding) {
     case 'sm':
-        $section_styles[] = 'padding-top: var(--hph-padding-lg)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-lg)';
+        $section_styles[] = 'padding-top: var(--hph-space-6)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-6)';
         break;
     case 'md':
-        $section_styles[] = 'padding-top: var(--hph-padding-xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-8)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-8)';
         break;
     case 'lg':
-        $section_styles[] = 'padding-top: var(--hph-padding-2xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-2xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-12)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-12)';
         break;
     case '2xl':
-        $section_styles[] = 'padding-top: var(--hph-padding-4xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-4xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-24)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-24)';
         break;
     case 'xl':
     default:
-        $section_styles[] = 'padding-top: var(--hph-padding-3xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-3xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-16)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-16)';
         break;
 }
 
@@ -98,8 +98,8 @@ $container_styles = array(
     'position: relative',
     'margin-left: auto',
     'margin-right: auto',
-    'padding-left: var(--hph-padding-lg)',
-    'padding-right: var(--hph-padding-lg)',
+    'padding-left: var(--hph-space-6)',
+    'padding-right: var(--hph-space-6)',
     'display: grid',
     'gap: var(--hph-gap-3xl)',
     'align-items: center',
@@ -269,7 +269,7 @@ $collage_id = 'hph-collage-' . uniqid();
         
         <?php elseif ($layout === 'collage-centered' && !empty($photos)): ?>
         <!-- Centered Collage Layout -->
-        <div style="text-align: center; margin-bottom: var(--hph-margin-3xl);">
+        <div style="text-align: center; margin-bottom: var(--hph-space-16);">
             <div class="<?php echo $collage_id; ?>-container" style="max-width: 800px;">
                 <?php foreach ($photos as $index => $photo): 
                     if ($index >= 4) break;
@@ -311,8 +311,8 @@ $collage_id = 'hph-collage-' . uniqid();
             
             <?php if ($badge): ?>
             <!-- Badge -->
-            <div style="margin-bottom: var(--hph-margin-lg);">
-                <span style="display: inline-block; padding: var(--hph-padding-sm) var(--hph-padding-md); background: var(--hph-primary-100); color: var(--hph-primary-700); border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
+            <div style="margin-bottom: var(--hph-space-6);">
+                <span style="display: inline-block; padding: var(--hph-space-2) var(--hph-space-4); background: var(--hph-primary-100); color: var(--hph-primary-700); border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
                     <?php echo esc_html($badge); ?>
                 </span>
             </div>
@@ -320,21 +320,21 @@ $collage_id = 'hph-collage-' . uniqid();
             
             <?php if ($headline): ?>
             <!-- Headline -->
-            <<?php echo esc_attr($headline_tag); ?> style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-4xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
+            <<?php echo esc_attr($headline_tag); ?> style="margin: 0 0 var(--hph-space-6) 0; font-size: var(--hph-text-4xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
                 <?php echo esc_html($headline); ?>
             </<?php echo esc_attr($headline_tag); ?>>
             <?php endif; ?>
             
             <?php if ($subheadline): ?>
             <!-- Subheadline -->
-            <p style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); opacity: 0.9;">
+            <p style="margin: 0 0 var(--hph-space-6) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); opacity: 0.9;">
                 <?php echo esc_html($subheadline); ?>
             </p>
             <?php endif; ?>
             
             <?php if ($content): ?>
             <!-- Content -->
-            <div style="margin: 0 0 var(--hph-margin-2xl) 0; font-size: var(--hph-text-base); line-height: var(--hph-leading-relaxed);">
+            <div style="margin: 0 0 var(--hph-space-12) 0; font-size: var(--hph-text-base); line-height: var(--hph-leading-relaxed);">
                 <?php echo wp_kses_post($content); ?>
             </div>
             <?php endif; ?>
@@ -362,7 +362,7 @@ $collage_id = 'hph-collage-' . uniqid();
                         'border-radius: var(--hph-radius-lg)',
                         'transition: all 300ms ease',
                         'box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)',
-                        'padding: var(--hph-padding-md) var(--hph-padding-xl)',
+                        'padding: var(--hph-space-4) var(--hph-space-8)',
                         'font-size: var(--hph-text-base)'
                     );
                     
@@ -393,7 +393,7 @@ $collage_id = 'hph-collage-' . uniqid();
                     onmouseout="this.style.transform='translateY(0)'"
                 >
                     <?php if ($btn['icon']): ?>
-                    <i class="<?php echo esc_attr($btn['icon']); ?>" style="margin-right: var(--hph-margin-sm);"></i>
+                    <i class="<?php echo esc_attr($btn['icon']); ?>" style="margin-right: var(--hph-space-2);"></i>
                     <?php endif; ?>
                     <span><?php echo esc_html($btn['text']); ?></span>
                 </a>
@@ -443,27 +443,27 @@ $collage_id = 'hph-collage-' . uniqid();
         <!-- Centered Layout Content -->
             
             <?php if ($badge): ?>
-            <div style="margin-bottom: var(--hph-margin-lg);">
-                <span style="display: inline-block; padding: var(--hph-padding-sm) var(--hph-padding-md); background: var(--hph-primary-100); color: var(--hph-primary-700); border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
+            <div style="margin-bottom: var(--hph-space-6);">
+                <span style="display: inline-block; padding: var(--hph-space-2) var(--hph-space-4); background: var(--hph-primary-100); color: var(--hph-primary-700); border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
                     <?php echo esc_html($badge); ?>
                 </span>
             </div>
             <?php endif; ?>
             
             <?php if ($headline): ?>
-            <<?php echo esc_attr($headline_tag); ?> style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-4xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
+            <<?php echo esc_attr($headline_tag); ?> style="margin: 0 0 var(--hph-space-6) 0; font-size: var(--hph-text-4xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
                 <?php echo esc_html($headline); ?>
             </<?php echo esc_attr($headline_tag); ?>>
             <?php endif; ?>
             
             <?php if ($subheadline): ?>
-            <p style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); opacity: 0.9;">
+            <p style="margin: 0 0 var(--hph-space-6) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); opacity: 0.9;">
                 <?php echo esc_html($subheadline); ?>
             </p>
             <?php endif; ?>
             
             <?php if ($content): ?>
-            <div style="margin: 0 0 var(--hph-margin-2xl) 0; font-size: var(--hph-text-base); line-height: var(--hph-leading-relaxed); max-width: 65ch; margin-left: auto; margin-right: auto;">
+            <div style="margin: 0 0 var(--hph-space-12) 0; font-size: var(--hph-text-base); line-height: var(--hph-leading-relaxed); max-width: 65ch; margin-left: auto; margin-right: auto;">
                 <?php echo wp_kses_post($content); ?>
             </div>
             <?php endif; ?>
@@ -480,7 +480,7 @@ $collage_id = 'hph-collage-' . uniqid();
                     $btn = wp_parse_args($button, $btn_defaults);
                 ?>
                 <a href="<?php echo esc_url($btn['url']); ?>" 
-                   style="display: inline-flex; align-items: center; padding: var(--hph-padding-md) var(--hph-padding-xl); background-color: var(--hph-primary); color: var(--hph-white); text-decoration: none; border-radius: var(--hph-radius-lg); font-weight: var(--hph-font-semibold); transition: all 300ms ease;"
+                   style="display: inline-flex; align-items: center; padding: var(--hph-space-4) var(--hph-space-8); background-color: var(--hph-primary); color: var(--hph-white); text-decoration: none; border-radius: var(--hph-radius-lg); font-weight: var(--hph-font-semibold); transition: all 300ms ease;"
                    onmouseover="this.style.transform='translateY(-2px)'"
                    onmouseout="this.style.transform='translateY(0)'"
                    <?php if ($btn['target'] !== '_self'): ?>target="<?php echo esc_attr($btn['target']); ?>"<?php endif; ?>>

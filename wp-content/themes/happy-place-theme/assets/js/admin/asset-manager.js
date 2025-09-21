@@ -306,7 +306,6 @@
         logPerformanceMetric(type, data) {
             // Only log in development mode
             if (window.hphConfig && window.hphConfig.debug) {
-                console.log(`[HPH Asset Manager] ${type}:`, data);
             }
             
             // Send to server for analytics (if configured)
@@ -414,7 +413,8 @@
             
             $(window).on('load', () => {
                 const loadTime = performance.now() - startTime;
-                console.log(`[HPH] Total asset load time: ${loadTime.toFixed(2)}ms`);
+                if (window.hphConfig && window.hphConfig.debug) {
+                }
                 
                 this.analyzeLoadedAssets();
             });
@@ -427,8 +427,8 @@
             const styleSheets = document.styleSheets;
             const scripts = document.scripts;
             
-            console.log(`[HPH] Loaded ${styleSheets.length} stylesheets`);
-            console.log(`[HPH] Loaded ${scripts.length} scripts`);
+            if (window.hphConfig && window.hphConfig.debug) {
+            }
             
             // Analyze which HPH assets were loaded
             const hphAssets = {
@@ -448,7 +448,8 @@
                 }
             });
             
-            console.log('[HPH] Asset Analysis:', hphAssets);
+            if (window.hphConfig && window.hphConfig.debug) {
+            }
         },
         
         /**
@@ -465,7 +466,6 @@
                     if (entry.name.includes('hph-') || entry.name.includes(window.location.origin)) {
                         const loadTime = entry.responseEnd - entry.requestStart;
                         if (loadTime > 100) { // Log slow assets (>100ms)
-                            console.warn(`[HPH] Slow asset: ${entry.name.split('/').pop()} (${loadTime.toFixed(2)}ms)`);
                         }
                     }
                 });
@@ -483,7 +483,6 @@
                 });
                 
                 if (cls > 0.1) { // Warn about layout shifts
-                    console.warn(`[HPH] Cumulative Layout Shift: ${cls.toFixed(4)}`);
                 }
             });
             

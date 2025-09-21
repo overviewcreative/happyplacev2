@@ -1,6 +1,11 @@
 /* ================================================
    HPH FRAMEWORK - CSS VARIABLES
    Enhanced for Real Estate Platform
+   
+   DARK MODE STATUS: Temporarily removed incomplete implementation
+   - Dark color variables preserved below for future use
+   - See DARK-MODE-ROADMAP.md for implementation plan
+   - Removed incomplete theme switcher (December 12, 2025)
    ================================================ */
 
 :root {
@@ -30,7 +35,21 @@
   --hph-secondary: #e8a87c;
   --hph-secondary-dark: #9c6347;
   --hph-secondary-light: #fce4d6;
-  
+
+  /* Accent Colors */
+  --hph-accent: #8bc34a;
+  --hph-accent-100: #e8f5e8;
+  --hph-accent-200: #c5e1a5;
+  --hph-accent-300: #aed581;
+  --hph-accent-400: #9ccc65;
+  --hph-accent-500: #8bc34a;
+  --hph-accent-600: #7cb342;
+  --hph-accent-700: #689f38;
+  --hph-accent-800: #558b2f;
+  --hph-accent-900: #33691e;
+  --hph-accent-dark: #33691e;
+  --hph-accent-light: #e8f5e8;
+
   /* Tertiary - Olive */
   --hph-tertiary: #A1BA89;
   --hph-tertiary-dark: #65814B;
@@ -151,19 +170,12 @@
   --hph-leading-loose: 2;
 
   /* ================================================
-     SPACING SYSTEM
+     SPACING SYSTEM - NOW UNIFIED IN TOKENS.CSS
+     Using numbered scale: --hph-space-1 through --hph-space-32
      ================================================ */
-  --hph-space-xs: 0.25rem;  /* 4px */
-  --hph-space-sm: 0.5rem;   /* 8px */
-  --hph-space-md: 1rem;     /* 16px */
-  --hph-space-lg: 1.5rem;   /* 24px */
-  --hph-space-xl: 2rem;     /* 32px */
-  --hph-space-2xl: 3rem;    /* 48px */
-  --hph-space-3xl: 4rem;    /* 64px */
-  --hph-space-4xl: 6rem;    /* 96px */
-  --hph-space-5xl: 8rem;    /* 128px */
   
   /* Container System - Enhanced for better spacing */
+  --hph-container-default: 1440px; /* Default container width */
   --hph-container-xs: 480px;
   --hph-container-sm: 640px;
   --hph-container-md: 768px;
@@ -173,10 +185,10 @@
   --hph-container-fluid: 100%;
   
   /* Dashboard Specific Spacing */
-  --hph-dashboard-gutter: var(--hph-space-lg);
-  --hph-dashboard-section-gap: var(--hph-space-xl);
-  --hph-dashboard-card-padding: var(--hph-space-xl);
-  --hph-dashboard-form-gap: var(--hph-space-lg);
+  --hph-dashboard-gutter: var(--hph-space-6);
+  --hph-dashboard-section-gap: var(--hph-space-8);
+  --hph-dashboard-card-padding: var(--hph-space-8);
+  --hph-dashboard-form-gap: var(--hph-space-6);
   
   /* Section Spacing - Magazine Style */
   --hph-section-padding-y: clamp(4rem, 8vw, 8rem);  /* More generous vertical spacing */
@@ -186,8 +198,8 @@
   /* Content spacing and width variables - Enhanced for better spacing */
   --hph-content-max-width: 75ch;  /* Wider optimal reading line length */
   --hph-content-container-width: 1440px;  /* Wider section container width */
-  --hph-section-gap: var(--hph-space-4xl);  /* More generous between section elements */
-  --hph-text-spacing: var(--hph-space-xl);  /* More generous text element spacing */
+  --hph-section-gap: var(--hph-space-24);  /* More generous between section elements */
+  --hph-text-spacing: var(--hph-space-8);  /* More generous text element spacing */
 
   /* Layout Structure Heights */
   --hph-header-height: 120px;  /* Combined topbar + main header */
@@ -198,59 +210,46 @@
   /* ================================================
      PADDING SYSTEM
      ================================================ */
-  /* Base Padding Scale - Consistent with spacing */
+  /* Base Padding Scale - NOW UNIFIED IN TOKENS.CSS
+     Use --hph-space-* variables instead for consistency
+     These kept for special case edge values only */
   --hph-padding-0: 0;
   --hph-padding-px: 1px;
-  --hph-padding-xs: 0.25rem;   /* 4px */
-  --hph-padding-sm: 0.5rem;    /* 8px */
-  --hph-padding-md: 1rem;      /* 16px */
-  --hph-padding-lg: 1.5rem;    /* 24px */
-  --hph-padding-xl: 2rem;      /* 32px */
-  --hph-padding-2xl: 3rem;     /* 48px */
-  --hph-padding-3xl: 4rem;     /* 64px */
-  --hph-padding-4xl: 6rem;     /* 96px */
-  --hph-padding-5xl: 8rem;     /* 128px */
 
   /* Component Specific Padding */
-  --hph-btn-padding-x: var(--hph-padding-lg);
-  --hph-btn-padding-y: var(--hph-padding-sm);
-  --hph-btn-padding-sm-x: var(--hph-padding-md);
-  --hph-btn-padding-sm-y: var(--hph-padding-xs);
-  --hph-btn-padding-lg-x: var(--hph-padding-xl);
-  --hph-btn-padding-lg-y: var(--hph-padding-lg);
 
-  --hph-card-padding: var(--hph-padding-xl);
-  --hph-card-padding-sm: var(--hph-padding-lg);
-  --hph-card-padding-lg: var(--hph-padding-2xl);
+  --hph-card-padding: var(--hph-space-8);
+  --hph-card-padding-sm: var(--hph-space-6);
+  --hph-card-padding-lg: var(--hph-space-12);
   
-  --hph-form-padding-x: var(--hph-padding-md);
-  --hph-form-padding-y: var(--hph-padding-sm);
-  --hph-form-input-padding-x: var(--hph-padding-lg);
-  --hph-form-input-padding-y: var(--hph-padding-sm);
+  --hph-form-padding-x: var(--hph-space-4);
+  --hph-form-padding-y: var(--hph-space-2);
+  --hph-form-input-padding-x: var(--hph-space-6);
+  --hph-form-input-padding-y: var(--hph-space-2);
   
-  --hph-modal-padding: var(--hph-padding-2xl);
-  --hph-modal-padding-sm: var(--hph-padding-xl);
+  --hph-modal-padding: var(--hph-space-12);
+  --hph-modal-padding-sm: var(--hph-space-8);
   
-  --hph-navbar-padding-x: var(--hph-padding-lg);
-  --hph-navbar-padding-y: var(--hph-padding-md);
+  --hph-navbar-padding-x: var(--hph-space-6);
+  --hph-navbar-padding-y: var(--hph-space-4);
   
-  --hph-table-cell-padding-x: var(--hph-padding-md);
-  --hph-table-cell-padding-y: var(--hph-padding-sm);
+  --hph-table-cell-padding-x: var(--hph-space-4);
+  --hph-table-cell-padding-y: var(--hph-space-2);
 
   /* Real Estate Component Padding */
-  --hph-listing-card-padding: var(--hph-padding-xl);
-  --hph-listing-details-padding: var(--hph-padding-lg);
-  --hph-property-hero-padding: var(--hph-padding-3xl);
-  --hph-agent-card-padding: var(--hph-padding-lg);
-  --hph-property-gallery-padding: var(--hph-padding-md);
-  --hph-map-component-padding: var(--hph-padding-lg);
+  --hph-listing-card-padding: var(--hph-space-8);
+  --hph-listing-details-padding: var(--hph-space-6);
+  --hph-property-hero-padding: var(--hph-space-16);
+  --hph-agent-card-padding: var(--hph-space-6);
+  --hph-property-gallery-padding: var(--hph-space-4);
+  --hph-map-component-padding: var(--hph-space-6);
 
   /* Dashboard Specific Padding */
-  --hph-dashboard-header-padding: var(--hph-padding-xl);
-  --hph-dashboard-sidebar-padding: var(--hph-padding-lg);
-  --hph-dashboard-content-padding: var(--hph-padding-xl);
-  --hph-dashboard-widget-padding: var(--hph-padding-lg);
-  --hph-dashboard-form-section-padding: var(--hph-padding-xl);
+  --hph-dashboard-header-padding: var(--hph-space-8);
+  --hph-dashboard-sidebar-padding: var(--hph-space-6);
+  --hph-dashboard-content-padding: var(--hph-space-8);
+  --hph-dashboard-widget-padding: var(--hph-space-6);
+  --hph-dashboard-form-section-padding: var(--hph-space-8);
 
   /* Responsive Padding (Fluid) */
   --hph-padding-responsive-xs: clamp(0.25rem, 0.5vw, 0.5rem);
@@ -262,26 +261,19 @@
   /* ================================================
      MARGIN SYSTEM
      ================================================ */
-  /* Base Margin Scale - Mirrors padding scale */
+  /* Base Margin Scale - NOW UNIFIED IN TOKENS.CSS
+     Use --hph-space-* variables instead for consistency
+     These kept for special case edge values only */
   --hph-margin-0: 0;
   --hph-margin-px: 1px;
-  --hph-margin-xs: 0.25rem;   /* 4px */
-  --hph-margin-sm: 0.5rem;    /* 8px */
-  --hph-margin-md: 1rem;      /* 16px */
-  --hph-margin-lg: 1.5rem;    /* 24px */
-  --hph-margin-xl: 2rem;      /* 32px */
-  --hph-margin-2xl: 3rem;     /* 48px */
-  --hph-margin-3xl: 4rem;     /* 64px */
-  --hph-margin-4xl: 6rem;     /* 96px */
-  --hph-margin-5xl: 8rem;     /* 128px */
   --hph-margin-auto: auto;
 
   /* Component Specific Margins */
-  --hph-btn-margin: var(--hph-margin-sm);
-  --hph-card-margin: var(--hph-margin-lg);
-  --hph-section-margin: var(--hph-margin-3xl);
-  --hph-heading-margin: var(--hph-margin-lg);
-  --hph-paragraph-margin: var(--hph-margin-md);
+  --hph-btn-margin: var(--hph-space-2);
+  --hph-card-margin: var(--hph-space-6);
+  --hph-section-margin: var(--hph-space-16);
+  --hph-heading-margin: var(--hph-space-6);
+  --hph-paragraph-margin: var(--hph-space-4);
 
   /* Responsive Margins */
   --hph-margin-responsive-xs: clamp(0.25rem, 0.5vw, 0.5rem);
@@ -377,7 +369,7 @@
 
   /* Icon spacing */
   --hph-icon-gap: var(--hph-gap-sm);
-  --hph-icon-margin: var(--hph-margin-xs);
+  --hph-icon-margin: var(--hph-space-1);
 
   /* Font Awesome Integration */
   --hph-fa-primary: var(--hph-primary);
@@ -396,7 +388,7 @@
   /* Skip link */
   --hph-skip-link-bg: var(--hph-primary);
   --hph-skip-link-color: var(--hph-white);
-  --hph-skip-link-padding: var(--hph-padding-sm) var(--hph-padding-md);
+  --hph-skip-link-padding: var(--hph-space-2) var(--hph-space-4);
 
   /* High contrast mode support */
   --hph-high-contrast-border: 2px solid;
@@ -411,7 +403,7 @@
   --hph-price-color: var(--hph-primary);
 
   /* Property Status Enhanced */
-  --hph-status-badge-padding: var(--hph-padding-xs) var(--hph-padding-sm);
+  --hph-status-badge-padding: var(--hph-space-1) var(--hph-space-2);
   --hph-status-badge-radius: var(--hph-radius-sm);
   --hph-status-badge-font-size: var(--hph-text-xs);
   --hph-status-badge-font-weight: var(--hph-font-semibold);
@@ -500,7 +492,7 @@
   --hph-z-sticky: 1020;
   --hph-z-fixed: 1030;
   --hph-z-backdrop: 1040;
-  --hph-z-modal: 1050;
+  --hph-z-modal: 9999; /* Standardized modal z-index */
   --hph-z-popover: 1060;
   --hph-z-tooltip: 1070;
   --hph-z-notification: 1080;
@@ -530,11 +522,51 @@
   --hph-card-shadow: var(--hph-shadow-md);
   --hph-card-border: var(--hph-border-width) solid var(--hph-border-color);
   
-  /* Buttons */
+  /* Buttons - Core System */
   --hph-btn-padding-x: 1.25rem;
   --hph-btn-padding-y: 0.625rem;
   --hph-btn-radius: var(--hph-radius-md);
   --hph-btn-font-weight: 500;
+
+  /* Button Sizing Variables */
+  --hph-btn-height: 48px;
+  --hph-btn-height-xs: 32px;
+  --hph-btn-height-sm: 40px;
+  --hph-btn-height-lg: 56px;
+  --hph-btn-height-xl: 64px;
+
+  /* Button Context Variables - for customization */
+  --hph-btn-header-padding-x: 0.875rem;
+  --hph-btn-header-padding-y: 0.5rem;
+  --hph-btn-hero-padding-x: 1.5rem;
+  --hph-btn-hero-padding-y: 0.875rem;
+  --hph-btn-card-padding-x: 1rem;
+  --hph-btn-card-padding-y: 0.5rem;
+  --hph-btn-form-padding-x: 1.25rem;
+  --hph-btn-form-padding-y: 0.75rem;
+  --hph-btn-dashboard-padding-x: 1rem;
+  --hph-btn-dashboard-padding-y: 0.625rem;
+
+  /* Button Typography Variables */
+  --hph-btn-font-size: var(--hph-text-base);
+  --hph-btn-font-size-xs: var(--hph-text-xs);
+  --hph-btn-font-size-sm: var(--hph-text-sm);
+  --hph-btn-font-size-lg: var(--hph-text-lg);
+  --hph-btn-line-height: 1.5;
+
+  /* Button Border Variables */
+  --hph-btn-border-width: 1px;
+  --hph-btn-border-style: solid;
+
+  /* Button Focus Ring */
+  --hph-btn-focus-ring: 0 0 0 3px rgba(81, 186, 224, 0.25);
+  --hph-btn-focus-ring-danger: 0 0 0 3px rgba(239, 68, 68, 0.25);
+  --hph-btn-focus-ring-success: 0 0 0 3px rgba(34, 197, 94, 0.25);
+
+  /* Button Animation */
+  --hph-btn-transition: all 0.2s ease;
+  --hph-btn-hover-scale: 1.02;
+  --hph-btn-active-scale: 0.98;
   
   /* Forms */
   --hph-input-padding-x: 0.75rem;
@@ -599,7 +631,7 @@
      GRADIENT OVERLAYS
      ================================================ */
   /* Linear Gradients - Top to Bottom */
-  --hph-gradient-overlay-dark: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.7) 100%);
+  --hph-gradient-overlay-dark: linear-gradient(180deg, rgba(7, 14, 29, 0) 0%, rgba(6, 19, 33, 0.7) 100%);
   --hph-gradient-overlay-dark-subtle: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.4) 100%);
   --hph-gradient-overlay-dark-heavy: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.9) 100%);
   --hph-gradient-overlay-light: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.7) 100%);
@@ -684,11 +716,8 @@
     rgba(255, 255, 255, 0.9) 100%);
 }
 
-/* Dark Mode Variables (future enhancement) */
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* Dark mode overrides would go here */
-  }
-}
+/* Dark Mode Variables - Removed incomplete implementation */
+/* TODO: Re-implement comprehensive dark mode in future version */
+/* Dark color variables preserved below for future use */
 
 /* File Location: /wp-content/themes/happy-place/assets/css/framework/base/variables.css */

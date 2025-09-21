@@ -57,7 +57,7 @@ if (!empty($favorites)) {
                         <i class="fas fa-list"></i>
                     </button>
                 </div>
-                <button type="button" class="hph-btn hph-btn-outline hph-btn-sm" id="clearAllFavorites">
+                <button type="button" class="hph-btn hph-btn-outline-primary hph-btn-sm" id="clearAllFavorites">
                     <i class="fas fa-trash"></i>
                     Clear All
                 </button>
@@ -165,7 +165,7 @@ if (!empty($favorites)) {
                                 <i class="fas fa-eye"></i>
                                 View Details
                             </a>
-                            <button type="button" class="hph-btn hph-btn-outline hph-btn-sm" data-action="share" data-listing-id="<?php echo esc_attr($listing_id); ?>">
+                            <button type="button" class="hph-btn hph-btn-outline-primary hph-btn-sm" data-action="share" data-listing-id="<?php echo esc_attr($listing_id); ?>">
                                 <i class="fas fa-share"></i>
                                 Share
                             </button>

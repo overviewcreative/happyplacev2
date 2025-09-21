@@ -156,7 +156,6 @@ class HphArchivePlaces {
                 this.updateDistances(userLat, userLng);
             },
             (error) => {
-                console.log('Geolocation not available:', error);
             },
             {
                 enableHighAccuracy: false,

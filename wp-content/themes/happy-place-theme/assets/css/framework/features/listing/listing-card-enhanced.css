@@ -1,0 +1,360 @@
+/**
+ * Enhanced Listing Card Feature - BEM Methodology
+ * Business logic styling for advanced listing card functionality
+ *
+ * Composes atomic components with listing-specific behavior
+ * @package HappyPlaceTheme
+ */
+
+/* ================================================
+   LISTING CARD ENHANCED - BEM BLOCK
+   ================================================ */
+
+.hph-listing-card-enhanced {
+  /* Inherits from: hph-card (atom) */
+  position: relative;
+  cursor: pointer;
+  background: var(--hph-white);
+}
+
+.hph-listing-card-enhanced.is-featured {
+  border: 2px solid var(--hph-gold);
+  box-shadow: 0 4px 20px rgba(255, 215, 0, 0.1);
+}
+
+.hph-listing-card-enhanced.is-selected {
+  transform: scale(0.98);
+  opacity: 0.8;
+}
+
+/* ================================================
+   LISTING CARD ELEMENTS - BEM STRUCTURE
+   ================================================ */
+
+/* Image Container Element */
+.hph-listing-card-enhanced__media {
+  /* Inherits from: hph-card-media (molecule) */
+  position: relative;
+  overflow: hidden;
+}
+
+.hph-listing-card-enhanced__image {
+  /* Inherits from: hph-card-image (atom) */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.hph-listing-card-enhanced:hover .hph-listing-card-enhanced__image {
+  transform: scale(1.05);
+}
+
+/* Content Container Element */
+.hph-listing-card-enhanced__content {
+  /* Inherits from: hph-card-content (molecule) */
+  position: relative;
+  padding: 1.25rem;
+}
+
+/* Price Element */
+.hph-listing-card-enhanced__price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--hph-primary);
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+/* Title Element (Street Address) */
+.hph-listing-card-enhanced__title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--hph-gray-900);
+  margin-bottom: 0.375rem;
+  line-height: 1.3;
+}
+
+/* Location Element */
+.hph-listing-card-enhanced__location {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  color: var(--hph-gray-600);
+  margin-bottom: 1rem;
+}
+
+.hph-listing-card-enhanced__location-icon {
+  color: var(--hph-primary);
+  font-size: 0.75rem;
+}
+
+/* Property Stats Element */
+.hph-listing-card-enhanced__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--hph-gray-100);
+}
+
+.hph-listing-card-enhanced__stat {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  color: var(--hph-gray-700);
+}
+
+.hph-listing-card-enhanced__stat-icon {
+  color: var(--hph-primary);
+  font-size: 0.75rem;
+  width: 1rem;
+  text-align: center;
+}
+
+/* Days on Market Element */
+.hph-listing-card-enhanced__dom {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--hph-gray-100);
+  color: var(--hph-gray-700);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--hph-radius-sm);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Price Per Square Foot Element */
+.hph-listing-card-enhanced__psf {
+  font-size: 0.75rem;
+  color: var(--hph-gray-500);
+  margin-top: 0.5rem;
+}
+
+/* ================================================
+   BADGE ELEMENTS
+   ================================================ */
+
+.hph-listing-card-enhanced__badges {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 3;
+}
+
+.hph-listing-card-enhanced__badge {
+  /* Inherits from: hph-badge (atom) */
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--hph-radius-full);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Status Badge Modifiers */
+.hph-listing-card-enhanced__badge--status-active {
+  background: var(--hph-success);
+  color: var(--hph-white);
+}
+
+.hph-listing-card-enhanced__badge--status-pending {
+  background: var(--hph-warning);
+  color: var(--hph-white);
+}
+
+.hph-listing-card-enhanced__badge--status-sold {
+  background: var(--hph-danger);
+  color: var(--hph-white);
+}
+
+.hph-listing-card-enhanced__badge--featured {
+  background: var(--hph-gold);
+  color: var(--hph-white);
+}
+
+/* Additional Badge Modifiers */
+.hph-listing-card-enhanced__badge--virtual-tour {
+  background: rgba(0, 0, 0, 0.75);
+  color: var(--hph-white);
+}
+
+.hph-listing-card-enhanced__badge--open-house {
+  background: var(--hph-primary);
+  color: var(--hph-white);
+}
+
+/* ================================================
+   VIEW MODIFIERS - BEM MODIFIERS
+   ================================================ */
+
+/* List View Modifier */
+.hph-listing-card-enhanced--list {
+  flex-direction: row;
+  max-height: 16rem;
+}
+
+.hph-listing-card-enhanced--list .hph-listing-card-enhanced__media {
+  width: 20rem;
+  flex-shrink: 0;
+}
+
+.hph-listing-card-enhanced--list .hph-listing-card-enhanced__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+}
+
+.hph-listing-card-enhanced--list .hph-listing-card-enhanced__stats {
+  margin-top: auto;
+}
+
+/* Grid View Modifier (default - no changes needed) */
+.hph-listing-card-enhanced--grid {
+  flex-direction: column;
+}
+
+/* Compact Modifier */
+.hph-listing-card-enhanced--compact .hph-listing-card-enhanced__content {
+  padding: 1rem;
+}
+
+.hph-listing-card-enhanced--compact .hph-listing-card-enhanced__price {
+  font-size: 1.25rem;
+}
+
+.hph-listing-card-enhanced--compact .hph-listing-card-enhanced__title {
+  font-size: 1rem;
+}
+
+/* ================================================
+   STATE MODIFIERS - BEM STATES
+   ================================================ */
+
+/* Loading State */
+.hph-listing-card-enhanced.is-loading {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.hph-listing-card-enhanced.is-loading .hph-listing-card-enhanced__image {
+  background: linear-gradient(90deg, #f0f8fb 25%, #e5f4fa 50%, #f0f8fb 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Hover State Enhancement */
+.hph-listing-card-enhanced:hover {
+  /* Inherits hover from: hph-card (atom) */
+  /* Additional listing-specific hover behavior */
+}
+
+.hph-listing-card-enhanced:hover .hph-listing-card-enhanced__price {
+  color: var(--hph-primary-dark);
+}
+
+/* Focus State for Accessibility */
+.hph-listing-card-enhanced:focus-within {
+  outline: 2px solid var(--hph-primary);
+  outline-offset: 2px;
+}
+
+/* ================================================
+   RESPONSIVE DESIGN
+   ================================================ */
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  /* Force stacked layout on mobile */
+  .hph-listing-card-enhanced--list {
+    flex-direction: column;
+    max-height: none;
+  }
+
+  .hph-listing-card-enhanced--list .hph-listing-card-enhanced__media {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+  }
+
+  .hph-listing-card-enhanced__stats {
+    gap: 0.75rem;
+  }
+
+  .hph-listing-card-enhanced__content {
+    padding: 1rem;
+  }
+}
+
+/* Tablet adjustments */
+@media (max-width: 1024px) {
+  .hph-listing-card-enhanced--list .hph-listing-card-enhanced__media {
+    width: 16rem;
+  }
+}
+
+/* ================================================
+   ACCESSIBILITY ENHANCEMENTS
+   ================================================ */
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .hph-listing-card-enhanced {
+    border: 2px solid var(--hph-gray-900);
+  }
+
+  .hph-listing-card-enhanced__badge {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .hph-listing-card-enhanced__image,
+  .hph-listing-card-enhanced {
+    transition: none;
+  }
+
+  .hph-listing-card-enhanced.is-loading .hph-listing-card-enhanced__image {
+    animation: none;
+    background: var(--hph-gray-200);
+  }
+}
+
+/* ================================================
+   ANIMATIONS
+   ================================================ */
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ================================================
+   INTEGRATION WITH EXISTING SYSTEM
+   ================================================ */
+
+/*
+ * This component composes the following atomic components:
+ * - .hph-card (base card structure)
+ * - .hph-card-media, .hph-card-content, .hph-card-image (card molecules)
+ * - .hph-badge (badge atom)
+ * - .hph-listing-actions (actions organism)
+ *
+ * Usage in templates:
+ * <article class="hph-card hph-listing-card-enhanced hph-listing-card-enhanced--grid">
+ *   <div class="hph-card-media hph-listing-card-enhanced__media">
+ *     <img class="hph-card-image hph-listing-card-enhanced__image" />
+ *   </div>
+ *   <div class="hph-card-content hph-listing-card-enhanced__content">
+ *     ...
+ *   </div>
+ * </article>
+ */

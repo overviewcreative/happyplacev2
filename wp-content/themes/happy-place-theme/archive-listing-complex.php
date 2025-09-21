@@ -61,7 +61,6 @@ if (!empty($mapbox_key)) {
 
 // Enqueue quick fixes CSS for missing elements
 wp_enqueue_style('hph-quick-fixes', get_template_directory_uri() . '/assets/css/quick-fixes.css', [], '1.0.0');
-wp_enqueue_style('hph-archive-map-fixes', get_template_directory_uri() . '/assets/css/archive-map-fixes.css', [], '1.0.0');
 
 // Localize script for AJAX
 wp_localize_script('hph-archive-listings-enhanced', 'hph_listings', [
@@ -132,13 +131,6 @@ get_template_part('template-parts/sections/archive-hero', null, [
     </div>
 </div>
 
-<!-- DEBUG: Manual test button -->
-<div style="position: fixed; top: 80px; right: 20px; z-index: 9999; background: #ff6b6b; color: white; padding: 10px; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.3);">
-    <button id="debug-test-ajax" style="background: white; color: #ff6b6b; border: none; padding: 8px 15px; border-radius: 3px; cursor: pointer; font-weight: bold;">
-        🧪 TEST AJAX
-    </button>
-    <div id="debug-status" style="margin-top: 8px; font-size: 12px;">Ready</div>
-</div>
 
 <!-- Main Archive Container -->
 <div id="listings-archive" class="hph-listings-archive" data-view="<?php echo esc_attr($view_mode); ?>">
@@ -148,45 +140,45 @@ get_template_part('template-parts/sections/archive-hero', null, [
         <div class="hph-container hph-px-lg hph-py-md">
             <!-- Quick Filters Row -->
             <div class="hph-quick-filters hph-mb-md" style="display: flex; flex-wrap: wrap; gap: var(--hph-gap-sm); align-items: center;">
-                <span style="font-weight: var(--hph-font-semibold); color: var(--hph-gray-700); margin-right: var(--hph-margin-sm);">Quick Filters:</span>
+                <span style="font-weight: var(--hph-font-semibold); color: var(--hph-gray-700); margin-right: var(--hph-space-2);">Quick Filters:</span>
                 
                 <!-- Status Filter Buttons -->
                 <button class="hph-quick-filter-btn" data-filter="status" data-value="all" 
-                        style="padding: var(--hph-padding-xs) var(--hph-padding-md); background: var(--hph-primary); color: var(--hph-white); border: none; border-radius: var(--hph-radius-md); font-size: var(--hph-text-sm); cursor: pointer; transition: all 0.3s ease;">
+                        style="padding: var(--hph-space-1) var(--hph-space-4); background: var(--hph-primary); color: var(--hph-white); border: none; border-radius: var(--hph-radius-md); font-size: var(--hph-text-sm); cursor: pointer; transition: all 0.3s ease;">
                     All Listings
                 </button>
                 <button class="hph-quick-filter-btn" data-filter="status" data-value="active"
-                        style="padding: var(--hph-padding-xs) var(--hph-padding-md); background: var(--hph-gray-200); color: var(--hph-gray-700); border: none; border-radius: var(--hph-radius-md); font-size: var(--hph-text-sm); cursor: pointer; transition: all 0.3s ease;">
+                        style="padding: var(--hph-space-1) var(--hph-space-4); background: var(--hph-gray-200); color: var(--hph-gray-700); border: none; border-radius: var(--hph-radius-md); font-size: var(--hph-text-sm); cursor: pointer; transition: all 0.3s ease;">
                     Active
                 </button>
                 <button class="hph-quick-filter-btn" data-filter="status" data-value="new"
-                        style="padding: var(--hph-padding-xs) var(--hph-padding-md); background: var(--hph-gray-200); color: var(--hph-gray-700); border: none; border-radius: var(--hph-radius-md); font-size: var(--hph-text-sm); cursor: pointer; transition: all 0.3s ease;">
+                        style="padding: var(--hph-space-1) var(--hph-space-4); background: var(--hph-gray-200); color: var(--hph-gray-700); border: none; border-radius: var(--hph-radius-md); font-size: var(--hph-text-sm); cursor: pointer; transition: all 0.3s ease;">
                     New Listings
                 </button>
                 <button class="hph-quick-filter-btn" data-filter="status" data-value="reduced"
-                        style="padding: var(--hph-padding-xs) var(--hph-padding-md); background: var(--hph-gray-200); color: var(--hph-gray-700); border: none; border-radius: var(--hph-radius-md); font-size: var(--hph-text-sm); cursor: pointer; transition: all 0.3s ease;">
+                        style="padding: var(--hph-space-1) var(--hph-space-4); background: var(--hph-gray-200); color: var(--hph-gray-700); border: none; border-radius: var(--hph-radius-md); font-size: var(--hph-text-sm); cursor: pointer; transition: all 0.3s ease;">
                     Price Reduced
                 </button>
                 
-                <span style="margin: 0 var(--hph-margin-sm); color: var(--hph-gray-400);">|</span>
+                <span style="margin: 0 var(--hph-space-2); color: var(--hph-gray-400);">|</span>
                 
                 <!-- Feature Filter Buttons -->
                 <button class="hph-quick-filter-btn" data-filter="feature" data-value="waterfront"
-                        style="padding: var(--hph-padding-xs) var(--hph-padding-md); background: var(--hph-gray-200); color: var(--hph-gray-700); border: none; border-radius: var(--hph-radius-md); font-size: var(--hph-text-sm); cursor: pointer; transition: all 0.3s ease;">
+                        style="padding: var(--hph-space-1) var(--hph-space-4); background: var(--hph-gray-200); color: var(--hph-gray-700); border: none; border-radius: var(--hph-radius-md); font-size: var(--hph-text-sm); cursor: pointer; transition: all 0.3s ease;">
                     <i class="fas fa-water"></i> Waterfront
                 </button>
                 <button class="hph-quick-filter-btn" data-filter="feature" data-value="pool"
-                        style="padding: var(--hph-padding-xs) var(--hph-padding-md); background: var(--hph-gray-200); color: var(--hph-gray-700); border: none; border-radius: var(--hph-radius-md); font-size: var(--hph-text-sm); cursor: pointer; transition: all 0.3s ease;">
+                        style="padding: var(--hph-space-1) var(--hph-space-4); background: var(--hph-gray-200); color: var(--hph-gray-700); border: none; border-radius: var(--hph-radius-md); font-size: var(--hph-text-sm); cursor: pointer; transition: all 0.3s ease;">
                     <i class="fas fa-swimming-pool"></i> With Pool
                 </button>
                 <button class="hph-quick-filter-btn" data-filter="feature" data-value="garage"
-                        style="padding: var(--hph-padding-xs) var(--hph-padding-md); background: var(--hph-gray-200); color: var(--hph-gray-700); border: none; border-radius: var(--hph-radius-md); font-size: var(--hph-text-sm); cursor: pointer; transition: all 0.3s ease;">
+                        style="padding: var(--hph-space-1) var(--hph-space-4); background: var(--hph-gray-200); color: var(--hph-gray-700); border: none; border-radius: var(--hph-radius-md); font-size: var(--hph-text-sm); cursor: pointer; transition: all 0.3s ease;">
                     <i class="fas fa-warehouse"></i> Garage
                 </button>
                 
                 <!-- Clear Filters -->
                 <button id="clear-quick-filters" 
-                        style="padding: var(--hph-padding-xs) var(--hph-padding-md); background: transparent; color: var(--hph-primary); border: 1px solid var(--hph-primary); border-radius: var(--hph-radius-md); font-size: var(--hph-text-sm); cursor: pointer; transition: all 0.3s ease; margin-left: auto;">
+                        style="padding: var(--hph-space-1) var(--hph-space-4); background: transparent; color: var(--hph-primary); border: 1px solid var(--hph-primary); border-radius: var(--hph-radius-md); font-size: var(--hph-text-sm); cursor: pointer; transition: all 0.3s ease; margin-left: auto;">
                     <i class="fas fa-times"></i> Clear Filters
                 </button>
             </div>
@@ -289,23 +281,23 @@ get_template_part('template-parts/sections/archive-hero', null, [
                                 echo '</div>';
                             }
                             
-                            echo '<div class="hph-card-content" style="padding: var(--hph-padding-lg);">';
+                            echo '<div class="hph-card-content" style="padding: var(--hph-space-6);">';
                             
                             // Price
                             if ($price) {
-                                echo '<div class="hph-price" style="font-size: var(--hph-text-2xl); font-weight: var(--hph-font-bold); color: var(--hph-primary); margin-bottom: var(--hph-margin-sm);">';
+                                echo '<div class="hph-price" style="font-size: var(--hph-text-2xl); font-weight: var(--hph-font-bold); color: var(--hph-primary); margin-bottom: var(--hph-space-2);">';
                                 echo '$' . number_format($price);
                                 echo '</div>';
                             }
                             
                             // Title  
-                            echo '<h3 class="hph-title" style="font-size: var(--hph-text-lg); margin-bottom: var(--hph-margin-sm);">';
+                            echo '<h3 class="hph-title" style="font-size: var(--hph-text-lg); margin-bottom: var(--hph-space-2);">';
                             echo '<a href="' . get_permalink() . '" style="text-decoration: none; color: inherit;">' . get_the_title() . '</a>';
                             echo '</h3>';
                             
                             // Address
                             if ($street_number && $street_name && $city && $state) {
-                                echo '<p class="hph-address" style="color: var(--hph-gray-600); margin-bottom: var(--hph-margin-md);">';
+                                echo '<p class="hph-address" style="color: var(--hph-gray-600); margin-bottom: var(--hph-space-4);">';
                                 echo '<i class="fas fa-map-marker-alt"></i> ' . $street_number . ' ' . $street_name . ', ' . $city . ', ' . $state;
                                 echo '</p>';
                             }
@@ -382,25 +374,25 @@ get_template_part('template-parts/sections/archive-hero', null, [
                             echo '</div>';
                             
                             // Content section (right)
-                            echo '<div class="hph-card-content-list" style="flex: 1; padding: var(--hph-padding-lg); display: flex; flex-direction: column; justify-content: space-between;">';
+                            echo '<div class="hph-card-content-list" style="flex: 1; padding: var(--hph-space-6); display: flex; flex-direction: column; justify-content: space-between;">';
                             
                             // Top section
                             echo '<div>';
                             // Price
                             if ($price) {
-                                echo '<div class="hph-price" style="font-size: var(--hph-text-2xl); font-weight: var(--hph-font-bold); color: var(--hph-primary); margin-bottom: var(--hph-margin-sm);">';
+                                echo '<div class="hph-price" style="font-size: var(--hph-text-2xl); font-weight: var(--hph-font-bold); color: var(--hph-primary); margin-bottom: var(--hph-space-2);">';
                                 echo '$' . number_format($price);
                                 echo '</div>';
                             }
                             
                             // Title  
-                            echo '<h3 class="hph-title" style="font-size: var(--hph-text-lg); margin-bottom: var(--hph-margin-sm);">';
+                            echo '<h3 class="hph-title" style="font-size: var(--hph-text-lg); margin-bottom: var(--hph-space-2);">';
                             echo '<a href="' . get_permalink() . '" style="text-decoration: none; color: inherit;">' . get_the_title() . '</a>';
                             echo '</h3>';
                             
                             // Address
                             if ($street_number && $street_name && $city && $state) {
-                                echo '<p class="hph-address" style="color: var(--hph-gray-600); margin-bottom: var(--hph-margin-md);">';
+                                echo '<p class="hph-address" style="color: var(--hph-gray-600); margin-bottom: var(--hph-space-4);">';
                                 echo '<i class="fas fa-map-marker-alt"></i> ' . $street_number . ' ' . $street_name . ', ' . $city . ', ' . $state;
                                 echo '</p>';
                             }
@@ -411,14 +403,14 @@ get_template_part('template-parts/sections/archive-hero', null, [
                                 $description = get_the_excerpt();
                             }
                             if ($description) {
-                                echo '<p class="hph-description" style="color: var(--hph-gray-700); margin-bottom: var(--hph-margin-md); line-height: 1.5;">';
+                                echo '<p class="hph-description" style="color: var(--hph-gray-700); margin-bottom: var(--hph-space-4); line-height: 1.5;">';
                                 echo wp_trim_words($description, 20, '...');
                                 echo '</p>';
                             }
                             echo '</div>';
                             
                             // Bottom section - Features
-                            echo '<div class="hph-features" style="display: flex; gap: var(--hph-gap-lg); color: var(--hph-gray-700); padding-top: var(--hph-padding-md); border-top: 1px solid var(--hph-gray-200);">';
+                            echo '<div class="hph-features" style="display: flex; gap: var(--hph-gap-lg); color: var(--hph-gray-700); padding-top: var(--hph-space-4); border-top: 1px solid var(--hph-gray-200);">';
                             if ($bedrooms) {
                                 echo '<span><i class="fas fa-bed"></i> ' . $bedrooms . ' bed' . ($bedrooms > 1 ? 's' : '') . '</span>';
                             }
@@ -502,7 +494,7 @@ get_template_part('template-parts/sections/archive-hero', null, [
                             $latitude = get_field('latitude', $listing_id);
                             $longitude = get_field('longitude', $listing_id);
                             
-                            echo '<div class="hph-map-listing-card" data-listing-id="' . $listing_id . '" data-lat="' . $latitude . '" data-lng="' . $longitude . '" style="background: var(--hph-white); border-radius: var(--hph-radius-md); overflow: hidden; box-shadow: var(--hph-shadow-sm); margin-bottom: var(--hph-margin-md); transition: all 0.3s ease; cursor: pointer; border: 2px solid transparent;">';
+                            echo '<div class="hph-map-listing-card" data-listing-id="' . $listing_id . '" data-lat="' . $latitude . '" data-lng="' . $longitude . '" style="background: var(--hph-white); border-radius: var(--hph-radius-md); overflow: hidden; box-shadow: var(--hph-shadow-sm); margin-bottom: var(--hph-space-4); transition: all 0.3s ease; cursor: pointer; border: 2px solid transparent;">';
                             
                             // Featured image
                             echo '<div class="hph-map-card-image" style="position: relative; height: 150px; overflow: hidden;">';
@@ -515,23 +507,23 @@ get_template_part('template-parts/sections/archive-hero', null, [
                             }
                             echo '</div>';
                             
-                            echo '<div class="hph-map-card-content" style="padding: var(--hph-padding-md);">';
+                            echo '<div class="hph-map-card-content" style="padding: var(--hph-space-4);">';
                             
                             // Price
                             if ($price) {
-                                echo '<div class="hph-price" style="font-size: var(--hph-text-lg); font-weight: var(--hph-font-bold); color: var(--hph-primary); margin-bottom: var(--hph-margin-xs);">';
+                                echo '<div class="hph-price" style="font-size: var(--hph-text-lg); font-weight: var(--hph-font-bold); color: var(--hph-primary); margin-bottom: var(--hph-space-1);">';
                                 echo '$' . number_format($price);
                                 echo '</div>';
                             }
                             
                             // Title  
-                            echo '<h4 class="hph-title" style="font-size: var(--hph-text-md); margin-bottom: var(--hph-margin-xs); font-weight: var(--hph-font-semibold);">';
+                            echo '<h4 class="hph-title" style="font-size: var(--hph-text-md); margin-bottom: var(--hph-space-1); font-weight: var(--hph-font-semibold);">';
                             echo '<a href="' . get_permalink() . '" style="text-decoration: none; color: inherit;">' . get_the_title() . '</a>';
                             echo '</h4>';
                             
                             // Address
                             if ($street_number && $street_name && $city && $state) {
-                                echo '<p class="hph-address" style="color: var(--hph-gray-600); margin-bottom: var(--hph-margin-sm); font-size: var(--hph-text-sm);">';
+                                echo '<p class="hph-address" style="color: var(--hph-gray-600); margin-bottom: var(--hph-space-2); font-size: var(--hph-text-sm);">';
                                 echo '<i class="fas fa-map-marker-alt"></i> ' . $street_number . ' ' . $street_name . ', ' . $city . ', ' . $state;
                                 echo '</p>';
                             }
@@ -578,7 +570,8 @@ get_template_part('template-parts/sections/archive-hero', null, [
             <i class="fas fa-home hph-text-gray-300 hph-mb-lg" style="font-size: 4rem;"></i>
             <h3 class="hph-text-2xl hph-mb-md">No properties found</h3>
             <p class="hph-text-gray-600 hph-mb-lg">Try adjusting your filters or search criteria</p>
-            <button id="clear-filters" class="hph-btn-clear hph-p-md hph-px-xl hph-bg-primary hph-text-white hph-border-none hph-rounded cursor-pointer">
+            <button id="clear-filters" class="hph-btn-clear">
+                <i class="fas fa-times hph-btn-icon"></i>
                 Clear All Filters
             </button>
         </div>
@@ -645,24 +638,24 @@ if ($direct_query->have_posts()) {
         <div class="hph-card-image" style="position: relative; padding-bottom: 66.67%; overflow: hidden;">
             <img src="{{image}}" alt="{{title}}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
             {{#if status}}
-            <span class="hph-status-badge" style="position: absolute; top: var(--hph-padding-md); left: var(--hph-padding-md); padding: var(--hph-padding-xs) var(--hph-padding-sm); background: var(--hph-primary); color: var(--hph-white); border-radius: var(--hph-radius-md); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
+            <span class="hph-status-badge" style="position: absolute; top: var(--hph-space-4); left: var(--hph-space-4); padding: var(--hph-space-1) var(--hph-space-2); background: var(--hph-primary); color: var(--hph-white); border-radius: var(--hph-radius-md); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
                 {{status}}
             </span>
             {{/if}}
             {{#if featured}}
-            <span class="hph-featured-badge" style="position: absolute; top: var(--hph-padding-md); right: var(--hph-padding-md); padding: var(--hph-padding-xs) var(--hph-padding-sm); background: var(--hph-accent); color: var(--hph-white); border-radius: var(--hph-radius-md); font-size: var(--hph-text-sm);">
+            <span class="hph-featured-badge" style="position: absolute; top: var(--hph-space-4); right: var(--hph-space-4); padding: var(--hph-space-1) var(--hph-space-2); background: var(--hph-accent); color: var(--hph-white); border-radius: var(--hph-radius-md); font-size: var(--hph-text-sm);">
                 <i class="fas fa-star"></i> Featured
             </span>
             {{/if}}
         </div>
-        <div class="hph-card-content" style="padding: var(--hph-padding-lg);">
-            <div class="hph-price" style="font-size: var(--hph-text-2xl); font-weight: var(--hph-font-bold); color: var(--hph-primary); margin-bottom: var(--hph-margin-sm);">
+        <div class="hph-card-content" style="padding: var(--hph-space-6);">
+            <div class="hph-price" style="font-size: var(--hph-text-2xl); font-weight: var(--hph-font-bold); color: var(--hph-primary); margin-bottom: var(--hph-space-2);">
                 {{price}}
             </div>
-            <h3 class="hph-title" style="font-size: var(--hph-text-lg); margin-bottom: var(--hph-margin-sm);">
+            <h3 class="hph-title" style="font-size: var(--hph-text-lg); margin-bottom: var(--hph-space-2);">
                 {{title}}
             </h3>
-            <p class="hph-address" style="color: var(--hph-gray-600); margin-bottom: var(--hph-margin-md);">
+            <p class="hph-address" style="color: var(--hph-gray-600); margin-bottom: var(--hph-space-4);">
                 <i class="fas fa-map-marker-alt"></i> {{address}}
             </p>
             <div class="hph-features" style="display: flex; gap: var(--hph-gap-lg); color: var(--hph-gray-700);">
@@ -687,23 +680,23 @@ if ($direct_query->have_posts()) {
         <div class="hph-list-image" style="width: 300px; flex-shrink: 0;">
             <img src="{{image}}" alt="{{title}}" style="width: 100%; height: 200px; object-fit: cover;">
         </div>
-        <div class="hph-list-content" style="flex: 1; padding: var(--hph-padding-lg); display: flex; flex-direction: column; justify-content: space-between;">
+        <div class="hph-list-content" style="flex: 1; padding: var(--hph-space-6); display: flex; flex-direction: column; justify-content: space-between;">
             <div>
-                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--hph-margin-md);">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--hph-space-4);">
                     <div>
-                        <h3 style="font-size: var(--hph-text-xl); margin-bottom: var(--hph-margin-sm);">{{title}}</h3>
+                        <h3 style="font-size: var(--hph-text-xl); margin-bottom: var(--hph-space-2);">{{title}}</h3>
                         <p style="color: var(--hph-gray-600);"><i class="fas fa-map-marker-alt"></i> {{address}}</p>
                     </div>
                     <div style="text-align: right;">
                         <div style="font-size: var(--hph-text-2xl); font-weight: var(--hph-font-bold); color: var(--hph-primary);">{{price}}</div>
                         {{#if status}}
-                        <span style="display: inline-block; margin-top: var(--hph-margin-sm); padding: var(--hph-padding-xs) var(--hph-padding-sm); background: var(--hph-primary-100); color: var(--hph-primary); border-radius: var(--hph-radius-md); font-size: var(--hph-text-sm);">
+                        <span style="display: inline-block; margin-top: var(--hph-space-2); padding: var(--hph-space-1) var(--hph-space-2); background: var(--hph-primary-100); color: var(--hph-primary); border-radius: var(--hph-radius-md); font-size: var(--hph-text-sm);">
                             {{status}}
                         </span>
                         {{/if}}
                     </div>
                 </div>
-                <p style="color: var(--hph-gray-700); margin-bottom: var(--hph-margin-md);">{{description}}</p>
+                <p style="color: var(--hph-gray-700); margin-bottom: var(--hph-space-4);">{{description}}</p>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div class="hph-features" style="display: flex; gap: var(--hph-gap-xl); color: var(--hph-gray-700);">
@@ -712,7 +705,7 @@ if ($direct_query->have_posts()) {
                     {{#if sqft}}<span><i class="fas fa-ruler-combined"></i> {{sqft}} Sq Ft</span>{{/if}}
                     {{#if garage}}<span><i class="fas fa-car"></i> {{garage}} Garage</span>{{/if}}
                 </div>
-                <a href="{{url}}" class="hph-btn-view" style="padding: var(--hph-padding-sm) var(--hph-padding-lg); background: var(--hph-primary); color: var(--hph-white); text-decoration: none; border-radius: var(--hph-radius-md);">
+                <a href="{{url}}" class="hph-btn-view" style="padding: var(--hph-space-2) var(--hph-space-6); background: var(--hph-primary); color: var(--hph-white); text-decoration: none; border-radius: var(--hph-radius-md);">
                     View Details
                 </a>
             </div>
@@ -800,173 +793,104 @@ if ($direct_query->have_posts()) {
 <!-- Enhanced Archive JavaScript for AJAX -->
 <script type="text/javascript">
 jQuery(document).ready(function($) {
-    console.log('✅ Archive filtering script initialized');
-    console.log('AJAX URL:', '<?php echo admin_url('admin-ajax.php'); ?>');
-    
     // INITIALIZATION CHECK: Verify all required elements exist
-    console.log('🔍 INITIALIZATION CHECK:');
     var requiredElements = [
         '#listings-grid',
-        '#listings-list', 
+        '#listings-list',
         '#listings-loading',
         '#results-count',
         '#no-results',
         '.hph-quick-filter-btn'
     ];
-    
+
     var missingElements = [];
     requiredElements.forEach(function(selector) {
         var $el = $(selector);
-        var exists = $el.length > 0;
-        console.log('  ' + selector + ':', exists ? '✅ Found (' + $el.length + ')' : '❌ Missing');
-        if (!exists) missingElements.push(selector);
+        if ($el.length === 0) {
+            missingElements.push(selector);
+        }
     });
-    
+
     if (missingElements.length > 0) {
-        console.error('❌ CRITICAL: Missing required elements:', missingElements);
-        alert('DEBUG: Missing required elements for AJAX functionality: ' + missingElements.join(', '));
-    } else {
-        console.log('✅ All required elements found');
+        return; // Exit if critical elements are missing
     }
     
-    // Test click handler binding
-    console.log('🔧 Testing event handler binding...');
-    var testBtn = $('.hph-quick-filter-btn').first();
-    if (testBtn.length > 0) {
-        console.log('✅ Found first filter button:', testBtn.text());
-        console.log('✅ Button data:', testBtn.data());
-    } else {
-        console.error('❌ No filter buttons found for event binding');
-    }
-    
-    // Simple test - click any filter button
+    // Quick filter button click handler
     $(document).on('click', '.hph-quick-filter-btn', function(e) {
         e.preventDefault();
-        console.log('🔵 Filter button clicked:', $(this).text());
-        
+
         var $btn = $(this);
         var filterType = $btn.data('filter');
         var filterValue = $btn.data('value');
-        
-        console.log('🔵 Filter type:', filterType, 'Value:', filterValue);
-        console.log('🔵 Button element:', $btn[0]);
-        console.log('🔵 All data attributes:', $btn.data());
-        
-        // Simple visual feedback
+
+        // Visual feedback
         $('.hph-quick-filter-btn').css('background', 'var(--hph-gray-200)').css('color', 'var(--hph-gray-700)');
         $btn.css('background', 'var(--hph-primary)').css('color', 'var(--hph-white)');
-        
-        // Enhanced AJAX call with proper data structure
+
+        // Prepare AJAX data
         var filterData = {
             action: 'hph_load_listings',
             nonce: '<?php echo wp_create_nonce('hph_listings_nonce'); ?>',
             post_type: 'listing'
         };
-        
-        // Add filter as direct parameter (not nested)
+
+        // Add filter parameters
         if (filterType === 'status') {
             filterData.status = filterValue;
         } else if (filterType === 'feature') {
             filterData.feature = filterValue;
         }
-        
-        // Also add as nested filter for compatibility
+
         filterData.filters = {};
         filterData.filters[filterType] = filterValue;
-        
-        console.log('🚀 Sending AJAX data:', filterData);
-        
-        // Check target elements before AJAX
-        console.log('🔍 Target elements check:');
-        console.log('  #listings-grid exists:', $('#listings-grid').length > 0);
-        console.log('  #listings-list exists:', $('#listings-list').length > 0);
-        console.log('  #listings-loading exists:', $('#listings-loading').length > 0);
-        console.log('  #results-count exists:', $('#results-count').length > 0);
-        console.log('  #no-results exists:', $('#no-results').length > 0);
         
         $.ajax({
             url: '<?php echo admin_url('admin-ajax.php'); ?>',
             type: 'POST',
             data: filterData,
             beforeSend: function() {
-                console.log('⏳ AJAX request starting...');
                 $('#listings-loading').removeClass('hph-none').addClass('d-flex');
             },
             success: function(response) {
-                console.log('✅ AJAX Success - Full response:', response);
-                console.log('✅ Response success:', response.success);
-                console.log('✅ Response data:', response.data);
-                
                 if (response.success && response.data) {
                     // Update the grid and list views
                     if (response.data.html) {
-                        console.log('📄 HTML received, length:', response.data.html.length);
-                        console.log('📄 HTML preview:', response.data.html.substring(0, 200) + '...');
-                        
-                        // Update containers and log results
-                        var $grid = $('#listings-grid');
-                        var $list = $('#listings-list');
-                        
-                        console.log('🎯 Updating #listings-grid, current content length:', $grid.html().length);
-                        $grid.html(response.data.html);
-                        console.log('🎯 Updated #listings-grid, new content length:', $grid.html().length);
-                        
-                        console.log('🎯 Updating #listings-list, current content length:', $list.html().length);
-                        $list.html(response.data.html);
-                        console.log('🎯 Updated #listings-list, new content length:', $list.html().length);
-                    } else {
-                        console.warn('⚠️ No HTML data received');
+                        $('#listings-grid').html(response.data.html);
+                        $('#listings-list').html(response.data.html);
                     }
-                    
+
                     // Update counts
                     if (response.data.total !== undefined) {
-                        console.log('📊 Updating counts to:', response.data.total);
                         $('#results-count').text(response.data.total);
                         $('#map-results-count').text(response.data.total);
-                    } else {
-                        console.warn('⚠️ No total count received');
                     }
-                    
+
                     // Show/hide no results
                     var hasResults = response.data.total > 0;
-                    console.log('🔄 Has results:', hasResults);
                     $('#no-results').toggleClass('hph-none', hasResults);
-                } else {
-                    console.error('❌ AJAX Success but invalid response structure');
-                    if (response.data) {
-                        console.error('❌ Error message:', response.data);
-                    }
                 }
             },
             error: function(xhr, status, error) {
-                console.error('❌ AJAX Error - Status:', status);
-                console.error('❌ AJAX Error - Error:', error);
-                console.error('❌ AJAX Error - Response Text:', xhr.responseText);
-                console.error('❌ AJAX Error - Status Code:', xhr.status);
+                // Handle error silently or show user-friendly message
             },
             complete: function() {
-                console.log('🏁 AJAX request completed');
                 $('#listings-loading').removeClass('d-flex').addClass('hph-none');
             }
         });
     });
     
-    // Enhanced form submission with autocomplete fix
+    // Form submission handler
     $(document).on('submit', '.hph-hero-search-form', function(e) {
         e.preventDefault();
-        console.log('Form submitted - preventing default');
-        
+
         var $form = $(this);
         var searchValue = $form.find('input[name="s"]').val();
         var propertyType = $form.find('select[name="property_type"]').val();
-        
-        console.log('Search:', searchValue, 'Type:', propertyType);
-        
+
         // Clear previous active filters when new search is performed
         $('.hph-quick-filter-btn').css('background', 'var(--hph-gray-200)').css('color', 'var(--hph-gray-700)');
         $('.hph-quick-filter-btn[data-filter="status"][data-value="all"]').css('background', 'var(--hph-primary)').css('color', 'var(--hph-white)');
-        
-        // Enhanced AJAX with proper field names
+
         $.ajax({
             url: '<?php echo admin_url('admin-ajax.php'); ?>',
             type: 'POST',
@@ -984,34 +908,33 @@ jQuery(document).ready(function($) {
                 $('#listings-loading').removeClass('hph-none').addClass('d-flex');
             },
             success: function(response) {
-                console.log('✅ Form AJAX Success:', response);
                 if (response.success && response.data) {
                     // Update the listings container
                     if (response.data.html) {
                         $('#listings-grid').html(response.data.html);
                         $('#listings-list').html(response.data.html);
-                        
+
                         // Reinitialize any necessary scripts
                         if (typeof HPHArchiveListings !== 'undefined') {
                             HPHArchiveListings.reinit();
                         }
                     }
-                    
+
                     // Update results count
                     if (response.data.total !== undefined) {
                         $('#results-count').text(response.data.total);
                         $('#map-results-count').text(response.data.total);
                         $('.hph-results-number').text(response.data.total);
                     }
-                    
+
                     // Show/hide no results message
                     $('#no-results').toggleClass('hph-none', response.data.total > 0);
-                    
+
                     // Update pagination if provided
                     if (response.data.pagination) {
                         $('.hph-pagination').html(response.data.pagination);
                     }
-                    
+
                     // Update map markers if map is visible
                     if (response.data.markers && typeof updateMapMarkers === 'function') {
                         updateMapMarkers(response.data.markers);
@@ -1019,8 +942,7 @@ jQuery(document).ready(function($) {
                 }
             },
             error: function(xhr, status, error) {
-                console.error('❌ Form AJAX Error:', error);
-                console.log('Response Text:', xhr.responseText);
+                // Handle error silently or show user-friendly message
             },
             complete: function() {
                 $('#listings-loading').removeClass('d-flex').addClass('hph-none');
@@ -1028,62 +950,19 @@ jQuery(document).ready(function($) {
         });
     });
     
-    // DEBUG: Manual test button
-    $(document).on('click', '#debug-test-ajax', function() {
-        console.log('🧪 DEBUG: Manual test button clicked');
-        $('#debug-status').text('Testing...');
-        
-        $.ajax({
-            url: '<?php echo admin_url('admin-ajax.php'); ?>',
-            type: 'POST',
-            data: {
-                action: 'hph_load_listings',
-                nonce: '<?php echo wp_create_nonce('hph_listings_nonce'); ?>',
-                post_type: 'listing',
-                feature: 'waterfront',
-                test_mode: true,
-                debug_mode: true, // Enable card debugging
-                filters: {
-                    feature: 'waterfront'
-                }
-            },
-            success: function(response) {
-                console.log('🧪 DEBUG: Manual test success:', response);
-                $('#debug-status').html('✅ Success<br>Found: ' + (response.data?.total || 0));
-                
-                if (response.success && response.data?.html) {
-                    console.log('🧪 DEBUG: Updating DOM with HTML:', response.data.html.substring(0, 300) + '...');
-                    $('#listings-grid').html(response.data.html);
-                    $('#results-count').text(response.data.total);
-                    
-                    // Check if cards are actually in the DOM
-                    var cardCount = $('.hph-card').length;
-                    var debugCount = $('[style*="CARD DEBUG"]').length;
-                    console.log('🧪 DEBUG: Cards found in DOM:', cardCount, 'Debug elements:', debugCount);
-                } else {
-                    console.warn('🧪 DEBUG: No HTML in response');
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('🧪 DEBUG: Manual test error:', error);
-                $('#debug-status').html('❌ Error<br>' + error);
-            }
-        });
-    });
 
     // Clear filters functionality
     $(document).on('click', '#clear-quick-filters, #clear-filters', function(e) {
         e.preventDefault();
-        console.log('Clear filters clicked');
-        
+
         // Reset visual state of all filter buttons
         $('.hph-quick-filter-btn').css('background', 'var(--hph-gray-200)').css('color', 'var(--hph-gray-700)');
         $('.hph-quick-filter-btn[data-filter="status"][data-value="all"]').css('background', 'var(--hph-primary)').css('color', 'var(--hph-white)');
-        
+
         // Clear form inputs
         $('.hph-hero-search-form input[name="s"]').val('');
         $('.hph-hero-search-form select[name="property_type"]').val('');
-        
+
         // Load all listings (no filters)
         $.ajax({
             url: '<?php echo admin_url('admin-ajax.php'); ?>',
@@ -1099,34 +978,33 @@ jQuery(document).ready(function($) {
                 $('#listings-loading').removeClass('hph-none').addClass('d-flex');
             },
             success: function(response) {
-                console.log('✅ Clear Filters Success:', response);
                 if (response.success && response.data) {
                     // Update the listings container
                     if (response.data.html) {
                         $('#listings-grid').html(response.data.html);
                         $('#listings-list').html(response.data.html);
-                        
+
                         // Reinitialize any necessary scripts
                         if (typeof HPHArchiveListings !== 'undefined') {
                             HPHArchiveListings.reinit();
                         }
                     }
-                    
+
                     // Update results count
                     if (response.data.total !== undefined) {
                         $('#results-count').text(response.data.total);
                         $('#map-results-count').text(response.data.total);
                         $('.hph-results-number').text(response.data.total);
                     }
-                    
+
                     // Show/hide no results message
                     $('#no-results').toggleClass('hph-none', response.data.total > 0);
-                    
+
                     // Update pagination if provided
                     if (response.data.pagination) {
                         $('.hph-pagination').html(response.data.pagination);
                     }
-                    
+
                     // Update map markers if map is visible
                     if (response.data.markers && typeof updateMapMarkers === 'function') {
                         updateMapMarkers(response.data.markers);
@@ -1134,7 +1012,7 @@ jQuery(document).ready(function($) {
                 }
             },
             error: function(xhr, status, error) {
-                console.error('❌ Clear Filters Error:', error);
+                // Handle error silently or show user-friendly message
             },
             complete: function() {
                 $('#listings-loading').removeClass('d-flex').addClass('hph-none');
@@ -1144,7 +1022,6 @@ jQuery(document).ready(function($) {
 
     // Auto-search on dropdown change
     $(document).on('change', '.hph-hero-search-form select', function() {
-        console.log('Dropdown changed:', $(this).attr('name'), '=', $(this).val());
         $(this).closest('form').submit();
     });
 

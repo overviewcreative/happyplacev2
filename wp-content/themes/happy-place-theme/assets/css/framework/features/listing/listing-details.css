@@ -527,3 +527,133 @@
         transition: none;
     }
 }
+
+/* ================================================
+   PROPERTY DETAILS SECTION - MODERN CARD LAYOUT
+   ================================================ */
+
+.hph-property-details-modern {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.hph-details-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    padding: 0;
+}
+
+.hph-detail-card {
+    background: var(--hph-white);
+    border: 1px solid var(--hph-gray-200);
+    border-radius: 8px;
+    padding: 0;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.15s ease-in-out;
+}
+
+.hph-detail-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.hph-detail-content {
+    padding: 2rem 1.5rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-height: 120px;
+    justify-content: center;
+}
+
+.hph-detail-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--hph-gray-600);
+    margin: 0;
+    line-height: 1.2;
+}
+
+.hph-detail-value {
+    font-weight: 700;
+    color: var(--hph-primary-800);
+    margin: 0;
+    line-height: 1.2;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .hph-details-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .hph-detail-content {
+        padding: 1.5rem 1rem;
+        min-height: 100px;
+        gap: 0.5rem;
+    }
+    
+    .hph-detail-label {
+        font-size: 0.7rem;
+    }
+    
+    .hph-detail-value {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hph-details-container {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .hph-detail-content {
+        padding: 1.25rem 1rem;
+        min-height: 80px;
+        flex-direction: row;
+        text-align: left;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .hph-detail-label {
+        font-size: 0.75rem;
+        flex: 1;
+    }
+    
+    .hph-detail-value {
+        font-size: 1.1rem;
+        flex: 1;
+        text-align: right;
+    }
+}
+
+/* Legacy Grid Hiding (if still present) */
+.hph-property-details-grid {
+    display: none;
+}
+
+.hph-details-grid {
+    display: none;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    .hph-detail-card {
+        border-color: var(--hph-black);
+        border-width: 2px;
+    }
+    
+    .hph-detail-label {
+        color: var(--hph-black);
+    }
+    
+    .hph-detail-value {
+        color: var(--hph-black);
+    }
+}

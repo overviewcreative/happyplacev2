@@ -1,0 +1,411 @@
+/**
+ * Hero Carousel Styles - Extracted from post-carousel.php
+ *
+ * Premium carousel styles with full-screen hero layout,
+ * backdrop blur navigation, and smooth transitions.
+ * Perfect for listing hero sections and featured content.
+ *
+ * @package HappyPlaceTheme
+ * @since 3.0.0
+ */
+
+/* ================================================
+   HERO CAROUSEL BASE
+   ================================================ */
+
+.hph-hero-carousel {
+    position: relative;
+    height: 60vh; /* Default height - can be overridden */
+    background: #1a1a1a; /* Dark fallback */
+    overflow: hidden;
+    min-height: 400px; /* Minimum height for mobile */
+}
+
+/* ================================================
+   CAROUSEL SLIDES
+   ================================================ */
+
+.hph-hero-carousel-slides {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+.hph-hero-carousel-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    background-size: cover;
+    background-position: center;
+}
+
+.hph-hero-carousel-slide.active {
+    opacity: 1;
+}
+
+/* ================================================
+   SLIDE OVERLAY
+   ================================================ */
+
+.hph-hero-carousel-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(10, 19, 24, 0.299) 100%);
+    z-index: 5;
+}
+
+/* Alternative overlay styles */
+.hph-hero-carousel-overlay--dark {
+    background: linear-gradient(135deg, rgba(11, 12, 14, 0.7) 0%, rgba(14, 21, 26, 0.912) 100%);
+}
+
+.hph-hero-carousel-overlay--light {
+    background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 100%);
+}
+
+.hph-hero-carousel-overlay--primary {
+    background: linear-gradient(135deg, rgba(var(--hph-primary-rgb, 80, 186, 225), 0.7) 0%, rgba(var(--hph-primary-rgb, 80, 186, 225), 0.4) 100%);
+}
+
+/* ================================================
+   SLIDE CONTENT
+   ================================================ */
+
+.hph-hero-carousel-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    max-width: 800px;
+    padding: 2rem;
+    z-index: 10;
+    width: 100%;
+}
+
+.hph-hero-carousel-badge {
+    display: inline-block;
+    background: var(--hph-primary, #50bae1);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+
+.hph-hero-carousel-title {
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.hph-hero-carousel-description {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.hph-hero-carousel-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    background: var(--hph-primary, #50bae1);
+    color: white;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(80, 186, 225, 0.3);
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.hph-hero-carousel-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(80, 186, 225, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.hph-hero-carousel-cta-icon {
+    font-size: 0.9rem;
+}
+
+/* ================================================
+   NAVIGATION CONTROLS
+   ================================================ */
+
+.hph-hero-carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    padding: 1rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 20;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.hph-hero-carousel-nav:hover {
+    background: rgba(255,255,255,0.3);
+    transform: translateY(-50%) scale(1.05);
+}
+
+.hph-hero-carousel-nav--prev {
+    left: 2rem;
+}
+
+.hph-hero-carousel-nav--next {
+    right: 2rem;
+}
+
+/* ================================================
+   DOT INDICATORS
+   ================================================ */
+
+.hph-hero-carousel-dots {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.5rem;
+    z-index: 20;
+}
+
+.hph-hero-carousel-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.hph-hero-carousel-dot.active,
+.hph-hero-carousel-dot:hover {
+    background: white;
+    transform: scale(1.2);
+}
+
+/* Large dots variant */
+.hph-hero-carousel-dots--large .hph-hero-carousel-dot {
+    width: 16px;
+    height: 16px;
+}
+
+/* ================================================
+   RESPONSIVE DESIGN
+   ================================================ */
+
+@media (max-width: 768px) {
+    .hph-hero-carousel {
+        height: 50vh;
+        min-height: 350px;
+    }
+
+    .hph-hero-carousel-content {
+        padding: 1.5rem;
+        max-width: 90%;
+    }
+
+    .hph-hero-carousel-title {
+        font-size: clamp(1.8rem, 8vw, 2.5rem);
+    }
+
+    .hph-hero-carousel-description {
+        font-size: 1.1rem;
+    }
+
+    .hph-hero-carousel-nav {
+        width: 50px;
+        height: 50px;
+        padding: 0.75rem;
+    }
+
+    .hph-hero-carousel-nav--prev {
+        left: 1rem;
+    }
+
+    .hph-hero-carousel-nav--next {
+        right: 1rem;
+    }
+
+    .hph-hero-carousel-dots {
+        bottom: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hph-hero-carousel {
+        height: 45vh;
+        min-height: 300px;
+    }
+
+    .hph-hero-carousel-content {
+        padding: 1rem;
+    }
+
+    .hph-hero-carousel-cta {
+        padding: 0.875rem 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .hph-hero-carousel-nav {
+        width: 44px;
+        height: 44px;
+    }
+}
+
+/* ================================================
+   ANIMATION VARIANTS
+   ================================================ */
+
+/* Fade with zoom effect */
+.hph-hero-carousel--zoom .hph-hero-carousel-slide {
+    transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+    transform: scale(1.05);
+}
+
+.hph-hero-carousel--zoom .hph-hero-carousel-slide.active {
+    transform: scale(1);
+}
+
+/* Slide transition */
+.hph-hero-carousel--slide {
+    overflow: hidden;
+}
+
+.hph-hero-carousel--slide .hph-hero-carousel-slides {
+    display: flex;
+    transition: transform 0.6s ease-in-out;
+}
+
+.hph-hero-carousel--slide .hph-hero-carousel-slide {
+    position: relative;
+    flex: 0 0 100%;
+    opacity: 1;
+}
+
+/* ================================================
+   THEME VARIANTS
+   ================================================ */
+
+/* Dark theme */
+.hph-hero-carousel--dark {
+    background: #000;
+}
+
+.hph-hero-carousel--dark .hph-hero-carousel-nav {
+    background: rgba(0,0,0,0.4);
+    color: white;
+}
+
+.hph-hero-carousel--dark .hph-hero-carousel-nav:hover {
+    background: rgba(0,0,0,0.6);
+}
+
+/* Light theme */
+.hph-hero-carousel--light .hph-hero-carousel-content {
+    color: var(--hph-gray-900);
+    text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+}
+
+.hph-hero-carousel--light .hph-hero-carousel-nav {
+    background: rgba(0,0,0,0.2);
+    color: var(--hph-gray-900);
+}
+
+.hph-hero-carousel--light .hph-hero-carousel-dot {
+    background: rgba(0,0,0,0.4);
+}
+
+.hph-hero-carousel--light .hph-hero-carousel-dot.active {
+    background: var(--hph-gray-900);
+}
+
+/* ================================================
+   ACCESSIBILITY
+   ================================================ */
+
+.hph-hero-carousel-nav:focus,
+.hph-hero-carousel-dot:focus {
+    outline: 2px solid var(--hph-primary, #50bae1);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hph-hero-carousel-slide {
+        transition: opacity 0.3s ease;
+    }
+
+    .hph-hero-carousel-nav {
+        transition: background-color 0.3s ease;
+    }
+
+    .hph-hero-carousel-cta {
+        transition: background-color 0.3s ease;
+    }
+}
+
+/* ================================================
+   UTILITY CLASSES
+   ================================================ */
+
+.hph-hero-carousel--fullscreen {
+    height: 100vh;
+}
+
+.hph-hero-carousel--medium {
+    height: 50vh;
+    min-height: 400px;
+}
+
+.hph-hero-carousel--small {
+    height: 40vh;
+    min-height: 300px;
+}
+
+.hph-hero-carousel--no-dots .hph-hero-carousel-dots {
+    display: none;
+}
+
+.hph-hero-carousel--no-nav .hph-hero-carousel-nav {
+    display: none;
+}
+
+.hph-hero-carousel--center-bottom .hph-hero-carousel-content {
+    top: auto;
+    bottom: 2rem;
+    transform: translateX(-50%);
+}

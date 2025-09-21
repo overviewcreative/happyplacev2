@@ -157,7 +157,7 @@ $archive_link = get_post_type_archive_link($no_results_args['post_type']);
                                 'text' => '',
                                 'url' => '#',
                                 'icon' => '',
-                                'class' => 'hph-btn--secondary',
+                                'class' => 'hph-btn-secondary',
                                 'target' => '_self'
                             ]);
                             ?>

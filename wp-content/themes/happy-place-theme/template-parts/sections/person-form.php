@@ -301,7 +301,7 @@ $person = $args['person_data'];
                                     <textarea 
                                         name="<?php echo esc_attr($field['name']); ?>"
                                         id="<?php echo esc_attr($field['name']); ?>"
-                                        class="form-control"
+                                        class="hph-form-textarea"
                                         placeholder="<?php echo esc_attr($field['placeholder']); ?>"
                                         rows="<?php echo esc_attr($field['rows']); ?>"
                                         <?php echo $field['required'] ? 'required' : ''; ?>
@@ -311,7 +311,7 @@ $person = $args['person_data'];
                                     <select 
                                         name="<?php echo esc_attr($field['name']); ?>"
                                         id="<?php echo esc_attr($field['name']); ?>"
-                                        class="form-control"
+                                        class="hph-form-select"
                                         <?php echo $field['required'] ? 'required' : ''; ?>>
                                         <?php foreach ($field['options'] as $value => $label) : ?>
                                             <option value="<?php echo esc_attr($value); ?>">
@@ -325,7 +325,7 @@ $person = $args['person_data'];
                                         type="<?php echo esc_attr($field['type']); ?>"
                                         name="<?php echo esc_attr($field['name']); ?>"
                                         id="<?php echo esc_attr($field['name']); ?>"
-                                        class="form-control"
+                                        class="hph-form-input"
                                         placeholder="<?php echo esc_attr($field['placeholder']); ?>"
                                         <?php echo $field['required'] ? 'required' : ''; ?>>
                                 <?php endif; ?>
@@ -338,12 +338,12 @@ $person = $args['person_data'];
                             <p class="form-note"><span class="required">*</span> Required fields</p>
                         <?php endif; ?>
                         
-                        <button type="submit" 
-                                class="btn btn-<?php echo esc_attr($args['form_button_style']); ?> 
-                                       btn-<?php echo esc_attr($args['form_button_size']); ?>
-                                       <?php echo $args['form_button_full_width'] ? 'btn-block' : ''; ?>">
+                        <button type="submit"
+                                class="hph-btn hph-btn-<?php echo esc_attr($args['form_button_style']); ?>
+                                       hph-btn-<?php echo esc_attr($args['form_button_size']); ?>
+                                       <?php echo $args['form_button_full_width'] ? 'hph-btn-block' : ''; ?>">
                             <?php echo esc_html($args['form_button_text']); ?>
-                            <i class="fas fa-arrow-right ml-2"></i>
+                            <i class="fas fa-arrow-right hph-btn-icon"></i>
                         </button>
                         
                         <div class="form-response-messages">
@@ -445,7 +445,7 @@ $person = $args['person_data'];
                         
                         <?php if ($args['show_person_cta'] && $person['profile_url']) : ?>
                             <a href="<?php echo esc_url($person['profile_url']); ?>" 
-                               class="btn btn-outline-primary btn-block">
+                               class="hph-btn hph-btn-outline-primary">
                                 <?php echo esc_html($args['person_cta_text']); ?>
                                 <i class="fas fa-arrow-right ml-2"></i>
                             </a>

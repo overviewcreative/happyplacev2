@@ -41,6 +41,54 @@ if (isset($_GET['debug_template_parts']) && current_user_can('manage_options')) 
 }
 
 /**
+ * Load image functionality test if requested (admin users only)
+ */
+if (isset($_GET['test_image_functionality']) && current_user_can('manage_options')) {
+    require_once HPH_THEME_DIR . '/test-image-functionality.php';
+    exit;
+}
+
+/**
+ * Load asset loader test if requested (admin users only)
+ */
+if (isset($_GET['test_asset_loader']) && current_user_can('manage_options')) {
+    require_once HPH_THEME_DIR . '/test-asset-loader.php';
+    exit;
+}
+
+/**
+ * Load render output test if requested (admin users only)
+ */
+if (isset($_GET['test_render_output']) && current_user_can('manage_options')) {
+    require_once HPH_THEME_DIR . '/test-render-output.php';
+    exit;
+}
+
+/**
+ * Load universal card test if requested (admin users only)
+ */
+if (isset($_GET['test-universal-cards']) && current_user_can('manage_options')) {
+    require_once HPH_THEME_DIR . '/test-universal-cards.php';
+}
+
+/**
+ * Load asset loading test if requested (admin users only)
+ */
+if (isset($_GET['test_asset_loading']) && current_user_can('manage_options')) {
+    require_once HPH_THEME_DIR . '/test-asset-loading.php';
+    exit;
+}
+
+/**
+ * Load open house demo (available to all users)
+ */
+if (isset($_GET['open_house_demo']) || 
+    (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/open-house-demo') !== false)) {
+    require_once ABSPATH . 'open-house-demo.php';
+    exit;
+}
+
+/**
  * Create listing form page
  */
 function hph_create_listing_form_page() {
@@ -74,8 +122,14 @@ add_action('after_setup_theme', 'hph_create_listing_form_page');
  */
 require_once HPH_THEME_DIR . '/includes/class-hph-theme.php';
 
-// Load unified asset system (replaces complex HPH_Assets class and separate enqueue files)
-require_once HPH_THEME_DIR . '/includes/assets/theme-assets.php';
+// Load optimized Vite Asset Loader for render performance (replaces HPH_Simple_Assets)
+require_once HPH_THEME_DIR . '/includes/class-vite-asset-loader.php';
+
+// Initialize the Vite Asset Loader
+HPH_Vite_Asset_Loader::init();
+
+// Load maintenance mode functionality
+require_once HPH_THEME_DIR . '/includes/class-maintenance-mode.php';
 
 // Load property formatting helpers
 require_once HPH_THEME_DIR . '/includes/property-formatting-helpers.php';
@@ -86,30 +140,37 @@ require_once HPH_THEME_DIR . '/includes/helpers/image-helpers.php';
 // Load lazy loading helpers
 require_once HPH_THEME_DIR . '/includes/helpers/lazy-loading-helpers.php';
 
+// Load WebP optimization system
+require_once HPH_THEME_DIR . '/includes/helpers/webp-optimization.php';
+
 // Load dashboard AJAX handlers
 require_once HPH_THEME_DIR . '/includes/ajax/listings-dashboard-ajax.php';
 require_once HPH_THEME_DIR . '/includes/ajax/dashboard-ajax.php';
+require_once HPH_THEME_DIR . '/includes/ajax/local-places-ajax.php';
+require_once HPH_THEME_DIR . '/includes/ajax/cities-ajax.php';
+
+// Include blog post type
+require_once HPH_THEME_DIR . '/includes/post-types/blog-post-type.php';
+
+// Include hero helpers
+require_once HPH_THEME_DIR . '/includes/helpers/archive-hero-helpers.php';
 
 
 // Bootstrap the theme
 HPH_Theme::init();
 
-// Initialize asset system
-HPH_Simple_Assets::init();
+// Temporary fix for listing archive query - removed as no longer needed
 
-// Temporary fix for listing archive query
-require_once HPH_THEME_DIR . '/archive-listing-fix.php';
+/**
+ * Template redirect hook removed to prevent redirect loops
+ * JavaScript form interception in header.php handles search redirection instead
+ */
 
-// Include unified lead handler
-require_once HPH_THEME_DIR . '/includes/class-unified-lead-handler.php';
+// Lead handling is now managed by the Happy Place plugin's UnifiedLeadService
+// Bridge functions available via lead-bridge.php provide access to plugin service
 
 // Include email configuration for production
 require_once HPH_THEME_DIR . '/includes/email-config.php';
-
-/**
- * Initialize unified lead handling system
- */
-HPH_Unified_Lead_Handler::init();
 
 /**
  * Initialize dashboard AJAX handlers
@@ -235,7 +296,7 @@ class HPH_Slug_Redirects {
 }
 
 // Initialize the redirect system
-// TEMPORARILY DISABLED - Causes redirect issues with wp-admin access
+// Front-end role-based redirects (disabled to prevent wp-admin access issues)
 // HPH_Slug_Redirects::init();
 
 /**
@@ -304,7 +365,7 @@ function hph_enqueue_login_page_styles() {
         );
     }
 }
-// TEMPORARILY DISABLED - Causes login redirect issues
+// Login redirect handling (disabled to prevent login issues)
 // add_action('wp_enqueue_scripts', 'hph_enqueue_login_page_styles');
 
 /**
@@ -319,7 +380,7 @@ function hph_login_page_template($template) {
     }
     return $template;
 }
-// TEMPORARILY DISABLED - Causes login redirect issues
+// Login redirect handling (disabled to prevent login issues)
 // add_filter('template_include', 'hph_login_page_template');
 
 /**
@@ -350,47 +411,20 @@ if (!function_exists('hph_social_login_buttons')) {
 
 /**
  * Check if current user can edit a specific listing
- * Global helper function for use outside of AJAX handlers
+ * MIGRATED: Now uses plugin services via bridge functions
  */
 function hph_can_user_edit_listing($listing_id) {
-    $current_user_id = get_current_user_id();
-    
-    // Admins can edit all listings
-    if (current_user_can('administrator') || current_user_can('manage_options')) {
-        return true;
-    }
-    
-    // Get the assigned listing agent(s)
-    $listing_agent = get_field('listing_agent', $listing_id);
-    
-    if (!$listing_agent) {
-        // If no agent assigned, only admins can edit
-        return false;
-    }
-    
-    // Handle both single agent and multiple agents
-    $agent_ids = is_array($listing_agent) ? $listing_agent : [$listing_agent];
-    
-    // Check if current user is one of the assigned agents
-    foreach ($agent_ids as $agent_id) {
-        // Get the synced user ID for this agent
-        $synced_user_id = get_post_meta($agent_id, '_synced_user_id', true);
-        
-        if ($synced_user_id && $synced_user_id == $current_user_id) {
-            return true;
-        }
-    }
-    
-    return false;
+    // Use bridge function that connects to plugin services
+    return hpt_can_user_edit_listing($listing_id);
 }
 
 /**
  * Check if current user can delete a specific listing
- * Global helper function for use outside of AJAX handlers
+ * MIGRATED: Now uses plugin services via bridge functions
  */
 function hph_can_user_delete_listing($listing_id) {
-    // For now, use same permissions as edit
-    return hph_can_user_edit_listing($listing_id);
+    // Use bridge function that connects to plugin services
+    return hpt_can_user_delete_listing($listing_id);
 }
 
 /**
@@ -402,32 +436,8 @@ function hph_can_user_delete_listing($listing_id) {
 add_action('hph_user_registered', 'hph_handle_user_registration', 10, 2);
 
 function hph_handle_user_registration($user_id, $user_type) {
-    // Set default user role based on user type
-    $user = new WP_User($user_id);
-    
-    switch ($user_type) {
-        case 'agent':
-            $user->set_role('contributor'); // Agents can create/edit their own content
-            break;
-        case 'seller':
-            $user->set_role('subscriber'); // Sellers have basic access
-            update_user_meta($user_id, 'can_list_property', true);
-            break;
-        case 'buyer':
-        case 'investor':
-        default:
-            $user->set_role('subscriber'); // Default role
-            break;
-    }
-    
-    // Set registration date
-    update_user_meta($user_id, 'registration_date', current_time('mysql'));
-    
-    // Set registration source
-    update_user_meta($user_id, 'registration_source', 'website_form');
-    
-    // Log registration for analytics
-    error_log("HPH User Registration: User ID {$user_id} registered as {$user_type}");
+    // MIGRATED: Now uses plugin services via bridge functions
+    hpt_handle_user_registration($user_id, $user_type);
 }
 
 // Hook into WordPress user registration for additional processing
@@ -648,7 +658,7 @@ class HPH_Auth_Redirects {
 }
 
 // Initialize the authentication redirect system
-// TEMPORARILY DISABLED - Causes redirect issues with wp-admin access
+// Front-end role-based redirects (disabled to prevent wp-admin access issues)
 // HPH_Auth_Redirects::init();
 
 /**
@@ -675,6 +685,25 @@ function hph_enqueue_single_listing_assets() {
     }
 }
 add_action('wp_enqueue_scripts', 'hph_enqueue_single_listing_assets');
+
+/**
+ * Localize User System Script for AJAX operations
+ */
+function hph_localize_user_system() {
+    // Only localize if user-system script will be loaded
+    wp_localize_script('hph-sitewide', 'HPUserSystem', [
+        'ajaxUrl' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('hph_nonce'), // Match plugin service expectation
+        'isLoggedIn' => is_user_logged_in(),
+        'userId' => get_current_user_id(),
+        'strings' => [
+            'loginRequired' => __('Please log in to use this feature', 'happy-place-theme'),
+            'securityError' => __('Security check failed', 'happy-place-theme'),
+            'genericError' => __('Something went wrong. Please try again.', 'happy-place-theme')
+        ]
+    ]);
+}
+add_action('wp_enqueue_scripts', 'hph_localize_user_system', 15);
 
 /**
  * Register listing post type if not already registered
@@ -921,4 +950,322 @@ function hph_handle_toggle_saved_listing() {
 function hph_handle_toggle_saved_listing_guest() {
     wp_send_json_error(['message' => 'Please log in to save listings']);
 }
+
+/**
+ * Debug function to test open house calendar data
+ */
+function hph_debug_open_houses() {
+    if (!current_user_can('manage_options')) {
+        return;
+    }
+    
+    // Test the calendar query
+    $calendar_args = array(
+        'view' => 'list',
+        'post_type' => 'listing',
+        'date_field' => 'open_house_date',
+        'time_field' => 'open_house_time',
+        'end_date_field' => 'open_house_end_time',
+        'location_field' => 'address_full',
+        'category_field' => 'property_type',
+        'current_date' => date('Y-m-d'),
+        'posts_per_page' => 10,
+        'additional_meta_query' => array(
+            array(
+                'key' => 'listing_has_open_house',
+                'value' => 'yes',
+                'compare' => '='
+            )
+        )
+    );
+    
+    // Include the calendar component to get the function
+    require_once get_template_directory() . '/template-parts/components/universal-calendar.php';
+    
+    $events_data = hph_get_calendar_events($calendar_args);
+    
+    echo '<div style="background: #f1f1f1; padding: 20px; margin: 20px; border-radius: 5px;">';
+    echo '<h3>Open House Calendar Debug</h3>';
+    echo '<p><strong>Found ' . count($events_data['events']) . ' open house events:</strong></p>';
+    
+    if (!empty($events_data['events'])) {
+        echo '<ul>';
+        foreach ($events_data['events'] as $event) {
+            echo '<li>';
+            echo '<strong>' . esc_html($event['title']) . '</strong><br>';
+            echo 'Date: ' . esc_html($event['date']) . '<br>';
+            echo 'Time: ' . esc_html($event['time']) . '<br>';
+            echo 'Location: ' . esc_html($event['location']) . '<br>';
+            if (isset($event['property'])) {
+                echo 'Price: ' . esc_html($event['property']['price_formatted']) . '<br>';
+                echo 'Type: ' . esc_html($event['property']['property_type']) . '<br>';
+            }
+            echo '</li><br>';
+        }
+        echo '</ul>';
+    } else {
+        echo '<p>No open houses found. Check that:</p>';
+        echo '<ul>';
+        echo '<li>You have listings with open_house_date meta field</li>';
+        echo '<li>Listings have listing_has_open_house = "yes"</li>';
+        echo '<li>Open house dates are in the future</li>';
+        echo '</ul>';
+    }
+    
+    echo '</div>';
+}
+
+// Add debug hook if requested
+if (isset($_GET['debug_open_houses']) && current_user_can('manage_options')) {
+    add_action('wp_footer', 'hph_debug_open_houses');
+}
+
+/**
+ * EMERGENCY TEMPLATE CACHING SYSTEM
+ * Added for launch performance optimization
+ */
+
+/**
+ * Cache expensive template fragments
+ */
+function hph_cached_template_part($template, $args = [], $cache_duration = 300) {
+    // Create cache key from template and args
+    $cache_key = 'hph_template_' . md5($template . serialize($args));
+
+    // Try to get cached version
+    $cached_content = get_transient($cache_key);
+
+    if (false === $cached_content) {
+        // Start output buffering
+        ob_start();
+
+        // Load the template
+        get_template_part($template, null, $args);
+
+        // Get the content
+        $cached_content = ob_get_clean();
+
+        // Cache for specified duration (default 5 minutes)
+        set_transient($cache_key, $cached_content, $cache_duration);
+    }
+
+    echo $cached_content;
+}
+
+/**
+ * Cache expensive query results
+ */
+function hph_cached_query($query_args, $cache_duration = 300) {
+    $cache_key = 'hph_query_' . md5(serialize($query_args));
+
+    $cached_results = get_transient($cache_key);
+
+    if (false === $cached_results) {
+        $cached_results = new WP_Query($query_args);
+        set_transient($cache_key, $cached_results, $cache_duration);
+    }
+
+    return $cached_results;
+}
+
+/**
+ * Clear template cache when content is updated
+ */
+function hph_clear_template_cache($post_id) {
+    // Clear all template-related transients
+    global $wpdb;
+
+    $wpdb->query(
+        "DELETE FROM {$wpdb->options}
+         WHERE option_name LIKE '_transient_hph_template_%'
+         OR option_name LIKE '_transient_hph_query_%'"
+    );
+}
+
+// Hook cache clearing to content updates
+add_action('save_post', 'hph_clear_template_cache');
+add_action('delete_post', 'hph_clear_template_cache');
+
+/**
+ * Emergency inline CSS cleanup utility
+ */
+function hph_cleanup_inline_styles($content) {
+    // Basic inline style cleanup for emergency launch
+    $common_patterns = [
+        'style="display: none;"' => 'class="hph-hidden"',
+        'style="display: block;"' => 'class="hph-visible"',
+        'style="text-align: center;"' => 'class="hph-text-center"',
+        'style="text-align: left;"' => 'class="hph-text-left"',
+        'style="text-align: right;"' => 'class="hph-text-right"',
+    ];
+
+    return str_replace(array_keys($common_patterns), array_values($common_patterns), $content);
+}
+
+// Add emergency CSS utility classes to head
+add_action('wp_head', function() {
+    echo '<style>
+    .hph-hidden { display: none !important; }
+    .hph-visible { display: block !important; }
+    .hph-text-center { text-align: center !important; }
+    .hph-text-left { text-align: left !important; }
+    .hph-text-right { text-align: right !important; }
+    .hph-positioned { position: relative !important; }
+    .hph-positioned--absolute { position: absolute !important; }
+    </style>';
+}, 5);
+
+/**
+ * CRITICAL CSS OPTIMIZATION SYSTEM
+ * Inline critical CSS for above-the-fold content performance
+ */
+
+/**
+ * Inline critical CSS for immediate above-the-fold rendering
+ */
+function hph_inline_critical_css() {
+    $critical_css_file = get_template_directory() . '/dist/css/critical-' . hph_get_asset_hash('critical') . '.min.css';
+
+    // Fallback to non-hashed version for development
+    if (!file_exists($critical_css_file)) {
+        $critical_css_file = get_template_directory() . '/dist/css/critical.min.css';
+    }
+
+    if (file_exists($critical_css_file)) {
+        $critical_css = file_get_contents($critical_css_file);
+        $critical_css = hph_optimize_critical_css($critical_css);
+
+        echo '<style id="critical-css">' . $critical_css . '</style>';
+
+        // Preload the full CSS asynchronously
+        echo '<link rel="preload" href="' . hph_get_asset_url('core.min.css') . '" as="style" onload="this.onload=null;this.rel=\'stylesheet\'">';
+        echo '<noscript><link rel="stylesheet" href="' . hph_get_asset_url('core.min.css') . '"></noscript>';
+    }
+}
+
+/**
+ * Optimize critical CSS by removing unnecessary whitespace and comments
+ */
+function hph_optimize_critical_css($css) {
+    // Remove comments
+    $css = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $css);
+
+    // Remove unnecessary whitespace
+    $css = str_replace(array("\r\n", "\r", "\n", "\t"), '', $css);
+    $css = preg_replace('/\s+/', ' ', $css);
+    $css = str_replace('; ', ';', $css);
+    $css = str_replace(' {', '{', $css);
+    $css = str_replace('{ ', '{', $css);
+    $css = str_replace(' }', '}', $css);
+    $css = str_replace('} ', '}', $css);
+
+    return trim($css);
+}
+
+/**
+ * Get asset hash from manifest for cache busting
+ */
+function hph_get_asset_hash($asset_name) {
+    static $manifest = null;
+
+    if ($manifest === null) {
+        $manifest_file = get_template_directory() . '/dist/.vite/manifest.json';
+        if (file_exists($manifest_file)) {
+            $manifest = json_decode(file_get_contents($manifest_file), true);
+        } else {
+            $manifest = [];
+        }
+    }
+
+    // Look for the asset in manifest
+    foreach ($manifest as $key => $asset) {
+        if (strpos($key, $asset_name) !== false && isset($asset['file'])) {
+            $file = $asset['file'];
+            // Extract hash from filename
+            if (preg_match('/[a-zA-Z0-9_-]+-([a-zA-Z0-9_-]+)\.min\.css$/', $file, $matches)) {
+                return $matches[1];
+            }
+        }
+    }
+
+    return '';
+}
+
+/**
+ * Get optimized asset URL with proper cache busting
+ */
+function hph_get_asset_url($filename) {
+    $asset_hash = hph_get_asset_hash(str_replace('.min.css', '', $filename));
+
+    if ($asset_hash) {
+        $hashed_filename = str_replace('.min.css', '-' . $asset_hash . '.min.css', $filename);
+        return get_template_directory_uri() . '/dist/css/' . $hashed_filename;
+    }
+
+    // Fallback to non-hashed version
+    return get_template_directory_uri() . '/dist/css/' . $filename;
+}
+
+// Add critical CSS to head with high priority (before other styles)
+add_action('wp_head', 'hph_inline_critical_css', 1);
+
+/**
+ * PRODUCTION PERFORMANCE MONITORING
+ * Add performance tracking for production optimization
+ */
+
+/**
+ * Performance monitoring for critical metrics
+ */
+function hph_add_performance_monitoring() {
+    if (!is_user_logged_in() || !current_user_can('manage_options')) {
+        return; // Only for admin users in production
+    }
+
+    ?>
+    <script>
+    // Performance monitoring for critical metrics
+    window.addEventListener('load', function() {
+        if ('performance' in window) {
+            const perfData = performance.getEntriesByType('navigation')[0];
+            const loadTime = perfData.loadEventEnd - perfData.loadEventStart;
+            const domContentLoaded = perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart;
+
+            // Only log if times are reasonable (avoid invalid data)
+            if (loadTime > 0 && loadTime < 30000 && domContentLoaded > 0) {
+                console.log('HPH Performance Metrics:', {
+                    'Load Time': Math.round(loadTime) + 'ms',
+                    'DOM Content Loaded': Math.round(domContentLoaded) + 'ms',
+                    'First Paint': perfData.responseStart ? Math.round(perfData.responseStart - perfData.fetchStart) + 'ms' : 'N/A'
+                });
+            }
+        }
+    });
+    </script>
+    <?php
+}
+
+// Add performance monitoring for admin users
+add_action('wp_footer', 'hph_add_performance_monitoring');
+
+/**
+ * Override plugin's default view behavior to prevent automatic map view switching
+ * This prevents the map view from becoming "sticky" after visiting the map page
+ */
+add_filter('hph_property_search_default_view', function($default_view) {
+    // Only allow map view if explicitly requested via URL parameter
+    if (isset($_GET['view']) && $_GET['view'] === 'map') {
+        return 'map';
+    }
+    // Always default to grid view otherwise
+    return 'grid';
+}, 10, 1);
+
+// Alternative hook for different plugin filter names
+add_filter('happy_place_default_view', function($default_view) {
+    if (isset($_GET['view']) && $_GET['view'] === 'map') {
+        return 'map';
+    }
+    return 'grid';
+}, 10, 1);
 

@@ -1,0 +1,220 @@
+/**
+ * Logo Atom
+ * Reusable logo display component for images and text
+ *
+ * @package HappyPlaceTheme
+ */
+
+/* ================================================
+   LOGO ATOM - BASE
+   ================================================ */
+
+.hph-logo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.hph-logo:focus {
+  outline: none;
+  border-radius: var(--hph-radius-sm);
+  box-shadow: 0 0 0 2px var(--hph-primary);
+}
+
+/* ================================================
+   LOGO IMAGE
+   ================================================ */
+
+.hph-logo-img {
+  display: block;
+  max-height: 3rem;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  transition: max-height 0.3s ease;
+}
+
+/* ================================================
+   LOGO TEXT
+   ================================================ */
+
+.hph-logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--hph-primary);
+  text-decoration: none;
+  line-height: 1.2;
+  transition: font-size 0.3s ease, color 0.3s ease;
+}
+
+.hph-logo-text:hover {
+  color: var(--hph-primary-dark);
+}
+
+/* ================================================
+   LOGO SIZES
+   ================================================ */
+
+.hph-logo--xs .hph-logo-img {
+  max-height: 1.5rem;
+}
+
+.hph-logo--xs .hph-logo-text {
+  font-size: 1rem;
+}
+
+.hph-logo--sm .hph-logo-img {
+  max-height: 2rem;
+}
+
+.hph-logo--sm .hph-logo-text {
+  font-size: 1.125rem;
+}
+
+.hph-logo--lg .hph-logo-img {
+  max-height: 4rem;
+}
+
+.hph-logo--lg .hph-logo-text {
+  font-size: 2rem;
+}
+
+.hph-logo--xl .hph-logo-img {
+  max-height: 5rem;
+}
+
+.hph-logo--xl .hph-logo-text {
+  font-size: 2.5rem;
+}
+
+/* ================================================
+   LOGO VARIANTS
+   ================================================ */
+
+/* Light variant for dark backgrounds */
+.hph-logo--light .hph-logo-text {
+  color: var(--hph-white);
+}
+
+.hph-logo--light .hph-logo-text:hover {
+  color: var(--hph-gray-200);
+}
+
+/* Dark variant for light backgrounds */
+.hph-logo--dark .hph-logo-text {
+  color: var(--hph-gray-900);
+}
+
+.hph-logo--dark .hph-logo-text:hover {
+  color: var(--hph-gray-700);
+}
+
+/* Muted variant */
+.hph-logo--muted .hph-logo-text {
+  color: var(--hph-gray-600);
+}
+
+.hph-logo--muted .hph-logo-text:hover {
+  color: var(--hph-gray-800);
+}
+
+/* ================================================
+   LOGO WITH TAGLINE
+   ================================================ */
+
+.hph-logo--stacked {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
+.hph-logo-tagline {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: var(--hph-gray-600);
+  line-height: 1.3;
+}
+
+.hph-logo--light .hph-logo-tagline {
+  color: var(--hph-gray-300);
+}
+
+.hph-logo--dark .hph-logo-tagline {
+  color: var(--hph-gray-700);
+}
+
+/* ================================================
+   RESPONSIVE BEHAVIOR
+   ================================================ */
+
+/* Compact logo for mobile */
+@media (max-width: 768px) {
+  .hph-logo-img {
+    max-height: 2rem;
+  }
+
+  .hph-logo-text {
+    font-size: 1.125rem;
+  }
+
+  .hph-logo--lg .hph-logo-img {
+    max-height: 2.5rem;
+  }
+
+  .hph-logo--lg .hph-logo-text {
+    font-size: 1.375rem;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .hph-logo-img {
+    max-height: 1.75rem;
+  }
+
+  .hph-logo-text {
+    font-size: 1rem;
+  }
+}
+
+/* ================================================
+   ACCESSIBILITY
+   ================================================ */
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .hph-logo-text {
+    font-weight: 800;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .hph-logo-img,
+  .hph-logo-text {
+    transition: none;
+  }
+}
+
+/* ================================================
+   USAGE EXAMPLES
+   ================================================ */
+
+/*
+ * Logo with image:
+ * <a href="/" class="hph-logo">
+ *   <img src="/logo.png" alt="Company Name" class="hph-logo-img">
+ * </a>
+ *
+ * Logo with text:
+ * <a href="/" class="hph-logo">
+ *   <span class="hph-logo-text">Company Name</span>
+ * </a>
+ *
+ * Large logo with tagline:
+ * <a href="/" class="hph-logo hph-logo--lg hph-logo--stacked">
+ *   <span class="hph-logo-text">Company Name</span>
+ *   <span class="hph-logo-tagline">Your tagline here</span>
+ * </a>
+ */

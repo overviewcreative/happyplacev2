@@ -130,25 +130,30 @@ class HPH_Router implements HPH_Service {
      * Template routing
      */
     public function template_routing($template) {
+        // Skip ALL template routing for post type archives - let WordPress handle them
+        if (is_post_type_archive()) {
+            return $template; // Let WordPress use proper archive templates
+        }
+
         // Skip custom routing for WordPress page templates
         if (is_page()) {
             $page_template = get_page_template_slug();
-            
+
             // Allow dashboard and user system templates to use WordPress hierarchy
             $excluded_templates = array(
                 'page-dashboard.php',
-                'page-user-dashboard.php', 
+                'page-user-dashboard.php',
                 'page-test-dashboard.php',
                 'page-login.php',
                 'page-registration.php',
                 'page-contact.php'
             );
-            
+
             if (in_array($page_template, $excluded_templates)) {
                 return $template; // Let WordPress handle these templates normally
             }
         }
-        
+
         // Process custom routes only for non-page requests or pages without excluded templates
         foreach ($this->routes as $key => $route) {
             if (get_query_var($route['query_var'])) {
@@ -157,16 +162,16 @@ class HPH_Router implements HPH_Service {
                     $this->handle_auth_redirect($route);
                     return $template;
                 }
-                
+
                 // Check capabilities
                 if (!empty($route['capability']) && !current_user_can($route['capability'])) {
                     $this->handle_permission_error();
                     return $template;
                 }
-                
+
                 // Apply route-specific filters
                 $this->apply_route_filters($key);
-                
+
                 // Get template
                 $route_template = $this->get_route_template($route);
                 if ($route_template) {
@@ -174,7 +179,7 @@ class HPH_Router implements HPH_Service {
                 }
             }
         }
-        
+
         return $template;
     }
     

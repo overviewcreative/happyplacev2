@@ -44,7 +44,6 @@
             const address = mapContainer.dataset.address || '';
             
             if (!lat || !lng) {
-                console.warn('NeighborhoodMap: Invalid coordinates for map', mapId);
                 return;
             }
             
@@ -54,7 +53,6 @@
             } else if (typeof window.HP_MAPBOX_ACCESS_TOKEN !== 'undefined') {
                 mapboxgl.accessToken = window.HP_MAPBOX_ACCESS_TOKEN;
             } else {
-                console.error('NeighborhoodMap: No Mapbox access token available');
                 NeighborhoodMap.showError(mapContainer, 'Map configuration error');
                 return;
             }
@@ -87,10 +85,8 @@
                 NeighborhoodMap.addPropertyMarker(map, mapId, lng, lat, address);
                 
                 // Map loaded successfully
-                console.log('NeighborhoodMap: Initialized map', mapId);
                 
             } catch (error) {
-                console.error('NeighborhoodMap: Error initializing map', mapId, error);
                 NeighborhoodMap.showError(mapContainer, 'Unable to load neighborhood map');
             }
         },
@@ -224,7 +220,6 @@
                 navigator.clipboard.writeText(address).then(() => {
                     NeighborhoodMap.showCopySuccess();
                 }).catch(err => {
-                    console.error('Failed to copy address:', err);
                     NeighborhoodMap.fallbackCopyAddress(address);
                 });
             } else {
@@ -264,7 +259,6 @@
                 document.execCommand('copy');
                 NeighborhoodMap.showCopySuccess();
             } catch (err) {
-                console.error('Fallback copy failed:', err);
             }
             
             document.body.removeChild(textArea);
@@ -291,7 +285,6 @@
             
             if (!document.fullscreenElement) {
                 mapWrapper.requestFullscreen().catch(err => {
-                    console.error('Error attempting to enable fullscreen:', err);
                 });
             } else {
                 document.exitFullscreen();
@@ -343,7 +336,6 @@
                     NeighborhoodMap.init();
                 } else if (attempts > 50) { // 5 seconds
                     clearInterval(checkMapbox);
-                    console.error('NeighborhoodMap: Mapbox GL JS not loaded after 5 seconds');
                 }
             }, 100);
         }

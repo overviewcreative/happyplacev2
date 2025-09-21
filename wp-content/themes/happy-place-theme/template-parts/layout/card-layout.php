@@ -329,7 +329,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                             }
                             ?>
                             <div class="hph-map-card-wrapper" data-marker-id="marker-<?php echo esc_attr($item->ID ?? $index); ?>">
-                                <?php get_template_part('templates/components/card', null, $item_card_args); ?>
+                                <?php hph_component('universal-card', $item_card_args); ?>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -352,7 +352,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                     }
                     ?>
                     <div class="swiper-slide">
-                        <?php get_template_part('templates/components/card', null, $item_card_args); ?>
+                        <?php hph_component('universal-card', $item_card_args); ?>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -395,7 +395,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                 }
             ?>
                 <div class="hph-card-wrapper">
-                    <?php get_template_part('template-parts/base/card', null, $item_card_args); ?>
+                    <?php hph_component('universal-card', $item_card_args); ?>
                 </div>
             <?php endforeach; ?>
             <?php endif; ?>
@@ -412,7 +412,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
         $total_pages = ceil(count($items) / $items_per_page);
         $current_page = 1;
         ?>
-        <button class="hph-pagination-prev hph-btn hph-btn-outline hph-btn-sm" disabled>
+        <button class="hph-pagination-prev hph-btn hph-btn-outline-primary hph-btn-sm" disabled>
             <i class="fas fa-chevron-left"></i>
             Previous
         </button>
@@ -432,7 +432,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
             <?php endif; ?>
         </div>
         
-        <button class="hph-pagination-next hph-btn hph-btn-outline hph-btn-sm" <?php echo $total_pages <= 1 ? 'disabled' : ''; ?>>
+        <button class="hph-pagination-next hph-btn hph-btn-outline-primary hph-btn-sm" <?php echo $total_pages <= 1 ? 'disabled' : ''; ?>>
             Next
             <i class="fas fa-chevron-right"></i>
         </button>
@@ -453,7 +453,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
 
 <?php
 // Enqueue card layout manager JavaScript
-wp_enqueue_script('hph-card-layout-manager', get_template_directory_uri() . '/assets/js/layout/card-layout-manager.js', [], '1.0.0', true);
+// wp_enqueue_script('hph-card-layout-manager', get_template_directory_uri() . '/assets/js/layout/card-layout-manager.js', [], '1.0.0', true);
 
 // Build configuration for JavaScript
 $js_config = [

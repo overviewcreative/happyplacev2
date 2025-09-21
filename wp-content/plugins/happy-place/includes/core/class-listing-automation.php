@@ -58,7 +58,8 @@ class Listing_Automation {
         add_filter('wp_insert_post_data', [$this, 'auto_generate_post_title'], 5, 2);
         
         // Hook into image upload for auto-renaming
-        add_filter('wp_handle_upload_prefilter', [$this, 'auto_rename_uploaded_images']);
+        // TEMPORARILY COMMENTED OUT - Causing issues with bulk uploads
+        // add_filter('wp_handle_upload_prefilter', [$this, 'auto_rename_uploaded_images']);
         
         // Add AJAX endpoint for bathroom formatting
         add_action('wp_ajax_format_bathrooms', [$this, 'ajax_format_bathrooms']);

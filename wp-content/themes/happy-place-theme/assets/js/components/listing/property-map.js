@@ -25,7 +25,6 @@
          */
         init: function() {
             if (typeof google === 'undefined' || !google.maps) {
-                console.warn('Google Maps API not loaded');
                 return;
             }
             
@@ -438,7 +437,6 @@
         toggleFullscreen: function(element) {
             if (!document.fullscreenElement) {
                 element.requestFullscreen().catch(err => {
-                    console.warn('Error attempting to enable fullscreen:', err);
                 });
             } else {
                 document.exitFullscreen();

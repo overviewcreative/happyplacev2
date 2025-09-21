@@ -285,12 +285,8 @@ function hpt_get_agent_photo($agent_id, $size = 'medium') {
         );
     }
     
-    // Return placeholder
-    return array(
-        'id' => 0,
-        'url' => get_template_directory_uri() . '/assets/images/agent-placeholder.jpg',
-        'alt' => __('Agent photo', 'happy-place-theme'),
-    );
+    // Return fallback using centralized system
+    return hph_get_typed_fallback_image('agent', $size);
 }
 
 /**
@@ -484,27 +480,8 @@ function hpt_get_agent_team($agent_id) {
 
 /**
  * Get agent user ID
+ * Function moved to user-bridge.php for unified agent-user system
  */
-function hpt_get_agent_user_id($agent_id) {
-    $user_id = get_field('user', $agent_id);
-    
-    if (!$user_id) {
-        $user_id = get_field('wp_user', $agent_id);
-    }
-    
-    if (!$user_id) {
-        // Try to find by email
-        $email = hpt_get_agent_email($agent_id);
-        if ($email) {
-            $user = get_user_by('email', $email);
-            if ($user) {
-                $user_id = $user->ID;
-            }
-        }
-    }
-    
-    return $user_id ? intval($user_id) : null;
-}
 
 /**
  * Check if agent is featured

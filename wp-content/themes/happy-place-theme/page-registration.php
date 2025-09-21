@@ -265,8 +265,8 @@ get_header(); ?>
                                     <?php 
                                     printf(
                                         __('I agree to the %s and %s', 'happy-place-theme'),
-                                        '<a href="/terms" class="hph-text-primary">Terms of Service</a>',
-                                        '<a href="/privacy" class="hph-text-primary">Privacy Policy</a>'
+                                        '<a href="/legal/#terms" class="hph-text-primary">Terms of Service</a>',
+                                        '<a href="/legal/#privacy" class="hph-text-primary">Privacy Policy</a>'
                                     );
                                     ?>
                                 </span>
@@ -310,30 +310,46 @@ get_header(); ?>
 </div>
 
 <script>
-// Form validation and enhancement
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('.hph-registration-form');
-    const submitBtn = form.querySelector('[name="register_submit"]');
-    const password = document.getElementById('password');
-    const confirmPassword = document.getElementById('confirm_password');
-    
-    // Password confirmation validation
-    function validatePasswords() {
-        if (password.value !== confirmPassword.value) {
-            confirmPassword.setCustomValidity('<?php esc_html_e("Passwords do not match", "happy-place-theme"); ?>');
-        } else {
-            confirmPassword.setCustomValidity('');
-        }
-    }
-    
-    password.addEventListener('input', validatePasswords);
-    confirmPassword.addEventListener('input', validatePasswords);
-    
-    form.addEventListener('submit', function() {
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin hph-mr-sm"></i><?php esc_html_e("Creating account...", "happy-place-theme"); ?>';
-        submitBtn.disabled = true;
+if (window.HPH) {
+    HPH.register('registrationPage', function() {
+        return {
+            init: function() {
+                this.initPasswordValidation();
+                this.initFormSubmission();
+            },
+
+            initPasswordValidation: function() {
+                const password = document.getElementById('password');
+                const confirmPassword = document.getElementById('confirm_password');
+
+                if (password && confirmPassword) {
+                    const validatePasswords = () => {
+                        if (password.value !== confirmPassword.value) {
+                            confirmPassword.setCustomValidity('<?php esc_html_e("Passwords do not match", "happy-place-theme"); ?>');
+                        } else {
+                            confirmPassword.setCustomValidity('');
+                        }
+                    };
+
+                    HPH.events.on(password, 'input', validatePasswords);
+                    HPH.events.on(confirmPassword, 'input', validatePasswords);
+                }
+            },
+
+            initFormSubmission: function() {
+                const form = document.querySelector('.hph-registration-form');
+                const submitBtn = form?.querySelector('[name="register_submit"]');
+
+                if (form && submitBtn) {
+                    HPH.events.on(form, 'submit', function() {
+                        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin hph-mr-sm"></i><?php esc_html_e("Creating account...", "happy-place-theme"); ?>';
+                        submitBtn.disabled = true;
+                    });
+                }
+            }
+        };
     });
-});
+}
 </script>
 
 <?php get_footer(); ?>

@@ -50,13 +50,13 @@ $props = wp_parse_args(get_query_var('args', array()), array(
 // Build button classes
 $btn_classes = array(
     'hph-btn',
-    'hph-btn--' . $props['variant'],
-    'hph-btn--' . $props['size'],
-    'hph-btn--' . $props['shape']
+    'hph-btn-' . $props['variant'],
+    'hph-btn-' . $props['size'],
+    'hph-btn-' . $props['shape']
 );
 
 if ($props['width'] !== 'auto') {
-    $btn_classes[] = 'hph-btn--' . $props['width'];
+    $btn_classes[] = 'hph-btn-' . $props['width'];
 }
 
 if ($props['loading']) {
@@ -72,11 +72,11 @@ if ($props['disabled']) {
 }
 
 if ($props['icon'] && !$props['text']) {
-    $btn_classes[] = 'hph-btn--icon-only';
+    $btn_classes[] = 'hph-btn-icon-only';
 }
 
 if ($props['dropdown']) {
-    $btn_classes[] = 'hph-btn--dropdown';
+    $btn_classes[] = 'hph-btn-dropdown';
 }
 
 if ($props['class']) {

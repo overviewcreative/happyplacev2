@@ -131,9 +131,10 @@
             if (navigator.share) {
                 // Use native sharing if available
                 navigator.share({
-                    title: document.title,
+                title: document.title,
                     url: currentUrl
-                });
+                
+            });
             } else {
                 // Fallback to copy link
                 if (navigator.clipboard) {

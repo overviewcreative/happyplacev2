@@ -119,6 +119,12 @@
     margin: 0;
 }
 
+.hph-modal-subtitle {
+    padding: 0 var(--hph-space-8) var(--hph-space-4);
+    background: var(--hph-white);
+    border-bottom: 1px solid var(--hph-gray-100);
+}
+
 /* ================================================
    MODAL CLOSE BUTTON
    ================================================ */
@@ -589,6 +595,64 @@
     .hph-modal-spinner {
         animation: none;
     }
+}
+
+/* ================================================
+   FORM INTEGRATION
+   ================================================ */
+
+/* Hide form headers when used in modals */
+.hph-modal .hph-form-header {
+    display: none;
+}
+
+/* Reset form styling in modal context */
+.hph-modal .hph-form {
+    margin: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+}
+
+/* Fix dropdown arrow issues in modals */
+.hph-modal .hph-form-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important;
+    background-position: right var(--hph-space-3) center !important;
+    background-size: 16px 12px !important;
+}
+
+.hph-modal .hph-form-select:focus {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2351bae0' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
+}
+
+/* Fix form text spacing issues in modals */
+.hph-modal .hph-form-text {
+    margin-top: var(--hph-space-2);
+    margin-bottom: 0;
+    clear: both;
+    display: block;
+}
+
+/* Fix radio button groups in modals - stack vertically */
+.hph-modal .hph-checkbox-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--hph-space-3);
+}
+
+/* Ensure proper spacing for form check items */
+.hph-modal .hph-form-check {
+    margin-bottom: var(--hph-space-2);
+}
+
+/* Fix textarea spacing */
+.hph-modal .hph-form-textarea {
+    margin-bottom: var(--hph-space-2);
 }
 
 /* ================================================

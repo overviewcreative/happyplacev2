@@ -1,0 +1,292 @@
+/* ================================================
+   HEADER ACTIONS - BEM COMPONENT
+   Header-specific action buttons following BEM methodology
+   ================================================ */
+
+/* ================================================
+   BLOCK: header-actions
+   Container for header action buttons
+   ================================================ */
+.hph-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  height: 100%;
+  flex-direction: row !important; /* Ensure row layout always */
+}
+
+/* ================================================
+   ELEMENT: header-actions__btn
+   Individual action button within header
+   ================================================ */
+.hph-header-actions__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: var(--hph-gray-50);
+  border: none;
+  border-radius: 8px; /* Rounded rectangle, not circle */
+  color: var(--hph-gray-700);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  flex-shrink: 0;
+  margin: 0;
+  opacity: 1;
+  visibility: visible;
+  font-size: 16px;
+  line-height: 1;
+  position: relative;
+}
+
+.hph-header-actions__btn:hover {
+  background: var(--hph-primary);
+  color: var(--hph-white);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.hph-header-actions__btn:focus {
+  outline: 2px solid var(--hph-primary);
+  outline-offset: 2px;
+}
+
+.hph-header-actions__btn:active {
+  transform: translateY(0);
+}
+
+/* ================================================
+   ELEMENT: header-actions__icon
+   Icon within header action button
+   ================================================ */
+.hph-header-actions__icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  color: inherit;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* ================================================
+   MODIFIER: header-actions__btn--search
+   Search toggle button variant
+   ================================================ */
+.hph-header-actions__btn--search {
+  /* Inherits all base styles from header-actions__btn */
+}
+
+.hph-header-actions__btn--search:hover {
+  background: var(--hph-blue-500);
+  color: var(--hph-white);
+}
+
+.hph-header-actions__btn--search:focus {
+  outline-color: var(--hph-blue-500);
+}
+
+/* ================================================
+   MODIFIER: header-actions__btn--menu
+   Mobile menu toggle button variant
+   ================================================ */
+.hph-header-actions__btn--menu {
+  /* Inherits all base styles from header-actions__btn */
+}
+
+.hph-header-actions__btn--menu:hover {
+  background: var(--hph-primary);
+  color: var(--hph-white);
+}
+
+/* ================================================
+   MODIFIER: header-actions__btn--clear
+   Clear/close button variant for search
+   ================================================ */
+.hph-header-actions__btn--clear {
+  width: 32px;
+  height: 32px;
+  background: var(--hph-gray-100);
+  border-radius: 50%; /* Circle for clear button */
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.hph-header-actions__btn--clear:hover {
+  background: var(--hph-red-500);
+  color: var(--hph-white);
+  transform: translateY(-50%) rotate(90deg);
+}
+
+.hph-header-actions__btn--clear .hph-header-actions__icon {
+  width: 0.75rem;
+  height: 0.75rem;
+  font-size: 0.75rem;
+}
+
+/* ================================================
+   MODIFIER: header-actions__btn--close
+   Close button variant for modal/menu
+   ================================================ */
+.hph-header-actions__btn--close {
+  width: 36px;
+  height: 36px;
+  background: var(--hph-gray-100);
+  border-radius: 50%;
+}
+
+.hph-header-actions__btn--close:hover {
+  background: var(--hph-red-500);
+  color: var(--hph-white);
+  transform: rotate(90deg);
+}
+
+.hph-header-actions__btn--close .hph-header-actions__icon {
+  width: 0.875rem;
+  height: 0.875rem;
+  font-size: 0.875rem;
+}
+
+/* ================================================
+   ELEMENT: header-actions__hamburger
+   Hamburger menu icon structure
+   ================================================ */
+.hph-header-actions__hamburger {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 20px;
+  height: 14px;
+  justify-content: space-between;
+}
+
+.hph-header-actions__hamburger-line {
+  width: 100%;
+  height: 2px;
+  background: currentColor;
+  border-radius: 1px;
+  transition: all 0.3s ease;
+}
+
+/* ================================================
+   STATE: header-actions__btn--active
+   Active state for menu toggle
+   ================================================ */
+.hph-header-actions__btn--active .hph-header-actions__hamburger-line:first-child {
+  transform: rotate(45deg) translate(4px, 4px);
+}
+
+.hph-header-actions__btn--active .hph-header-actions__hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.hph-header-actions__btn--active .hph-header-actions__hamburger-line:last-child {
+  transform: rotate(-45deg) translate(4px, -4px);
+}
+
+/* ================================================
+   ELEMENT: header-actions__badge
+   Notification badge on action buttons
+   ================================================ */
+.hph-header-actions__badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--hph-danger);
+  color: var(--hph-white);
+  font-size: 0.625rem;
+  font-weight: 600;
+  padding: 0.125rem 0.375rem;
+  border-radius: 1rem;
+  min-width: 18px;
+  text-align: center;
+  line-height: 1;
+}
+
+/* ================================================
+   RESPONSIVE BEHAVIOR
+   ================================================ */
+@media (max-width: 768px) {
+  .hph-header-actions {
+    gap: 0.5rem;
+  }
+
+  .hph-header-actions__btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .hph-header-actions__icon {
+    width: 0.875rem;
+    height: 0.875rem;
+    font-size: 0.875rem;
+  }
+
+  .hph-header-actions__hamburger {
+    width: 18px;
+    height: 12px;
+  }
+}
+
+/* ================================================
+   MODIFIER: header-actions--search-active
+   When search bar is open
+   ================================================ */
+.hph-header-actions--search-active .hph-header-actions__btn--search {
+  background: var(--hph-blue-500);
+  color: var(--hph-white);
+}
+
+/* ================================================
+   MODIFIER: header-actions--menu-active
+   When mobile menu is open
+   ================================================ */
+.hph-header-actions--menu-active .hph-header-actions__btn--menu {
+  background: var(--hph-primary);
+  color: var(--hph-white);
+}
+
+/* ================================================
+   BACKWARDS COMPATIBILITY
+   Ensure existing .hph-action-btn styles don't conflict in header
+   ================================================ */
+.hph-site-header-enhanced .hph-action-btn {
+  /* Reset generic action button styles when used in enhanced header */
+  width: auto;
+  height: auto;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  color: inherit;
+  box-shadow: none;
+  transform: none;
+}
+
+.hph-site-header-enhanced .hph-action-btn:hover {
+  background: transparent;
+  color: inherit;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Override to prefer header-specific classes */
+.hph-header-actions .hph-header-actions__btn {
+  /* Header action buttons take precedence over generic action buttons */
+  width: 44px !important;
+  height: 44px !important;
+  background: var(--hph-gray-50) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  color: var(--hph-gray-700) !important;
+}
+
+.hph-header-actions .hph-header-actions__btn:hover {
+  background: var(--hph-primary) !important;
+  color: var(--hph-white) !important;
+}

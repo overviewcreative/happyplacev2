@@ -30,7 +30,7 @@
 
 .hph-btn:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(81, 186, 224, 0.25);
+  box-shadow: var(--hph-btn-focus-ring);
 }
 
 .hph-btn:disabled,
@@ -53,7 +53,7 @@
   aspect-ratio: 1;
 }
 
-/* Button Icon Color Inheritance */
+/* Button Icon Color Inheritance - WCAG AA Accessibility Improved */
 .hph-btn .fa,
 .hph-btn .fas,
 .hph-btn .far,
@@ -72,10 +72,10 @@ button i,
 [class*="btn"] .fal,
 [class*="btn"] .fab,
 [class*="btn"] i {
-  color: inherit !important;
+  color: inherit; /* Removed !important to allow contrast-safe overrides */
 }
 
-/* Button Icon Color Inheritance on Hover */
+/* Button Icon Color Inheritance on Hover - WCAG AA Accessibility Improved */
 .hph-btn:hover .fa,
 .hph-btn:hover .fas,
 .hph-btn:hover .far,
@@ -94,7 +94,7 @@ button:hover i,
 [class*="btn"]:hover .fal,
 [class*="btn"]:hover .fab,
 [class*="btn"]:hover i {
-  color: inherit !important;
+  color: inherit; /* Removed !important to allow contrast-safe overrides */
 }
 
 /* Button Icon Color Inheritance on Focus and Active */
@@ -134,17 +134,79 @@ button:active i,
 [class*="btn"]:active .fal,
 [class*="btn"]:active .fab,
 [class*="btn"]:active i {
-  color: inherit !important;
+  color: inherit; /* Removed !important to allow contrast-safe overrides */
+}
+
+/* ================================================
+   ACCESSIBILITY: CONTRAST-SAFE ICON COLORS
+   WCAG AA Compliance (4.5:1 contrast ratio)
+   ================================================ */
+
+/* Ghost Button Icons - Ensure sufficient contrast against white backgrounds */
+.hph-btn-ghost .fa,
+.hph-btn-ghost .fas,
+.hph-btn-ghost .far,
+.hph-btn-ghost .fal,
+.hph-btn-ghost .fab,
+.hph-btn-ghost i {
+  color: var(--hph-gray-800); /* #1e4355 - Meets WCAG AA 4.5:1 contrast */
+}
+
+.hph-btn-ghost:hover .fa,
+.hph-btn-ghost:hover .fas,
+.hph-btn-ghost:hover .far,
+.hph-btn-ghost:hover .fal,
+.hph-btn-ghost:hover .fab,
+.hph-btn-ghost:hover i {
+  color: var(--hph-black); /* Maximum contrast */
+}
+
+/* Outline Button Icons - WCAG AA compliant colors */
+.hph-btn-outline-primary .fa,
+.hph-btn-outline-primary .fas,
+.hph-btn-outline-primary .far,
+.hph-btn-outline-primary .fal,
+.hph-btn-outline-primary .fab,
+.hph-btn-outline-primary i {
+  color: var(--hph-primary-700); /* #285d71 - Better contrast than primary */
+}
+
+.hph-btn-outline-secondary .fa,
+.hph-btn-outline-secondary .fas,
+.hph-btn-outline-secondary .far,
+.hph-btn-outline-secondary .fal,
+.hph-btn-outline-secondary .fab,
+.hph-btn-outline-secondary i {
+  color: var(--hph-primary-700); /* Consistent with primary outline */
+}
+
+/* Text Button Icons - Enhanced contrast */
+.hph-btn-text .fa,
+.hph-btn-text .fas,
+.hph-btn-text .far,
+.hph-btn-text .fal,
+.hph-btn-text .fab,
+.hph-btn-text i {
+  color: var(--hph-primary-700); /* Better contrast than primary */
+}
+
+.hph-btn-text:hover .fa,
+.hph-btn-text:hover .fas,
+.hph-btn-text:hover .far,
+.hph-btn-text:hover .fal,
+.hph-btn-text:hover .fab,
+.hph-btn-text:hover i {
+  color: var(--hph-primary-800); /* Maximum contrast for hover */
 }
 
 /* ================================================
    BUTTON VARIANTS
    ================================================ */
 
-/* Primary Button - Modern Glass Morphism */
+/* Primary Button - Solid Color Using Variables */
 .hph-btn-primary {
-  background: linear-gradient(135deg, var(--hph-primary-400) 0%, var(--hph-primary-600) 100%);
-  border-color: transparent;
+  background: var(--hph-primary);
+  border-color: var(--hph-primary);
   color: var(--hph-white);
   box-shadow: 0 4px 15px rgba(81, 186, 224, 0.3);
   font-weight: 600;
@@ -152,7 +214,8 @@ button:active i,
 }
 
 .hph-btn-primary:hover {
-  background: linear-gradient(135deg, var(--hph-primary-500) 0%, var(--hph-primary-700) 100%);
+  background: var(--hph-primary-600);
+  border-color: var(--hph-primary-600);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(81, 186, 224, 0.4);
 }
@@ -258,7 +321,7 @@ button:active i,
   background: transparent;
   border-color: transparent;
   color: var(--hph-primary);
-  padding: var(--hph-padding-xs) var(--hph-padding-sm);
+  padding: var(--hph-space-1) var(--hph-space-2);
 }
 
 .hph-btn-text:hover {
@@ -325,24 +388,24 @@ button:active i,
    BUTTON SIZES
    ================================================ */
 .hph-btn-xs {
-  padding: var(--hph-padding-xs) var(--hph-padding-sm);
+  padding: var(--hph-space-1) var(--hph-space-2);
   font-size: var(--hph-text-xs);
   border-radius: var(--hph-radius-sm);
 }
 
 .hph-btn-sm {
-  padding: var(--hph-padding-xs) var(--hph-padding-md);
+  padding: var(--hph-space-1) var(--hph-space-4);
   font-size: var(--hph-text-sm);
 }
 
 .hph-btn-lg {
-  padding: var(--hph-padding-sm) var(--hph-padding-lg);
+  padding: var(--hph-space-2) var(--hph-space-6);
   font-size: var(--hph-text-lg);
   border-radius: var(--hph-radius-lg);
 }
 
 .hph-btn-xl {
-  padding: var(--hph-padding-md) var(--hph-padding-xl);
+  padding: var(--hph-space-4) var(--hph-space-8);
   font-size: var(--hph-text-xl);
   border-radius: var(--hph-radius-lg);
 }
@@ -583,16 +646,16 @@ button[style*="border-radius: 50%"],
 
 /* Call to Action Buttons */
 .hph-btn-cta {
-  background: linear-gradient(135deg, var(--hph-primary) 0%, var(--hph-primary-dark) 100%);
+  background: var(--hph-primary);
   border: none;
   color: var(--hph-white);
   font-weight: 600;
-  padding: var(--hph-padding-sm) var(--hph-padding-xl);
+  padding: var(--hph-space-2) var(--hph-space-8);
   box-shadow: var(--hph-shadow-lg);
 }
 
 .hph-btn-cta:hover {
-  background: linear-gradient(135deg, var(--hph-primary-dark) 0%, var(--hph-primary-800) 100%);
+  background: var(--hph-primary-700);
   transform: translateY(-3px);
   box-shadow: var(--hph-shadow-xl);
 }
@@ -667,6 +730,7 @@ button[style*="border-radius: 50%"],
 /* Hero Button Base Class */
 .hph-hero-btn {
     font-weight: var(--hph-btn-font-weight);
+    backdrop-filter: blur(12px), opacity(0.7);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
@@ -720,22 +784,22 @@ button[style*="border-radius: 50%"],
 
 /* Enhanced Button Sizes */
 .hph-btn-s {
-    padding: var(--hph-space-sm) var(--hph-space-md);
+    padding: var(--hph-space-2) var(--hph-space-4);
     font-size: var(--hph-text-sm);
 }
 
 .hph-btn-m {
-    padding: var(--hph-space-md) var(--hph-space-lg);
+    padding: var(--hph-space-4) var(--hph-space-6);
     font-size: var(--hph-text-base);
 }
 
 .hph-btn-l {
-    padding: var(--hph-space-md) var(--hph-space-xl);
+    padding: var(--hph-space-4) var(--hph-space-8);
     font-size: var(--hph-text-base);
 }
 
 .hph-btn-xl {
-    padding: var(--hph-space-lg) var(--hph-space-2xl);
+    padding: var(--hph-space-6) var(--hph-space-12);
     font-size: var(--hph-text-lg);
 }
 
@@ -785,13 +849,13 @@ button[style*="border-radius: 50%"],
 
 /* Hero Primary Button */
 .hph-hero__btn--primary {
-  background: linear-gradient(135deg, var(--hph-primary), var(--hph-primary-dark));
+  background: var(--hph-primary);
   color: var(--hph-white);
   box-shadow: 0 4px 14px rgba(81, 186, 224, 0.3);
 }
 
 .hph-hero__btn--primary:hover {
-  background: linear-gradient(135deg, var(--hph-primary-dark), var(--hph-primary));
+  background: var(--hph-primary-600);
   box-shadow: 0 8px 25px rgba(81, 186, 224, 0.4);
 }
 
@@ -827,11 +891,11 @@ button[style*="border-radius: 50%"],
 }
 
 .hph-hero__btn--icon.is-favorite {
-  background: linear-gradient(135deg, var(--hph-danger), rgba(220, 38, 38, 0.8));
+  background: var(--hph-danger);
 }
 
 .hph-hero__btn--icon.is-favorite:hover {
-  background: linear-gradient(135deg, rgba(220, 38, 38, 0.9), var(--hph-danger));
+  background: var(--hph-danger-600);
 }
 
 /* Responsive Hero Button Styles */
@@ -846,6 +910,431 @@ button[style*="border-radius: 50%"],
     height: auto;
     padding: 0.75rem 1rem;
     border-radius: 0.75rem;
+  }
+}
+
+/* ================================================
+   ACTION BUTTONS - ATOMIC COMPONENTS
+   User interaction buttons for cards and listings
+   ================================================ */
+
+/* Base Action Button */
+.hph-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  background: var(--hph-white);
+  border: 1px solid var(--hph-gray-300);
+  border-radius: var(--hph-radius-md);
+  color: var(--hph-gray-600);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  box-shadow: var(--hph-shadow-sm);
+}
+
+.hph-action-btn:hover {
+  background: var(--hph-gray-50);
+  border-color: var(--hph-primary);
+  color: var(--hph-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--hph-shadow-md);
+}
+
+.hph-action-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(81, 186, 224, 0.25);
+}
+
+.hph-action-btn:active {
+  transform: translateY(0);
+}
+
+/* Action Button Size Variants */
+.hph-action-btn-sm {
+  width: 2rem;
+  height: 2rem;
+  font-size: 0.75rem;
+}
+
+.hph-action-btn-lg {
+  width: 3rem;
+  height: 3rem;
+  font-size: 1rem;
+}
+
+/* Favorite Button Variant */
+.hph-action-btn-favorite {
+  color: var(--hph-gray-400);
+}
+
+.hph-action-btn-favorite:hover {
+  color: var(--hph-danger);
+  border-color: var(--hph-danger);
+  background: var(--hph-red-50);
+}
+
+.hph-action-btn-favorite.is-favorited {
+  background: var(--hph-danger);
+  border-color: var(--hph-danger);
+  color: var(--hph-white);
+}
+
+.hph-action-btn-favorite.is-favorited:hover {
+  background: var(--hph-red-600);
+  border-color: var(--hph-red-600);
+}
+
+/* Share Button Variant */
+.hph-action-btn-share {
+  color: var(--hph-gray-500);
+}
+
+.hph-action-btn-share:hover {
+  color: var(--hph-blue-600);
+  border-color: var(--hph-blue-600);
+  background: var(--hph-blue-50);
+}
+
+/* Compare Button Variant */
+.hph-action-btn-compare {
+  color: var(--hph-gray-500);
+}
+
+.hph-action-btn-compare:hover {
+  color: var(--hph-purple-600);
+  border-color: var(--hph-purple-600);
+  background: var(--hph-purple-50);
+}
+
+.hph-action-btn-compare.is-comparing {
+  background: var(--hph-purple-600);
+  border-color: var(--hph-purple-600);
+  color: var(--hph-white);
+}
+
+.hph-action-btn-compare.is-comparing:hover {
+  background: var(--hph-purple-700);
+  border-color: var(--hph-purple-700);
+}
+
+/* Ghost Action Button (transparent background) */
+.hph-action-btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.hph-action-btn-ghost:hover {
+  background: var(--hph-gray-100);
+  border-color: transparent;
+}
+
+/* ================================================
+   LISTING ARCHIVE BUTTONS - BEM VARIANTS
+   Business logic buttons for listing archives
+   ================================================ */
+
+/* Quick Filter Button - Filter selection buttons */
+.hph-quick-filter-btn {
+  /* Extends .hph-btn base */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--hph-space-1) var(--hph-space-4);
+  font-size: var(--hph-text-sm);
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid var(--hph-gray-300);
+  border-radius: var(--hph-radius-full);
+  transition: var(--hph-transition);
+  cursor: pointer;
+  background: var(--hph-white);
+  color: var(--hph-gray-700);
+  margin: 0.125rem;
+}
+
+.hph-quick-filter-btn:hover {
+  background: var(--hph-primary-50);
+  border-color: var(--hph-primary-300);
+  color: var(--hph-primary-700);
+  transform: translateY(-1px);
+  box-shadow: var(--hph-shadow-sm);
+}
+
+.hph-quick-filter-btn.is-active,
+.hph-quick-filter-btn[data-active="true"] {
+  background: var(--hph-primary);
+  border-color: var(--hph-primary);
+  color: var(--hph-white);
+  font-weight: 600;
+}
+
+.hph-quick-filter-btn.is-active:hover {
+  background: var(--hph-primary-600);
+  border-color: var(--hph-primary-600);
+  transform: translateY(-1px);
+}
+
+/* View Control Button - Grid/List/Map switcher */
+.hph-view-btn {
+  /* Extends .hph-btn base */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  background: var(--hph-white);
+  border: 1px solid var(--hph-gray-300);
+  border-radius: var(--hph-radius-md);
+  color: var(--hph-gray-600);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  box-shadow: var(--hph-shadow-sm);
+}
+
+.hph-view-btn:hover {
+  background: var(--hph-gray-50);
+  border-color: var(--hph-primary);
+  color: var(--hph-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--hph-shadow-md);
+}
+
+.hph-view-btn.is-active,
+.hph-view-btn[data-active="true"] {
+  background: var(--hph-primary);
+  border-color: var(--hph-primary);
+  color: var(--hph-white);
+  box-shadow: var(--hph-shadow-md);
+}
+
+.hph-view-btn.is-active:hover {
+  background: var(--hph-primary-600);
+  border-color: var(--hph-primary-600);
+}
+
+/* Load More Button - Pagination action */
+.hph-btn-load-more {
+  /* Extends .hph-btn base with CTA styling */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--hph-gap-sm);
+  padding: var(--hph-space-4) var(--hph-space-8);
+  font-size: var(--hph-text-base);
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid transparent;
+  border-radius: var(--hph-radius-lg);
+  transition: var(--hph-transition);
+  cursor: pointer;
+  background: var(--hph-primary);
+  color: var(--hph-white);
+  box-shadow: 0 4px 15px rgba(81, 186, 224, 0.3);
+  min-width: 150px;
+}
+
+.hph-btn-load-more:hover {
+  background: var(--hph-primary-600);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(81, 186, 224, 0.4);
+}
+
+.hph-btn-load-more:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(81, 186, 224, 0.3);
+}
+
+.hph-btn-load-more:disabled,
+.hph-btn-load-more.is-loading {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Clear Action Button - Reset/Clear actions */
+.hph-btn-clear {
+  /* Extends .hph-btn base with warning styling */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--hph-gap-sm);
+  padding: var(--hph-space-2) var(--hph-space-6);
+  font-size: var(--hph-text-sm);
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid var(--hph-gray-300);
+  border-radius: var(--hph-radius-md);
+  transition: var(--hph-transition);
+  cursor: pointer;
+  background: var(--hph-white);
+  color: var(--hph-gray-700);
+}
+
+.hph-btn-clear:hover {
+  background: var(--hph-red-50);
+  border-color: var(--hph-red-300);
+  color: var(--hph-red-700);
+  transform: translateY(-1px);
+  box-shadow: var(--hph-shadow-sm);
+}
+
+.hph-btn-clear:active {
+  background: var(--hph-red-100);
+  transform: translateY(0);
+}
+
+/* ================================================
+   VIEW SWITCHER GROUP - BEM ORGANISM
+   Combined view control buttons
+   ================================================ */
+.hph-view-switcher {
+  display: inline-flex;
+  background: var(--hph-white);
+  border-radius: var(--hph-radius-lg);
+  padding: 0.25rem;
+  box-shadow: var(--hph-shadow-sm);
+  border: 1px solid var(--hph-gray-200);
+}
+
+.hph-view-switcher .hph-view-btn {
+  border-radius: var(--hph-radius-md);
+  border: none;
+  margin: 0;
+  box-shadow: none;
+}
+
+.hph-view-switcher .hph-view-btn:not(.is-active) {
+  background: transparent;
+}
+
+.hph-view-switcher .hph-view-btn.is-active {
+  box-shadow: var(--hph-shadow-sm);
+}
+
+/* ================================================
+   QUICK FILTERS GROUP - BEM ORGANISM
+   Combined quick filter buttons
+   ================================================ */
+.hph-quick-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--hph-gap-xs);
+  align-items: center;
+}
+
+.hph-quick-filters .hph-quick-filter-btn {
+  margin: 0;
+}
+
+/* ================================================
+   RESPONSIVE BEHAVIOR
+   ================================================ */
+@media (max-width: 640px) {
+  .hph-quick-filters {
+    gap: var(--hph-gap-xs);
+  }
+
+  .hph-quick-filter-btn {
+    font-size: var(--hph-text-xs);
+    padding: var(--hph-space-1) var(--hph-space-2);
+  }
+
+  .hph-view-switcher {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .hph-view-btn {
+    flex: 1;
+  }
+
+  .hph-btn-load-more {
+    width: 100%;
+  }
+}
+
+/* ================================================
+   CONTEXT-SPECIFIC BEM MODIFIERS
+   Use CSS variables for customization instead of redefining base classes
+   ================================================ */
+
+/* Header Context Buttons */
+.hph-btn--header {
+  padding: var(--hph-btn-header-padding-y) var(--hph-btn-header-padding-x);
+  font-size: var(--hph-btn-font-size-sm);
+}
+
+/* Hero Section Buttons */
+.hph-btn--hero {
+  padding: var(--hph-btn-hero-padding-y) var(--hph-btn-hero-padding-x);
+  font-size: var(--hph-btn-font-size-lg);
+  font-weight: 600;
+}
+
+/* Card Context Buttons */
+.hph-btn--card {
+  padding: var(--hph-btn-card-padding-y) var(--hph-btn-card-padding-x);
+  font-size: var(--hph-btn-font-size-sm);
+}
+
+/* Form Context Buttons */
+.hph-btn--form {
+  padding: var(--hph-btn-form-padding-y) var(--hph-btn-form-padding-x);
+  min-height: var(--hph-btn-height);
+}
+
+/* Dashboard Context Buttons */
+.hph-btn--dashboard {
+  padding: var(--hph-btn-dashboard-padding-y) var(--hph-btn-dashboard-padding-x);
+  font-size: var(--hph-btn-font-size-sm);
+}
+
+/* Context-specific focus rings */
+.hph-btn--danger:focus {
+  box-shadow: var(--hph-btn-focus-ring-danger);
+}
+
+.hph-btn--success:focus {
+  box-shadow: var(--hph-btn-focus-ring-success);
+}
+
+/* Mobile responsive adjustments for context buttons */
+@media (max-width: 768px) {
+  .hph-btn--hero {
+    padding: var(--hph-btn-padding-y) var(--hph-btn-padding-x);
+    font-size: var(--hph-btn-font-size);
+  }
+
+  .hph-btn--header {
+    padding: var(--hph-btn-card-padding-y) var(--hph-btn-card-padding-x);
+  }
+
+  .hph-btn--dashboard {
+    padding: var(--hph-btn-card-padding-y) var(--hph-btn-card-padding-x);
   }
 }
 

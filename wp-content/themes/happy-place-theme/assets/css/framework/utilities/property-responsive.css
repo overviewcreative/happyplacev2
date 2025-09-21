@@ -1,0 +1,468 @@
+/* === 06-utilities/hph-property-responsive.css === */
+/* ================================================
+   PROPERTY RESPONSIVE BREAKPOINTS
+   Real Estate specific responsive behavior
+   ================================================ */
+
+/* ================================================
+   EXTRA LARGE SCREENS (1536px+)
+   ================================================ */
+@media (min-width: 1536px) {
+  .hero-property-container {
+    max-width: var(--hph-container-2xl);
+    padding-left: var(--hph-space-24);
+    padding-right: var(--hph-space-24);
+  }
+  
+  .property-gallery-grid {
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, 300px);
+  }
+  
+  .feature-highlights {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* ================================================
+   LARGE SCREENS (1024px - 1535px)
+   ================================================ */
+@media (min-width: 1024px) and (max-width: 1535px) {
+  .listing-content {
+    grid-template-columns: 1fr 350px !important;
+    gap: var(--hph-space-12) !important;
+  }
+  
+  .property-gallery-grid {
+    grid-template-rows: repeat(2, 220px);
+  }
+  
+  .agent-card-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ================================================
+   TABLET LANDSCAPE (768px - 1023px)  
+   ================================================ */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .listing-content {
+    grid-template-columns: 1fr !important;
+    gap: var(--hph-space-12) !important;
+  }
+  
+  .hero-property-header {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--hph-space-8);
+  }
+  
+  .hero-property-pricing {
+    text-align: center;
+  }
+  
+  .hero-property-features {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .feature-highlights {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .property-specs {
+    grid-template-columns: 1fr;
+  }
+  
+  .property-gallery-grid {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 200px);
+  }
+  
+  .property-gallery-item:first-child {
+    grid-column: span 3;
+    grid-row: span 1;
+  }
+  
+  .agent-card {
+    flex-direction: row;
+    text-align: left;
+  }
+  
+  .agent-card-header {
+    width: 200px;
+    flex-shrink: 0;
+  }
+  
+  .agent-card-body {
+    flex: 1;
+  }
+  
+  .content-sidebar {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--hph-space-8);
+  }
+}
+
+/* ================================================
+   TABLET PORTRAIT (640px - 767px)
+   ================================================ */
+@media (min-width: 640px) and (max-width: 767px) {
+  .hero-property-address {
+    font-size: var(--hph-text-2xl);
+  }
+  
+  .hero-property-price {
+    font-size: var(--hph-text-3xl);
+  }
+  
+  .feature-highlights {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--hph-space-6);
+  }
+  
+  .property-gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 180px);
+  }
+  
+  .property-gallery-item:first-child {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+  
+  .hero-property-actions {
+    flex-direction: column;
+    gap: var(--hph-space-4);
+  }
+  
+  .hero-property-actions .btn {
+    width: 100%;
+  }
+  
+  .content-sidebar {
+    display: block;
+  }
+  
+  .content-sidebar .widget {
+    margin-bottom: var(--hph-space-12);
+  }
+}
+
+/* ================================================
+   MOBILE (320px - 639px)
+   ================================================ */
+@media (max-width: 639px) {
+  .hero-property-container {
+    padding: var(--hph-space-6);
+  }
+  
+  .hero-property-address {
+    font-size: var(--hph-text-xl);
+    line-height: 1.3;
+  }
+  
+  .hero-property-location {
+    font-size: var(--hph-text-base);
+  }
+  
+  .hero-property-price {
+    font-size: var(--hph-text-2xl);
+  }
+  
+  .hero-property-features {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--hph-space-2);
+  }
+  
+  .hero-property-feature {
+    font-size: var(--hph-text-sm);
+  }
+  
+  .feature-highlights {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--hph-space-4);
+    padding: var(--hph-space-6);
+  }
+  
+  .feature-highlight-value {
+    font-size: var(--hph-text-2xl);
+  }
+  
+  .property-gallery-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(6, 250px);
+    gap: var(--hph-space-2);
+  }
+  
+  .property-gallery-item:first-child {
+    grid-column: span 1;
+    grid-row: span 2;
+  }
+  
+  .property-gallery-carousel-thumbs {
+    padding: var(--hph-space-2);
+    gap: var(--hph-space-1);
+  }
+  
+  .gallery-carousel-thumb {
+    width: 50px;
+    height: 40px;
+  }
+  
+  .agent-card {
+    text-align: center;
+  }
+  
+  .agent-card-header {
+    width: 100%;
+  }
+  
+  .agent-card-stats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--hph-space-2);
+  }
+  
+  .agent-card-actions {
+    flex-direction: column;
+  }
+  
+  .listing-quick-actions {
+    top: var(--hph-space-2);
+    right: var(--hph-space-2);
+    flex-direction: column;
+  }
+  
+  .listing-contact-modal {
+    margin: var(--hph-space-2);
+    max-height: calc(100vh - 2rem);
+  }
+}
+
+/* ================================================
+   SMALL MOBILE (320px - 479px)
+   ================================================ */
+@media (max-width: 479px) {
+  .hero-property-address {
+    font-size: var(--hph-text-lg);
+  }
+  
+  .hero-property-price {
+    font-size: var(--hph-text-xl);
+  }
+  
+  .feature-highlights {
+    grid-template-columns: 1fr;
+  }
+  
+  .property-gallery-carousel-counter {
+    bottom: var(--hph-space-2);
+    right: var(--hph-space-2);
+    font-size: var(--hph-text-xs);
+    padding: var(--hph-space-1) var(--hph-space-2);
+  }
+  
+  .agent-card-stats {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  
+  .agent-card-stat {
+    padding: var(--hph-space-2);
+    border: 1px solid var(--hph-border-color-light);
+    border-radius: var(--hph-radius-md);
+  }
+}
+
+/* ================================================
+   LANDSCAPE ORIENTATION
+   ================================================ */
+@media (orientation: landscape) and (max-height: 600px) {
+  .hero-property-gallery {
+    height: 60vh;
+    min-height: 300px;
+  }
+  
+  .property-gallery-carousel-main {
+    padding-top: 60%;
+  }
+  
+  .listing-contact-modal {
+    max-height: 95vh;
+    margin: 1rem;
+  }
+}
+
+/* ================================================
+   PRINT STYLES
+   ================================================ */
+@media print {
+  .hero-property-actions,
+  .listing-quick-actions,
+  .listing-contact-overlay,
+  .property-gallery-carousel-controls,
+  .property-gallery-carousel-counter,
+  .property-gallery-carousel-thumbs,
+  .gallery-fullscreen-toggle,
+  .agent-card-actions,
+  .agent-card-social {
+    display: none !important;
+  }
+  
+  .property-gallery-carousel-main {
+    padding-top: 0;
+    height: 300px;
+  }
+  
+  .property-gallery-carousel-image {
+    position: static;
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+  }
+  
+  .listing-content {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .content-sidebar .widget {
+    page-break-inside: avoid;
+    margin-bottom: var(--hph-space-8);
+  }
+}
+
+/* ================================================
+   HIGH DPI / RETINA DISPLAYS
+   ================================================ */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .property-gallery-item img,
+  .agent-card-avatar,
+  .gallery-carousel-thumb img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* ================================================
+   REDUCED MOTION PREFERENCE
+   ================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .property-gallery-item img,
+  .hero-property-actions .btn,
+  .agent-card,
+  .listing-quick-action,
+  .gallery-carousel-control {
+    transition: none;
+    animation: none;
+    transform: none !important;
+  }
+  
+  .property-gallery-lightbox {
+    transition: opacity 0.15s ease;
+  }
+}
+
+/* ================================================
+   DARK MODE SUPPORT - Removed incomplete implementation
+   TODO: Re-implement comprehensive dark mode in future version
+   ================================================ */
+
+/* ================================================
+   CONTAINER QUERIES (FUTURE ENHANCEMENT)
+   ================================================ */
+@supports (container-type: inline-size) {
+  .listing-content {
+    container-type: inline-size;
+  }
+  
+  @container (max-width: 800px) {
+    .listing-content {
+      grid-template-columns: 1fr !important;
+    }
+  }
+}
+
+/* ============================================================================
+   LISTING CARD CONTENT STRUCTURE STYLES
+   ============================================================================ */
+
+/* Price as subtitle styling */
+.hph-card__subtitle .hph-listing-price {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--hph-primary);
+    margin: 0;
+    line-height: 1.2;
+}
+
+/* Address styling */
+.hph-listing-address {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--hph-gray-900);
+    margin: 0 0 0.5rem;
+    line-height: 1.3;
+}
+
+/* Location text styling */
+.hph-listing-location {
+    font-size: 0.875rem;
+    color: var(--hph-teal-600, #0d9488);
+    margin: 0 0 0.75rem;
+    font-weight: 500;
+}
+
+/* Property details styling */
+.hph-listing-details {
+    font-size: 0.875rem;
+    color: var(--hph-gray-600);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Price per sqft styling within details */
+.hph-listing-price-per-sqft {
+    font-size: 0.813rem;
+    color: var(--hph-gray-500);
+    font-weight: 500;
+    margin-top: 0.25rem;
+}
+
+/* Responsive adjustments for card content */
+@media (max-width: 768px) {
+    .hph-card__subtitle .hph-listing-price {
+        font-size: 1.5rem;
+    }
+    
+    .hph-listing-address {
+        font-size: 1rem;
+    }
+    
+    .hph-listing-location {
+        font-size: 0.813rem;
+    }
+    
+    .hph-listing-details {
+        font-size: 0.813rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hph-card__subtitle .hph-listing-price {
+        font-size: 1.25rem;
+    }
+    
+    .hph-listing-address {
+        font-size: 0.875rem;
+        margin-bottom: 0.375rem;
+    }
+    
+    .hph-listing-location {
+        font-size: 0.75rem;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* File Location: /wp-content/themes/happy-place/assets/css/framework/responsive/property-responsive.css */

@@ -1,11 +1,8 @@
 <?php
 /**
  * Staff Card - Team View
- * File: templ// Final fallback to placeholder
-if (!$staff_photo) {
-    $staff_photo = get_template_directory_uri() . '/assets/images/team-placeholder.jpg';
-}parts/staff-card.php
- * 
+ * File: template-parts/staff-card.php
+ *
  * @package HappyPlaceTheme
  */
 
@@ -35,26 +32,9 @@ if (empty($full_name)) {
     $full_name = get_the_title($staff_id);
 }
 
-// Get staff photo - try multiple field names
-$staff_photo = get_field('profile_photo', $staff_id) ?? 
-               get_field('staff_photo', $staff_id) ?? 
-               get_field('photo', $staff_id);
-
-if ($staff_photo && is_array($staff_photo)) {
-    // ACF image field returns array
-    $staff_photo = $staff_photo['sizes']['medium'] ?? $staff_photo['url'];
-} elseif ($staff_photo && is_numeric($staff_photo)) {
-    // If it's an attachment ID
-    $staff_photo = wp_get_attachment_image_url($staff_photo, 'medium');
-} elseif (!$staff_photo) {
-    // Fallback to featured image if profile photo not set
-    $staff_photo = get_the_post_thumbnail_url($staff_id, 'medium');
-}
-
-// Final fallback to placeholder
-if (!$staff_photo) {
-    $staff_photo = get_template_directory_uri() . '/assets/images/placeholder-person.jpg';
-}
+// Get staff photo using centralized bridge function
+$staff_photo_data = hpt_get_team_member_photo($staff_id, 'medium');
+$staff_photo = $staff_photo_data['url'];
 
 // Process specialties/skills for display
 $skills = get_field('skills', $staff_id) ?? get_field('staff_skills', $staff_id);
@@ -74,10 +54,16 @@ if ($skills) {
         
         <!-- Photo Container -->
         <div class="hph-relative hph-aspect-ratio-1-1 hph-overflow-hidden hph-bg-gray-200">
-            <img src="<?php echo esc_url($staff_photo); ?>" 
-                 alt="<?php echo esc_attr($full_name); ?>"
-                 class="hph-w-full hph-h-full hph-object-cover"
-                 loading="lazy">
+            <?php
+            // Use enhanced lazy loading helper for staff photos
+            echo hph_lazy_image(
+                $staff_photo,
+                $staff_photo_data['alt'] ?: $full_name,
+                'hph-w-full hph-h-full hph-object-cover',
+                '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px',
+                'card'
+            );
+            ?>
             
             <!-- Department Badge -->
             <?php if ($department): ?>

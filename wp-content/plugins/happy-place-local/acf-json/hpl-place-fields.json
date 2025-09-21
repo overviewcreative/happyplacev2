@@ -1,0 +1,446 @@
+{
+  "key": "group_hpl_place",
+  "title": "Happy Place Local - Place Fields",
+  "fields": [
+    {
+      "key": "field_hpl_place_primary_city",
+      "label": "Primary City",
+      "name": "primary_city",
+      "type": "post_object",
+      "instructions": "Select the city where this place is located",
+      "required": 1,
+      "conditional_logic": 0,
+      "wrapper": { "width": "", "class": "", "id": "" },
+      "post_type": ["city"],
+      "taxonomy": [],
+      "allow_null": 0,
+      "multiple": 0,
+      "return_format": "object",
+      "ui": 1
+    },
+    {
+      "key": "field_hpl_place_related_places",
+      "label": "Related Places",
+      "name": "related_places",
+      "type": "relationship",
+      "instructions": "Other places that are similar or nearby",
+      "required": 0,
+      "conditional_logic": 0,
+      "wrapper": { "width": "", "class": "", "id": "" },
+      "post_type": ["local_place"],
+      "taxonomy": [],
+      "filters": ["search"],
+      "elements": ["featured_image"],
+      "min": "",
+      "max": 6,
+      "return_format": "object"
+    },
+
+
+    {
+      "key": "field_hpl_place_micro_summary",
+      "label": "Micro Summary",
+      "name": "micro_summary",
+      "type": "text",
+      "instructions": "120–160 characters. Example: Rooftop sushi with a long local lineage and a serious sake list.",
+      "required": 0,
+      "conditional_logic": 0,
+      "wrapper": { "width": "", "class": "", "id": "" },
+      "default_value": "",
+      "maxlength": 200,
+      "placeholder": ""
+    },
+    {
+      "key": "field_hpl_place_address",
+      "label": "Address",
+      "name": "address",
+      "type": "textarea",
+      "instructions": "Full street address",
+      "required": 0,
+      "conditional_logic": 0,
+      "wrapper": { "width": "", "class": "", "id": "" },
+      "default_value": "",
+      "placeholder": "123 Main Street\nGeorgetown, DE 19947",
+      "maxlength": "",
+      "rows": 3,
+      "new_lines": "br"
+    },
+    {
+      "key": "field_hpl_place_lat",
+      "label": "Latitude",
+      "name": "lat",
+      "type": "number",
+      "wrapper": { "width": "50", "class": "", "id": "" },
+      "min": -90, "max": 90, "step": "any"
+    },
+    {
+      "key": "field_hpl_place_lng",
+      "label": "Longitude",
+      "name": "lng",
+      "type": "number",
+      "wrapper": { "width": "50", "class": "", "id": "" },
+      "min": -180, "max": 180, "step": "any"
+    },
+    {
+      "key": "field_hpl_place_website",
+      "label": "Website",
+      "name": "website",
+      "type": "url",
+      "wrapper": { "width": "33", "class": "", "id": "" }
+    },
+    {
+      "key": "field_hpl_place_reservation_url",
+      "label": "Reservation URL",
+      "name": "reservation_url",
+      "type": "url",
+      "instructions": "OpenTable/Resy/direct booking link if applicable",
+      "wrapper": { "width": "33", "class": "", "id": "" }
+    },
+    {
+      "key": "field_hpl_place_menu_url",
+      "label": "Menu URL",
+      "name": "menu_url",
+      "type": "url",
+      "instructions": "Direct link to current menu",
+      "wrapper": { "width": "34", "class": "", "id": "" }
+    },
+    {
+      "key": "field_hpl_place_phone",
+      "label": "Phone",
+      "name": "phone",
+      "type": "text",
+      "wrapper": { "width": "33", "class": "", "id": "" },
+      "placeholder": "(302) 555-0123"
+    },
+    {
+      "key": "field_hpl_place_social_instagram",
+      "label": "Instagram",
+      "name": "instagram_url",
+      "type": "url",
+      "wrapper": { "width": "33", "class": "", "id": "" }
+    },
+    {
+      "key": "field_hpl_place_social_facebook",
+      "label": "Facebook",
+      "name": "facebook_url",
+      "type": "url",
+      "wrapper": { "width": "34", "class": "", "id": "" }
+    },
+    {
+      "key": "field_hpl_place_price_range",
+      "label": "Price Range",
+      "name": "price_range",
+      "type": "select",
+      "instructions": "General price level for this place",
+      "wrapper": { "width": "33", "class": "", "id": "" },
+      "choices": {
+        "$": "$ - Budget",
+        "$$": "$$ - Moderate",
+        "$$$": "$$$ - Expensive",
+        "$$$$": "$$$$ - Very Expensive"
+      },
+      "default_value": "$$",
+      "allow_null": 1,
+      "multiple": 0,
+      "return_format": "value"
+    },
+    {
+      "key": "field_hpl_place_family_friendly",
+      "label": "Family Friendly",
+      "name": "is_family_friendly",
+      "type": "true_false",
+      "wrapper": { "width": "33", "class": "", "id": "" },
+      "message": "Yes, this place is family friendly",
+      "default_value": 0,
+      "ui": 1, "ui_on_text": "Yes", "ui_off_text": "No"
+    },
+    {
+      "key": "field_hpl_place_quick_flags",
+      "label": "Quick Flags",
+      "name": "quick_flags",
+      "type": "checkbox",
+      "instructions": "Operational notes for visitors",
+      "wrapper": { "width": "34", "class": "", "id": "" },
+      "choices": {
+        "takes_reservations": "Takes Reservations",
+        "walk_in_only": "Walk-in Only",
+        "happy_hour": "Happy Hour",
+        "seasonal_hours": "Seasonal Hours",
+        "bar_seating": "Bar Seating",
+        "outdoor_seating": "Outdoor Seating"
+      },
+      "return_format": "value"
+    },
+    {
+      "key": "field_hpl_place_accessibility",
+      "label": "Accessibility Features",
+      "name": "accessibility",
+      "type": "checkbox",
+      "wrapper": { "width": "", "class": "", "id": "" },
+      "choices": {
+        "wheelchair": "Wheelchair Accessible",
+        "parking": "Accessible Parking",
+        "restroom": "Accessible Restroom",
+        "hearing": "Hearing Assistance",
+        "visual": "Visual Assistance",
+        "service_animals": "Service Animals Welcome"
+      },
+      "return_format": "value"
+    },
+
+
+    {
+      "key": "field_hpl_place_hours",
+      "label": "Hours (JSON)",
+      "name": "hours_json",
+      "type": "textarea",
+      "instructions": "Opening hours in JSON format. Leave blank if not applicable.",
+      "wrapper": { "width": "66", "class": "", "id": "" },
+      "rows": 4,
+      "placeholder": "{\"monday\":\"9:00-17:00\",\"tuesday\":\"9:00-17:00\",\"wednesday\":\"9:00-17:00\",\"thursday\":\"9:00-17:00\",\"friday\":\"9:00-17:00\",\"saturday\":\"10:00-16:00\",\"sunday\":\"closed\"}"
+    },
+    {
+      "key": "field_hpl_place_hours_notes",
+      "label": "Hours Notes",
+      "name": "hours_notes",
+      "type": "text",
+      "instructions": "E.g., Kitchen closes 30 min before close; check seasonal shifts.",
+      "wrapper": { "width": "34", "class": "", "id": "" }
+    },
+
+
+    {
+      "key": "field_hpl_place_why_we_love_it",
+      "label": "Why We Love It",
+      "name": "why_we_love_it",
+      "type": "wysiwyg",
+      "instructions": "2–3 short paragraphs in your brand voice. Avoid clichés; keep it concrete and helpful.",
+      "required": 0,
+      "conditional_logic": 0,
+      "wrapper": { "width": "", "class": "", "id": "" },
+      "tabs": "visual",
+      "toolbar": "basic",
+      "media_upload": 0,
+      "delay": 0
+    },
+
+   
+    {
+      "key": "field_hpl_place_menu_highlights",
+      "label": "Menu Highlights",
+      "name": "menu_highlights",
+      "type": "repeater",
+      "instructions": "3–6 standout items with short notes",
+      "wrapper": { "width": "", "class": "", "id": "" },
+      "collapsed": "field_hpl_place_menu_item_name",
+      "min": 0,
+      "max": 10,
+      "layout": "table",
+      "button_label": "Add Menu Item",
+      "sub_fields": [
+        {
+          "key": "field_hpl_place_menu_item_name",
+          "label": "Item",
+          "name": "item",
+          "type": "text",
+          "wrapper": { "width": "25", "class": "", "id": "" }
+        },
+        {
+          "key": "field_hpl_place_menu_item_note",
+          "label": "Note",
+          "name": "note",
+          "type": "text",
+          "wrapper": { "width": "45", "class": "", "id": "" },
+          "placeholder": "Why it’s worth ordering"
+        },
+        {
+          "key": "field_hpl_place_menu_item_price",
+          "label": "Price (optional)",
+          "name": "price",
+          "type": "text",
+          "wrapper": { "width": "15", "class": "", "id": "" }
+        },
+        {
+          "key": "field_hpl_place_menu_item_link",
+          "label": "Menu Link (optional)",
+          "name": "link",
+          "type": "url",
+          "wrapper": { "width": "15", "class": "", "id": "" }
+        }
+      ]
+    },
+
+
+    {
+      "key": "field_hpl_place_accolades",
+      "label": "Accolades / Press",
+      "name": "accolades",
+      "type": "repeater",
+      "instructions": "Awards, notable lists, press mentions",
+      "layout": "table",
+      "button_label": "Add Accolade",
+      "sub_fields": [
+        { "key": "field_hpl_place_accolade_source", "label": "Source", "name": "source", "type": "text", "wrapper": { "width": "25" } },
+        { "key": "field_hpl_place_accolade_text", "label": "Citation / Title", "name": "text", "type": "text", "wrapper": { "width": "45" } },
+        { "key": "field_hpl_place_accolade_year", "label": "Year", "name": "year", "type": "number", "wrapper": { "width": "10" } },
+        { "key": "field_hpl_place_accolade_link", "label": "Link", "name": "link", "type": "url", "wrapper": { "width": "20" } }
+      ]
+    },
+
+
+    {
+      "key": "field_hpl_place_deals_events",
+      "label": "Deals & Events (Inline)",
+      "name": "deals_events",
+      "type": "repeater",
+      "instructions": "Use for quick notes if not managing separate CPTs",
+      "layout": "table",
+      "button_label": "Add Item",
+      "sub_fields": [
+        { "key": "field_hpl_place_de_type", "label": "Type", "name": "type", "type": "select", "choices": { "deal": "Deal", "event": "Event" }, "wrapper": { "width": "15" } },
+        { "key": "field_hpl_place_de_title", "label": "Title", "name": "title", "type": "text", "wrapper": { "width": "35" } },
+        { "key": "field_hpl_place_de_desc", "label": "Description", "name": "description", "type": "text", "wrapper": { "width": "50" } },
+        { "key": "field_hpl_place_de_start", "label": "Start", "name": "start_date", "type": "date_picker", "wrapper": { "width": "25" } },
+        { "key": "field_hpl_place_de_end", "label": "End", "name": "end_date", "type": "date_picker", "wrapper": { "width": "25" } },
+        { "key": "field_hpl_place_de_link", "label": "Link", "name": "link", "type": "url", "wrapper": { "width": "50" } }
+      ]
+    },
+
+
+    {
+      "key": "field_hpl_place_related_events",
+      "label": "Related Events (CPT)",
+      "name": "related_events",
+      "type": "relationship",
+      "instructions": "If you have an `event` CPT",
+      "post_type": ["event"],
+      "filters": ["search"],
+      "elements": ["featured_image"],
+      "return_format": "object"
+    },
+    {
+      "key": "field_hpl_place_related_deals",
+      "label": "Related Deals (CPT)",
+      "name": "related_deals",
+      "type": "relationship",
+      "instructions": "If you have a `deal` CPT",
+      "post_type": ["deal"],
+      "filters": ["search"],
+      "elements": ["featured_image"],
+      "return_format": "object"
+    },
+
+  
+    {
+      "key": "field_hpl_place_quotes",
+      "label": "Agent/Staff Quotes & Tips",
+      "name": "quotes",
+      "type": "repeater",
+      "instructions": "Short, useful tips or quotes. One person per row.",
+      "collapsed": "field_hpl_place_quote_text",
+      "layout": "row",
+      "button_label": "Add Quote/Tip",
+      "sub_fields": [
+        {
+          "key": "field_hpl_place_quote_person",
+          "label": "Agent/Staff",
+          "name": "person",
+          "type": "relationship",
+          "instructions": "Link to the author of the tip",
+          "post_type": ["agent", "staff"],
+          "filters": ["search"],
+          "elements": ["featured_image"],
+          "min": 0,
+          "max": 1,
+          "return_format": "object"
+        },
+        {
+          "key": "field_hpl_place_quote_text",
+          "label": "Quote / Tip",
+          "name": "text",
+          "type": "textarea",
+          "rows": 2,
+          "maxlength": 300,
+          "placeholder": "What to order, best time to go, parking intel, etc."
+        },
+        {
+          "key": "field_hpl_place_quote_media",
+          "label": "Optional Media",
+          "name": "media",
+          "type": "image",
+          "return_format": "array",
+          "preview_size": "medium",
+          "library": "all"
+        }
+      ]
+    },
+
+
+    {
+      "key": "field_hpl_place_type_tax",
+      "label": "Place Type",
+      "name": "place_type",
+      "type": "taxonomy",
+      "taxonomy": "place-type",
+      "field_type": "select",
+      "add_term": 1,
+      "save_terms": 1,
+      "load_terms": 1,
+      "return_format": "id"
+    },
+    {
+      "key": "field_hpl_place_vibe_tax",
+      "label": "Vibe",
+      "name": "vibe",
+      "type": "taxonomy",
+      "taxonomy": "vibe",
+      "field_type": "multi_select",
+      "add_term": 1,
+      "save_terms": 1,
+      "load_terms": 1,
+      "return_format": "id"
+    },
+
+   
+    {
+      "key": "field_hpl_place_source_url",
+      "label": "Source URL",
+      "name": "source_url",
+      "type": "url",
+      "instructions": "Primary source where this place data was verified"
+    },
+    {
+      "key": "field_hpl_place_attribution",
+      "label": "Attribution",
+      "name": "attribution",
+      "type": "text",
+      "placeholder": "Data from official site / owner confirmation / Google Places"
+    },
+    {
+      "key": "field_hpl_place_last_verified",
+      "label": "Last Verified",
+      "name": "last_verified",
+      "type": "date_time_picker",
+      "display_format": "Y-m-d H:i",
+      "return_format": "c"
+    },
+    {
+      "key": "field_hpl_place_verified_by",
+      "label": "Verified By",
+      "name": "verified_by",
+      "type": "user",
+      "role": "",
+      "multiple": 0,
+      "return_format": "array"
+    }
+  ],
+  "location": [[{ "param": "post_type", "operator": "==", "value": "local_place" }]],
+  "menu_order": 0,
+  "position": "normal",
+  "style": "default",
+  "label_placement": "top",
+  "instruction_placement": "label",
+  "hide_on_screen": "",
+  "active": true,
+  "description": ""
+}

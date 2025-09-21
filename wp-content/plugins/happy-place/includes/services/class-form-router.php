@@ -250,18 +250,24 @@ class FormRouter extends Service {
     public function handle_form_submission(): void {
         try {
             // Debug logging
-            error_log('FormRouter: Form submission received - POST data: ' . print_r($_POST, true));
+            if (HP_DEBUG) {
+                error_log('FormRouter: Form submission received - POST data: ' . print_r($_POST, true));
+            }
             
             // Verify nonce
             if (!$this->verify_form_nonce()) {
-                error_log('FormRouter: Nonce verification failed');
+                if (HP_DEBUG) {
+                    error_log('FormRouter: Nonce verification failed');
+                }
                 wp_send_json_error(['message' => 'Security verification failed']);
                 return;
             }
             
             // Extract and normalize form data
             $form_data = $this->extract_form_data($_POST);
-            error_log('FormRouter: Extracted form data: ' . print_r($form_data, true));
+            if (HP_DEBUG) {
+                error_log('FormRouter: Extracted form data: ' . print_r($form_data, true));
+            }
             
             // Determine route type
             $route_type = $this->determine_route_type($form_data);

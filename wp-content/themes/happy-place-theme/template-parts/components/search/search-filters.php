@@ -16,21 +16,21 @@ $form_id = $config['form_id'] ?? 'universal-search';
 
 <div class="hph-search-filters" 
      data-form-id="<?php echo esc_attr($form_id); ?>" 
-     style="background: var(--hph-white); border-radius: var(--hph-radius-lg); padding: var(--hph-padding-lg); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);">
+     style="background: var(--hph-white); border-radius: var(--hph-radius-lg); padding: var(--hph-space-6); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);">
     
     <!-- Universal Filters (shown for all post types) -->
     <div class="hph-filter-group hph-universal-filters" 
-         style="margin-bottom: var(--hph-margin-lg);">
+         style="margin-bottom: var(--hph-space-6);">
         <h4 class="hph-filter-group-title" 
-            style="margin: 0 0 var(--hph-margin-md) 0; font-size: var(--hph-text-lg); font-weight: var(--hph-font-semibold); color: var(--hph-gray-900);">
+            style="margin: 0 0 var(--hph-space-4) 0; font-size: var(--hph-text-lg); font-weight: var(--hph-font-semibold); color: var(--hph-gray-900);">
             <?php _e('General Filters', 'happy-place-theme'); ?>
         </h4>
         
         <div class="hph-filter-row" 
-             style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--hph-gap-md); margin-bottom: var(--hph-margin-md);">
+             style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--hph-gap-md); margin-bottom: var(--hph-space-4);">
             <div class="hph-filter-field">
                 <label for="location" 
-                       style="display: block; margin-bottom: var(--hph-margin-xs); font-size: var(--hph-text-sm); font-weight: var(--hph-font-medium); color: var(--hph-gray-700);">
+                       style="display: block; margin-bottom: var(--hph-space-1); font-size: var(--hph-text-sm); font-weight: var(--hph-font-medium); color: var(--hph-gray-700);">
                     <?php _e('Location', 'happy-place-theme'); ?>
                 </label>
                 <input 
@@ -38,7 +38,7 @@ $form_id = $config['form_id'] ?? 'universal-search';
                     name="location" 
                     id="location"
                     class="hph-input"
-                    style="width: 100%; padding: var(--hph-padding-sm) var(--hph-padding-md); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-md); font-size: var(--hph-text-base); color: var(--hph-gray-900); background: var(--hph-white); transition: all 0.2s ease; outline: none;"
+                    style="width: 100%; padding: var(--hph-space-2) var(--hph-space-4); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-md); font-size: var(--hph-text-base); color: var(--hph-gray-900); background: var(--hph-white); transition: all 0.2s ease; outline: none;"
                     placeholder="<?php _e('City, State, ZIP', 'happy-place-theme'); ?>"
                     value="<?php echo esc_attr($_GET['location'] ?? ''); ?>"
                     onfocus="this.style.borderColor='var(--hph-primary)'; this.style.boxShadow='0 0 0 3px rgba(80, 186, 225, 0.1)'"
@@ -51,17 +51,17 @@ $form_id = $config['form_id'] ?? 'universal-search';
     <!-- Property/Listing Specific Filters -->
     <div class="hph-filter-group hph-listing-filters" 
          data-show-for="listing,all" 
-         style="margin-bottom: var(--hph-margin-lg);">
+         style="margin-bottom: var(--hph-space-6);">
         <h4 class="hph-filter-group-title" 
-            style="margin: 0 0 var(--hph-margin-md) 0; font-size: var(--hph-text-lg); font-weight: var(--hph-font-semibold); color: var(--hph-gray-900);">
+            style="margin: 0 0 var(--hph-space-4) 0; font-size: var(--hph-text-lg); font-weight: var(--hph-font-semibold); color: var(--hph-gray-900);">
             <?php _e('Property Filters', 'happy-place-theme'); ?>
         </h4>
         
         <div class="hph-filter-row" 
-             style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--hph-gap-md); margin-bottom: var(--hph-margin-md);">
+             style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--hph-gap-md); margin-bottom: var(--hph-space-4);">
             <div class="hph-filter-field">
                 <label for="min_price" 
-                       style="display: block; margin-bottom: var(--hph-margin-xs); font-size: var(--hph-text-sm); font-weight: var(--hph-font-medium); color: var(--hph-gray-700);">
+                       style="display: block; margin-bottom: var(--hph-space-1); font-size: var(--hph-text-sm); font-weight: var(--hph-font-medium); color: var(--hph-gray-700);">
                     <?php _e('Price Range', 'happy-place-theme'); ?>
                 </label>
                 <div class="hph-price-range-inputs" 
@@ -71,7 +71,7 @@ $form_id = $config['form_id'] ?? 'universal-search';
                         name="min_price" 
                         id="min_price"
                         class="hph-input"
-                        style="flex: 1; padding: var(--hph-padding-sm) var(--hph-padding-md); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-md); font-size: var(--hph-text-base); color: var(--hph-gray-900); background: var(--hph-white); transition: all 0.2s ease; outline: none;"
+                        style="flex: 1; padding: var(--hph-space-2) var(--hph-space-4); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-md); font-size: var(--hph-text-base); color: var(--hph-gray-900); background: var(--hph-white); transition: all 0.2s ease; outline: none;"
                         placeholder="<?php _e('Min Price', 'happy-place-theme'); ?>"
                         value="<?php echo esc_attr($_GET['min_price'] ?? ''); ?>"
                         min="0"
@@ -88,7 +88,7 @@ $form_id = $config['form_id'] ?? 'universal-search';
                         name="max_price" 
                         id="max_price"
                         class="hph-input"
-                        style="flex: 1; padding: var(--hph-padding-sm) var(--hph-padding-md); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-md); font-size: var(--hph-text-base); color: var(--hph-gray-900); background: var(--hph-white); transition: all 0.2s ease; outline: none;"
+                        style="flex: 1; padding: var(--hph-space-2) var(--hph-space-4); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-md); font-size: var(--hph-text-base); color: var(--hph-gray-900); background: var(--hph-white); transition: all 0.2s ease; outline: none;"
                         placeholder="<?php _e('Max Price', 'happy-place-theme'); ?>"
                         value="<?php echo esc_attr($_GET['max_price'] ?? ''); ?>"
                         min="0"
@@ -101,16 +101,16 @@ $form_id = $config['form_id'] ?? 'universal-search';
         </div>
 
         <div class="hph-filter-row" 
-             style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--hph-gap-md); margin-bottom: var(--hph-margin-md);">
+             style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--hph-gap-md); margin-bottom: var(--hph-space-4);">
             <div class="hph-filter-field">
                 <label for="bedrooms" 
-                       style="display: block; margin-bottom: var(--hph-margin-xs); font-size: var(--hph-text-sm); font-weight: var(--hph-font-medium); color: var(--hph-gray-700);">
+                       style="display: block; margin-bottom: var(--hph-space-1); font-size: var(--hph-text-sm); font-weight: var(--hph-font-medium); color: var(--hph-gray-700);">
                     <?php _e('Bedrooms', 'happy-place-theme'); ?>
                 </label>
                 <select name="bedrooms" 
                         id="bedrooms" 
                         class="hph-select"
-                        style="width: 100%; padding: var(--hph-padding-sm) var(--hph-padding-md); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-md); font-size: var(--hph-text-base); color: var(--hph-gray-900); background: var(--hph-white); transition: all 0.2s ease; outline: none; cursor: pointer;"
+                        style="width: 100%; padding: var(--hph-space-2) var(--hph-space-4); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-md); font-size: var(--hph-text-base); color: var(--hph-gray-900); background: var(--hph-white); transition: all 0.2s ease; outline: none; cursor: pointer;"
                         onfocus="this.style.borderColor='var(--hph-primary)'; this.style.boxShadow='0 0 0 3px rgba(80, 186, 225, 0.1)'"
                         onblur="this.style.borderColor='var(--hph-gray-200)'; this.style.boxShadow='none'">
                     <option value=""><?php _e('Any', 'happy-place-theme'); ?></option>
@@ -124,13 +124,13 @@ $form_id = $config['form_id'] ?? 'universal-search';
             
             <div class="hph-filter-field">
                 <label for="bathrooms" 
-                       style="display: block; margin-bottom: var(--hph-margin-xs); font-size: var(--hph-text-sm); font-weight: var(--hph-font-medium); color: var(--hph-gray-700);">
+                       style="display: block; margin-bottom: var(--hph-space-1); font-size: var(--hph-text-sm); font-weight: var(--hph-font-medium); color: var(--hph-gray-700);">
                     <?php _e('Bathrooms', 'happy-place-theme'); ?>
                 </label>
                 <select name="bathrooms" 
                         id="bathrooms" 
                         class="hph-select"
-                        style="width: 100%; padding: var(--hph-padding-sm) var(--hph-padding-md); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-md); font-size: var(--hph-text-base); color: var(--hph-gray-900); background: var(--hph-white); transition: all 0.2s ease; outline: none; cursor: pointer;"
+                        style="width: 100%; padding: var(--hph-space-2) var(--hph-space-4); border: 2px solid var(--hph-gray-200); border-radius: var(--hph-radius-md); font-size: var(--hph-text-base); color: var(--hph-gray-900); background: var(--hph-white); transition: all 0.2s ease; outline: none; cursor: pointer;"
                         onfocus="this.style.borderColor='var(--hph-primary)'; this.style.boxShadow='0 0 0 3px rgba(80, 186, 225, 0.1)'"
                         onblur="this.style.borderColor='var(--hph-gray-200)'; this.style.boxShadow='none'">
                     <option value=""><?php _e('Any', 'happy-place-theme'); ?></option>
@@ -288,10 +288,10 @@ $form_id = $config['form_id'] ?? 'universal-search';
 
     <!-- Filter Actions -->
     <div class="hph-filter-actions" 
-         style="display: flex; flex-wrap: wrap; gap: var(--hph-gap-md); align-items: center; justify-content: flex-end; padding-top: var(--hph-padding-lg); border-top: 1px solid var(--hph-gray-200); margin-top: var(--hph-margin-lg);">
+         style="display: flex; flex-wrap: wrap; gap: var(--hph-gap-md); align-items: center; justify-content: flex-end; padding-top: var(--hph-space-6); border-top: 1px solid var(--hph-gray-200); margin-top: var(--hph-space-6);">
         <button type="button" 
-                class="hph-btn hph-btn-outline hph-clear-filters-btn"
-                style="display: inline-flex; align-items: center; justify-content: center; gap: var(--hph-gap-sm); padding: var(--hph-padding-sm) var(--hph-padding-lg); border: 2px solid var(--hph-gray-300); border-radius: var(--hph-radius-md); background: transparent; color: var(--hph-gray-700); font-size: var(--hph-text-sm); font-weight: var(--hph-font-medium); cursor: pointer; transition: all 0.2s ease; outline: none;"
+                class="hph-btn hph-btn-outline-primary hph-clear-filters-btn"
+                style="display: inline-flex; align-items: center; justify-content: center; gap: var(--hph-gap-sm); padding: var(--hph-space-2) var(--hph-space-6); border: 2px solid var(--hph-gray-300); border-radius: var(--hph-radius-md); background: transparent; color: var(--hph-gray-700); font-size: var(--hph-text-sm); font-weight: var(--hph-font-medium); cursor: pointer; transition: all 0.2s ease; outline: none;"
                 onmouseover="this.style.borderColor='var(--hph-gray-400)'; this.style.color='var(--hph-gray-800)'"
                 onmouseout="this.style.borderColor='var(--hph-gray-300)'; this.style.color='var(--hph-gray-700)'"
                 onclick="this.style.transform='scale(0.98)'; setTimeout(() => this.style.transform='scale(1)', 100)">
@@ -302,7 +302,7 @@ $form_id = $config['form_id'] ?? 'universal-search';
         </button>
         <button type="submit" 
                 class="hph-btn hph-btn-primary hph-apply-filters-btn"
-                style="display: inline-flex; align-items: center; justify-content: center; gap: var(--hph-gap-sm); padding: var(--hph-padding-sm) var(--hph-padding-lg); border: 2px solid var(--hph-primary); border-radius: var(--hph-radius-md); background: var(--hph-primary); color: var(--hph-white); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold); cursor: pointer; transition: all 0.2s ease; outline: none; box-shadow: 0 2px 4px rgba(80, 186, 225, 0.2);"
+                style="display: inline-flex; align-items: center; justify-content: center; gap: var(--hph-gap-sm); padding: var(--hph-space-2) var(--hph-space-6); border: 2px solid var(--hph-primary); border-radius: var(--hph-radius-md); background: var(--hph-primary); color: var(--hph-white); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold); cursor: pointer; transition: all 0.2s ease; outline: none; box-shadow: 0 2px 4px rgba(80, 186, 225, 0.2);"
                 onmouseover="this.style.background='var(--hph-primary-600)'; this.style.borderColor='var(--hph-primary-600)'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(80, 186, 225, 0.3)'"
                 onmouseout="this.style.background='var(--hph-primary)'; this.style.borderColor='var(--hph-primary)'; this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(80, 186, 225, 0.2)'"
                 onclick="this.style.transform='scale(0.98)'; setTimeout(() => this.style.transform='scale(1)', 100)">

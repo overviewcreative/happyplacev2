@@ -40,13 +40,13 @@ get_header(); ?>
                 </div>
                 
                 <div class="error-actions">
-                    <a href="<?php echo esc_url(home_url('/')); ?>" class="btn btn-primary mr-4">
-                        <i class="fas fa-home mr-2"></i>
+                    <a href="<?php echo esc_url(home_url('/')); ?>" class="hph-btn hph-btn-primary hph-mr-4">
+                        <i class="fas fa-home hph-btn-icon"></i>
                         <?php esc_html_e('Go Home', 'happy-place-theme'); ?>
                     </a>
-                    
+
                     <?php if (post_type_exists('listing')) : ?>
-                        <a href="<?php echo esc_url(get_post_type_archive_link('listing')); ?>" class="btn btn-outline">
+                        <a href="<?php echo esc_url(get_post_type_archive_link('listing')); ?>" class="hph-btn hph-btn-outline-primary">
                             <i class="fas fa-building mr-2"></i>
                             <?php esc_html_e('Browse Listings', 'happy-place-theme'); ?>
                         </a>
@@ -133,7 +133,7 @@ get_header(); ?>
                         <ul class="space-y-3">
                             <li><a href="<?php echo esc_url(home_url('/')); ?>" class="link-primary"><?php esc_html_e('Home', 'happy-place-theme'); ?></a></li>
                             <li><a href="<?php echo esc_url(home_url('/about')); ?>" class="link-primary"><?php esc_html_e('About Us', 'happy-place-theme'); ?></a></li>
-                            <li><a href="<?php echo esc_url(home_url('/contact')); ?>" class="link-primary"><?php esc_html_e('Contact', 'happy-place-theme'); ?></a></li>
+                            <li><a href="#" class="link-primary modal-trigger" data-modal-form="general-contact" data-modal-title="Contact Us" data-modal-subtitle="Send us a message and we'll get back to you soon." onclick="return false;"><?php esc_html_e('Contact', 'happy-place-theme'); ?></a></li>
                             <?php if (post_type_exists('agent')) : ?>
                                 <li><a href="<?php echo esc_url(get_post_type_archive_link('agent')); ?>" class="link-primary"><?php esc_html_e('Our Agents', 'happy-place-theme'); ?></a></li>
                             <?php endif; ?>

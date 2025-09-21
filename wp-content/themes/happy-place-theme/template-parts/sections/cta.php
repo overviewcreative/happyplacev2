@@ -14,30 +14,30 @@ if (function_exists('hph_register_template_part')) {
 
 // Default arguments
 $defaults = array(
-    'layout' => 'centered',
-    'background' => 'primary',
-    'background_image' => '',
-    'overlay' => true,
-    'overlay_opacity' => '40',
-    'padding' => 'xl',
-    'content_width' => 'normal',
-    'alignment' => 'center',
-    'badge' => '',
-    'headline' => 'Ready to Get Started?',
-    'subheadline' => '',
-    'content' => '',
-    'buttons' => array(
+    'layout' => 'centered', // Options: 'centered', 'split', 'inline', 'boxed'
+    'background' => 'primary', // Options: 'primary', 'secondary', 'gradient', 'dark', 'light', 'image'
+    'background_image' => '', // URL to background image (when background is 'image')
+    'overlay' => true, // Boolean: true/false - add dark overlay over background image
+    'overlay_opacity' => '40', // Percentage: 0-100 - opacity of overlay
+    'padding' => 'xl', // Options: 'sm', 'md', 'lg', 'xl', '2xl'
+    'content_width' => 'normal', // Options: 'narrow', 'normal', 'wide', 'full'
+    'alignment' => 'center', // Options: 'left', 'center', 'right'
+    'badge' => '', // Badge text to display above headline
+    'headline' => 'Ready to Get Started?', // Main headline text
+    'subheadline' => '', // Subheadline text below headline
+    'content' => '', // Additional content text
+    'buttons' => array( // Array of button objects with text, url, style, size
         array(
             'text' => 'Get Started',
             'url' => '#',
-            'style' => 'white',
-            'size' => 'xl'
+            'style' => 'white', // Button style options depend on background
+            'size' => 'xl' // Options: 'sm', 'md', 'lg', 'xl'
         )
     ),
-    'image' => null,
-    'form' => null,
-    'animation' => false,
-    'section_id' => ''
+    'image' => null, // Image for split layout
+    'form' => null, // Form for split layout
+    'animation' => false, // Boolean: true/false - enable entrance animations
+    'section_id' => '' // HTML ID for the section
 );
 
 // Merge with provided args - handle cases where $args might not be set
@@ -90,25 +90,25 @@ if ($background === 'image' && $background_image) {
 // Padding styles
 switch ($padding) {
     case 'sm':
-        $section_styles[] = 'padding-top: var(--hph-padding-lg)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-lg)';
+        $section_styles[] = 'padding-top: var(--hph-space-6)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-6)';
         break;
     case 'md':
-        $section_styles[] = 'padding-top: var(--hph-padding-xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-8)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-8)';
         break;
     case 'lg':
-        $section_styles[] = 'padding-top: var(--hph-padding-2xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-2xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-12)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-12)';
         break;
     case '2xl':
-        $section_styles[] = 'padding-top: var(--hph-padding-4xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-4xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-24)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-24)';
         break;
     case 'xl':
     default:
-        $section_styles[] = 'padding-top: var(--hph-padding-3xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-3xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-16)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-16)';
         break;
 }
 
@@ -118,8 +118,8 @@ $container_styles = array(
     'z-index: 10',
     'margin-left: auto',
     'margin-right: auto',
-    'padding-left: var(--hph-padding-lg)',
-    'padding-right: var(--hph-padding-lg)'
+    'padding-left: var(--hph-space-6)',
+    'padding-right: var(--hph-space-6)'
 );
 
 // Content width
@@ -154,7 +154,7 @@ if ($layout === 'boxed') {
         'background-color: var(--hph-white)',
         'border-radius: var(--hph-radius-xl)',
         'box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-        'padding: var(--hph-padding-3xl)',
+        'padding: var(--hph-space-16)',
         'color: var(--hph-gray-900)'
     );
 }
@@ -237,8 +237,8 @@ if ($layout === 'split' || $layout === 'inline') {
             
             <?php if ($badge): ?>
             <!-- Badge -->
-            <div style="margin-bottom: var(--hph-margin-lg);">
-                <span style="display: inline-block; padding: var(--hph-padding-sm) var(--hph-padding-md); background: rgba(255, 255, 255, 0.2); color: currentColor; backdrop-filter: blur(10px); border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
+            <div style="margin-bottom: var(--hph-space-6);">
+                <span style="display: inline-block; padding: var(--hph-space-2) var(--hph-space-4); background: rgba(255, 255, 255, 0.2); color: currentColor; backdrop-filter: blur(10px); border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
                     <?php echo esc_html($badge); ?>
                 </span>
             </div>
@@ -246,21 +246,21 @@ if ($layout === 'split' || $layout === 'inline') {
             
             <?php if ($headline): ?>
             <!-- Headline -->
-            <h2 style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-5xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
+            <h2 style="margin: 0 0 var(--hph-space-6) 0; font-size: var(--hph-text-5xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
                 <?php echo esc_html($headline); ?>
             </h2>
             <?php endif; ?>
             
             <?php if ($subheadline): ?>
             <!-- Subheadline -->
-            <p style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); opacity: 0.9;">
+            <p style="margin: 0 0 var(--hph-space-6) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); opacity: 0.9;">
                 <?php echo esc_html($subheadline); ?>
             </p>
             <?php endif; ?>
             
             <?php if ($content): ?>
             <!-- Content -->
-            <div style="margin: 0 0 var(--hph-margin-2xl) 0; font-size: var(--hph-text-base); line-height: var(--hph-leading-relaxed); opacity: 0.85;">
+            <div style="margin: 0 0 var(--hph-space-12) 0; font-size: var(--hph-text-base); line-height: var(--hph-leading-relaxed); opacity: 0.85;">
                 <?php echo wp_kses_post($content); ?>
             </div>
             <?php endif; ?>
@@ -293,11 +293,11 @@ if ($layout === 'split' || $layout === 'inline') {
                     // Button size
                     switch($btn['size']) {
                         case 'xl':
-                            $btn_styles[] = 'padding: var(--hph-padding-lg) var(--hph-padding-2xl)';
+                            $btn_styles[] = 'padding: var(--hph-space-6) var(--hph-space-12)';
                             $btn_styles[] = 'font-size: var(--hph-text-lg)';
                             break;
                         default:
-                            $btn_styles[] = 'padding: var(--hph-padding-md) var(--hph-padding-xl)';
+                            $btn_styles[] = 'padding: var(--hph-space-4) var(--hph-space-8)';
                             $btn_styles[] = 'font-size: var(--hph-text-base)';
                     }
                     
@@ -315,16 +315,17 @@ if ($layout === 'split' || $layout === 'inline') {
                             $btn_styles[] = 'border: 2px solid var(--hph-white)';
                     }
                 ?>
-                <a 
+                <a
                     href="<?php echo esc_url($btn['url']); ?>"
+                    <?php if (!empty($btn['data_attributes']) && strpos($btn['data_attributes'], 'data-modal') !== false && strpos($btn['data_attributes'], 'modal-trigger') === false): ?>class="modal-trigger"<?php endif; ?>
                     style="<?php echo implode('; ', $btn_styles); ?>"
                     <?php if ($btn['target'] !== '_self'): ?>target="<?php echo esc_attr($btn['target']); ?>"<?php endif; ?>
-                    <?php if ($btn['data_attributes']): echo $btn['data_attributes']; endif; ?>
+                    <?php if (!empty($btn['data_attributes'])): echo ' ' . $btn['data_attributes']; endif; ?>
                     onmouseover="this.style.transform='translateY(-2px)'"
                     onmouseout="this.style.transform='translateY(0)'"
                 >
                     <?php if ($btn['icon']): ?>
-                    <i class="<?php echo esc_attr($btn['icon']); ?>" style="margin-right: var(--hph-margin-sm);"></i>
+                    <i class="<?php echo esc_attr($btn['icon']); ?>" style="margin-right: var(--hph-space-2);"></i>
                     <?php endif; ?>
                     <span><?php echo esc_html($btn['text']); ?></span>
                 </a>
@@ -340,10 +341,10 @@ if ($layout === 'split' || $layout === 'inline') {
             
             <?php if ($form): ?>
             <!-- Form -->
-            <div style="background: var(--hph-white); border-radius: var(--hph-radius-lg); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); padding: var(--hph-padding-xl);">
+            <div style="background: var(--hph-white); border-radius: var(--hph-radius-lg); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); padding: var(--hph-space-8);">
                 <form style="display: flex; flex-direction: column; gap: var(--hph-gap-lg);">
                     <?php if (!empty($form['title'])): ?>
-                    <h3 style="font-size: var(--hph-text-xl); font-weight: var(--hph-font-semibold); color: var(--hph-gray-900); margin: 0 0 var(--hph-margin-lg) 0;">
+                    <h3 style="font-size: var(--hph-text-xl); font-weight: var(--hph-font-semibold); color: var(--hph-gray-900); margin: 0 0 var(--hph-space-6) 0;">
                         <?php echo esc_html($form['title']); ?>
                     </h3>
                     <?php endif; ?>
@@ -352,7 +353,7 @@ if ($layout === 'split' || $layout === 'inline') {
                         <input 
                             type="text" 
                             placeholder="Your Name" 
-                            style="width: 100%; padding: var(--hph-padding-md) var(--hph-padding-lg); border: 1px solid var(--hph-gray-300); border-radius: var(--hph-radius-lg); font-size: var(--hph-text-base);"
+                            style="width: 100%; padding: var(--hph-space-4) var(--hph-space-6); border: 1px solid var(--hph-gray-300); border-radius: var(--hph-radius-lg); font-size: var(--hph-text-base);"
                             required
                         >
                     </div>
@@ -361,14 +362,14 @@ if ($layout === 'split' || $layout === 'inline') {
                         <input 
                             type="email" 
                             placeholder="Your Email" 
-                            style="width: 100%; padding: var(--hph-padding-md) var(--hph-padding-lg); border: 1px solid var(--hph-gray-300); border-radius: var(--hph-radius-lg); font-size: var(--hph-text-base);"
+                            style="width: 100%; padding: var(--hph-space-4) var(--hph-space-6); border: 1px solid var(--hph-gray-300); border-radius: var(--hph-radius-lg); font-size: var(--hph-text-base);"
                             required
                         >
                     </div>
                     
                     <button 
                         type="submit" 
-                        style="width: 100%; padding: var(--hph-padding-md) var(--hph-padding-lg); background: var(--hph-primary); color: var(--hph-white); border: none; border-radius: var(--hph-radius-lg); font-size: var(--hph-text-base); font-weight: var(--hph-font-semibold); cursor: pointer; transition: all 300ms ease; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);"
+                        style="width: 100%; padding: var(--hph-space-4) var(--hph-space-6); background: var(--hph-primary); color: var(--hph-white); border: none; border-radius: var(--hph-radius-lg); font-size: var(--hph-text-base); font-weight: var(--hph-font-semibold); cursor: pointer; transition: all 300ms ease; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);"
                         onmouseover="this.style.transform='translateY(-2px)'"
                         onmouseout="this.style.transform='translateY(0)'"
                     >
@@ -413,7 +414,7 @@ if ($layout === 'split' || $layout === 'inline') {
                     );
                     
                     // Button size
-                    $btn_styles[] = 'padding: var(--hph-padding-lg) var(--hph-padding-2xl)';
+                    $btn_styles[] = 'padding: var(--hph-space-6) var(--hph-space-12)';
                     $btn_styles[] = 'font-size: var(--hph-text-lg)';
                     
                     // Button style
@@ -430,16 +431,17 @@ if ($layout === 'split' || $layout === 'inline') {
                             $btn_styles[] = 'border: 2px solid var(--hph-white)';
                     }
                 ?>
-                <a 
+                <a
                     href="<?php echo esc_url($btn['url']); ?>"
+                    <?php if (!empty($btn['data_attributes']) && strpos($btn['data_attributes'], 'data-modal') !== false && strpos($btn['data_attributes'], 'modal-trigger') === false): ?>class="modal-trigger"<?php endif; ?>
                     style="<?php echo implode('; ', $btn_styles); ?>"
                     <?php if ($btn['target'] !== '_self'): ?>target="<?php echo esc_attr($btn['target']); ?>"<?php endif; ?>
-                    <?php if ($btn['data_attributes']): echo $btn['data_attributes']; endif; ?>
+                    <?php if (!empty($btn['data_attributes'])): echo ' ' . $btn['data_attributes']; endif; ?>
                     onmouseover="this.style.transform='translateY(-2px)'"
                     onmouseout="this.style.transform='translateY(0)'"
                 >
                     <?php if ($btn['icon']): ?>
-                    <i class="<?php echo esc_attr($btn['icon']); ?>" style="margin-right: var(--hph-margin-sm);"></i>
+                    <i class="<?php echo esc_attr($btn['icon']); ?>" style="margin-right: var(--hph-space-2);"></i>
                     <?php endif; ?>
                     <span><?php echo esc_html($btn['text']); ?></span>
                 </a>
@@ -457,8 +459,8 @@ if ($layout === 'split' || $layout === 'inline') {
             
             <?php if ($badge): ?>
             <!-- Badge -->
-            <div style="margin-bottom: var(--hph-margin-lg);">
-                <span style="display: inline-block; padding: var(--hph-padding-sm) var(--hph-padding-md); <?php echo $layout === 'boxed' ? 'background: var(--hph-primary-100); color: var(--hph-primary-700);' : 'background: rgba(255, 255, 255, 0.2); color: currentColor; backdrop-filter: blur(10px);'; ?> border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
+            <div style="margin-bottom: var(--hph-space-6);">
+                <span style="display: inline-block; padding: var(--hph-space-2) var(--hph-space-4); <?php echo $layout === 'boxed' ? 'background: var(--hph-primary-100); color: var(--hph-primary-700);' : 'background: rgba(255, 255, 255, 0.2); color: currentColor; backdrop-filter: blur(10px);'; ?> border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
                     <?php echo esc_html($badge); ?>
                 </span>
             </div>
@@ -466,21 +468,21 @@ if ($layout === 'split' || $layout === 'inline') {
             
             <?php if ($headline): ?>
             <!-- Headline -->
-            <h2 style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-5xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
+            <h2 style="margin: 0 0 var(--hph-space-6) 0; font-size: var(--hph-text-5xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
                 <?php echo esc_html($headline); ?>
             </h2>
             <?php endif; ?>
             
             <?php if ($subheadline): ?>
             <!-- Subheadline -->
-            <p style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); opacity: 0.9;">
+            <p style="margin: 0 0 var(--hph-space-6) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); opacity: 0.9;">
                 <?php echo esc_html($subheadline); ?>
             </p>
             <?php endif; ?>
             
             <?php if ($content): ?>
             <!-- Content -->
-            <div style="margin: 0 0 var(--hph-margin-2xl) 0; font-size: var(--hph-text-base); line-height: var(--hph-leading-relaxed); opacity: 0.85;">
+            <div style="margin: 0 0 var(--hph-space-12) 0; font-size: var(--hph-text-base); line-height: var(--hph-leading-relaxed); opacity: 0.85;">
                 <?php echo wp_kses_post($content); ?>
             </div>
             <?php endif; ?>
@@ -488,14 +490,15 @@ if ($layout === 'split' || $layout === 'inline') {
             <?php if (!empty($buttons)): ?>
             <!-- Buttons -->
             <div style="display: flex; flex-wrap: wrap; gap: var(--hph-gap-lg); align-items: center; <?php echo $button_justify; ?>">
-                <?php foreach ($buttons as $button): 
+                <?php foreach ($buttons as $button):
                     $btn = wp_parse_args($button, array(
                         'text' => 'Button',
                         'url' => '#',
                         'style' => $layout === 'boxed' ? 'primary' : 'white',
                         'size' => 'xl',
                         'icon' => '',
-                        'target' => '_self'
+                        'target' => '_self',
+                        'data_attributes' => ''
                     ));
                     
                     $btn_styles = array(
@@ -512,11 +515,11 @@ if ($layout === 'split' || $layout === 'inline') {
                     // Button size
                     switch($btn['size']) {
                         case 'xl':
-                            $btn_styles[] = 'padding: var(--hph-padding-lg) var(--hph-padding-2xl)';
+                            $btn_styles[] = 'padding: var(--hph-space-6) var(--hph-space-12)';
                             $btn_styles[] = 'font-size: var(--hph-text-lg)';
                             break;
                         default:
-                            $btn_styles[] = 'padding: var(--hph-padding-md) var(--hph-padding-xl)';
+                            $btn_styles[] = 'padding: var(--hph-space-4) var(--hph-space-8)';
                             $btn_styles[] = 'font-size: var(--hph-text-base)';
                     }
                     
@@ -549,16 +552,17 @@ if ($layout === 'split' || $layout === 'inline') {
                         }
                     }
                 ?>
-                <a 
+                <a
                     href="<?php echo esc_url($btn['url']); ?>"
+                    <?php if (!empty($btn['data_attributes']) && strpos($btn['data_attributes'], 'data-modal') !== false && strpos($btn['data_attributes'], 'modal-trigger') === false): ?>class="modal-trigger"<?php endif; ?>
                     style="<?php echo implode('; ', $btn_styles); ?>"
                     <?php if ($btn['target'] !== '_self'): ?>target="<?php echo esc_attr($btn['target']); ?>"<?php endif; ?>
-                    <?php if ($btn['data_attributes']): echo $btn['data_attributes']; endif; ?>
+                    <?php if (!empty($btn['data_attributes'])): echo ' ' . $btn['data_attributes']; endif; ?>
                     onmouseover="this.style.transform='translateY(-2px)'"
                     onmouseout="this.style.transform='translateY(0)'"
                 >
                     <?php if ($btn['icon']): ?>
-                    <i class="<?php echo esc_attr($btn['icon']); ?>" style="margin-right: var(--hph-margin-sm);"></i>
+                    <i class="<?php echo esc_attr($btn['icon']); ?>" style="margin-right: var(--hph-space-2);"></i>
                     <?php endif; ?>
                     <span><?php echo esc_html($btn['text']); ?></span>
                 </a>

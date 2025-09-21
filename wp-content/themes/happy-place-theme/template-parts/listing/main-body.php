@@ -11,6 +11,12 @@
 
 $listing_id = $args['listing_id'] ?? get_the_ID();
 
+// Get change tracking data from args (passed from single-listing.php)
+$listing_changes = $args['listing_changes'] ?? [];
+$listing_badges = $args['listing_badges'] ?? [];
+$has_recent_changes = $args['has_recent_changes'] ?? false;
+$is_new_listing = $args['is_new_listing'] ?? false;
+
 // Get listing data using bridge function with error handling
 $listing_data = null;
 if (function_exists('hpt_get_listing')) {
@@ -237,100 +243,119 @@ $feature_labels = [
         </section>
         <?php endif; ?>
         
-        <!-- Property Details -->
-        <section class="hph-section hph-mb-lg">
-            <div class="hph-section__header hph-mb-md">
-                <h2 class="hph-section__title hph-text-xl hph-font-bold">Property Details</h2>
-            </div>
+        <!-- Mobile Agent Card (only visible on mobile) -->
+        <?php 
+        // Get agent data for mobile card
+        $agent_posts = get_field('listing_agent', $listing_id);
+        $agent_data = null;
+
+        if (!empty($agent_posts) && is_array($agent_posts)) {
+            $agent_post = $agent_posts[0];
             
-            <div class="hph-property-details-grid hph-details-grid hph-grid hph-grid-cols-1 sm:hph-grid-cols-2 md:hph-grid-cols-3 lg:hph-grid-cols-4 hph-gap-lg gap-responsive">
+            if ($agent_post && isset($agent_post->ID)) {
+                $agent_id = $agent_post->ID;
+                $first_name = get_field('first_name', $agent_id) ?: '';
+                $last_name = get_field('last_name', $agent_id) ?: '';
+                $full_name = trim($first_name . ' ' . $last_name) ?: get_the_title($agent_id);
                 
-                <?php if ($fields['property_type']) : ?>
-                <div class="hph-detail-item padding-responsive hph-bg-gray-50 hph-rounded-md">
-                    <dt class="hph-detail-label text-responsive-sm hph-text-gray-600 hph-mb-xs">Type</dt>
-                    <dd class="hph-detail-value text-responsive-base hph-font-semibold"><?php echo esc_html($fields['property_type']); ?></dd>
+                $agent_data = [
+                    'id' => $agent_id,
+                    'name' => $full_name,
+                    'title' => get_field('title', $agent_id) ?: 'REALTOR®',
+                    'phone' => get_field('phone', $agent_id),
+                    'email' => get_field('email', $agent_id),
+                    'photo' => get_field('profile_photo', $agent_id),
+                ];
+            }
+        }
+        
+        if ($agent_data) : ?>
+        <div class="hph-mobile-agent-card">
+            <div class="card-content">
+                <div class="agent-photo">
+                    <?php 
+                    $agent_photo = null;
+                    if ($agent_data['photo']) {
+                        if (is_array($agent_data['photo'])) {
+                            $agent_photo = $agent_data['photo']['sizes']['medium'] ?? $agent_data['photo']['url'];
+                        } elseif (is_numeric($agent_data['photo'])) {
+                            $agent_photo = wp_get_attachment_image_url($agent_data['photo'], 'medium');
+                        }
+                    }
+                    
+                    if ($agent_photo): ?>
+                        <img src="<?php echo esc_url($agent_photo); ?>" alt="<?php echo esc_attr($agent_data['name']); ?>">
+                    <?php else: ?>
+                        <div class="agent-photo-placeholder">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                    <?php endif; ?>
                 </div>
-                <?php endif; ?>
                 
-                <?php if ($fields['property_style']) : ?>
-                <div class="hph-detail-item padding-responsive hph-bg-gray-50 hph-rounded-md">
-                    <dt class="hph-detail-label text-responsive-sm hph-text-gray-600 hph-mb-xs">Style</dt>
-                    <dd class="hph-detail-value text-responsive-base hph-font-semibold"><?php echo esc_html($fields['property_style']); ?></dd>
+                <h3 class="agent-name"><?php echo esc_html($agent_data['name']); ?></h3>
+                <div class="agent-title"><?php echo esc_html($agent_data['title']); ?></div>
+                
+                <div class="agent-contact">
+                    <?php if ($agent_data['phone']): ?>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <a href="tel:<?php echo esc_attr($agent_data['phone']); ?>"><?php echo esc_html($agent_data['phone']); ?></a>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <?php if ($agent_data['email']): ?>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <a href="mailto:<?php echo esc_attr($agent_data['email']); ?>"><?php echo esc_html($agent_data['email']); ?></a>
+                        </div>
+                    <?php endif; ?>
                 </div>
-                <?php endif; ?>
                 
-                <?php if ($fields['bedrooms']) : ?>
-                <div class="hph-detail-item padding-responsive hph-bg-gray-50 hph-rounded-md">
-                    <dt class="hph-detail-label text-responsive-sm hph-text-gray-600 hph-mb-xs">Bedrooms</dt>
-                    <dd class="hph-detail-value text-responsive-base hph-font-semibold"><?php echo esc_html($fields['bedrooms']); ?></dd>
+                <div class="agent-actions">
+                    <?php if ($agent_data['phone']): ?>
+                        <a href="tel:<?php echo esc_attr($agent_data['phone']); ?>" class="agent-btn">
+                            <i class="fas fa-phone"></i>
+                            <span>Call Now</span>
+                        </a>
+                    <?php endif; ?>
+                    
+                    <?php if ($agent_data['email']): ?>
+                        <a href="mailto:<?php echo esc_attr($agent_data['email']); ?>" class="agent-btn agent-btn--secondary">
+                            <i class="fas fa-envelope"></i>
+                            <span>Send Email</span>
+                        </a>
+                    <?php endif; ?>
+                    
+                    <button type="button" class="agent-btn agent-btn--schedule" data-modal-trigger="agent-contact">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Schedule a Showing</span>
+                    </button>
                 </div>
-                <?php endif; ?>
-                
-                <?php if ($fields['bathrooms_formatted']) : ?>
-                <div class="hph-detail-item padding-responsive hph-bg-gray-50 hph-rounded-md">
-                    <dt class="hph-detail-label text-responsive-sm hph-text-gray-600 hph-mb-xs">Bathrooms</dt>
-                    <dd class="hph-detail-value text-responsive-base hph-font-semibold"><?php echo esc_html($fields['bathrooms_formatted']); ?></dd>
-                </div>
-                <?php endif; ?>
-                
-                <?php if ($fields['square_feet_formatted']) : ?>
-                <div class="hph-detail-item padding-responsive hph-bg-gray-50 hph-rounded-md">
-                    <dt class="hph-detail-label text-responsive-sm hph-text-gray-600 hph-mb-xs">Square Feet</dt>
-                    <dd class="hph-detail-value text-responsive-base hph-font-semibold"><?php echo esc_html($fields['square_feet_formatted']); ?></dd>
-                </div>
-                <?php endif; ?>
-                
-                <?php if ($fields['lot_size_formatted']) : ?>
-                <div class="hph-detail-item padding-responsive hph-bg-gray-50 hph-rounded-md">
-                    <dt class="hph-detail-label text-responsive-sm hph-text-gray-600 hph-mb-xs">Lot Size</dt>
-                    <dd class="hph-detail-value text-responsive-base hph-font-semibold"><?php echo esc_html($fields['lot_size_formatted']); ?></dd>
-                </div>
-                <?php endif; ?>
-                
-                <?php if ($fields['year_built']) : ?>
-                <div class="hph-detail-item padding-responsive hph-bg-gray-50 hph-rounded-md">
-                    <dt class="hph-detail-label text-responsive-sm hph-text-gray-600 hph-mb-xs">Year Built</dt>
-                    <dd class="hph-detail-value text-responsive-base hph-font-semibold"><?php echo esc_html($fields['year_built']); ?></dd>
-                </div>
-                <?php endif; ?>
-                
-                <?php if ($fields['garage_spaces']) : ?>
-                <div class="hph-detail-item padding-responsive hph-bg-gray-50 hph-rounded-md">
-                    <dt class="hph-detail-label text-responsive-sm hph-text-gray-600 hph-mb-xs">Garage</dt>
-                    <dd class="hph-detail-value text-responsive-base hph-font-semibold">
-                        <?php echo esc_html(hph_format_garage_display($fields['garage_spaces'], $fields['garage_type'])); ?>
-                    </dd>
-                </div>
-                <?php endif; ?>
-                
-                <?php if ($fields['stories']) : ?>
-                <div class="hph-detail-item padding-responsive hph-bg-gray-50 hph-rounded-md">
-                    <dt class="hph-detail-label text-responsive-sm hph-text-gray-600 hph-mb-xs">Stories</dt>
-                    <dd class="hph-detail-value text-responsive-base hph-font-semibold"><?php echo esc_html($fields['stories']); ?></dd>
-                </div>
-                <?php endif; ?>
-                
             </div>
-        </section>
+        </div>
+        <?php endif; ?>
+        
+        <!-- Property Details - Modernized Component -->
+        <?php get_template_part('template-parts/listing/details', null, ['listing_id' => $listing_id, 'fields' => $fields]); ?>
         
         <!-- Property Features -->
         <?php if (!empty($interior_features) || !empty($exterior_features) || !empty($appliances)) : ?>
-        <section class="hph-property-features hph-section hph-mb-lg">
+        <section class="hph-section hph-mb-md">
             <div class="hph-section__header hph-mb-md">
-                <h2 class="hph-section__title text-responsive-lg hph-font-bold">Features & Amenities</h2>
+                <h2 class="hph-section__title hph-text-xl hph-font-bold">Features & Amenities</h2>
             </div>
             
             <div class="hph-features-grid hph-grid hph-grid-cols-1 sm:hph-grid-cols-2 lg:hph-grid-cols-3 gap-responsive">
                 
                 <?php if (!empty($interior_features)) : ?>
                 <div class="hph-feature-group">
-                    <h3 class="hph-feature-group__title text-responsive-base hph-font-semibold hph-mb-md hph-flex hph-items-center gap-responsive">
+                    <h3 class="hph-feature-group__title text-responsive-base hph-font-semibold hph-mb-md hph-flex hph-items-center hph-gap-sm">
                         <i class="hph-feature-icon fas fa-home hph-text-primary"></i>
                         Interior Features
                     </h3>
                     <ul class="hph-feature-list hph-space-y-sm">
                         <?php foreach ($interior_features as $feature) : ?>
-                        <li class="hph-feature-item hph-flex hph-items-center gap-responsive">
+                        <li class="hph-feature-item hph-flex hph-items-center hph-gap-sm">
                             <i class="hph-feature-icon fas fa-check hph-text-success hph-text-sm"></i>
                             <span class="text-responsive-sm"><?php echo esc_html($feature_labels[$feature] ?? ucwords(str_replace('_', ' ', $feature))); ?></span>
                         </li>
@@ -341,13 +366,13 @@ $feature_labels = [
                 
                 <?php if (!empty($exterior_features)) : ?>
                 <div class="hph-feature-group">
-                    <h3 class="hph-feature-group__title text-responsive-base hph-font-semibold hph-mb-md hph-flex hph-items-center gap-responsive">
+                    <h3 class="hph-feature-group__title text-responsive-base hph-font-semibold hph-mb-md hph-flex hph-items-center hph-gap-sm">
                         <i class="hph-feature-icon fas fa-tree hph-text-primary"></i>
                         Exterior Features
                     </h3>
                     <ul class="hph-feature-list hph-space-y-sm">
                         <?php foreach ($exterior_features as $feature) : ?>
-                        <li class="hph-feature-item hph-flex hph-items-center gap-responsive">
+                        <li class="hph-feature-item hph-flex hph-items-center hph-gap-sm">
                             <i class="hph-feature-icon fas fa-check hph-text-success hph-text-sm"></i>
                             <span class="text-responsive-sm"><?php echo esc_html($feature_labels[$feature] ?? ucwords(str_replace('_', ' ', $feature))); ?></span>
                         </li>

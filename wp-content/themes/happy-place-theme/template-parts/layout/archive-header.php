@@ -130,19 +130,9 @@ $header_args = wp_parse_args($args ?? [], array_merge($config, [
     <div class="hph-hero-overlay hph-absolute hph-inset-0 hph-z-5"></div>
     
     <!-- Content Container -->
-    <div class="hph-hero-container hph-relative hph-z-10 hph-w-full hph-flex hph-justify-center">
-        <div class="hph-content-row hph-hero-content hph-relative hph-z-10 hph-w-full hph-max-w-6xl hph-text-center hph-text-white hph-mx-auto"><?php
-         echo 'background: ' . esc_attr($header_args['gradient']) . ';';
-         } elseif ($header_args['background_type'] === 'image' && !empty($header_args['background_image'])) {
-             echo 'background-image: url(' . esc_url($header_args['background_image']) . ');';
-         }
-         ?>"></div>
-    <div class="hph-archive-hero__overlay"></div>
-    
     <div class="hph-container hph-archive-hero__content">
-    <!-- Content Container -->
-    <div class="hph-hero-container hph-relative hph-z-10 hph-w-full hph-flex hph-justify-center">
-        <div class="hph-content-row hph-hero-content hph-relative hph-z-10 hph-w-full hph-max-w-6xl hph-text-center hph-text-white hph-mx-auto">
+        <div class="hph-hero-container hph-relative hph-z-10 hph-w-full hph-flex hph-justify-center">
+            <div class="hph-content-row hph-hero-content hph-relative hph-z-10 hph-w-full hph-max-w-6xl hph-text-center hph-text-white hph-mx-auto">
             
             <!-- Badge (Post Type) -->
             <div class="hph-mb-lg hph-animate-slide-down">

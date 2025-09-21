@@ -1,0 +1,511 @@
+/**
+ * Enhanced Listing Hero Feature - BEM Methodology
+ * Business logic styling for advanced listing hero functionality
+ *
+ * Composes atomic components with hero-specific behavior
+ * @package HappyPlaceTheme
+ */
+
+/* ================================================
+   LISTING HERO ENHANCED - BEM BLOCK
+   ================================================ */
+
+.hph-listing-hero-enhanced {
+  /* Inherits from: hph-hero base styles */
+  position: relative;
+  height: 90vh;
+  min-height: 400px;
+  overflow: hidden;
+  background: var(--hph-black);
+  display: flex;
+  align-items: flex-end;
+}
+
+/* Hero size modifiers */
+.hph-listing-hero-enhanced--lg {
+  height: 95vh;
+  min-height: 500px;
+}
+
+.hph-listing-hero-enhanced--sm {
+  height: 70vh;
+  min-height: 350px;
+}
+
+.hph-listing-hero-enhanced--fullscreen {
+  height: 100vh;
+  min-height: 100vh;
+}
+
+/* ================================================
+   HERO GALLERY ELEMENTS - BEM STRUCTURE
+   ================================================ */
+
+/* Gallery Container Element */
+.hph-listing-hero-enhanced__gallery {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+/* Background Image Element */
+.hph-listing-hero-enhanced__background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Individual Image Element */
+.hph-listing-hero-enhanced__image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.hph-listing-hero-enhanced__image.active {
+  opacity: 1;
+}
+
+.hph-listing-hero-enhanced__image--placeholder {
+  background: linear-gradient(135deg, var(--hph-gray-800) 0%, var(--hph-gray-900) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--hph-gray-400);
+  font-size: 4rem;
+}
+
+/* Gallery overlay for better content readability */
+.hph-listing-hero-enhanced__gallery::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
+  z-index: 2;
+}
+
+/* ================================================
+   GALLERY NAVIGATION ELEMENTS
+   ================================================ */
+
+/* Gallery Strip Element */
+.hph-listing-hero-enhanced__gallery-strip {
+  /* Inherits from: hph-nav-thumbnails (molecule) */
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 1rem;
+  border-radius: var(--hph-radius-lg);
+  backdrop-filter: blur(8px);
+}
+
+/* Gallery Thumbnail Element */
+.hph-listing-hero-enhanced__gallery-thumb {
+  /* Inherits from: hph-nav-thumbnail (atom) */
+  width: 4rem;
+  height: 3rem;
+  border-radius: var(--hph-radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  opacity: 0.7;
+}
+
+.hph-listing-hero-enhanced__gallery-thumb.active,
+.hph-listing-hero-enhanced__gallery-thumb:hover {
+  border-color: var(--hph-white);
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+/* Navigation Buttons */
+.hph-listing-hero-enhanced__nav-btn {
+  /* Inherits from: hph-nav-btn (atom) */
+  /* Positioning handled by atomic nav-btn--left/right modifiers */
+}
+
+/* Photo Navigation Container */
+.hph-listing-hero-enhanced__photo-nav {
+  /* Inherits from: hph-nav-group--top-right (molecule) */
+  position: absolute;
+  top: 8rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  z-index: 10;
+}
+
+/* Photo Counter */
+.hph-listing-hero-enhanced__photo-count {
+  /* Inherits from: hph-nav-counter (atom) */
+}
+
+/* Gallery Toggle Button */
+.hph-listing-hero-enhanced__gallery-btn {
+  /* Inherits from: hph-btn hph-btn--secondary (atoms) */
+}
+
+/* ================================================
+   CONTENT OVERLAY ELEMENTS
+   ================================================ */
+
+/* Content Overlay Element */
+.hph-listing-hero-enhanced__overlay {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  padding-bottom: 3rem;
+}
+
+/* Content Container Element */
+.hph-listing-hero-enhanced__content {
+  /* Inherits from: hph-container (atom) */
+}
+
+/* Info Section Element */
+.hph-listing-hero-enhanced__info {
+  max-width: 600px;
+}
+
+/* Title Element */
+.hph-listing-hero-enhanced__title {
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+  color: var(--hph-white);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Location Element */
+.hph-listing-hero-enhanced__location {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 1.5rem;
+}
+
+.hph-listing-hero-enhanced__location i {
+  color: var(--hph-primary-200);
+}
+
+/* Price Container Element */
+.hph-listing-hero-enhanced__price-wrapper {
+  margin-bottom: 1.5rem;
+}
+
+.hph-listing-hero-enhanced__price {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--hph-white);
+  line-height: 1;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hph-listing-hero-enhanced__price-per {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 0.25rem;
+}
+
+/* Property Statistics - Composes atomic component */
+.hph-listing-hero-enhanced__stats {
+  /* Uses: hph-property-stats hph-property-stats--light */
+  margin-bottom: 1.5rem;
+}
+
+/* Action Buttons Container */
+.hph-listing-hero-enhanced__actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Status Badge */
+.hph-listing-hero-enhanced__status {
+  /* Inherits from: hph-badge (atom) */
+  position: absolute;
+  top: 8rem;
+  left: 2rem;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--hph-gray-900);
+  padding: 0.5rem 1.25rem;
+  border-radius: 2rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+/* Status Badge Modifiers */
+.hph-listing-hero-enhanced__status--active {
+  background: var(--hph-success);
+  color: var(--hph-white);
+}
+
+.hph-listing-hero-enhanced__status--pending {
+  background: var(--hph-warning);
+  color: var(--hph-white);
+}
+
+.hph-listing-hero-enhanced__status--sold {
+  background: var(--hph-danger);
+  color: var(--hph-white);
+}
+
+.hph-listing-hero-enhanced__status--coming-soon {
+  background: var(--hph-info);
+  color: var(--hph-white);
+}
+
+/* ================================================
+   HERO MODIFIERS - BEM MODIFIERS
+   ================================================ */
+
+/* Gallery Mode Modifier */
+.hph-listing-hero-enhanced--gallery-mode {
+  padding-bottom: 120px;
+  transition: padding-bottom 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.hph-listing-hero-enhanced--gallery-mode .hph-listing-hero-enhanced__gallery-strip {
+  opacity: 1;
+  visibility: visible;
+}
+
+.hph-listing-hero-enhanced--gallery-mode .hph-listing-hero-enhanced__overlay {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-20px);
+  transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.hph-listing-hero-enhanced--gallery-mode .hph-listing-hero-enhanced__status {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-20px);
+  transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.hph-listing-hero-enhanced--gallery-mode .hph-listing-hero-enhanced__gallery::before {
+  background: none !important;
+  transition: background 0.6s ease;
+}
+
+/* Simple Mode Modifier (no gallery functionality) */
+.hph-listing-hero-enhanced--simple .hph-listing-hero-enhanced__photo-nav,
+.hph-listing-hero-enhanced--simple .hph-listing-hero-enhanced__nav-btn,
+.hph-listing-hero-enhanced--simple .hph-listing-hero-enhanced__gallery-strip {
+  display: none;
+}
+
+/* ================================================
+   RESPONSIVE DESIGN
+   ================================================ */
+
+/* Desktop adjustments */
+@media (min-width: 1200px) {
+  .hph-listing-hero-enhanced__title {
+    font-size: 3.5rem;
+  }
+
+  .hph-listing-hero-enhanced__price {
+    font-size: 3rem;
+  }
+}
+
+/* Tablet adjustments */
+@media (max-width: 1024px) {
+  .hph-listing-hero-enhanced__title {
+    font-size: 2.5rem;
+  }
+
+  .hph-listing-hero-enhanced__price {
+    font-size: 2rem;
+  }
+
+  .hph-listing-hero-enhanced__photo-nav {
+    gap: 0.6rem;
+    right: 1.25rem;
+    top: 7rem;
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .hph-listing-hero-enhanced {
+    height: 80vh;
+    min-height: 500px;
+  }
+
+  .hph-listing-hero-enhanced__status {
+    top: calc(var(--hph-header-height-mobile) + 1rem);
+    left: 1rem;
+    font-size: 0.75rem;
+    padding: 0.375rem 0.875rem;
+  }
+
+  .hph-listing-hero-enhanced__title {
+    font-size: 2rem;
+  }
+
+  .hph-listing-hero-enhanced__price {
+    font-size: 1.75rem;
+  }
+
+  .hph-listing-hero-enhanced__location {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .hph-listing-hero-enhanced__info {
+    max-width: 100%;
+    padding: 0 1rem;
+  }
+
+  .hph-listing-hero-enhanced__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    justify-content: center;
+    max-width: 100%;
+  }
+
+  .hph-listing-hero-enhanced__gallery-strip {
+    bottom: 1rem;
+    padding: 0.75rem;
+  }
+}
+
+/* Small mobile adjustments */
+@media (max-width: 480px) {
+  .hph-listing-hero-enhanced {
+    height: 70vh;
+    min-height: 400px;
+  }
+
+  .hph-listing-hero-enhanced__title {
+    font-size: 1.75rem;
+  }
+
+  .hph-listing-hero-enhanced__price {
+    font-size: 1.5rem;
+  }
+
+  .hph-listing-hero-enhanced__actions {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    max-width: 100%;
+  }
+
+  .hph-listing-hero-enhanced__gallery-strip {
+    left: 1rem;
+    right: 1rem;
+    transform: none;
+  }
+}
+
+/* ================================================
+   ACCESSIBILITY
+   ================================================ */
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .hph-listing-hero-enhanced__gallery::before {
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.5) 0%,
+      rgba(0, 0, 0, 0.3) 50%,
+      rgba(0, 0, 0, 0.8) 100%
+    );
+  }
+
+  .hph-listing-hero-enhanced__status {
+    border: 2px solid var(--hph-white);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .hph-listing-hero-enhanced__image,
+  .hph-listing-hero-enhanced__gallery,
+  .hph-listing-hero-enhanced__overlay,
+  .hph-listing-hero-enhanced__status,
+  .hph-listing-hero-enhanced__gallery-strip {
+    transition: none;
+  }
+
+  .hph-listing-hero-enhanced--gallery-mode {
+    transition: none;
+  }
+}
+
+/* ================================================
+   INTEGRATION WITH EXISTING SYSTEM
+   ================================================ */
+
+/*
+ * This component composes the following atomic components:
+ * - .hph-nav-btn (navigation controls atom)
+ * - .hph-nav-counter (navigation counter atom)
+ * - .hph-nav-thumbnails (thumbnail navigation molecule)
+ * - .hph-property-stats (property statistics molecule)
+ * - .hph-badge (status badge atom)
+ * - .hph-btn (action buttons atom)
+ * - .hph-container (layout container atom)
+ *
+ * Usage in templates:
+ * <section class="hph-listing-hero-enhanced hph-listing-hero-enhanced--gallery">
+ *   <div class="hph-listing-hero-enhanced__gallery">
+ *     <div class="hph-listing-hero-enhanced__image active">
+ *   </div>
+ *   <div class="hph-listing-hero-enhanced__overlay">
+ *     <div class="hph-container">
+ *       <div class="hph-property-stats hph-property-stats--light">
+ *         ...
+ *       </div>
+ *     </div>
+ *   </div>
+ *   <button class="hph-nav-btn hph-nav-btn--left">
+ *     <i class="fas fa-chevron-left"></i>
+ *   </button>
+ * </section>
+ */

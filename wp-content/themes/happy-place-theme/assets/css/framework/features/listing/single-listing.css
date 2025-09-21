@@ -5,7 +5,7 @@
 
 /* Main listing content wrapper */
 .hph-listing-content {
-    padding: var(--hph-space-xl) 0;
+    padding: var(--hph-space-8) 0;
 }
 
 /* Single listing uses framework layout-with-sidebar */
@@ -35,9 +35,19 @@
     position: sticky;
     top: 2rem;
     height: fit-content;
+    background: var(--hph-white);
+    padding: var(--hph-space-6);
+    box-shadow: var(--hph-shadow-sm);
+    border-radius: var(--hph-radius-md);
 }
 
-/* Ensure sidebar widgets use framework classes */
+.hph-sidebar-widget {
+    background: white;
+    border-radius: var(--hph-local-radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--hph-local-shadow);
+}
 .hph-listing-sidebar-wrapper .hph-widget,
 .hph-listing-sidebar-wrapper .hph-sidebar-widget {
     background: var(--hph-white);
@@ -115,25 +125,25 @@
     
     /* Adjust padding for mobile */
     .hph-listing-content {
-        padding: var(--hph-space-lg) 0;
+        padding: var(--hph-space-6) 0;
     }
     
     .hph-listing-layout {
-        padding: 0 var(--hph-space-md);
+        padding: 0 var(--hph-space-4);
     }
 }
 
 /* Small mobile optimization */
 @media (max-width: 480px) {
     .hph-listing-layout {
-        padding: 0 var(--hph-space-sm);
-        gap: var(--hph-space-lg);
+        padding: 0 var(--hph-space-2);
+        gap: var(--hph-space-6);
     }
     
     .hph-listing-sidebar-wrapper .hph-widget,
     .hph-listing-sidebar-wrapper .hph-sidebar-widget {
-        padding: var(--hph-space-lg);
-        margin-bottom: var(--hph-space-lg);
+        padding: var(--hph-space-6);
+        margin-bottom: var(--hph-space-6);
     }
 }
 

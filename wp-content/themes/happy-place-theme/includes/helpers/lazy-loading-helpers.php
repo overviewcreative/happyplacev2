@@ -55,9 +55,64 @@ function hph_lazy_image($image, $args = []) {
 }
 
 /**
+ * Add Fastly optimization parameters to image URLs
+ *
+ * @param string $url Image URL
+ * @param string $size WordPress image size
+ * @return string Optimized URL with Fastly parameters
+ */
+function hph_add_fastly_optimization($url, $size = 'large') {
+    // Only process URLs from this site
+    if (empty($url) || !is_string($url)) {
+        return $url;
+    }
+
+    // Skip if already has optimization parameters
+    if (strpos($url, 'auto=') !== false || strpos($url, 'w=') !== false) {
+        return $url;
+    }
+
+    // Base optimization parameters
+    $params = [
+        'auto' => 'webp,compress',
+        'q' => '85', // 85% quality for good balance
+        'fit' => 'crop'
+    ];
+
+    // Size-specific dimensions for responsive images
+    switch($size) {
+        case 'thumbnail':
+            $params['w'] = 300;
+            $params['h'] = 300;
+            break;
+        case 'medium':
+            $params['w'] = 600;
+            $params['h'] = 400;
+            break;
+        case 'medium_large':
+            $params['w'] = 768;
+            $params['h'] = 512;
+            break;
+        case 'large':
+            $params['w'] = 1200;
+            $params['h'] = 800;
+            break;
+        case 'full':
+        default:
+            // For hero images, limit max width but maintain aspect ratio
+            $params['w'] = 1920;
+            $params['h'] = 1080;
+            $params['fit'] = 'max'; // Don't crop full size images
+            break;
+    }
+
+    return add_query_arg($params, $url);
+}
+
+/**
  * Process different types of image input
- * 
- * @param mixed $image Image input (URL, ID, ACF field)
+ *
+ * @param mixed $image Image input (URL, ID, ACF field, or HPH image array)
  * @param string $size Image size
  * @return array|false Image data or false on failure
  */
@@ -67,7 +122,7 @@ function hph_process_image_input($image, $size = 'large') {
         $image_data = wp_get_attachment_image_src($image, $size);
         if ($image_data) {
             return [
-                'src' => $image_data[0],
+                'src' => hph_add_fastly_optimization($image_data[0], $size),
                 'width' => $image_data[1],
                 'height' => $image_data[2],
                 'alt' => get_post_meta($image, '_wp_attachment_image_alt', true) ?: '',
@@ -75,29 +130,78 @@ function hph_process_image_input($image, $size = 'large') {
             ];
         }
     }
-    
-    // Handle ACF image field
+
+    // Handle HPH image array (from our updated hph_get_image_url function)
     if (is_array($image) && isset($image['url'])) {
+        // Determine the best URL to use based on size
+        $src = $image['url'] ?? ''; // Default to main URL
+        $width = $image['width'] ?? 0;
+        $height = $image['height'] ?? 0;
+
+        // Try to get specific size if available
+        if (isset($image['sizes'][$size]['url'])) {
+            $src = $image['sizes'][$size]['url'];
+            $width = $image['sizes'][$size]['width'] ?? $width;
+            $height = $image['sizes'][$size]['height'] ?? $height;
+        } elseif (isset($image['sizes'][$size])) {
+            // Handle ACF format with size suffix
+            $src = $image['sizes'][$size];
+            $width = $image['sizes'][$size . '-width'] ?? $width;
+            $height = $image['sizes'][$size . '-height'] ?? $height;
+        }
+
         return [
-            'src' => $image['sizes'][$size] ?? $image['url'],
-            'width' => $image['sizes'][$size . '-width'] ?? $image['width'],
-            'height' => $image['sizes'][$size . '-height'] ?? $image['height'],
-            'alt' => $image['alt'] ?: $image['title'] ?: '',
-            'id' => $image['ID'] ?? 0
+            'src' => hph_add_fastly_optimization($src, $size),
+            'width' => $width,
+            'height' => $height,
+            'alt' => $image['alt'] ?? $image['title'] ?? '',
+            'id' => $image['ID'] ?? $image['id'] ?? 0
         ];
     }
-    
+
     // Handle direct URL
     if (is_string($image) && filter_var($image, FILTER_VALIDATE_URL)) {
         return [
-            'src' => $image,
+            'src' => hph_add_fastly_optimization($image, $size),
             'width' => 0,
             'height' => 0,
             'alt' => '',
             'id' => 0
         ];
     }
-    
+
+    // Handle file path (try to process through hph_get_image_url)
+    if (is_string($image) && !empty($image)) {
+        $processed = hph_get_image_url($image);
+
+        // If we get an array back, check if it's already in the right format
+        if (is_array($processed)) {
+            // If it has the expected structure, return it directly (avoid recursive processing)
+            if (isset($processed['url'])) {
+                return [
+                    'src' => hph_add_fastly_optimization($processed['url'], $size),
+                    'width' => $processed['width'] ?? 0,
+                    'height' => $processed['height'] ?? 0,
+                    'alt' => $processed['alt'] ?? $processed['title'] ?? '',
+                    'id' => $processed['ID'] ?? $processed['id'] ?? 0
+                ];
+            }
+            // If it's a different array format, try to process it
+            return hph_process_image_input($processed, $size);
+        }
+
+        // If we get a URL back, process it as URL
+        if (is_string($processed) && filter_var($processed, FILTER_VALIDATE_URL)) {
+            return [
+                'src' => hph_add_fastly_optimization($processed, $size),
+                'width' => 0,
+                'height' => 0,
+                'alt' => '',
+                'id' => 0
+            ];
+        }
+    }
+
     return false;
 }
 
@@ -111,35 +215,52 @@ function hph_process_image_input($image, $size = 'large') {
  */
 function hph_build_lazy_image_attributes($image_data, $args, $is_eager) {
     $attributes = [];
-    
+
+    // Ensure src is a string URL, not an array
+    $src_url = '';
+    if (is_array($image_data['src'])) {
+        // If src is an array, try to extract the URL
+        $src_url = $image_data['src']['url'] ?? '';
+        if (empty($src_url) && isset($image_data['src'][0])) {
+            $src_url = $image_data['src'][0]; // Handle WordPress image array format
+        }
+    } else {
+        $src_url = $image_data['src'] ?? '';
+    }
+
+    // Fallback to empty string if we still don't have a valid URL
+    if (!is_string($src_url)) {
+        $src_url = '';
+    }
+
     // Basic attributes
     if ($image_data['alt'] || $args['alt']) {
         $attributes[] = 'alt="' . esc_attr($image_data['alt'] ?: $args['alt']) . '"';
     }
-    
+
     if ($image_data['width']) {
         $attributes[] = 'width="' . esc_attr($image_data['width']) . '"';
     }
-    
+
     if ($image_data['height']) {
         $attributes[] = 'height="' . esc_attr($image_data['height']) . '"';
     }
-    
+
     // Build CSS classes
     $classes = ['hph-image'];
     if ($args['class']) {
         $classes[] = $args['class'];
     }
-    
+
     // Lazy loading implementation
     if ($is_eager) {
         // Eager loading for above-fold images
-        $attributes[] = 'src="' . esc_url($image_data['src']) . '"';
+        $attributes[] = 'src="' . esc_url($src_url) . '"';
         $attributes[] = 'loading="eager"';
         $classes[] = 'hph-loaded';
     } else {
         // Lazy loading
-        $attributes[] = 'data-src="' . esc_url($image_data['src']) . '"';
+        $attributes[] = 'data-src="' . esc_url($src_url) . '"';
         $attributes[] = 'loading="lazy"';
         
         // Add loading type class
@@ -280,8 +401,9 @@ function hph_lazy_background($image, $args = []) {
     }
     
     // Use CSS custom properties for lazy background loading
+    $optimized_src = hph_add_fastly_optimization($image_data['src'], $args['size']);
     $styles = [
-        '--hph-bg-image: url(' . esc_url($image_data['src']) . ')',
+        '--hph-bg-image: url(' . esc_url($optimized_src) . ')',
         'background-position: ' . $args['position'],
         'background-repeat: ' . $args['repeat'],
         'background-size: ' . $args['size_css']

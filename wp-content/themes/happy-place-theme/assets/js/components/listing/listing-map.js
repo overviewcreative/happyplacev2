@@ -10,7 +10,6 @@ window.HPHListingMap = window.HPHListingMap || {};
 
 // Load HPH Map component first
 if (typeof HPHMap === 'undefined') {
-    console.error('Listing Map: HPHMap component not found. Loading fallback.');
 }
 
 (function($) {
@@ -125,7 +124,6 @@ if (typeof HPHMap === 'undefined') {
             
             // Filter markers based on category
             // Implementation would filter map markers
-            console.log('Filtering by category:', category);
         },
 
         /**
@@ -194,7 +192,6 @@ if (typeof HPHMap === 'undefined') {
          */
         initGoogleMap: function(config) {
             if (!config || !config.lat || !config.lng) {
-                console.error('Invalid map configuration');
                 return;
             }
 
@@ -289,7 +286,6 @@ if (typeof HPHMap === 'undefined') {
         addNearbyMarkers: function(nearbyPlaces) {
             // Implementation would add markers for nearby places
             // This would require actual coordinates for each place
-            console.log('Adding nearby markers:', nearbyPlaces);
         },
 
         /**
@@ -364,9 +360,10 @@ window.getDirections = function(destination) {
 window.shareProperty = function(url) {
     if (navigator.share) {
         navigator.share({
-            title: 'Check out this property',
+                title: 'Check out this property',
             url: url
-        });
+        
+            });
     } else {
         // Fallback to copying URL
         navigator.clipboard.writeText(url).then(function() {

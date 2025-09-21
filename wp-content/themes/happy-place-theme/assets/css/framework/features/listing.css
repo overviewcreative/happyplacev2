@@ -1,0 +1,68 @@
+/**
+ * Consolidated Listing Features CSS
+ * Combines all listing-related styles for performance optimization
+ *
+ * Consolidates 23 feature files into 1 bundle:
+ * - Listing cards (base, enhanced, carousel)
+ * - Single listing pages
+ * - Archive and grid layouts
+ * - Maps and neighborhood components
+ * - Mobile and responsive enhancements
+ *
+ * @package HappyPlaceTheme
+ */
+
+/* ================================================
+   CORE LISTING COMPONENTS
+   ================================================ */
+
+/* Base listing card styles - Consolidated and optimized */
+@import url('./listing/listing-card.css');
+@import url('./listing/listing-cards-responsive.css');
+@import url('./listing/listing-card-enhanced.css');
+@import url('./listing/listing-card-badges-actions.css');
+@import url('./listing/listing-card-carousel.css');
+
+/* Single listing page components */
+@import url('./listing/single-listing.css');
+@import url('./listing/listing-details.css');
+@import url('./listing/listing-gallery.css');
+@import url('./listing/listing-hero.css');
+@import url('./listing/listing-hero-enhanced.css');
+@import url('./listing/listing-contact.css');
+
+/* ================================================
+   ARCHIVE & GRID LAYOUTS
+   ================================================ */
+
+/* Archive page enhancements */
+@import url('./listing/archive-enhanced.css');
+@import url('./listing/quick-actions-sidebar.css');
+@import url('./listing/hero-carousel-styles.css');
+
+/* ================================================
+   MAP COMPONENTS
+   ================================================ */
+
+/* Listing map integration */
+@import url('./listing/listing-map.css');
+@import url('./listing/listing-map-card.css');
+@import url('./listing/neighborhood-map.css');
+
+/* ================================================
+   RESPONSIVE & MOBILE
+   ================================================ */
+
+/* Mobile optimizations */
+@import url('./listing/mobile-optimizations.css');
+@import url('./listing/mobile-single-listing.css');
+@import url('./listing/mobile-listing-enhancements.css');
+@import url('./listing/responsive-enhancements.css');
+
+/* ================================================
+   MODULAR SYSTEMS
+   ================================================ */
+
+/* Index and modular components */
+@import url('./listing/index.css');
+@import url('./listing/index-modular.css');

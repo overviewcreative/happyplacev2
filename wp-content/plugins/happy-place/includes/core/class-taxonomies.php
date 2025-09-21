@@ -154,11 +154,18 @@ class Taxonomies {
             }
         }
         
-        // Property statuses
+        // Property statuses - ENHANCED for multiselect combinations
         $property_statuses = [
             'active' => __('Active', 'happy-place'),
             'pending' => __('Pending', 'happy-place'),
+            'under-contract' => __('Under Contract', 'happy-place'),
             'sold' => __('Sold', 'happy-place'),
+            'withdrawn' => __('Withdrawn', 'happy-place'),
+            'expired' => __('Expired', 'happy-place'),
+            'coming-soon' => __('Coming Soon', 'happy-place'),
+            'draft' => __('Draft', 'happy-place'),
+            'contingent' => __('Contingent', 'happy-place'),
+            'back-on-market' => __('Back on Market', 'happy-place'),
         ];
         
         foreach ($property_statuses as $slug => $name) {

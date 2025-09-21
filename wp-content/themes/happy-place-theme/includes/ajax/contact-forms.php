@@ -1,21 +1,24 @@
 <?php
 /**
- * Contact Form AJAX Handlers
- * 
- * Handles all contact-related forms including:
- * - Property contact/inquiry forms
- * - Tour scheduling requests
- * - Enhanced multi-type contact forms
- * - Mortgage calculator sharing
- * 
+ * DEPRECATED - Legacy Contact Form AJAX Handlers
+ *
+ * REFACTORING NOTE: These handlers are now DISABLED as all forms
+ * have been migrated to use the plugin's FormRouter service.
+ *
  * @package HappyPlaceTheme
  * @since 3.1.0
+ * @deprecated 4.1.0 Use HappyPlace\Services\FormRouter instead
  */
 
 // Prevent direct access
 if (!defined('ABSPATH')) {
     exit;
 }
+
+// REFACTORING: All handlers in this file have been disabled and replaced
+// with the unified FormRouter system in the plugin.
+// Forms now route to: wp_ajax_hph_route_form
+return; // Disable all legacy handlers below
 
 /**
  * Handle listing contact form submission
@@ -430,6 +433,20 @@ Phone: %s
             'code' => 'email_failed'
         ]);
     }
+    }
+}
+
+/**
+ * Handle showing request (dedicated endpoint)
+ */
+if (!function_exists('handle_hph_handle_showing_request')) {
+    add_action('wp_ajax_hph_handle_showing_request', 'handle_hph_handle_showing_request');
+    add_action('wp_ajax_nopriv_hph_handle_showing_request', 'handle_hph_handle_showing_request');
+
+    function handle_hph_handle_showing_request() {
+        // Just redirect to the existing comprehensive handler
+        $_POST['form_type'] = 'tour';
+        handle_hph_submit_contact_form();
     }
 }
 

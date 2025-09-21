@@ -215,3 +215,107 @@
 .hph-agent-carousel-section.has-xl-padding-bottom {
     padding-bottom: var(--hph-spacing-2xl);
 }
+
+/* ================================================
+   Agent Card Component Styles
+   ================================================ */
+
+/* Agent-specific modifications to base card component */
+.hph-agent-card {
+    /* Inherits all base card styles from atoms/card.css */
+    text-align: center;
+}
+
+/* Agent profile images should be circular */
+.hph-agent-card .hph-card-image img {
+    border-radius: 50%;
+    object-fit: cover;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    border: 3px solid var(--hph-primary-200);
+    background: var(--hph-gray-100);
+}
+
+/* Agent card titles use primary color */
+.hph-agent-card .hph-card-title {
+    color: var(--hph-primary-600);
+    font-weight: 600;
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Agent subtitles (job title) styling */
+.hph-agent-card .hph-card-subtitle {
+    color: var(--hph-gray-600);
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+}
+
+/* Center agent card content */
+.hph-agent-card .hph-card-body {
+    text-align: center;
+    flex: 1;
+}
+
+/* Agent description styling */
+.hph-agent-card .hph-card-description {
+    color: var(--hph-gray-700);
+    font-size: 0.813rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    opacity: 0.9;
+}
+
+/* Agent card actions (contact buttons) */
+.hph-agent-card .hph-card-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-top: auto;
+}
+
+/* Responsive adjustments for agent cards */
+@media (max-width: 640px) {
+    .hph-agent-card .hph-card-image img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .hph-agent-card .hph-card-actions {
+        flex-direction: column;
+        gap: 0.375rem;
+    }
+
+    .hph-agent-card .hph-card-actions .hph-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Compact layout for agent cards */
+.hph-agent-card.hph-card-compact {
+    padding: 1rem;
+    min-height: auto;
+}
+
+.hph-agent-card.hph-card-compact .hph-card-image img {
+    width: 50px;
+    height: 50px;
+}
+
+.hph-agent-card.hph-card-compact .hph-card-title {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.hph-agent-card.hph-card-compact .hph-card-subtitle {
+    font-size: 0.75rem;
+    margin-bottom: 0;
+}
+
+.hph-agent-card.hph-card-compact .hph-card-description,
+.hph-agent-card.hph-card-compact .hph-card-actions {
+    display: none;
+}

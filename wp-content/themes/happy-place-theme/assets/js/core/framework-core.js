@@ -17,7 +17,6 @@
      * Framework initialization
      */
     HPH.init = function() {
-        console.log('HPH Framework initialized');
         
         // Initialize all components
         HPH.initComponents();
@@ -232,7 +231,6 @@
                 $card.toggleClass('hph-card-expanded');
                 break;
             default:
-                console.log('Unknown card action:', action);
         }
     };
     
@@ -407,7 +405,6 @@
     HPH.initLazyLoading = function() {
         // Check if enhanced lazy loading is available
         if (window.HPH && window.HPH.enhancedLazyLoading) {
-            console.log('Enhanced lazy loading already active');
             return;
         }
         
@@ -451,7 +448,6 @@
                         // Handle error gracefully
                         img.classList.remove('hph-loading');
                         img.classList.add('hph-image-error');
-                        console.warn('Failed to load lazy image:', img.dataset.src);
                     };
                     
                     // Start loading

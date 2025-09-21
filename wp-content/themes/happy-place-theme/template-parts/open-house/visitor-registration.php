@@ -102,7 +102,7 @@ $time_range = date('g:i A', strtotime($start_time)) . ' - ' . date('g:i A', strt
                         <label for="first_name" class="form-label">
                             First Name <span class="text-danger">*</span>
                         </label>
-                        <input type="text" class="form-control" id="first_name" name="first_name" required>
+                        <input type="text" class="hph-form-input" id="first_name" name="first_name" required>
                         <div class="invalid-feedback">
                             Please provide your first name.
                         </div>
@@ -112,7 +112,7 @@ $time_range = date('g:i A', strtotime($start_time)) . ' - ' . date('g:i A', strt
                         <label for="last_name" class="form-label">
                             Last Name <span class="text-danger">*</span>
                         </label>
-                        <input type="text" class="form-control" id="last_name" name="last_name" required>
+                        <input type="text" class="hph-form-input" id="last_name" name="last_name" required>
                         <div class="invalid-feedback">
                             Please provide your last name.
                         </div>
@@ -124,7 +124,7 @@ $time_range = date('g:i A', strtotime($start_time)) . ' - ' . date('g:i A', strt
                         <label for="email" class="form-label">
                             Email Address <span class="text-danger">*</span>
                         </label>
-                        <input type="email" class="form-control" id="email" name="email" required>
+                        <input type="email" class="hph-form-input" id="email" name="email" required>
                         <div class="invalid-feedback">
                             Please provide a valid email address.
                         </div>
@@ -132,7 +132,7 @@ $time_range = date('g:i A', strtotime($start_time)) . ' - ' . date('g:i A', strt
                     
                     <div class="col-md-6 mb-3">
                         <label for="phone" class="form-label">Phone Number</label>
-                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="(555) 123-4567">
+                        <input type="tel" class="hph-form-input" id="phone" name="phone" placeholder="(555) 123-4567">
                         <small class="form-text text-muted">Optional - helps us contact you if needed</small>
                     </div>
                 </div>
@@ -140,7 +140,7 @@ $time_range = date('g:i A', strtotime($start_time)) . ' - ' . date('g:i A', strt
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="party_size" class="form-label">Party Size</label>
-                        <select class="form-select" id="party_size" name="party_size">
+                        <select class="hph-form-select" id="party_size" name="party_size">
                             <?php for ($i = 1; $i <= 10; $i++): ?>
                                 <option value="<?php echo $i; ?>" <?php selected($i, 1); ?>>
                                     <?php echo $i; ?> <?php echo $i == 1 ? 'person' : 'people'; ?>
@@ -151,7 +151,7 @@ $time_range = date('g:i A', strtotime($start_time)) . ' - ' . date('g:i A', strt
                     
                     <div class="col-md-6 mb-3">
                         <label for="interest_level" class="form-label">Interest Level</label>
-                        <select class="form-select" id="interest_level" name="interest_level">
+                        <select class="hph-form-select" id="interest_level" name="interest_level">
                             <option value="3">General Interest</option>
                             <option value="2">Seriously Considering</option>
                             <option value="1">Ready to Make an Offer</option>
@@ -162,20 +162,20 @@ $time_range = date('g:i A', strtotime($start_time)) . ' - ' . date('g:i A', strt
                 
                 <div class="mb-3">
                     <label for="message" class="form-label">Questions or Comments</label>
-                    <textarea class="form-control" id="message" name="message" rows="3" 
+                    <textarea class="hph-form-textarea" id="message" name="message" rows="3" 
                               placeholder="Any specific questions about the property or special requirements for your visit?"></textarea>
                 </div>
                 
-                <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" id="marketing_consent" name="marketing_consent" value="1">
-                    <label class="form-check-label" for="marketing_consent">
+                <div class="hph-form-check mb-3">
+                    <input class="hph-form-check-input" type="checkbox" id="marketing_consent" name="marketing_consent" value="1">
+                    <label class="hph-form-check-label" for="marketing_consent">
                         I would like to receive updates about similar properties and market information
                     </label>
                 </div>
                 
-                <div class="form-check mb-4">
-                    <input class="form-check-input" type="checkbox" id="agent_contact" name="agent_contact" value="1">
-                    <label class="form-check-label" for="agent_contact">
+                <div class="hph-form-check mb-4">
+                    <input class="hph-form-check-input" type="checkbox" id="agent_contact" name="agent_contact" value="1">
+                    <label class="hph-form-check-label" for="agent_contact">
                         I'm interested in speaking with a real estate agent about this property
                     </label>
                 </div>
@@ -185,12 +185,12 @@ $time_range = date('g:i A', strtotime($start_time)) . ' - ' . date('g:i A', strt
                 
                 <!-- Submit Button -->
                 <div class="d-grid">
-                    <button type="submit" class="btn btn-primary btn-lg">
-                        <span class="btn-text">
+                    <button type="submit" class="hph-btn hph-btn-primary hph-btn-lg">
+                        <span class="hph-btn-text">
                             <i class="fas fa-check me-2"></i>
                             <?php echo $require_registration ? 'Confirm RSVP' : 'Register Interest'; ?>
                         </span>
-                        <span class="btn-loading d-none">
+                        <span class="hph-btn-loading d-none">
                             <i class="fas fa-spinner fa-spin me-2"></i>
                             Submitting...
                         </span>
@@ -273,8 +273,8 @@ $time_range = date('g:i A', strtotime($start_time)) . ' - ' . date('g:i A', strt
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <a href="<?php echo get_permalink($listing_id); ?>" class="btn btn-primary">
+                <button type="button" class="hph-btn hph-btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="<?php echo get_permalink($listing_id); ?>" class="hph-btn hph-btn-primary">
                     <i class="fas fa-home me-2"></i>View Property Details
                 </a>
             </div>
@@ -379,9 +379,9 @@ jQuery(document).ready(function($) {
     color: white;
 }
 
-.visitor-registration-form .form-check-input:checked {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
+.visitor-registration-form .hph-form-check-input:checked {
+    background-color: var(--hph-primary);
+    border-color: var(--hph-primary);
 }
 
 @media (max-width: 768px) {

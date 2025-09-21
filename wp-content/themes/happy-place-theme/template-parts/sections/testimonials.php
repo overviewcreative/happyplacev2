@@ -15,25 +15,25 @@ if (function_exists('hph_register_template_part')) {
 // Default arguments
 $defaults = array(
     'style' => 'carousel', // Options: 'carousel', 'grid', 'list', 'cards', 'masonry'
-    'theme' => 'light', // Color theme: 'white', 'light', 'dark', 'primary'
-    'columns' => 3, // Number of columns for grid
-    'padding' => 'xl',
-    'container' => 'default',
-    'alignment' => 'center',
-    'badge' => '',
-    'headline' => 'What Our Clients Say',
-    'subheadline' => '',
-    'content' => '',
-    'testimonials' => array(),
-    'show_avatars' => true,
-    'show_ratings' => true,
-    'show_company' => true,
+    'theme' => 'light', // Options: 'white', 'light', 'dark', 'primary'
+    'columns' => 3, // Number of columns for grid layout (1-4)
+    'padding' => 'xl', // Options: 'sm', 'md', 'lg', 'xl', '2xl'
+    'container' => 'default', // Options: 'narrow', 'default', 'wide', 'full'
+    'alignment' => 'center', // Options: 'left', 'center', 'right'
+    'badge' => '', // Badge text to display above headline
+    'headline' => 'What Our Clients Say', // Main headline text
+    'subheadline' => '', // Subheadline text below headline
+    'content' => '', // Additional content text
+    'testimonials' => array(), // Array of testimonial objects with quote, name, company, etc.
+    'show_avatars' => true, // Boolean: true/false - display customer avatars
+    'show_ratings' => true, // Boolean: true/false - display star ratings
+    'show_company' => true, // Boolean: true/false - display company names
     'avatar_style' => 'circle', // Options: 'circle', 'square', 'rounded'
     'card_style' => 'elevated', // Options: 'elevated', 'outlined', 'minimal'
-    'auto_scroll' => false,
-    'scroll_speed' => 5000, // Milliseconds
-    'animation' => false,
-    'section_id' => ''
+    'auto_scroll' => false, // Boolean: true/false - auto-scroll carousel
+    'scroll_speed' => 5000, // Milliseconds between auto-scroll (1000-10000)
+    'animation' => false, // Boolean: true/false - enable entrance animations
+    'section_id' => '' // HTML ID for the section
 );
 
 // Merge with provided args
@@ -69,25 +69,25 @@ switch ($theme) {
 // Padding styles
 switch ($padding) {
     case 'sm':
-        $section_styles[] = 'padding-top: var(--hph-padding-lg)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-lg)';
+        $section_styles[] = 'padding-top: var(--hph-space-6)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-6)';
         break;
     case 'md':
-        $section_styles[] = 'padding-top: var(--hph-padding-xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-8)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-8)';
         break;
     case 'lg':
-        $section_styles[] = 'padding-top: var(--hph-padding-2xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-2xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-12)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-12)';
         break;
     case '2xl':
-        $section_styles[] = 'padding-top: var(--hph-padding-4xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-4xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-24)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-24)';
         break;
     case 'xl':
     default:
-        $section_styles[] = 'padding-top: var(--hph-padding-3xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-3xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-16)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-16)';
         break;
 }
 
@@ -96,8 +96,8 @@ $container_styles = array(
     'position: relative',
     'margin-left: auto',
     'margin-right: auto',
-    'padding-left: var(--hph-padding-lg)',
-    'padding-right: var(--hph-padding-lg)'
+    'padding-left: var(--hph-space-6)',
+    'padding-right: var(--hph-space-6)'
 );
 
 switch ($container) {
@@ -141,7 +141,7 @@ if ($style === 'carousel') {
     $testimonials_styles[] = 'gap: var(--hph-gap-xl)';
     $testimonials_styles[] = 'overflow-x: auto';
     $testimonials_styles[] = 'scroll-snap-type: x mandatory';
-    $testimonials_styles[] = 'padding-bottom: var(--hph-padding-sm)';
+    $testimonials_styles[] = 'padding-bottom: var(--hph-space-2)';
     $testimonials_styles[] = 'scroll-behavior: smooth';
 } elseif ($style === 'grid' || $style === 'cards') {
     $testimonials_styles[] = 'display: grid';
@@ -185,12 +185,12 @@ $carousel_id = 'hph_testimonials_' . uniqid();
         
         <?php if ($badge || $headline || $subheadline || $content): ?>
         <!-- Section Header -->
-        <div style="margin-bottom: var(--hph-margin-3xl); <?php echo $header_alignment; ?> <?php echo $animation ? 'animation: fadeInUp 0.8s ease-out;' : ''; ?>">
+        <div style="margin-bottom: var(--hph-space-16); <?php echo $header_alignment; ?> <?php echo $animation ? 'animation: fadeInUp 0.8s ease-out;' : ''; ?>">
             
             <?php if ($badge): ?>
             <!-- Badge -->
-            <div style="margin-bottom: var(--hph-margin-lg);">
-                <span style="display: inline-block; padding: var(--hph-padding-sm) var(--hph-padding-md); background: var(--hph-primary-100); color: var(--hph-primary-700); border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
+            <div style="margin-bottom: var(--hph-space-6);">
+                <span style="display: inline-block; padding: var(--hph-space-2) var(--hph-space-4); background: var(--hph-primary-100); color: var(--hph-primary-700); border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
                     <?php echo esc_html($badge); ?>
                 </span>
             </div>
@@ -198,14 +198,14 @@ $carousel_id = 'hph_testimonials_' . uniqid();
             
             <?php if ($headline): ?>
             <!-- Headline -->
-            <h2 style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-4xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
+            <h2 style="margin: 0 0 var(--hph-space-6) 0; font-size: var(--hph-text-4xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
                 <?php echo esc_html($headline); ?>
             </h2>
             <?php endif; ?>
             
             <?php if ($subheadline): ?>
             <!-- Subheadline -->
-            <p style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); opacity: 0.9;">
+            <p style="margin: 0 0 var(--hph-space-6) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); opacity: 0.9;">
                 <?php echo esc_html($subheadline); ?>
             </p>
             <?php endif; ?>
@@ -258,18 +258,18 @@ $carousel_id = 'hph_testimonials_' . uniqid();
                         $item_styles[] = 'border: 1px solid var(--hph-gray-200)';
                     }
                     
-                    $item_styles[] = 'padding: var(--hph-padding-xl)';
+                    $item_styles[] = 'padding: var(--hph-space-8)';
                     $item_styles[] = 'transition: all 300ms ease';
                 } elseif ($style === 'list') {
                     $item_styles[] = 'display: flex';
                     $item_styles[] = 'align-items: flex-start';
                     $item_styles[] = 'gap: var(--hph-gap-lg)';
-                    $item_styles[] = 'padding: var(--hph-padding-xl)';
+                    $item_styles[] = 'padding: var(--hph-space-8)';
                     $item_styles[] = 'border-left: 4px solid var(--hph-primary)';
                     $item_styles[] = 'background: var(--hph-white)';
                     $item_styles[] = 'border-radius: var(--hph-radius-lg)';
                 } else {
-                    $item_styles[] = 'padding: var(--hph-padding-xl)';
+                    $item_styles[] = 'padding: var(--hph-space-8)';
                     $item_styles[] = 'background: var(--hph-white)';
                     $item_styles[] = 'border-radius: var(--hph-radius-lg)';
                     $item_styles[] = 'box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05)';
@@ -294,14 +294,14 @@ $carousel_id = 'hph_testimonials_' . uniqid();
                 
                 <?php if ($testimonial['featured']): ?>
                 <!-- Featured Badge -->
-                <div style="position: absolute; top: -8px; right: var(--hph-spacing-lg); background: var(--hph-primary); color: var(--hph-white); padding: var(--hph-padding-xs) var(--hph-padding-sm); border-radius: var(--hph-radius-md); font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold);">
+                <div style="position: absolute; top: -8px; right: var(--hph-spacing-lg); background: var(--hph-primary); color: var(--hph-white); padding: var(--hph-space-1) var(--hph-space-2); border-radius: var(--hph-radius-md); font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold);">
                     Featured
                 </div>
                 <?php endif; ?>
                 
                 <?php if ($show_ratings && $testimonial['rating']): ?>
                 <!-- Rating Stars -->
-                <div style="margin-bottom: var(--hph-margin-lg); <?php echo $style === 'list' ? '' : 'text-align: center;'; ?>">
+                <div style="margin-bottom: var(--hph-space-6); <?php echo $style === 'list' ? '' : 'text-align: center;'; ?>">
                     <?php for ($i = 1; $i <= 5; $i++): ?>
                         <i class="fas fa-star" style="color: <?php echo $i <= $testimonial['rating'] ? 'var(--hph-warning)' : 'var(--hph-gray-300)'; ?>; margin-right: 2px; font-size: var(--hph-text-base);"></i>
                     <?php endfor; ?>
@@ -309,7 +309,7 @@ $carousel_id = 'hph_testimonials_' . uniqid();
                 <?php endif; ?>
                 
                 <!-- Testimonial Content -->
-                <div style="<?php echo $style === 'list' ? 'order: 2; flex: 1;' : 'margin-bottom: var(--hph-margin-lg);'; ?>">
+                <div style="<?php echo $style === 'list' ? 'order: 2; flex: 1;' : 'margin-bottom: var(--hph-space-6);'; ?>">
                     
                     <?php if ($testimonial['content']): ?>
                     <!-- Quote -->
@@ -332,7 +332,7 @@ $carousel_id = 'hph_testimonials_' . uniqid();
                         
                         <?php if ($show_avatars && $testimonial['avatar']): ?>
                         <!-- Avatar -->
-                        <div style="<?php echo $style === 'list' ? 'margin-bottom: var(--hph-margin-sm);' : 'flex-shrink: 0;'; ?>">
+                        <div style="<?php echo $style === 'list' ? 'margin-bottom: var(--hph-space-2);' : 'flex-shrink: 0;'; ?>">
                             <img 
                                 src="<?php echo esc_url($testimonial['avatar']); ?>" 
                                 alt="<?php echo esc_attr($testimonial['author']); ?>"
@@ -343,7 +343,7 @@ $carousel_id = 'hph_testimonials_' . uniqid();
                         </div>
                         <?php elseif ($show_avatars): ?>
                         <!-- Default Avatar -->
-                        <div style="<?php echo $style === 'list' ? 'margin-bottom: var(--hph-margin-sm);' : 'flex-shrink: 0;'; ?>">
+                        <div style="<?php echo $style === 'list' ? 'margin-bottom: var(--hph-space-2);' : 'flex-shrink: 0;'; ?>">
                             <div style="width: 3rem; height: 3rem; background: var(--hph-gray-300); color: var(--hph-gray-600); display: flex; align-items: center; justify-content: center; font-weight: var(--hph-font-semibold); 
                                         <?php echo $avatar_style === 'circle' ? 'border-radius: var(--hph-radius-full);' : ($avatar_style === 'rounded' ? 'border-radius: var(--hph-radius-lg);' : 'border-radius: var(--hph-radius-md);'); ?>">
                                 <?php echo $testimonial['author'] ? strtoupper(substr($testimonial['author'], 0, 1)) : '?'; ?>
@@ -396,7 +396,7 @@ $carousel_id = 'hph_testimonials_' . uniqid();
         
         <?php if ($style === 'carousel'): ?>
         <!-- Carousel Navigation -->
-        <div style="display: flex; justify-content: center; align-items: center; gap: var(--hph-gap-md); margin-top: var(--hph-margin-xl);">
+        <div style="display: flex; justify-content: center; align-items: center; gap: var(--hph-gap-md); margin-top: var(--hph-space-8);">
             <button 
                 id="<?php echo esc_attr($carousel_id); ?>_prev"
                 style="display: inline-flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; background: var(--hph-white); color: var(--hph-primary); border: 1px solid var(--hph-primary); border-radius: var(--hph-radius-full); cursor: pointer; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
@@ -571,14 +571,14 @@ document.addEventListener('DOMContentLoaded', function() {
     .hph-testimonials-section [style*="display: flex"] .hph-testimonial-item > div:first-child {
         order: 2;
         margin-bottom: 0;
-        margin-top: var(--hph-margin-lg);
+        margin-top: var(--hph-space-6);
     }
 }
 
 @media (max-width: 480px) {
     .hph-testimonials-section .hph-testimonial-item {
         min-width: 260px !important;
-        padding: var(--hph-padding-lg) !important;
+        padding: var(--hph-space-6) !important;
     }
 }
 </style>

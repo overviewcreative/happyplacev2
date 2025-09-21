@@ -64,7 +64,7 @@ function hph_default_menu() {
     echo '<li><a href="' . home_url('/listings') . '">Listings</a></li>';
     echo '<li><a href="' . home_url('/agents') . '">Agents</a></li>';
     echo '<li><a href="' . home_url('/about') . '">About</a></li>';
-    echo '<li><a href="' . home_url('/contact') . '">Contact</a></li>';
+    echo '<li><a href="#" class="modal-trigger" data-modal-id="hph-form-modal" data-modal-form="general-contact" data-modal-title="Contact Us" data-modal-subtitle="Send us a message and we\'ll get back to you soon." onclick="return false;">Contact</a></li>';
     echo '</ul>';
 }
 
@@ -77,7 +77,7 @@ function hph_default_mobile_menu() {
     echo '<li><a href="' . home_url('/listings') . '">Listings</a></li>';
     echo '<li><a href="' . home_url('/agents') . '">Agents</a></li>';
     echo '<li><a href="' . home_url('/about') . '">About</a></li>';
-    echo '<li><a href="' . home_url('/contact') . '">Contact</a></li>';
+    echo '<li><a href="#" class="modal-trigger" data-modal-id="hph-form-modal" data-modal-form="general-contact" data-modal-title="Contact Us" data-modal-subtitle="Send us a message and we\'ll get back to you soon." onclick="return false;">Contact</a></li>';
     echo '</ul>';
 }
 ?>

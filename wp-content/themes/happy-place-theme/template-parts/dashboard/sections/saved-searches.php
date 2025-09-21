@@ -113,7 +113,7 @@ $saved_searches = get_user_meta($user->ID, 'saved_property_searches', true) ?: [
                             
                             <div class="search-actions">
                                 <a href="<?php echo add_query_arg(array_merge(['search_id' => $search_id], $search), home_url('/listings/')); ?>" 
-                                   class="hph-btn hph-btn-outline hph-btn-sm">
+                                   class="hph-btn hph-btn-outline-primary hph-btn-sm">
                                     <i class="fas fa-search"></i>
                                     <?php _e('View Results', 'happy-place-theme'); ?>
                                 </a>

@@ -1,0 +1,454 @@
+/* ================================================
+   CORE BUTTON BEM COMPONENT
+   Modern button system using BEM methodology
+   Replaces legacy hph-btn with context-specific components
+   ================================================ */
+
+/* ================================================
+   BLOCK: hph-button
+   Core button component with proper BEM structure
+   ================================================ */
+.hph-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--hph-spacing-sm);
+  padding: var(--hph-spacing-sm) var(--hph-spacing-md);
+  font-family: var(--hph-font-family);
+  font-size: var(--hph-text-base);
+  font-weight: var(--hph-font-weight-medium);
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid transparent;
+  border-radius: var(--hph-border-radius);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  background: var(--hph-gray-50);
+  color: var(--hph-gray-700);
+  min-height: 44px; /* Accessibility: minimum touch target */
+}
+
+.hph-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--hph-primary-200);
+  z-index: 1;
+}
+
+.hph-button:hover {
+  background: var(--hph-gray-100);
+  color: var(--hph-gray-800);
+  transform: translateY(-1px);
+  box-shadow: var(--hph-shadow-sm);
+}
+
+.hph-button:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.hph-button:disabled,
+.hph-button--disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ================================================
+   ELEMENT: hph-button__text
+   Text content within button
+   ================================================ */
+.hph-button__text {
+  display: inline-block;
+  line-height: inherit;
+}
+
+/* ================================================
+   ELEMENT: hph-button__icon
+   Icon wrapper within button
+   ================================================ */
+.hph-button__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  color: inherit;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.hph-button__icon .fa,
+.hph-button__icon .fas,
+.hph-button__icon .far,
+.hph-button__icon .fal,
+.hph-button__icon .fab {
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* ================================================
+   ELEMENT: hph-button__badge
+   Optional badge/notification indicator
+   ================================================ */
+.hph-button__badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--hph-danger);
+  color: var(--hph-white);
+  font-size: 0.625rem;
+  font-weight: var(--hph-font-weight-semibold);
+  padding: 0.125rem 0.375rem;
+  border-radius: 1rem;
+  min-width: 18px;
+  text-align: center;
+  line-height: 1;
+}
+
+/* ================================================
+   ELEMENT: hph-button__loader
+   Loading state indicator
+   ================================================ */
+.hph-button__loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease-in-out;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ================================================
+   MODIFIER: hph-button--primary
+   Primary action button variant
+   ================================================ */
+.hph-button--primary {
+  background: var(--hph-primary);
+  color: var(--hph-white);
+  border-color: var(--hph-primary);
+}
+
+.hph-button--primary:hover {
+  background: var(--hph-primary-600);
+  border-color: var(--hph-primary-600);
+  color: var(--hph-white);
+}
+
+.hph-button--primary:focus {
+  box-shadow: 0 0 0 3px var(--hph-primary-200);
+}
+
+/* ================================================
+   MODIFIER: hph-button--secondary
+   Secondary action button variant
+   ================================================ */
+.hph-button--secondary {
+  background: var(--hph-secondary);
+  color: var(--hph-white);
+  border-color: var(--hph-secondary);
+}
+
+.hph-button--secondary:hover {
+  background: var(--hph-secondary-600);
+  border-color: var(--hph-secondary-600);
+  color: var(--hph-white);
+}
+
+.hph-button--secondary:focus {
+  box-shadow: 0 0 0 3px var(--hph-secondary-200);
+}
+
+/* ================================================
+   MODIFIER: hph-button--outline
+   Outline button variant
+   ================================================ */
+.hph-button--outline {
+  background: transparent;
+  color: var(--hph-gray-700);
+  border-color: var(--hph-gray-300);
+}
+
+.hph-button--outline:hover {
+  background: var(--hph-gray-50);
+  border-color: var(--hph-gray-400);
+  color: var(--hph-gray-800);
+}
+
+/* ================================================
+   MODIFIER: hph-button--outline-primary
+   Primary outline button variant
+   ================================================ */
+.hph-button--outline-primary {
+  background: transparent;
+  color: var(--hph-primary);
+  border-color: var(--hph-primary);
+}
+
+.hph-button--outline-primary:hover {
+  background: var(--hph-primary);
+  color: var(--hph-white);
+  border-color: var(--hph-primary);
+}
+
+/* ================================================
+   MODIFIER: hph-button--ghost
+   Ghost button variant (no border)
+   ================================================ */
+.hph-button--ghost {
+  background: transparent;
+  color: var(--hph-gray-700);
+  border-color: transparent;
+}
+
+.hph-button--ghost:hover {
+  background: var(--hph-gray-100);
+  color: var(--hph-gray-800);
+}
+
+/* ================================================
+   MODIFIER: hph-button--danger
+   Danger/destructive action button
+   ================================================ */
+.hph-button--danger {
+  background: var(--hph-danger);
+  color: var(--hph-white);
+  border-color: var(--hph-danger);
+}
+
+.hph-button--danger:hover {
+  background: var(--hph-danger-600);
+  border-color: var(--hph-danger-600);
+  color: var(--hph-white);
+}
+
+.hph-button--danger:focus {
+  box-shadow: 0 0 0 3px var(--hph-danger-200);
+}
+
+/* ================================================
+   MODIFIER: hph-button--success
+   Success action button
+   ================================================ */
+.hph-button--success {
+  background: var(--hph-success);
+  color: var(--hph-white);
+  border-color: var(--hph-success);
+}
+
+.hph-button--success:hover {
+  background: var(--hph-success-600);
+  border-color: var(--hph-success-600);
+  color: var(--hph-white);
+}
+
+.hph-button--success:focus {
+  box-shadow: 0 0 0 3px var(--hph-success-200);
+}
+
+/* ================================================
+   SIZE MODIFIERS
+   ================================================ */
+.hph-button--xs {
+  padding: var(--hph-spacing-xs) var(--hph-spacing-sm);
+  font-size: var(--hph-text-xs);
+  min-height: 32px;
+  gap: var(--hph-spacing-xs);
+}
+
+.hph-button--xs .hph-button__icon {
+  width: 0.75rem;
+  height: 0.75rem;
+  font-size: 0.75rem;
+}
+
+.hph-button--sm {
+  padding: var(--hph-spacing-xs) var(--hph-spacing-sm);
+  font-size: var(--hph-text-sm);
+  min-height: 36px;
+  gap: var(--hph-spacing-xs);
+}
+
+.hph-button--sm .hph-button__icon {
+  width: 0.875rem;
+  height: 0.875rem;
+  font-size: 0.875rem;
+}
+
+.hph-button--lg {
+  padding: var(--hph-spacing-md) var(--hph-spacing-lg);
+  font-size: var(--hph-text-lg);
+  min-height: 52px;
+  gap: var(--hph-spacing-sm);
+}
+
+.hph-button--lg .hph-button__icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  font-size: 1.25rem;
+}
+
+.hph-button--xl {
+  padding: var(--hph-spacing-lg) var(--hph-spacing-xl);
+  font-size: var(--hph-text-xl);
+  min-height: 60px;
+  gap: var(--hph-spacing-md);
+}
+
+.hph-button--xl .hph-button__icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 1.5rem;
+}
+
+/* ================================================
+   LAYOUT MODIFIERS
+   ================================================ */
+.hph-button--block {
+  display: flex;
+  width: 100%;
+}
+
+.hph-button--icon-only {
+  padding: var(--hph-spacing-sm);
+  aspect-ratio: 1;
+  gap: 0;
+}
+
+.hph-button--icon-only .hph-button__text {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Icon positioning modifiers */
+.hph-button--icon-left {
+  flex-direction: row;
+}
+
+.hph-button--icon-right {
+  flex-direction: row-reverse;
+}
+
+.hph-button--icon-top {
+  flex-direction: column;
+}
+
+.hph-button--icon-bottom {
+  flex-direction: column-reverse;
+}
+
+/* ================================================
+   STATE MODIFIERS
+   ================================================ */
+.hph-button--loading {
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.hph-button--loading .hph-button__text,
+.hph-button--loading .hph-button__icon {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.hph-button--loading .hph-button__loader {
+  opacity: 1;
+  visibility: visible;
+}
+
+.hph-button--active {
+  background: var(--hph-primary-100);
+  color: var(--hph-primary-700);
+  border-color: var(--hph-primary-300);
+}
+
+.hph-button--active.hph-button--primary {
+  background: var(--hph-primary-700);
+  border-color: var(--hph-primary-700);
+  color: var(--hph-white);
+}
+
+/* ================================================
+   RESPONSIVE BEHAVIOR
+   ================================================ */
+@media (max-width: 768px) {
+  .hph-button {
+    min-height: 48px; /* Larger touch targets on mobile */
+  }
+
+  .hph-button--xs {
+    min-height: 36px;
+  }
+
+  .hph-button--sm {
+    min-height: 40px;
+  }
+
+  .hph-button--lg {
+    min-height: 56px;
+  }
+
+  .hph-button--xl {
+    min-height: 64px;
+  }
+}
+
+/* ================================================
+   ACCESSIBILITY ENHANCEMENTS
+   ================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .hph-button {
+    transition: none;
+  }
+
+  .hph-button__loader {
+    animation: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .hph-button {
+    border-width: 2px;
+  }
+
+  .hph-button:focus {
+    outline: 2px solid;
+    outline-offset: 2px;
+  }
+}
+
+/* ================================================
+   BACKWARDS COMPATIBILITY
+   Legacy support for existing .hph-btn classes
+   ================================================ */
+.hph-btn.hph-button-migrate {
+  /* Temporary class for migration testing - removed @extend as this is CSS not SCSS */
+  /* Apply button styles directly instead of using @extend */
+}
+
+/* File: /assets/css/framework/components/molecules/button-core.css */

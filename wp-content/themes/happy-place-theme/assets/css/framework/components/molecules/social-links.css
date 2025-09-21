@@ -1,0 +1,260 @@
+/**
+ * Social Links Molecule
+ * Group of social link atoms arranged in a flexible layout
+ *
+ * @package HappyPlaceTheme
+ */
+
+/* ================================================
+   SOCIAL LINKS MOLECULE - BASE
+   ================================================ */
+
+.hph-social-links {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* ================================================
+   SOCIAL LINKS LAYOUTS
+   ================================================ */
+
+/* Inline layout (default) */
+.hph-social-links--inline {
+  flex-direction: row;
+}
+
+/* Vertical layout */
+.hph-social-links--vertical {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Centered layout */
+.hph-social-links--centered {
+  justify-content: center;
+  align-items: center;
+}
+
+/* Justified layout (spread out) */
+.hph-social-links--justified {
+  justify-content: space-between;
+}
+
+/* Compact layout (tighter spacing) */
+.hph-social-links--compact {
+  gap: 0.5rem;
+}
+
+/* Spacious layout (looser spacing) */
+.hph-social-links--spacious {
+  gap: 1rem;
+}
+
+/* ================================================
+   SOCIAL LINKS SIZES
+   ================================================ */
+
+/* Extra small social links */
+.hph-social-links--xs .hph-social-link {
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.75rem;
+}
+
+/* Small social links */
+.hph-social-links--sm .hph-social-link {
+  width: 1.75rem;
+  height: 1.75rem;
+  font-size: 0.8125rem;
+}
+
+/* Large social links */
+.hph-social-links--lg .hph-social-link {
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1rem;
+}
+
+/* Extra large social links */
+.hph-social-links--xl .hph-social-link {
+  width: 3rem;
+  height: 3rem;
+  font-size: 1.125rem;
+}
+
+/* ================================================
+   SOCIAL LINKS WITH LABELS
+   ================================================ */
+
+.hph-social-links--with-labels .hph-social-link {
+  width: auto;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--hph-radius-md);
+  gap: 0.5rem;
+}
+
+.hph-social-link-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* ================================================
+   SOCIAL LINKS VARIANTS
+   ================================================ */
+
+/* Header variant - optimized for topbar */
+.hph-social-links--header {
+  gap: 0.75rem;
+}
+
+.hph-social-links--header .hph-social-link {
+  width: 1.75rem;
+  height: 1.75rem;
+  font-size: 0.875rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: transparent;
+}
+
+/* Footer variant - optimized for footer */
+.hph-social-links--footer {
+  gap: 1rem;
+}
+
+.hph-social-links--footer .hph-social-link {
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Card variant - optimized for content cards */
+.hph-social-links--card {
+  gap: 0.5rem;
+}
+
+.hph-social-links--card .hph-social-link {
+  width: 2rem;
+  height: 2rem;
+  font-size: 0.875rem;
+  background: var(--hph-gray-100);
+  color: var(--hph-gray-600);
+  border-color: var(--hph-gray-200);
+}
+
+.hph-social-links--card .hph-social-link:hover {
+  background: var(--hph-primary);
+  color: var(--hph-white);
+  border-color: var(--hph-primary);
+}
+
+/* ================================================
+   SOCIAL LINKS WITH HEADING
+   ================================================ */
+
+.hph-social-links-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.hph-social-links-heading {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--hph-gray-700);
+  margin: 0;
+}
+
+.hph-social-links--light .hph-social-links-heading {
+  color: var(--hph-gray-300);
+}
+
+.hph-social-links--dark .hph-social-links-heading {
+  color: var(--hph-gray-900);
+}
+
+/* ================================================
+   RESPONSIVE BEHAVIOR
+   ================================================ */
+
+@media (max-width: 768px) {
+  .hph-social-links {
+    gap: 0.5rem;
+  }
+
+  .hph-social-links--vertical {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  /* Mobile-specific header variant */
+  .hph-social-links--header {
+    display: none; /* Often hidden in mobile headers */
+  }
+}
+
+@media (max-width: 480px) {
+  .hph-social-links--spacious {
+    gap: 0.75rem;
+  }
+
+  .hph-social-links--with-labels .hph-social-link-label {
+    display: none; /* Hide labels on very small screens */
+  }
+
+  .hph-social-links--with-labels .hph-social-link {
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+  }
+}
+
+/* ================================================
+   ACCESSIBILITY
+   ================================================ */
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .hph-social-links .hph-social-link {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .hph-social-links .hph-social-link {
+    transition: none;
+  }
+}
+
+/* ================================================
+   USAGE EXAMPLES
+   ================================================ */
+
+/*
+ * Basic social links:
+ * <div class="hph-social-links">
+ *   <a href="#" class="hph-social-link" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+ *   <a href="#" class="hph-social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+ *   <a href="#" class="hph-social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+ * </div>
+ *
+ * Large centered social links with labels:
+ * <div class="hph-social-links hph-social-links--lg hph-social-links--centered hph-social-links--with-labels">
+ *   <a href="#" class="hph-social-link" aria-label="Follow us on Facebook">
+ *     <i class="fab fa-facebook-f"></i>
+ *     <span class="hph-social-link-label">Facebook</span>
+ *   </a>
+ * </div>
+ *
+ * Social links section with heading:
+ * <div class="hph-social-links-section">
+ *   <h3 class="hph-social-links-heading">Follow Us</h3>
+ *   <div class="hph-social-links hph-social-links--footer">
+ *     <a href="#" class="hph-social-link" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+ *   </div>
+ * </div>
+ */

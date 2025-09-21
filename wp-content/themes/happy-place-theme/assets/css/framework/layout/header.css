@@ -853,24 +853,40 @@ body.archive-listing .hph-search-grid {
     background: var(--hph-white);
 }
 
+/* IMPORTANT: Site Header Enhanced overrides these rules
+   Do not show mobile toggle on desktop when using enhanced header */
+
 /* Mobile: show mobile toggle and hide main nav */
 @media (max-width: 768px) {
-    .hph-mobile-toggle {
+    .hph-mobile-toggle:not(.hph-site-header-enhanced__mobile-toggle) {
         display: flex !important;
     }
-    
-    .hph-primary-nav {
+
+    .hph-primary-nav:not(.hph-site-header-enhanced__nav) {
         display: none !important;
     }
 }
 
 /* Desktop: ensure hamburger is hidden when main nav is visible */
 @media (min-width: 769px) {
-    .hph-mobile-toggle {
+    .hph-mobile-toggle:not(.hph-site-header-enhanced__mobile-toggle) {
         display: none !important;
     }
-    
-    .hph-primary-nav {
+
+    .hph-primary-nav:not(.hph-site-header-enhanced__nav) {
+        display: flex !important;
+    }
+}
+
+/* Enhanced header takes precedence */
+.hph-site-header-enhanced .hph-mobile-toggle,
+.hph-site-header-enhanced__mobile-toggle {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .hph-site-header-enhanced .hph-mobile-toggle,
+    .hph-site-header-enhanced__mobile-toggle {
         display: flex !important;
     }
 }
@@ -1107,7 +1123,7 @@ body.hph-mobile-menu-open .hph-mobile-overlay {
 
 /* Container */
 .hph-container {
-    max-width: 1400px;
+    max-width: var(--hph-container-default, 1440px); /* Use consistent default width */
     margin: 0 auto;
     padding: 0 1.5rem;
 }
@@ -1346,13 +1362,13 @@ body.js-sticky-header.header-compact {
 }
 
 .hph-footer-main {
-    padding: var(--hph-space-3xl) 0;
+    padding: var(--hph-space-16) 0;
 }
 
 .hph-footer-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--hph-space-2xl);
+    gap: var(--hph-space-12);
 }
 
 .hph-footer-section {
@@ -1363,7 +1379,7 @@ body.js-sticky-header.header-compact {
 .hph-footer-title {
     font-size: var(--hph-text-lg);
     font-weight: 600;
-    margin-bottom: var(--hph-space-lg);
+    margin-bottom: var(--hph-space-6);
     color: var(--hph-white);
 }
 
@@ -1371,7 +1387,7 @@ body.js-sticky-header.header-compact {
     font-size: var(--hph-text-sm);
     line-height: var(--hph-leading-relaxed);
     color: var(--hph-gray-300);
-    margin-bottom: var(--hph-space-lg);
+    margin-bottom: var(--hph-space-6);
 }
 
 .hph-footer-nav {
@@ -1380,7 +1396,7 @@ body.js-sticky-header.header-compact {
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--hph-space-sm);
+    gap: var(--hph-space-2);
 }
 
 .hph-footer-nav a {
@@ -1397,8 +1413,8 @@ body.js-sticky-header.header-compact {
 .hph-footer-contact-item {
     display: flex;
     align-items: center;
-    gap: var(--hph-space-sm);
-    margin-bottom: var(--hph-space-sm);
+    gap: var(--hph-space-2);
+    margin-bottom: var(--hph-space-2);
     color: var(--hph-gray-300);
 }
 
@@ -1420,13 +1436,13 @@ body.js-sticky-header.header-compact {
 .hph-footer-contact-info p {
     font-size: var(--hph-text-sm);
     color: var(--hph-gray-300);
-    margin-bottom: var(--hph-space-sm);
+    margin-bottom: var(--hph-space-2);
 }
 
 .hph-footer-bottom {
     border-top: 1px solid var(--hph-gray-600);
-    padding: var(--hph-space-md) 0;
-    margin-top: var(--hph-space-lg);
+    padding: var(--hph-space-4) 0;
+    margin-top: var(--hph-space-6);
 }
 
 .hph-footer-bottom-content {
@@ -1434,7 +1450,7 @@ body.js-sticky-header.header-compact {
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: var(--hph-space-md);
+    gap: var(--hph-space-4);
 }
 
 .hph-footer-copyright p {
@@ -1445,7 +1461,7 @@ body.js-sticky-header.header-compact {
 
 .hph-footer-legal {
     display: flex;
-    gap: var(--hph-space-lg);
+    gap: var(--hph-space-6);
 }
 
 .hph-footer-legal a {
@@ -1463,7 +1479,7 @@ body.js-sticky-header.header-compact {
 @media (max-width: 768px) {
     .hph-footer-grid {
         grid-template-columns: 1fr;
-        gap: var(--hph-space-xl);
+        gap: var(--hph-space-8);
     }
     
     .hph-footer-bottom-content {

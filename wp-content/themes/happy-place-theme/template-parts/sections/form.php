@@ -700,7 +700,7 @@ $container_classes[] = 'hph-container--' . $container;
                         
                         <!-- Submit Button -->
                         <div class="hph-form-buttons">
-                            <button type="submit" class="hph-btn hph-btn--<?php echo esc_attr($submit_style); ?> hph-btn--lg">
+                            <button type="submit" class="hph-btn hph-btn-<?php echo esc_attr($submit_style); ?> hph-btn-lg">
                                 <span class="hph-btn-text"><?php echo esc_html($submit_text); ?></span>
                                 <span class="hph-btn-loading" style="display: none;">
                                     Sending...
@@ -808,7 +808,7 @@ $container_classes[] = 'hph-container--' . $container;
                         
                         <!-- Submit Button -->
                         <div class="hph-form-buttons">
-                            <button type="submit" class="hph-btn hph-btn--<?php echo esc_attr($submit_style); ?> hph-btn--lg">
+                            <button type="submit" class="hph-btn hph-btn-<?php echo esc_attr($submit_style); ?> hph-btn-lg">
                                 <span class="hph-btn-text"><?php echo esc_html($submit_text); ?></span>
                                 <span class="hph-btn-loading" style="display: none;">Sending...</span>
                             </button>
@@ -998,7 +998,7 @@ $container_classes[] = 'hph-container--' . $container;
                         
                         <!-- Submit Button -->
                         <div class="hph-form-buttons">
-                            <button type="submit" class="hph-btn hph-btn--<?php echo esc_attr($submit_style); ?> hph-btn--lg">
+                            <button type="submit" class="hph-btn hph-btn-<?php echo esc_attr($submit_style); ?> hph-btn-lg">
                                 <span class="hph-btn-text"><?php echo esc_html($submit_text); ?></span>
                                 <span class="hph-btn-loading" style="display: none;">Sending...</span>
                             </button>
@@ -1435,21 +1435,21 @@ $container_classes[] = 'hph-container--' . $container;
     min-width: 120px;
 }
 
-.hph-btn--primary {
+.hph-btn-primary {
     background: var(--hph-primary);
     color: #fff;
 }
 
-.hph-btn--primary:hover:not(:disabled) {
+.hph-btn-primary:hover:not(:disabled) {
     background: #2563eb;
 }
 
-.hph-btn--primary:disabled {
+.hph-btn-primary:disabled {
     background: #9ca3af;
     cursor: not-allowed;
 }
 
-.hph-btn--lg {
+.hph-btn-lg {
     padding: 1rem 2rem;
     font-size: 18px;
 }

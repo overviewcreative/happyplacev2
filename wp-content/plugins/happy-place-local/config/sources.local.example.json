@@ -1,0 +1,79 @@
+{
+  "_instructions": "Copy this file to sources.local.json and add your actual API keys",
+  "_warning": "Never commit sources.local.json to version control",
+  
+  "google_places": {
+    "api_key": "YOUR_GOOGLE_PLACES_API_KEY_HERE",
+    "attribution_required": true,
+    "terms_url": "https://developers.google.com/maps/terms",
+    "rate_limit": {
+      "requests_per_second": 10,
+      "requests_per_day": 1000
+    }
+  },
+  
+  "bounds": {
+    "delaware": {
+      "name": "Delaware",
+      "southwest": {
+        "lat": 38.451013,
+        "lng": -75.788658
+      },
+      "northeast": {
+        "lat": 39.839007,
+        "lng": -74.984165
+      }
+    },
+    "sussex_county_de": {
+      "name": "Sussex County, DE",
+      "southwest": {
+        "lat": 38.451013,
+        "lng": -75.788658
+      },
+      "northeast": {
+        "lat": 38.934095,
+        "lng": -75.048828
+      }
+    },
+    "georgetown_de": {
+      "name": "Georgetown, DE",
+      "southwest": {
+        "lat": 38.6751,
+        "lng": -75.4013
+      },
+      "northeast": {
+        "lat": 38.7251,
+        "lng": -75.3513
+      }
+    }
+  },
+  
+  "wikipedia": {
+    "base_url": "https://en.wikipedia.org/api/rest_v1/",
+    "wikidata_url": "https://www.wikidata.org/wiki/Special:EntityData/",
+    "attribution_required": true,
+    "license": "CC BY-SA 3.0"
+  },
+  
+  "census": {
+    "base_url": "https://api.census.gov/data/",
+    "datasets": {
+      "acs5": "2021/acs/acs5",
+      "population_variable": "B01003_001E"
+    },
+    "state_fips": {
+      "DE": "10",
+      "MD": "24",
+      "PA": "42",
+      "NJ": "34",
+      "VA": "51"
+    }
+  },
+  
+  "agent": {
+    "publish_threshold": 80,
+    "cron_interval": 600,
+    "batch_size": 10,
+    "llm_timeout": 30
+  }
+}

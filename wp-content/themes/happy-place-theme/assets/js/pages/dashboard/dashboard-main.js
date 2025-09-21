@@ -36,12 +36,9 @@
             
             // Prevent multiple initializations
             if (window.hphDashboardInitialized) {
-                console.warn('⚠️ Dashboard already initialized, skipping...');
                 return;
             }
             
-            console.log('🚀 Dashboard Controller: Initializing UNIFIED System...');
-            console.log('📧 Conflicting controllers have been disabled for clean operation');
             
             // Mark as initialized to prevent conflicts
             window.hphDashboardInitialized = true;
@@ -71,7 +68,6 @@
             
             // Performance monitoring
             const endTime = performance.now();
-            console.log(`✅ Dashboard Controller: Initialized successfully in ${Math.round(endTime - startTime)}ms`);
         },
         
         // === CORE SETUP ===
@@ -88,7 +84,6 @@
                           window.ajaxurl ||
                           '/wp-admin/admin-ajax.php';
                           
-            console.log('🔧 AJAX setup - URL:', this.ajaxurl, 'Nonce:', this.nonce ? 'Found' : 'Missing');
         },
         
         // Detect if plugin services are available
@@ -98,7 +93,6 @@
                                     (typeof hphDashboardSettings !== 'undefined' && 
                                     hphDashboardSettings.services_available === true);
             
-            console.log('🔍 Services available:', this.servicesAvailable);
         },
         
         // Cache DOM elements
@@ -329,7 +323,6 @@
             
             // Global AJAX error handling
             $(document).ajaxError((event, xhr, settings, error) => {
-                console.error('AJAX Error:', error);
                 this.showNotification('Network error. Please try again.', 'error');
             });
         },
@@ -402,7 +395,6 @@
         // === DATA LOADING SYSTEM ===
         
         loadDashboardData: function() {
-            console.log('📊 Loading dashboard data...');
             
             // Load dashboard stats (enhanced)
             this.loadDashboardStats();
@@ -438,7 +430,6 @@
             const $statsContainer = $('#dashboardStats');
             if (!$statsContainer.length) return;
             
-            console.log('📈 Loading dashboard stats...');
             
             $.ajax({
                 url: this.ajaxurl,
@@ -451,14 +442,11 @@
                 success: (response) => {
                     if (response.success) {
                         this.renderDashboardStats(response.data);
-                        console.log('✅ Dashboard stats loaded successfully');
                     } else {
-                        console.error('❌ Failed to load dashboard stats:', response.data);
                         this.renderDashboardStatsError();
                     }
                 },
                 error: (xhr, status, error) => {
-                    console.error('❌ Dashboard stats AJAX error:', error);
                     this.renderDashboardStatsError();
                 }
             });
@@ -945,7 +933,6 @@
             const $activityContainer = $('#recentActivityContent');
             if (!$activityContainer.length) return;
             
-            console.log('📋 Loading recent activity...');
             
             $.ajax({
                 url: this.ajaxurl,
@@ -957,13 +944,11 @@
                 success: (response) => {
                     if (response.success && response.data.activities) {
                         this.renderRecentActivity(response.data.activities);
-                        console.log('✅ Recent activity loaded successfully');
                     } else {
                         this.renderRecentActivityEmpty();
                     }
                 },
                 error: (xhr, status, error) => {
-                    console.error('❌ Recent activity AJAX error:', error);
                     this.renderRecentActivityError();
                 }
             });
@@ -1029,7 +1014,6 @@
             const $eventsContainer = $('#upcomingEventsContent');
             if (!$eventsContainer.length) return;
             
-            console.log('📅 Loading upcoming events...');
             
             $.ajax({
                 url: this.ajaxurl,
@@ -1041,13 +1025,11 @@
                 success: (response) => {
                     if (response.success && response.data.events) {
                         this.renderUpcomingEvents(response.data.events);
-                        console.log('✅ Upcoming events loaded successfully');
                     } else {
                         this.renderUpcomingEventsEmpty();
                     }
                 },
                 error: (xhr, status, error) => {
-                    console.error('❌ Upcoming events AJAX error:', error);
                     this.renderUpcomingEventsError();
                 }
             });
@@ -1109,7 +1091,6 @@
             const $leadsContainer = $('#hotLeadsContent');
             if (!$leadsContainer.length) return;
             
-            console.log('🔥 Loading hot leads...');
             
             $.ajax({
                 url: this.ajaxurl,
@@ -1121,13 +1102,11 @@
                 success: (response) => {
                     if (response.success && response.data.leads) {
                         this.renderHotLeads(response.data.leads);
-                        console.log('✅ Hot leads loaded successfully');
                     } else {
                         this.renderHotLeadsEmpty();
                     }
                 },
                 error: (xhr, status, error) => {
-                    console.error('❌ Hot leads AJAX error:', error);
                     this.renderHotLeadsError();
                 }
             });
@@ -1190,7 +1169,6 @@
         // === ANALYTICS LOADING ===
         
         loadAnalyticsData: function() {
-            console.log('📊 Loading analytics data...');
             this.loadAnalyticsKPIs();
             this.loadTopListings();
             this.loadLeadSources();
@@ -1212,13 +1190,11 @@
                 success: (response) => {
                     if (response.success && response.data) {
                         this.renderAnalyticsKPIs(response.data);
-                        console.log('✅ Analytics KPIs loaded successfully');
                     } else {
                         this.renderAnalyticsKPIsError();
                     }
                 },
                 error: (xhr, status, error) => {
-                    console.error('❌ Analytics KPIs AJAX error:', error);
                     this.renderAnalyticsKPIsError();
                 }
             });
@@ -1287,7 +1263,6 @@
                     }
                 },
                 error: (xhr, status, error) => {
-                    console.error('❌ Top listings AJAX error:', error);
                     this.renderTopListingsError();
                 }
             });
@@ -1361,7 +1336,6 @@
                     }
                 },
                 error: (xhr, status, error) => {
-                    console.error('❌ Lead sources AJAX error:', error);
                     this.renderLeadSourcesError();
                 }
             });
@@ -1436,7 +1410,6 @@
                     }
                 },
                 error: (xhr, status, error) => {
-                    console.error('❌ Market insights AJAX error:', error);
                     this.renderMarketInsightsError();
                 }
             });
@@ -1498,7 +1471,6 @@
         // === MARKETING FUNCTIONALITY ===
         
         loadMarketingData: function() {
-            console.log('📧 Loading marketing data...');
             this.loadMarketingListings();
             this.loadMarketingActivity();
             this.bindMarketingEvents();
@@ -1516,13 +1488,10 @@
                 success: (response) => {
                     if (response.success && response.data.listings) {
                         this.populateListingSelects(response.data.listings);
-                        console.log('✅ Marketing listings loaded successfully');
                     } else {
-                        console.error('❌ Failed to load marketing listings:', response.data);
                     }
                 },
                 error: (xhr, status, error) => {
-                    console.error('❌ Marketing listings AJAX error:', error);
                 }
             });
         },
@@ -1623,7 +1592,6 @@
                 },
                 error: (xhr, status, error) => {
                     this.setButtonLoading($button, false);
-                    console.error('❌ PDF generation error:', error);
                     alert('Error generating PDF flyer. Please try again.');
                 }
             });
@@ -1679,7 +1647,6 @@
                 },
                 error: (xhr, status, error) => {
                     this.setButtonLoading($button, false);
-                    console.error('❌ Social generation error:', error);
                     alert('Error generating social media post. Please try again.');
                 }
             });
@@ -1735,7 +1702,6 @@
                 },
                 error: (xhr, status, error) => {
                     this.setButtonLoading($button, false);
-                    console.error('❌ Email generation error:', error);
                     alert('Error generating email template. Please try again.');
                 }
             });
@@ -1762,7 +1728,6 @@
                     }
                 },
                 error: (xhr, status, error) => {
-                    console.error('❌ Marketing activity error:', error);
                 }
             });
         },
@@ -1866,7 +1831,6 @@
             // Show loading state
             $button.html('<i class="fas fa-spinner fa-spin"></i> Exporting...').prop('disabled', true);
             
-            console.log(`📤 Exporting ${exportType} data for section: ${section}`);
             
             $.ajax({
                 url: this.ajaxurl,
@@ -1893,16 +1857,13 @@
                         
                         // Show success notification
                         this.showNotification('success', `${exportType} data exported successfully!`);
-                        console.log('✅ Export completed successfully');
                     } else {
                         this.showNotification('error', 'Export failed. Please try again.');
-                        console.error('❌ Export failed:', response.data);
                     }
                 },
                 error: (xhr, status, error) => {
                     $button.html(originalText).prop('disabled', false);
                     this.showNotification('error', 'Export error. Please try again.');
-                    console.error('❌ Export AJAX error:', error);
                 }
             });
         },
@@ -1963,13 +1924,11 @@
         
         handleQuickAdd: function(e) {
             const action = $(e.currentTarget).data('action');
-            console.log('Quick add action:', action);
             this.openAddModal();
         },
         
         handleQuickAction: function(e) {
             const action = $(e.currentTarget).data('action');
-            console.log('Quick action:', action);
             
             switch(action) {
                 case 'add-listing':
@@ -1979,7 +1938,6 @@
                     this.showNotification('Import feature coming soon', 'info');
                     break;
                 default:
-                    console.log('Unknown quick action:', action);
             }
         },
         
@@ -2067,14 +2025,12 @@
         handleEditListing: function(e) {
             e.preventDefault();
             const listingId = $(e.currentTarget).data('listing-id');
-            console.log('Edit listing:', listingId);
             this.showNotification('Edit functionality coming soon', 'info');
         },
         
         handleDuplicateListing: function(e) {
             e.preventDefault();
             const listingId = $(e.currentTarget).data('listing-id');
-            console.log('Duplicate listing:', listingId);
             this.showNotification('Duplicate functionality coming soon', 'info');
         },
         
@@ -2088,13 +2044,11 @@
         
         handleStatusChange: function(e) {
             e.preventDefault();
-            console.log('Status change:', $(e.currentTarget).val());
             this.showNotification('Status change functionality coming soon', 'info');
         },
         
         confirmStatusChange: function(e) {
             e.preventDefault();
-            console.log('Confirming status change');
         },
         
         handlePagination: function(e) {
@@ -2105,7 +2059,6 @@
         },
         
         updatePagination: function(data) {
-            console.log('Updating pagination:', data);
         },
         
         // === UTILITY FUNCTIONS ===
@@ -2198,16 +2151,13 @@
     
     // Initialize when document is ready
     $(document).ready(function() {
-        console.log('🔧 Dashboard script loaded, attempting initialization...');
         
         // Check if required dependencies are available
         if (typeof $ === 'undefined') {
-            console.error('❌ jQuery not loaded!');
             return;
         }
         
         if (typeof window.hphDashboard === 'undefined') {
-            console.error('❌ hphDashboard localization not available!');
         }
         
         DashboardController.init();

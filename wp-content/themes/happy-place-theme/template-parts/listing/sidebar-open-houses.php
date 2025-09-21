@@ -135,7 +135,7 @@ $property_address = trim(get_field('street_number', $listing_id) . ' ' .
             <div class="hph-event-actions hph-flex hph-gap-sm">
                 
                 <button type="button" 
-                        class="hph-btn hph-btn--primary hph-btn--sm hph-flex-1 hph-flex hph-items-center hph-justify-center hph-gap-xs"
+                        class="hph-btn hph-btn-primary hph-btn-sm hph-flex-1 hph-flex hph-items-center hph-justify-center hph-gap-xs"
                         data-open-house-id="<?php echo esc_attr($index); ?>"
                         onclick="openRSVPModal(<?php echo esc_attr($index); ?>)">
                     <i class="fas fa-calendar-plus"></i>
@@ -143,7 +143,7 @@ $property_address = trim(get_field('street_number', $listing_id) . ' ' .
                 </button>
                 
                 <button type="button" 
-                        class="hph-btn hph-btn--secondary hph-btn--sm hph-flex hph-items-center hph-justify-center hph-gap-xs"
+                        class="hph-btn hph-btn-secondary hph-btn-sm hph-flex hph-items-center hph-justify-center hph-gap-xs"
                         onclick="addToCalendar(<?php echo esc_attr($index); ?>)">
                     <i class="fas fa-calendar"></i>
                     <span class="hph-hidden hph-sm:hph-inline">Add to Calendar</span>
@@ -188,14 +188,14 @@ $property_address = trim(get_field('street_number', $listing_id) . ' ' .
         <?php if ($virtual_tour_link) : ?>
         <a href="<?php echo esc_url($virtual_tour_link); ?>" 
            target="_blank"
-           class="hph-btn hph-btn--primary hph-btn--sm hph-btn--full hph-flex hph-items-center hph-justify-center hph-gap-xs">
+           class="hph-btn hph-btn-primary hph-btn-sm w-full hph-flex hph-items-center hph-justify-center hph-gap-xs">
             <i class="fas fa-external-link-alt"></i>
             Register for Virtual Tour
         </a>
         <?php else : ?>
         <button type="button"
                 onclick="requestVirtualTour()"
-                class="hph-btn hph-btn--primary hph-btn--sm hph-btn--full hph-flex hph-items-center hph-justify-center hph-gap-xs">
+                class="hph-btn hph-btn-primary hph-btn-sm w-full hph-flex hph-items-center hph-justify-center hph-gap-xs">
             <i class="fas fa-video"></i>
             Request Virtual Tour
         </button>
@@ -213,7 +213,7 @@ $property_address = trim(get_field('street_number', $listing_id) . ' ' .
         </p>
         <button type="button"
                 onclick="requestPrivateShowing()"
-                class="hph-btn hph-btn--secondary hph-btn--sm hph-btn--full hph-flex hph-items-center hph-justify-center hph-gap-xs">
+                class="hph-btn hph-btn-secondary hph-btn-sm w-full hph-flex hph-items-center hph-justify-center hph-gap-xs">
             <i class="fas fa-home"></i>
             Request Private Tour
         </button>
@@ -247,7 +247,7 @@ $property_address = trim(get_field('street_number', $listing_id) . ' ' .
                 <input type="text" 
                        name="name" 
                        required
-                       class="hph-form-control hph-w-full hph-px-md hph-py-sm hph-border hph-border-gray-300 hph-rounded-md">
+                       class="hph-form-input">
             </div>
             
             <div class="hph-form-group">
@@ -257,7 +257,7 @@ $property_address = trim(get_field('street_number', $listing_id) . ' ' .
                 <input type="email" 
                        name="email" 
                        required
-                       class="hph-form-control hph-w-full hph-px-md hph-py-sm hph-border hph-border-gray-300 hph-rounded-md">
+                       class="hph-form-input">
             </div>
             
             <div class="hph-form-group">
@@ -266,7 +266,7 @@ $property_address = trim(get_field('street_number', $listing_id) . ' ' .
                 </label>
                 <input type="tel" 
                        name="phone"
-                       class="hph-form-control hph-w-full hph-px-md hph-py-sm hph-border hph-border-gray-300 hph-rounded-md">
+                       class="hph-form-input">
             </div>
             
             <div class="hph-form-group">
@@ -274,7 +274,7 @@ $property_address = trim(get_field('street_number', $listing_id) . ' ' .
                     Number of Guests
                 </label>
                 <select name="guests" 
-                        class="hph-form-select hph-w-full hph-px-md hph-py-sm hph-border hph-border-gray-300 hph-rounded-md">
+                        class="hph-form-select">
                     <option value="1">1 person</option>
                     <option value="2">2 people</option>
                     <option value="3">3 people</option>
@@ -289,7 +289,7 @@ $property_address = trim(get_field('street_number', $listing_id) . ' ' .
                 </label>
                 <textarea name="message" 
                           rows="3"
-                          class="hph-form-control hph-w-full hph-px-md hph-py-sm hph-border hph-border-gray-300 hph-rounded-md"></textarea>
+                          class="hph-form-textarea"></textarea>
             </div>
             
             <input type="hidden" name="listing_id" value="<?php echo esc_attr($listing_id); ?>">
@@ -303,12 +303,12 @@ $property_address = trim(get_field('street_number', $listing_id) . ' ' .
             
             <div class="hph-form-actions hph-flex hph-gap-sm hph-pt-md">
                 <button type="submit" 
-                        class="hph-btn hph-btn--primary hph-flex-1">
+                        class="hph-btn hph-btn-primary hph-flex-1">
                     Confirm RSVP
                 </button>
                 <button type="button" 
                         onclick="closeRSVPModal()"
-                        class="hph-btn hph-btn--secondary hph-flex-1">
+                        class="hph-btn hph-btn-secondary hph-flex-1">
                     Cancel
                 </button>
             </div>

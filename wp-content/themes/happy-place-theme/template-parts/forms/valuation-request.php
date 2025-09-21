@@ -72,7 +72,7 @@ if ($args['cma_enabled']) {
         data-route-type="<?php echo esc_attr($route_type); ?>"
         data-form-context="valuation"
     >
-        <?php wp_nonce_field('hph_valuation_request', 'valuation_nonce'); ?>
+        <?php wp_nonce_field('hph_route_form_nonce', 'nonce'); ?>
         
         <!-- Hidden Fields -->
         <input type="hidden" name="form_type" value="valuation_request">
@@ -300,10 +300,10 @@ if ($args['cma_enabled']) {
                     
                     foreach ($improvements as $key => $label):
                     ?>
-                        <label class="hph-checkbox-label">
-                            <input type="checkbox" name="improvements[]" value="<?php echo esc_attr($key); ?>" class="hph-checkbox">
-                            <span class="hph-checkbox-text"><?php echo esc_html($label); ?></span>
-                        </label>
+                        <div class="hph-form-check">
+                            <input type="checkbox" name="improvements[]" value="<?php echo esc_attr($key); ?>" class="hph-form-check-input">
+                            <label class="hph-form-check-label"><?php echo esc_html($label); ?></label>
+                        </div>
                     <?php endforeach; ?>
                 </div>
             </div>
@@ -473,14 +473,14 @@ if ($args['cma_enabled']) {
 
         <!-- Form Actions -->
         <div class="hph-form-buttons">
-            <button type="submit" class="hph-btn hph-btn-primary hph-btn-lg hph-btn-full">
+            <button type="submit" class="hph-btn hph-btn-primary hph-btn-lg w-full">
                 <i class="fas fa-calculator"></i>
                 <?php echo esc_html($args['submit_text']); ?>
             </button>
             
             <p class="hph-form-disclaimer">
                 <small>
-                    <?php _e('By submitting this form, you consent to receive communications from Happy Place Real Estate regarding your property valuation. This is a free service with no obligation.', 'happy-place-theme'); ?>
+                    <?php _e('By submitting this form, you consent to receive communications from The Parker Group regarding your property valuation. This is a free service with no obligation.', 'happy-place-theme'); ?>
                 </small>
             </p>
         </div>
@@ -618,18 +618,6 @@ if ($args['cma_enabled']) {
     padding: 0.5rem;
     border-radius: var(--hph-radius-sm);
     transition: background-color 0.2s ease;
-}
-
-.hph-checkbox-label:hover {
-    background: var(--hph-gray-50);
-}
-
-.hph-checkbox {
-    margin: 0;
-}
-
-.hph-checkbox-text {
-    color: var(--hph-gray-700);
 }
 
 .hph-input-group {

@@ -271,7 +271,7 @@ function render_step_indicator($step, $step_number, $props) {
                 $step_attrs['aria-label'] = 'Go to ' . $step['label'];
                 
                 if ($props['on_step_click']) {
-                    $step_attrs['onclick'] = str_replace('{step}', $step_number, $props['on_step_click']);
+                    $step_attrs['data-hph-step-click'] = str_replace('{step}', $step_number, $props['on_step_click']);
                 }
             }
             ?>

@@ -1,129 +1,205 @@
-/**
- * Base Icon Component CSS
- * Simple icon styling
- * 
- * @package HappyPlaceTheme
- */
-
 /* ================================================
-   Base Icon Styles
+   ICON SYSTEM BEM COMPONENT
+   Consistent icon sizing and styling across the theme
+   Replaces generic icon classes with specific BEM structure
    ================================================ */
 
+/* ================================================
+   BLOCK: hph-icon
+   Base icon component with consistent sizing
+   ================================================ */
 .hph-icon {
-    display: inline-block;
-    vertical-align: middle;
-    flex-shrink: 0;
-    color: currentColor;
-    transition: all 0.2s ease;
-}
-
-.hph-icon path,
-.hph-icon circle,
-.hph-icon polygon,
-.hph-icon line,
-.hph-icon rect {
-    stroke: currentColor;
-}
-
-/* ================================================
-   FontAwesome Icon Support
-   ================================================ */
-.fa, .fas, .fab, .far, .fal {
-    font-family: 'Font Awesome 5 Free', 'Font Awesome 5 Brands', 'Font Awesome 5 Pro';
-    font-weight: 900;
-    display: inline-block;
-    font-style: normal;
-    font-variant: normal;
-    text-rendering: auto;
-    line-height: 1;
-}
-
-.fab {
-    font-family: 'Font Awesome 5 Brands';
-    font-weight: 400;
-}
-
-.far {
-    font-weight: 400;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: inherit;
+  line-height: 1;
+  vertical-align: middle;
+  /* Default size - can be overridden by modifiers */
+  width: 1rem;
+  height: 1rem;
+  font-size: 1rem;
 }
 
 /* ================================================
-   Interactive States
+   FONTAWESOME INTEGRATION
+   Consistent behavior for all FontAwesome variants
    ================================================ */
-
-.hph-icon--interactive {
-    cursor: pointer;
+.hph-icon .fa,
+.hph-icon .fas,
+.hph-icon .far,
+.hph-icon .fal,
+.hph-icon .fab {
+  color: inherit;
+  font-size: inherit;
+  line-height: 1;
+  width: auto;
+  height: auto;
+  display: inline-block;
+  vertical-align: baseline;
 }
 
-.hph-icon--interactive:hover {
-    transform: scale(1.1);
+/* Remove FontAwesome's default margins/padding */
+.hph-icon .fa,
+.hph-icon .fas,
+.hph-icon .far,
+.hph-icon .fal,
+.hph-icon .fab {
+  margin: 0;
+  padding: 0;
 }
 
 /* ================================================
-   Size Variations
+   SIZE MODIFIERS
+   Consistent sizing across all contexts
    ================================================ */
-
 .hph-icon--xs {
-    width: 0.75rem;
-    height: 0.75rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  font-size: 0.75rem;
 }
 
 .hph-icon--sm {
-    width: 1rem;
-    height: 1rem;
+  width: 0.875rem;
+  height: 0.875rem;
+  font-size: 0.875rem;
 }
 
 .hph-icon--md {
-    width: 1.25rem;
-    height: 1.25rem;
+  width: 1rem;
+  height: 1rem;
+  font-size: 1rem;
 }
 
 .hph-icon--lg {
-    width: 1.5rem;
-    height: 1.5rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  font-size: 1.25rem;
 }
 
 .hph-icon--xl {
-    width: 2rem;
-    height: 2rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.hph-icon--2xl {
+  width: 2rem;
+  height: 2rem;
+  font-size: 2rem;
+}
+
+.hph-icon--3xl {
+  width: 3rem;
+  height: 3rem;
+  font-size: 3rem;
 }
 
 /* ================================================
-   Color Variations
+   CONTEXT-SPECIFIC ICON ELEMENTS
+   For use within specific BEM components
    ================================================ */
 
-.hph-icon--primary {
-    color: var(--hph-primary);
+/* Button context icons */
+.hph-button__icon,
+.hph-header-actions__icon,
+.hph-card-actions__icon,
+.hph-view-controls__icon,
+.hph-filter-controls__icon,
+.hph-form-buttons__icon {
+  /* Inherit sizing from parent component */
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
 }
 
-.hph-icon--secondary {
-    color: var(--hph-secondary);
+/* Ensure FontAwesome icons work in all contexts */
+.hph-button__icon .fa,
+.hph-button__icon .fas,
+.hph-button__icon .far,
+.hph-button__icon .fal,
+.hph-button__icon .fab,
+.hph-header-actions__icon .fa,
+.hph-header-actions__icon .fas,
+.hph-header-actions__icon .far,
+.hph-header-actions__icon .fal,
+.hph-header-actions__icon .fab,
+.hph-card-actions__icon .fa,
+.hph-card-actions__icon .fas,
+.hph-card-actions__icon .far,
+.hph-card-actions__icon .fal,
+.hph-card-actions__icon .fab {
+  color: inherit;
+  font-size: inherit;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+  width: auto;
+  height: auto;
+}
+
+/* ================================================
+   STATE MODIFIERS
+   Visual states for icons
+   ================================================ */
+.hph-icon--loading {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .hph-icon--success {
-    color: var(--hph-success);
-}
-
-.hph-icon--warning {
-    color: var(--hph-warning);
+  color: var(--hph-success);
 }
 
 .hph-icon--error {
-    color: var(--hph-error);
+  color: var(--hph-danger);
+}
+
+.hph-icon--warning {
+  color: var(--hph-warning);
+}
+
+.hph-icon--info {
+  color: var(--hph-info);
 }
 
 .hph-icon--muted {
-    color: var(--hph-text-muted);
+  color: var(--hph-gray-400);
 }
 
 /* ================================================
-   Accessibility
+   LEGACY ICON CLASS COMPATIBILITY
+   Gradual migration support
    ================================================ */
 
-@media (prefers-reduced-motion: reduce) {
-    .hph-icon,
-    .hph-icon--interactive:hover {
-        transition: none;
-        transform: none;
-    }
+/* Map old hph-btn-icon to new structure */
+.hph-btn-icon {
+  /* Keep existing functionality during migration */
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+  color: inherit;
 }
+
+/* Ensure FontAwesome classes still work */
+.hph-btn .fa,
+.hph-btn .fas,
+.hph-btn .far,
+.hph-btn .fal,
+.hph-btn .fab,
+.hph-action-btn .fa,
+.hph-action-btn .fas,
+.hph-action-btn .far,
+.hph-action-btn .fal,
+.hph-action-btn .fab {
+  color: inherit;
+  font-size: inherit;
+  line-height: 1;
+}
+
+/* File: /assets/css/framework/components/atoms/icon.css */

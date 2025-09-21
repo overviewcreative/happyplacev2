@@ -164,7 +164,7 @@ section:not(.hph-header):not(.hph-topbar) {
     font-size: clamp(2.0rem, 5vw, 4.5rem);
     line-height: 1.1;
     font-weight: 800;
-    margin-bottom: var(--hph-space-xl);
+    margin-bottom: var(--hph-space-8);
     color: inherit;
     letter-spacing: -0.03em;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -174,15 +174,16 @@ section:not(.hph-header):not(.hph-topbar) {
     font-size: var(--hph-text-lg);
     line-height: var(--hph-leading-snug);
     font-weight: var(--hph-font-medium);
-    margin-bottom: var(--hph-space-xl);
+    margin-bottom: var(--hph-space-8);
     opacity: 0.9;
+    max-width: 600px;
     color: inherit;
 }
 
 .hph-hero-content-text {
     font-size: var(--hph-text-base);
     line-height: var(--hph-leading-normal);
-    margin-bottom: var(--hph-space-2xl);
+    margin-bottom: var(--hph-space-12);
     opacity: 0.85;
     color: inherit;
 }
@@ -289,22 +290,22 @@ section:not(.hph-header):not(.hph-topbar) {
 
 /* Button sizes */
 .hph-btn-s {
-    padding: var(--hph-space-sm) var(--hph-space-md);
+    padding: var(--hph-space-2) var(--hph-space-4);
     font-size: var(--hph-text-sm);
 }
 
 .hph-btn-m {
-    padding: var(--hph-space-md) var(--hph-space-lg);
+    padding: var(--hph-space-4) var(--hph-space-6);
     font-size: var(--hph-text-base);
 }
 
 .hph-btn-l {
-    padding: var(--hph-space-md) var(--hph-space-xl);
+    padding: var(--hph-space-4) var(--hph-space-8);
     font-size: var(--hph-text-base);
 }
 
 .hph-btn-xl {
-    padding: var(--hph-space-lg) var(--hph-space-2xl);
+    padding: var(--hph-space-6) var(--hph-space-12);
     font-size: var(--hph-text-lg);
 }
 

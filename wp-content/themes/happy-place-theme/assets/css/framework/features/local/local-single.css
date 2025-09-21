@@ -1,51 +1,247 @@
 /**
- * Local Single Pages Styles
- * Styles for single place and event pages
+ * Local Single Pages Styles - Magazine Layout
+ * Styles for single place pages using template sections
  * 
  * @package HappyPlaceTheme
  * @since 1.0.0
  */
 
 /* ============================================================================
-   PLACE HERO
+   PLACE DETAILS LAYOUT
    ============================================================================ */
-.hph-place-hero {
-    position: relative;
-    min-height: 500px;
+
+/* Hours grid styling */
+.hph-place-hours .hph-hours-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.hph-place-hours .hph-hours-row {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    background: linear-gradient(135deg, var(--hph-place-primary), var(--hph-place-primary-dark));
-    color: white;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--hph-gray-200);
 }
 
-.hph-place-hero__media {
+.hph-place-hours .hph-hours-row:last-child {
+    border-bottom: none;
+}
+
+.hph-place-hours .hph-day {
+    font-weight: 500;
+    color: var(--hph-text-color);
+}
+
+.hph-place-hours .hph-time {
+    color: var(--hph-text-color-light);
+}
+
+.hph-place-hours .hph-hours-notes {
+    font-size: 0.875rem;
+    color: var(--hph-text-color-light);
+    font-style: italic;
+    margin-top: 0.75rem;
+}
+
+/* Contact info styling */
+.hph-place-contact h4,
+.hph-place-quick-info h4,
+.hph-place-accessibility h4 {
+    color: var(--hph-primary);
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--hph-primary);
+    padding-bottom: 0.5rem;
+}
+
+.hph-place-contact .hph-address,
+.hph-place-contact .hph-phone {
+    margin-bottom: 0.75rem;
+}
+
+.hph-place-contact .hph-phone a {
+    color: var(--hph-primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.hph-place-contact .hph-phone a:hover {
+    color: var(--hph-primary-dark);
+    text-decoration: underline;
+}
+
+/* Quick info and accessibility lists */
+.hph-quick-list,
+.hph-accessibility-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.hph-quick-list li,
+.hph-accessibility-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--hph-gray-200);
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.hph-quick-list li:last-child,
+.hph-accessibility-list li:last-child {
+    border-bottom: none;
+}
+
+.hph-quick-list li::before,
+.hph-accessibility-list li::before {
+    content: '✓';
     position: absolute;
-    top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1;
+    top: 0.5rem;
+    color: var(--hph-success);
+    font-weight: bold;
 }
 
-.hph-place-hero__image-wrapper {
-    width: 100%;
-    height: 100%;
+/* Accolades grid */
+.hph-accolades-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
 }
 
-.hph-place-hero__image {
+.hph-accolade-item {
+    background: var(--hph-gray-50);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--hph-primary);
+}
+
+.hph-accolade-source {
+    color: var(--hph-primary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 0.5rem 0;
+}
+
+.hph-accolade-text {
+    color: var(--hph-text-color);
+    font-style: italic;
+    margin: 0 0 0.75rem 0;
+    line-height: 1.6;
+}
+
+.hph-accolade-year {
+    color: var(--hph-text-color-light);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Related places grid */
+.hph-related-places-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.hph-related-place-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hph-related-place-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.hph-related-place-card .hph-card-image {
+    aspect-ratio: 16/10;
+    overflow: hidden;
+}
+
+.hph-related-place-card .hph-card-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.3s ease;
 }
 
-.hph-place-hero__overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.6));
-    z-index: 2;
+.hph-related-place-card:hover .hph-card-image img {
+    transform: scale(1.05);
+}
+
+.hph-related-place-card .hph-card-content {
+    padding: 1.5rem;
+}
+
+.hph-related-place-card h4 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.hph-related-place-card h4 a {
+    color: var(--hph-text-color);
+    text-decoration: none;
+}
+
+.hph-related-place-card h4 a:hover {
+    color: var(--hph-primary);
+}
+
+.hph-related-place-card p {
+    color: var(--hph-text-color-light);
+    margin: 0 0 0.5rem 0;
+    line-height: 1.5;
+}
+
+.hph-related-place-card .hph-place-location {
+    color: var(--hph-primary);
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .hph-hours-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .hph-accolades-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .hph-related-places-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .hph-place-contact h4,
+    .hph-place-quick-info h4,
+    .hph-place-accessibility h4 {
+        font-size: 1rem;
+    }
+}
+
+/* Two-column content layout adjustments for magazine style */
+.hph-section[data-layout="two-column"] .hph-section__content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+}
+
+@media (min-width: 768px) {
+    .hph-section[data-layout="two-column"] .hph-section__content {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
 .hph-place-hero__content {

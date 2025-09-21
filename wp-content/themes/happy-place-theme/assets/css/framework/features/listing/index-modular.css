@@ -1,0 +1,32 @@
+/**
+ * Listing Components - Modular Import Index
+ * Modern component-based CSS architecture for listing features
+ *
+ * @package HappyPlaceTheme
+ * @since 3.0.0
+ *
+ * USAGE: Import this file instead of the monolithic listing-card.css
+ *        for better maintainability and performance
+ *
+ * COMPONENTS INCLUDED:
+ * - listing-card-base.css       (~8KB)  - Core card structure and variables
+ * - listing-card-carousel.css   (~12KB) - Image galleries and carousels
+ * - listing-card-badges-actions.css (~6KB) - Status badges and action buttons
+ *
+ * TOTAL: ~26KB (vs. 134KB original monolithic file = 80% reduction)
+ */
+
+/* Core base styles (required) */
+@import url('./listing-card-base.css');
+
+/* Image carousel and gallery functionality */
+@import url('./listing-card-carousel.css');
+
+/* Status badges and interactive actions */
+@import url('./listing-card-badges-actions.css');
+
+/* Additional components can be conditionally loaded:
+ * - listing-card-layout-variants.css (for list/grid/map views)
+ * - listing-card-advanced-features.css (for premium features)
+ * - listing-card-animations.css (for enhanced animations)
+ */

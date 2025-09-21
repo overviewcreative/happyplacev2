@@ -23,12 +23,9 @@
         
         init() {
             if (this.form.length === 0) {
-                console.log('📝 HPH Contact Form: No .hph-contact-form found, skipping initialization');
                 return;
             }
             
-            console.log('📝 HPH Contact Form: Validation-only mode initialized');
-            console.log('📧 Form submission handled by HPH.Forms unified system');
             
             this.bindEvents();
             this.setupValidation();
@@ -227,24 +224,16 @@
         
         // Legacy compatibility methods (deprecated)
         submitForm() {
-            console.warn('🚨 HPHContactForm.submitForm() is DEPRECATED and disabled');
-            console.warn('📧 Form submission is now handled by HPH.Forms to prevent duplicate emails');
             return false;
         }
         
         setLoadingState(loading) {
-            console.warn('🚨 HPHContactForm.setLoadingState() is DEPRECATED');
-            console.warn('📧 Loading states are now handled by HPH.Forms');
         }
         
         showMessage(message, type) {
-            console.warn('🚨 HPHContactForm.showMessage() is DEPRECATED');
-            console.warn('📧 Messages are now handled by HPH.Forms');
         }
         
         clearMessages() {
-            console.warn('🚨 HPHContactForm.clearMessages() is DEPRECATED');
-            console.warn('📧 Messages are now handled by HPH.Forms');
         }
     }
     

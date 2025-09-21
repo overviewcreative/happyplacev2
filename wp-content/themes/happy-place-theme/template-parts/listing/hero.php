@@ -5,18 +5,7 @@
  * 
  * Clean, modern hero with overlay information
  * Matches contemporary real estate site design
- * Uses bridge functions <section class="hph-hero hph-hero-lg hph-hero--modern <?php echo $show_gallery ? 'hph-hero--gallery' : 'hph-hero--simple'; ?>" 
-         data-component="<?php echo $show_gallery ? 'hero-gallery' : 'hero-simple'; ?>" 
-         data-listing-id="<?php echo esc_attr($listing_id); ?>">
-    
-    <?php if ($show_gallery) : ?>
-    <!-- Gallery Background - Clickable for Gallery Mode -->
-    <div class="hph-hero__gallery hph-cursor-pointer" 
-         onclick="toggleHeroGalleryMode('<?php echo esc_js($unique_id); ?>')">
-    <?php else : ?>
-    <!-- Simple Background Image -->
-    <div class="hph-hero__background">
-    <?php endif; ?>a access
+ * Uses bridge functions for data access
  * 
  * @package HappyPlaceTheme
  */
@@ -25,6 +14,12 @@ $listing_id = $args['listing_id'] ?? get_the_ID();
 
 // Check if gallery should be shown based on args
 $show_gallery = $args['show_gallery'] ?? true;
+
+// Get change tracking data from args (passed from single-listing.php)
+$listing_changes = $args['listing_changes'] ?? [];
+$listing_badges = $args['listing_badges'] ?? [];
+$has_recent_changes = $args['has_recent_changes'] ?? false;
+$is_new_listing = $args['is_new_listing'] ?? false;
 
 // Get listing data using bridge functions with fallbacks
 $listing_data = null;
@@ -211,8 +206,23 @@ if (!wp_style_is('font-awesome', 'enqueued')) {
     
     <?php if ($show_gallery) : ?>
     <!-- Gallery Background - Clickable for Gallery Mode -->
-    <div class="hph-hero__gallery hph-cursor-pointer" 
+    <div class="hph-hero__gallery hph-cursor-pointer"
          onclick="toggleHeroGalleryMode('<?php echo esc_js($unique_id); ?>')">
+
+        <!-- Image Fill Mode Toggle Button (shown only in gallery mode) -->
+        <button class="hph-hero__image-fill-toggle hph-mobile-fill-toggle"
+                id="image-fill-toggle-<?php echo esc_attr($unique_id); ?>"
+                onclick="event.stopPropagation(); toggleImageFillMode('<?php echo esc_js($unique_id); ?>')"
+                title="Toggle between fit and fill modes">
+            <i class="fas fa-expand-arrows-alt"></i>
+            <span class="fill-mode-text">Fit Image</span>
+        </button>
+
+        <!-- Fit Image Container (for contain mode) -->
+        <div class="hph-hero__fit-image-container" id="fit-image-container-<?php echo esc_attr($unique_id); ?>">
+            <img class="hph-hero__fit-image" id="fit-image-<?php echo esc_attr($unique_id); ?>" alt="" />
+        </div>
+
     <?php else : ?>
     <!-- Simple Background Image -->
     <div class="hph-hero__background">
@@ -223,17 +233,17 @@ if (!wp_style_is('font-awesome', 'enqueued')) {
                 <div class="hph-hero__image <?php echo $index === 0 ? 'active' : ''; ?><?php echo $index > 0 ? ' lazy-bg' : ''; ?>" 
                      data-slide="<?php echo $index; ?>"
                      <?php if ($index === 0) : ?>
-                         style="background-image: url('<?php echo esc_url($image['url']); ?>');"
+                         style="background-image: url('<?php echo esc_url(hph_add_fastly_optimization($image['url'], 'full')); ?>');"
                      <?php else : ?>
-                         data-bg="<?php echo esc_url($image['url']); ?>"
+                         data-bg="<?php echo esc_url(hph_add_fastly_optimization($image['url'], 'full')); ?>"
                      <?php endif; ?>>
                 </div>
                 <?php endforeach; ?>
             <?php else : ?>
                 <!-- Show only first image for simple hero -->
                 <?php $first_image = $gallery_images[0]; ?>
-                <div class="hph-hero__image active" 
-                     style="background-image: url('<?php echo esc_url($first_image['url']); ?>');">
+                <div class="hph-hero__image active"
+                     style="background-image: url('<?php echo esc_url(hph_add_fastly_optimization($first_image['url'], 'full')); ?>');">
                 </div>
             <?php endif; ?>
         <?php else : ?>
@@ -259,7 +269,7 @@ if (!wp_style_is('font-awesome', 'enqueued')) {
             <button class="hph-hero__gallery-thumb <?php echo $index === 0 ? 'active' : ''; ?>"
                     data-index="<?php echo esc_attr($index); ?>"
                     onclick="event.stopPropagation(); setHeroImage('<?php echo esc_js($unique_id); ?>', <?php echo esc_js($index); ?>)">
-                <img src="<?php echo esc_url($thumb_src); ?>" 
+                <img src="<?php echo esc_url(hph_add_fastly_optimization($thumb_src, 'thumbnail')); ?>"
                      alt="Photo <?php echo $index + 1; ?>"
                      loading="lazy">
             </button>
@@ -268,28 +278,50 @@ if (!wp_style_is('font-awesome', 'enqueued')) {
     </div>
     <?php endif; ?>
     
-    <!-- Status Badge -->
-    <?php if ($listing_status === 'coming_soon') : ?>
-    <div class="hph-hero__status">
-        COMING SOON
+    <!-- Enhanced Status Badges -->
+    <?php
+    // Get comprehensive badges from bridge system
+    $hero_badges = [];
+    if (function_exists('hpt_bridge_get_comprehensive_badges')) {
+        $hero_badges = hpt_bridge_get_comprehensive_badges($listing_id, 2);
+    }
+
+    if (!empty($hero_badges)) :
+        foreach ($hero_badges as $badge) :
+            $badge_class = 'hph-hero__status';
+
+            // Map badge variants to CSS classes
+            switch ($badge['variant']) {
+                case 'success':
+                    $badge_class .= ' hph-hero__status--active';
+                    break;
+                case 'warning':
+                    $badge_class .= ' hph-hero__status--pending';
+                    break;
+                case 'error':
+                    $badge_class .= ' hph-hero__status--sold';
+                    break;
+                case 'info':
+                    $badge_class .= ' hph-hero__status--info';
+                    break;
+                case 'primary':
+                    $badge_class .= ' hph-hero__status--primary';
+                    break;
+                default:
+                    $badge_class .= ' hph-hero__status--default';
+            }
+    ?>
+    <div class="<?php echo esc_attr($badge_class); ?>">
+        <?php echo esc_html(strtoupper($badge['text'])); ?>
     </div>
-        <?php elseif ($listing_status === 'active') : ?>
-    <div class="hph-hero__status hph-hero__status--active">
-        ACTIVE
-    </div>
-     <?php elseif ($listing_status === 'pending') : ?>
-    <div class="hph-hero__status hph-hero__status--pending">
-        SALE PENDING
-    </div>
-    <?php elseif ($listing_status === 'sold') : ?>
-    <div class="hph-hero__status hph-hero__status--sold">
-        SOLD
-    </div>
-    <?php endif; ?>
+    <?php
+        endforeach;
+    endif;
+    ?>
     
     <?php if ($show_gallery) : ?>
-    <!-- Photo Counter & Navigation (normal mode) - Single Row Layout -->
-    <div class="hph-hero__photo-nav" id="normal-nav-<?php echo esc_attr($unique_id); ?>">
+    <!-- Photo Counter & View Gallery Button - Mobile Optimized -->
+    <div class="hph-hero__photo-nav hph-mobile-nav-optimized" id="normal-nav-<?php echo esc_attr($unique_id); ?>">
         <!-- Photo Counter -->
         <span class="hph-hero__photo-count">
             <i class="fas fa-camera"></i>
@@ -299,32 +331,35 @@ if (!wp_style_is('font-awesome', 'enqueued')) {
         <!-- View Gallery Button -->
         <?php if ($total_photos > 0) : ?>
         <button class="hph-hero__gallery-btn" 
+                id="gallery-toggle-btn-nav-<?php echo esc_attr($unique_id); ?>"
                 onclick="toggleHeroGalleryMode('<?php echo esc_js($unique_id); ?>')">
             <i class="fas fa-images"></i>
-            View Gallery
+            <span class="gallery-btn-text">View Gallery</span>
         </button>
         <?php endif; ?>
-        
-        <!-- Navigation Controls -->
-        <?php if ($total_photos > 1) : ?>
-        <div class="hph-hero__nav-controls">
-            <button class="hph-hero__nav-btn hph-hero__nav-btn--prev" onclick="navigateHero('<?php echo esc_js($unique_id); ?>', -1)">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <button class="hph-hero__nav-btn hph-hero__nav-btn--next" onclick="navigateHero('<?php echo esc_js($unique_id); ?>', 1)">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-        </div>
-        <?php endif; ?>
     </div>
+    
+    <!-- Centered Navigation Controls (Left & Right) - Mobile Safe Positioning -->
+    <?php if ($show_gallery && $total_photos > 1) : ?>
+    <button class="hph-hero__nav-btn hph-hero__nav-btn--prev hph-hero__nav-btn--left hph-mobile-nav-safe" 
+            onclick="navigateHero('<?php echo esc_js($unique_id); ?>', -1)"
+            aria-label="Previous Image">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+    <button class="hph-hero__nav-btn hph-hero__nav-btn--next hph-hero__nav-btn--right hph-mobile-nav-safe" 
+            onclick="navigateHero('<?php echo esc_js($unique_id); ?>', 1)"
+            aria-label="Next Image">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+    <?php endif; ?>
     <?php endif; ?>
     
-    <!-- Main Content Overlay -->
-    <div class="hph-hero__overlay" id="hero-content-<?php echo esc_attr($unique_id); ?>">
+    <!-- Main Content Overlay - Mobile Optimized -->
+    <div class="hph-hero__overlay hph-mobile-content-optimized" id="hero-content-<?php echo esc_attr($unique_id); ?>">
         <div class="hph-container">
             <div class="hph-hero__content">
                 <!-- Property Info -->
-                <div class="hph-hero__info">
+                <div class="hph-hero__info hph-mobile-info-compact">
                     <h1 class="hph-hero__title">
                         <?php echo esc_html($street_address ?: get_the_title($listing_id)); ?>
                     </h1>
@@ -392,9 +427,13 @@ if (!wp_style_is('font-awesome', 'enqueued')) {
                         
                     </div>
                     
-                    <!-- Action Buttons -->
-                    <div class="hph-hero__actions">
-                        <button class="hph-hero__btn hph-hero__btn--primary" onclick="openContactAgentModal()">
+                    <!-- Action Buttons - Mobile Optimized -->
+                    <div class="hph-hero__actions hph-mobile-actions-compact">
+                        <button class="hph-hero__btn hph-hero__btn--primary"
+                                data-modal-form="showing-request"
+                                data-modal-title="Schedule a Showing"
+                                data-modal-subtitle="Let us know when you'd like to view this property."
+                                data-modal-size="lg">
                             <i class="fas fa-calendar-check"></i>
                             Schedule Showing
                         </button>
@@ -405,16 +444,24 @@ if (!wp_style_is('font-awesome', 'enqueued')) {
                         if ($has_virtual_tour) : ?>
                         <button class="hph-hero__btn hph-hero__btn--secondary" onclick="scrollToVirtualTour()">
                             <i class="fas fa-cube"></i>
-                            Virtual Tour
+                            <span class="hph-mobile-btn-text">Virtual Tour</span>
                         </button>
                         <?php endif; ?>
                         
                         <button class="hph-hero__btn hph-hero__btn--secondary" 
-                                id="gallery-toggle-btn-<?php echo esc_attr($unique_id); ?>"
+                                id="gallery-toggle-btn-action-<?php echo esc_attr($unique_id); ?>"
                                 onclick="toggleHeroGalleryMode('<?php echo esc_js($unique_id); ?>')">
                             <i class="fas fa-images"></i>
-                            <span class="gallery-btn-text">View All Photos</span>
+                            <span class="gallery-btn-text hph-mobile-btn-text">View All Photos</span>
                         </button>
+                        
+                        <!-- Temporarily disabled PDF flyer button -->
+                        <!--
+                        <button class="hph-hero__btn hph-hero__btn--secondary" onclick="generatePropertyFlyer()">
+                            <i class="fas fa-file-pdf"></i>
+                            Download Flyer
+                        </button>
+                        -->
                     </div>
                 </div>
             </div>
@@ -424,39 +471,43 @@ if (!wp_style_is('font-awesome', 'enqueued')) {
 
 <?php if ($show_gallery) : ?>
 <script>
-// Hero gallery data and state
-window.heroGalleryData = window.heroGalleryData || {};
-window.heroGalleryData['<?php echo $unique_id; ?>'] = {
+// Hero Gallery Data for HPH Component System
+window.heroGalleryData_<?php echo $unique_id; ?> = {
     images: [
         <?php
         $image_data = [];
         foreach ($gallery_images as $image) {
             $full_src = '';
             $image_alt = '';
-            
+
             if (is_array($image)) {
-                $full_src = $image['url'] ?? '';
+                $full_src = hph_add_fastly_optimization($image['url'] ?? '', 'full');
                 $image_alt = $image['alt'] ?? $image['title'] ?? '';
             } elseif (is_numeric($image)) {
-                $full_src = wp_get_attachment_image_src($image, 'full')[0] ?? '';
+                $attachment_url = wp_get_attachment_image_src($image, 'full')[0] ?? '';
+                $full_src = hph_add_fastly_optimization($attachment_url, 'full');
                 $image_alt = get_post_meta($image, '_wp_attachment_image_alt', true) ?: get_the_title($image);
             }
-            
+
             $image_data[] = json_encode(['url' => $full_src, 'alt' => $image_alt]);
         }
         echo implode(',', $image_data);
         ?>
     ],
+    totalImages: <?php echo count($gallery_images); ?>,
     currentIndex: 0,
-    isGalleryMode: false
+    isGalleryMode: false,
+    isContainMode: false,
+    isTransitioning: false,
+    isFitTransitioning: false
 };
 
 // Preload first few images for smoother navigation
 function preloadHeroImages(galleryId) {
-    const heroImages = document.querySelectorAll(`[data-component="hero-gallery"][data-listing-id="${galleryId}"] .hph-hero__image`);
-    const preloadCount = Math.min(3, heroImages.length); // Preload first 3 images
-    
-    for (let i = 1; i < preloadCount; i++) { // Start from 1 since first image is already loaded
+    const heroImages = document.querySelectorAll(`[data-component="hero-gallery"] .hph-hero__image`);
+    const preloadCount = Math.min(3, heroImages.length);
+
+    for (let i = 1; i < preloadCount; i++) {
         const img = heroImages[i];
         if (img && img.dataset.bg && !img.style.backgroundImage) {
             img.style.backgroundImage = `url('${img.dataset.bg}')`;
@@ -470,194 +521,497 @@ preloadHeroImages('<?php echo $unique_id; ?>');
 
 // Toggle between normal hero and gallery mode
 function toggleHeroGalleryMode(galleryId) {
-    const heroSection = document.querySelector('[data-component="hero-gallery"][data-listing-id] .hph-hero__gallery').closest('.hph-hero');
-    const toggleBtn = document.getElementById('gallery-toggle-btn-' + galleryId);
-    const btnText = toggleBtn.querySelector('.gallery-btn-text');
-    
-    if (!heroSection) return;
-    
+    const heroSection = document.querySelector('[data-component="hero-gallery"] .hph-hero__gallery').closest('.hph-hero');
+    const toggleBtnNav = document.getElementById('gallery-toggle-btn-nav-' + galleryId);
+    const toggleBtnAction = document.getElementById('gallery-toggle-btn-action-' + galleryId);
+    const data = window.heroGalleryData_<?php echo $unique_id; ?>;
+
+    if (!heroSection || !data) return;
+
     // Toggle the gallery mode class on the hero section
     heroSection.classList.toggle('hph-hero--gallery-mode');
-    
+
+    // Update gallery mode state in data
+    data.isGalleryMode = heroSection.classList.contains('hph-hero--gallery-mode');
+
+    // When exiting gallery mode, always revert to cover (fill) mode
+    if (!data.isGalleryMode && data.isContainMode) {
+        heroSection.classList.remove('hph-hero--contain-mode');
+        data.isContainMode = false;
+
+        // Reset button text and icon
+        const fillToggleButton = document.getElementById('image-fill-toggle-' + galleryId);
+        const buttonText = fillToggleButton?.querySelector('.fill-mode-text');
+        const buttonIcon = fillToggleButton?.querySelector('i');
+
+        if (buttonText) buttonText.textContent = 'Fit Image';
+        if (buttonIcon) buttonIcon.className = 'fas fa-expand-arrows-alt';
+    }
+
     // Update button text based on current state
-    if (heroSection.classList.contains('hph-hero--gallery-mode')) {
-        btnText.textContent = 'Close Gallery';
-    } else {
-        btnText.textContent = 'View All Photos';
+    const newText = data.isGalleryMode ? 'Close Gallery' : 'View Gallery';
+    const newActionText = data.isGalleryMode ? 'Close Gallery' : 'View All Photos';
+
+    if (toggleBtnNav) {
+        const btnText = toggleBtnNav.querySelector('.gallery-btn-text');
+        if (btnText) btnText.textContent = newText;
+    }
+
+    if (toggleBtnAction) {
+        const btnText = toggleBtnAction.querySelector('.gallery-btn-text');
+        if (btnText) btnText.textContent = newActionText;
+    }
+
+    // Auto-exit gallery mode on scroll
+    if (data.isGalleryMode) {
+        initScrollExit(galleryId);
     }
 }
 
-// Navigate hero images
-function navigateHero(galleryId, direction) {
-    const data = window.heroGalleryData[galleryId];
-    if (!data) return;
-    
-    let newIndex = data.currentIndex + direction;
-    
-    if (newIndex < 0) newIndex = data.images.length - 1;
-    if (newIndex >= data.images.length) newIndex = 0;
-    
-    setHeroImage(galleryId, newIndex);
+// Initialize scroll exit functionality
+function initScrollExit(galleryId) {
+    const data = window.heroGalleryData_<?php echo $unique_id; ?>;
+
+    const handleScroll = () => {
+        if (!data || !data.isGalleryMode) return;
+
+        const heroSection = document.querySelector('[data-component="hero-gallery"] .hph-hero__gallery').closest('.hph-hero');
+        if (!heroSection) return;
+
+        const heroRect = heroSection.getBoundingClientRect();
+        // Exit gallery mode immediately when user scrolls past hero section
+        if (heroRect.top < -20) {
+            // Revert to cover mode before exiting gallery
+            if (data.isContainMode) {
+                heroSection.classList.remove('hph-hero--contain-mode');
+                data.isContainMode = false;
+            }
+            toggleHeroGalleryMode(galleryId);
+            window.removeEventListener('scroll', handleScroll);
+        }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
 }
 
-// Set hero image by index
-function setHeroImage(galleryId, index) {
-    const data = window.heroGalleryData[galleryId];
-    const heroImages = document.querySelectorAll(`[data-component="hero-gallery"][data-listing-id] .hph-hero__image`);
-    const thumbs = document.querySelectorAll('#gallery-overlay-' + galleryId + ' .hph-hero__gallery-thumb');
-    const counter = document.getElementById('hero-counter-' + galleryId);
-    const normalCounter = document.getElementById('current-photo');
-    
+// Navigate hero gallery with direction (-1 for previous, 1 for next)
+function navigateHero(galleryId, direction) {
+    const data = window.heroGalleryData_<?php echo $unique_id; ?>;
     if (!data) return;
-    
-    // Update current index
-    data.currentIndex = parseInt(index);
-    
-    // Update hero images
-    heroImages.forEach((img, i) => {
-        if (i === data.currentIndex) {
-            img.classList.add('active');
-            // Load lazy image if not already loaded
-            if (img.dataset.bg && !img.style.backgroundImage) {
-                img.style.backgroundImage = `url('${img.dataset.bg}')`;
-                img.classList.remove('lazy-bg');
-            }
-        } else {
-            img.classList.remove('active');
-        }
-    });
-    
+
+    let newIndex = data.currentIndex + direction;
+
+    // Handle wrap-around
+    if (newIndex >= data.totalImages) {
+        newIndex = 0;
+    } else if (newIndex < 0) {
+        newIndex = data.totalImages - 1;
+    }
+
+    setHeroImageWithCarousel(galleryId, newIndex, direction);
+}
+
+// Smooth fade transition between images
+function setHeroImageWithCarousel(galleryId, index, direction = 0) {
+    const data = window.heroGalleryData_<?php echo $unique_id; ?>;
+    if (!data || !data.images[index]) return;
+
+    // Prevent overlapping transitions
+    if (data.isTransitioning) return;
+
+    const heroImages = document.querySelectorAll('[data-component="hero-gallery"] .hph-hero__image');
+    const currentImg = heroImages[data.currentIndex];
+    const nextImg = heroImages[index];
+
+    // If this is the same image, do nothing
+    if (data.currentIndex === index) return;
+
+    if (currentImg && nextImg) {
+        data.isTransitioning = true;
+
+        // Start fade out of current image
+        currentImg.classList.add('fade-out');
+
+        // After fade out completes, switch to new image
+        setTimeout(() => {
+            // Clear all active states
+            heroImages.forEach(img => {
+                img.classList.remove('active', 'fade-out');
+            });
+
+            // Activate new image
+            nextImg.classList.add('active');
+
+            data.isTransitioning = false;
+        }, 300); // Half the transition time for smooth crossfade
+    } else {
+        // Direct switch without animation
+        heroImages.forEach((img, i) => {
+            img.classList.remove('fade-out');
+            img.classList.toggle('active', i === index);
+        });
+    }
+
+    data.currentIndex = index;
+
+    // Load current image if lazy
+    const activeImg = heroImages[index];
+    if (activeImg && activeImg.dataset.bg && !activeImg.style.backgroundImage) {
+        activeImg.style.backgroundImage = `url('${activeImg.dataset.bg}')`;
+        activeImg.classList.remove('lazy-bg');
+    }
+
+    // Update fit image if in contain mode
+    updateFitImage(galleryId);
+
+    // Preload adjacent images
+    preloadAdjacentImages(index, data.totalImages);
+
     // Update thumbnails
-    thumbs.forEach((thumb, i) => {
-        if (i === data.currentIndex) {
-            thumb.classList.add('active');
-        } else {
-            thumb.classList.remove('active');
+    updateThumbnails(index);
+
+    // Update counters
+    updateCounters(index, data.totalImages);
+}
+
+// Fallback for direct image setting (thumbnail clicks)
+function setHeroImage(galleryId, index) {
+    setHeroImageWithCarousel(galleryId, index, 0);
+}
+
+// Update fit image for contain mode with fade transition
+function updateFitImage(galleryId) {
+    const data = window.heroGalleryData_<?php echo $unique_id; ?>;
+    if (!data || !data.isContainMode) return;
+
+    const fitImg = document.getElementById('fit-image-' + galleryId);
+    const currentImageData = data.images[data.currentIndex];
+
+    if (fitImg && currentImageData) {
+        // If image is already correct, don't fade
+        if (fitImg.src === currentImageData.url) return;
+
+        // Prevent overlapping transitions
+        if (data.isFitTransitioning) return;
+        data.isFitTransitioning = true;
+
+        // Start fade out
+        fitImg.classList.add('fade-out');
+
+        // After fade out, switch image and fade in
+        setTimeout(() => {
+            fitImg.src = currentImageData.url;
+            fitImg.alt = currentImageData.alt || '';
+
+            // Update viewport-based sizing
+            updateFitImageSize(fitImg);
+
+            // Remove fade-out class to fade back in
+            fitImg.classList.remove('fade-out');
+
+            data.isFitTransitioning = false;
+        }, 300); // Half the transition time for smooth crossfade
+    }
+}
+
+// Update fit image dimensions based on viewport
+function updateFitImageSize(fitImg) {
+    if (!fitImg) return;
+
+    const headerHeight = document.querySelector('header')?.offsetHeight || 80;
+    const galleryStripHeight = 140; // 120px + 20px margin
+    const margin = 64; // 4rem total margin
+
+    const maxWidth = window.innerWidth - margin;
+    const maxHeight = window.innerHeight - headerHeight - galleryStripHeight - margin;
+
+    fitImg.style.maxWidth = maxWidth + 'px';
+    fitImg.style.maxHeight = maxHeight + 'px';
+}
+
+// Helper functions
+function preloadAdjacentImages(currentIndex, totalImages) {
+    const heroImages = document.querySelectorAll('[data-component="hero-gallery"] .hph-hero__image');
+    const nextIndex = (currentIndex + 1) % totalImages;
+    const prevIndex = currentIndex === 0 ? totalImages - 1 : currentIndex - 1;
+
+    [nextIndex, prevIndex].forEach(idx => {
+        const img = heroImages[idx];
+        if (img && img.dataset.bg && !img.style.backgroundImage) {
+            img.style.backgroundImage = `url('${img.dataset.bg}')`;
+            img.classList.remove('lazy-bg');
         }
     });
-    
-    // Update counters
+}
+
+function updateThumbnails(currentIndex) {
+    const thumbnails = document.querySelectorAll('[data-component="hero-gallery"] .hph-hero__gallery-thumb');
+    thumbnails.forEach((thumb, i) => {
+        thumb.classList.toggle('active', i === currentIndex);
+    });
+}
+
+function updateCounters(currentIndex, totalImages) {
+    const counter = document.getElementById('hero-counter-<?php echo $unique_id; ?>');
+    const normalCounter = document.getElementById('current-photo');
+
     if (counter) {
-        counter.textContent = data.currentIndex + 1;
+        counter.textContent = `${currentIndex + 1} of ${totalImages}`;
     }
     if (normalCounter) {
-        normalCounter.textContent = data.currentIndex + 1;
+        normalCounter.textContent = currentIndex + 1;
     }
 }
 
-// Keyboard navigation
-document.addEventListener('keydown', function(e) {
-    const galleryModeActive = document.body.classList.contains('hero-gallery-mode');
-    if (!galleryModeActive) return;
-    
-    // Find active gallery
-    const activeGalleryId = Object.keys(window.heroGalleryData).find(id => 
-        window.heroGalleryData[id].isGalleryMode
-    );
-    
-    if (!activeGalleryId) return;
-    
-    switch(e.key) {
-        case 'Escape':
-            toggleHeroGalleryMode(activeGalleryId);
-            break;
-        case 'ArrowLeft':
-            navigateHero(activeGalleryId, -1);
-            break;
-        case 'ArrowRight':
-            navigateHero(activeGalleryId, 1);
-            break;
-    }
+// Touch/Swipe Support for Mobile Gallery Navigation
+function initHeroTouchSupport(galleryId) {
+    const heroGallery = document.querySelector(`[data-component="hero-gallery"] .hph-hero__gallery`);
+    if (!heroGallery) return;
+
+    let startX = 0;
+    let startY = 0;
+    let distX = 0;
+    let distY = 0;
+    let startTime = 0;
+    const threshold = 100; // Minimum distance for swipe
+    const restraint = 150; // Maximum distance perpendicular to swipe direction
+    const allowedTime = 500; // Maximum time allowed to travel that distance
+
+    heroGallery.addEventListener('touchstart', function(e) {
+        const touchobj = e.changedTouches[0];
+        startX = touchobj.pageX;
+        startY = touchobj.pageY;
+        startTime = new Date().getTime();
+        e.preventDefault();
+    });
+
+    heroGallery.addEventListener('touchmove', function(e) {
+        e.preventDefault(); // Prevent default behavior (scrolling)
+    });
+
+    heroGallery.addEventListener('touchend', function(e) {
+        const touchobj = e.changedTouches[0];
+        distX = touchobj.pageX - startX;
+        distY = touchobj.pageY - startY;
+        const elapsedTime = new Date().getTime() - startTime;
+
+        // First check: was it a swipe at all? Dist and time thresholds must be met
+        if (elapsedTime <= allowedTime && Math.abs(distX) >= threshold && Math.abs(distY) <= restraint) {
+            // 2nd check: if the swipe distance was enough, check direction and call appropriate function
+            if (distX > 0) {
+                // Swipe right = previous
+                navigateHero(galleryId, -1);
+            } else {
+                // Swipe left = next
+                navigateHero(galleryId, 1);
+            }
+        }
+    });
+
+    // Also add keyboard support
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft') {
+            navigateHero(galleryId, -1);
+        } else if (e.key === 'ArrowRight') {
+            navigateHero(galleryId, 1);
+        } else if (e.key === 'Escape') {
+            // Exit gallery mode if in gallery mode
+            const data = window.heroGalleryData_<?php echo $unique_id; ?>;
+            if (data && data.isGalleryMode) {
+                toggleHeroGalleryMode(galleryId);
+            }
+        }
+    });
+}
+
+// Initialize touch support when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    initHeroTouchSupport('<?php echo $unique_id; ?>');
+    initPinchGesture('<?php echo $unique_id; ?>');
 });
 
-function openContactAgentModal() {
-    // Scroll to the showing request form in the sidebar
-    const showingForm = document.getElementById('schedule-showing-form');
-    if (showingForm) {
-        showingForm.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'start',
-            inline: 'nearest'
-        });
-        
-        // Add a brief highlight effect to draw attention
-        setTimeout(() => {
-            showingForm.style.boxShadow = '0 0 20px rgba(var(--hph-primary-rgb), 0.3)';
-            setTimeout(() => {
-                showingForm.style.boxShadow = '';
-            }, 2000);
-        }, 500);
-    } else {
-        // Fallback: scroll to contact form in sidebar
-        const contactForm = document.querySelector('.hph-contact-form, #contact-form, .contact-form');
-        if (contactForm) {
-            contactForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else {
-            console.log('Showing form not found');
-        }
-    }
-}
-
+// Function to scroll to virtual tour section
 function scrollToVirtualTour() {
-    const virtualTourSection = document.getElementById('virtual-tour');
+    const virtualTourSection = document.querySelector('.virtual-tour-section, #virtual-tour, [data-virtual-tour]');
     if (virtualTourSection) {
-        virtualTourSection.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'start',
-            inline: 'nearest'
+        virtualTourSection.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
         });
-        
-        // Add a slight delay then focus the virtual tour for better UX
-        setTimeout(() => {
-            const iframe = virtualTourSection.querySelector('iframe');
-            if (iframe) {
-                iframe.focus();
-            }
-        }, 1000);
     } else {
         console.log('Virtual tour section not found');
     }
 }
 
-function openGallery() {
-    // Open full gallery modal
-    if (typeof openGalleryModal === 'function') {
-        openGalleryModal();
+// Image Fill Mode Toggle - Cover vs Fit with dynamic sizing
+function toggleImageFillMode(galleryId) {
+    const data = window.heroGalleryData_<?php echo $unique_id; ?>;
+    if (!data) return;
+
+    const heroSection = document.querySelector('[data-component="hero-gallery"] .hph-hero__gallery').closest('.hph-hero');
+    const toggleButton = document.getElementById('image-fill-toggle-' + galleryId);
+    const buttonText = toggleButton?.querySelector('.fill-mode-text');
+    const buttonIcon = toggleButton?.querySelector('i');
+
+    if (!heroSection) return;
+
+    // Toggle contain mode class
+    heroSection.classList.toggle('hph-hero--contain-mode');
+
+    // Update state
+    data.isContainMode = heroSection.classList.contains('hph-hero--contain-mode');
+
+    // Update button text and icon
+    if (data.isContainMode) {
+        if (buttonText) buttonText.textContent = 'Fill Screen';
+        if (buttonIcon) {
+            buttonIcon.className = 'fas fa-compress-arrows-alt';
+        }
+        // Initialize fit image
+        updateFitImage(galleryId);
+        // Add resize listener for viewport changes
+        window.addEventListener('resize', () => updateFitImageSize(document.getElementById('fit-image-' + galleryId)));
+    } else {
+        if (buttonText) buttonText.textContent = 'Fit Image';
+        if (buttonIcon) {
+            buttonIcon.className = 'fas fa-expand-arrows-alt';
+        }
+        // Remove resize listener
+        window.removeEventListener('resize', () => updateFitImageSize(document.getElementById('fit-image-' + galleryId)));
     }
 }
 
-
-// Auto-rotate slides
-if (totalSlides > 1) {
-    setInterval(() => {
-        nextSlide();
-    }, 5000);
+// Update blurred background image for contain mode
+function updateBlurredBackground(galleryId) {
+    // Background now inherits automatically via CSS inherit property
+    // No JavaScript needed - the ::before pseudo-element inherits the background-image
 }
 
-// Lazy loading for background images
-document.addEventListener('DOMContentLoaded', function() {
-    // Intersection Observer for lazy loading background images
-    const bgLazyObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const element = entry.target;
-                const bgUrl = element.dataset.bg;
-                if (bgUrl) {
-                    element.style.backgroundImage = `url('${bgUrl}')`;
-                    element.classList.remove('lazy-bg');
-                }
-                bgLazyObserver.unobserve(element);
-            }
-        });
-    }, {
-        rootMargin: '50px 0px',
-        threshold: 0.1
+// Pinch gesture support for fill mode toggle
+function initPinchGesture(galleryId) {
+    const heroGallery = document.querySelector('[data-component="hero-gallery"] .hph-hero__gallery');
+    if (!heroGallery) return;
+
+    let initialDistance = 0;
+    let isPinching = false;
+
+    function getDistance(touches) {
+        const dx = touches[0].pageX - touches[1].pageX;
+        const dy = touches[0].pageY - touches[1].pageY;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    heroGallery.addEventListener('touchstart', function(e) {
+        if (e.touches.length === 2) {
+            isPinching = true;
+            initialDistance = getDistance(e.touches);
+            e.preventDefault();
+        }
     });
 
-    // Observe all lazy background elements
-    document.querySelectorAll('.lazy-bg').forEach(el => {
-        bgLazyObserver.observe(el);
+    heroGallery.addEventListener('touchmove', function(e) {
+        if (isPinching && e.touches.length === 2) {
+            e.preventDefault();
+        }
     });
+
+    heroGallery.addEventListener('touchend', function(e) {
+        if (isPinching) {
+            if (e.touches.length < 2) {
+                const data = window.heroGalleryData_<?php echo $unique_id; ?>;
+                if (data && data.isGalleryMode) {
+                    // If pinch gesture detected, toggle fill mode
+                    const currentDistance = initialDistance;
+                    if (Math.abs(currentDistance - initialDistance) > 50) {
+                        toggleImageFillMode(galleryId);
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Enhanced mobile touch feedback system
+function initMobileTouchFeedback() {
+    // Add touch feedback to all interactive elements
+    const interactiveElements = document.querySelectorAll(
+        '.hph-hero__nav-btn.hph-mobile-nav-safe, ' +
+        '.hph-hero__gallery-btn, ' +
+        '.hph-hero__photo-nav .hph-hero__gallery-btn, ' +
+        '.hph-hero__btn, ' +
+        '.hph-hero__gallery-thumb, ' +
+        '.hph-hero__image-fill-toggle.hph-mobile-fill-toggle'
+    );
+
+    interactiveElements.forEach(element => {
+        // Clear any stuck transforms on touch start
+        element.addEventListener('touchstart', function(e) {
+            // Ensure transform is reset
+            if (element.classList.contains('hph-mobile-nav-safe')) {
+                element.style.transform = 'translateY(-50%)';
+            } else {
+                element.style.transform = 'none';
+            }
+        }, { passive: true });
+
+        // Ensure transforms are cleared on touch end
+        element.addEventListener('touchend', function(e) {
+            // Small delay to ensure visual feedback, then reset
+            setTimeout(() => {
+                if (element.classList.contains('hph-mobile-nav-safe')) {
+                    element.style.transform = 'translateY(-50%)';
+                } else {
+                    element.style.transform = 'none';
+                }
+            }, 100);
+        }, { passive: true });
+
+        // Also handle touch cancel events
+        element.addEventListener('touchcancel', function(e) {
+            if (element.classList.contains('hph-mobile-nav-safe')) {
+                element.style.transform = 'translateY(-50%)';
+            } else {
+                element.style.transform = 'none';
+            }
+        }, { passive: true });
+    });
+}
+
+// Initialize mobile touch feedback when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    initHeroTouchSupport('<?php echo $unique_id; ?>');
+    initPinchGesture('<?php echo $unique_id; ?>');
+    
+    // Add mobile-specific improvements
+    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+        initMobileTouchFeedback();
+        
+        // Prevent context menu on long press for gallery elements
+        const galleryElements = document.querySelectorAll('.hph-hero__gallery, .hph-hero__image, .hph-hero__nav-btn');
+        galleryElements.forEach(element => {
+            element.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            });
+        });
+        
+        // Improve gallery mode touch handling
+        const heroGallery = document.querySelector('[data-component="hero-gallery"] .hph-hero__gallery');
+        if (heroGallery) {
+            // Prevent default zoom behavior
+            heroGallery.addEventListener('gesturestart', function(e) {
+                e.preventDefault();
+            });
+            
+            heroGallery.addEventListener('gesturechange', function(e) {
+                e.preventDefault();
+            });
+            
+            heroGallery.addEventListener('gestureend', function(e) {
+                e.preventDefault();
+            });
+        }
+    }
 });
 </script>
 <?php endif; ?>

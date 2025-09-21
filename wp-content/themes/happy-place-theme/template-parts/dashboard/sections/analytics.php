@@ -38,7 +38,7 @@ if (!$is_agent) {
                 <option value="custom">Custom range</option>
             </select>
             
-            <button type="button" class="hph-btn hph-btn-outline" id="exportAnalyticsBtn">
+            <button type="button" class="hph-btn hph-btn-outline-primary" id="exportAnalyticsBtn">
                 <i class="fas fa-download"></i>
                 Export Report
             </button>
@@ -142,10 +142,10 @@ if (!$is_agent) {
             <div class="hph-card-header">
                 <h3 class="hph-card-title">Revenue Trend</h3>
                 <div class="hph-card-actions">
-                    <button type="button" class="hph-btn hph-btn-outline hph-btn-sm" data-chart="revenue" data-view="line">
+                    <button type="button" class="hph-btn hph-btn-outline-primary hph-btn-sm" data-chart="revenue" data-view="line">
                         <i class="fas fa-chart-line"></i>
                     </button>
-                    <button type="button" class="hph-btn hph-btn-outline hph-btn-sm" data-chart="revenue" data-view="bar">
+                    <button type="button" class="hph-btn hph-btn-outline-primary hph-btn-sm" data-chart="revenue" data-view="bar">
                         <i class="fas fa-chart-bar"></i>
                     </button>
                 </div>
@@ -212,7 +212,7 @@ if (!$is_agent) {
             <div class="hph-card-header">
                 <h3 class="hph-card-title">Lead Sources</h3>
                 <div class="hph-card-actions">
-                    <button type="button" class="hph-btn hph-btn-outline hph-btn-sm" id="leadSourcesRefresh">
+                    <button type="button" class="hph-btn hph-btn-outline-primary hph-btn-sm" id="leadSourcesRefresh">
                         <i class="fas fa-sync"></i>
                     </button>
                 </div>
@@ -235,7 +235,7 @@ if (!$is_agent) {
         <div class="hph-card-header">
             <h3 class="hph-card-title">Market Insights</h3>
             <div class="hph-card-actions">
-                <button type="button" class="hph-btn hph-btn-outline" id="generateMarketReportBtn">
+                <button type="button" class="hph-btn hph-btn-outline-primary" id="generateMarketReportBtn">
                     <i class="fas fa-file-pdf"></i>
                     Generate Market Report
                 </button>
@@ -340,7 +340,7 @@ if (!$is_agent) {
             </div>
         </div>
         <div class="hph-modal-footer">
-            <button type="button" class="hph-btn hph-btn-outline" onclick="$('#customDateRangeModal').hide();">Cancel</button>
+            <button type="button" class="hph-btn hph-btn-outline-primary" onclick="$('#customDateRangeModal').hide();">Cancel</button>
             <button type="button" class="hph-btn hph-btn-primary" id="applyCustomDateRange">Apply Range</button>
         </div>
     </div>

@@ -15,17 +15,10 @@
   --hph-space-12: 3rem;    /* 48px */
   --hph-space-16: 4rem;    /* 64px */
   --hph-space-20: 5rem;    /* 80px */
+  --hph-space-24: 6rem;    /* 96px */
+  --hph-space-32: 8rem;    /* 128px */
   
-  /* Typography Scale */
-  --hph-text-xs: 0.75rem;      /* 12px */
-  --hph-text-sm: 0.875rem;     /* 14px */
-  --hph-text-base: 1rem;       /* 16px */
-  --hph-text-lg: 1.125rem;     /* 18px */
-  --hph-text-xl: 1.25rem;      /* 20px */
-  --hph-text-2xl: 1.5rem;      /* 24px */
-  --hph-text-3xl: 1.875rem;    /* 30px */
-  --hph-text-4xl: 2.25rem;     /* 36px */
-  --hph-text-5xl: 3rem;        /* 48px */
+  /* Typography Scale - Removed duplicates, see variables.css for responsive versions */
   
   /* Border Radius */
   --hph-radius-none: 0;
@@ -36,7 +29,7 @@
   --hph-radius-xl: 0.75rem;    /* 12px */
   --hph-radius-full: 9999px;
   
-  /* Z-Index Scale */
+  /* Z-Index Scale - Updated to match actual usage */
   --hph-z-auto: auto;
   --hph-z-0: 0;
   --hph-z-10: 10;
@@ -44,11 +37,11 @@
   --hph-z-30: 30;
   --hph-z-40: 40;
   --hph-z-50: 50;
+  --hph-z-header: 100;
   --hph-z-dropdown: 1000;
   --hph-z-sticky: 1020;
-  --hph-z-fixed: 1030;
-  --hph-z-modal: 1040;
-  --hph-z-tooltip: 1070;
+  --hph-z-modal: 9999;
+  --hph-z-notification: 10000;
   
   /* Animation Durations */
   --hph-duration-fast: 150ms;
@@ -59,4 +52,48 @@
   --hph-ease-out: cubic-bezier(0, 0, 0.2, 1);
   --hph-ease-in: cubic-bezier(0.4, 0, 1, 1);
   --hph-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ================================================
+     UNIFIED BUTTON TOKEN SYSTEM
+     CSS variables for consistent button behavior across all modifier classes
+     ================================================ */
+
+  /* Button Height Standards */
+  --hph-btn-height: 44px;  /* WCAG AA touch target minimum */
+
+  /* Button Padding Tokens - Context-specific spacing */
+  --hph-btn-modal-padding-y: 0.75rem;
+  --hph-btn-modal-padding-x: 1.5rem;
+  --hph-btn-modal-form-padding-y: 0.75rem;
+  --hph-btn-modal-form-padding-x: 1.5rem;
+  --hph-btn-contact-padding-y: 0.75rem;
+  --hph-btn-contact-padding-x: 1rem;
+  --hph-btn-archive-padding-y: 0.875rem;
+  --hph-btn-archive-padding-x: 1.5rem;
+  --hph-btn-header-padding-y: 0.5rem;
+  --hph-btn-header-padding-x: 1rem;
+  --hph-btn-hero-padding-y: 0.875rem;
+  --hph-btn-hero-padding-x: 1.75rem;
+  --hph-btn-card-padding-y: 0.625rem;
+  --hph-btn-card-padding-x: 1rem;
+  --hph-btn-form-padding-y: 0.75rem;
+  --hph-btn-form-padding-x: 1.5rem;
+  --hph-btn-dashboard-padding-y: 0.5rem;
+  --hph-btn-dashboard-padding-x: 1rem;
+
+  /* Button Font Size Tokens */
+  --hph-btn-font-size: var(--hph-text-base);
+  --hph-btn-font-size-sm: var(--hph-text-sm);
+  --hph-btn-font-size-lg: var(--hph-text-lg);
+
+  /* Button State Tokens */
+  --hph-btn-disabled-opacity: 0.6;
+
+  /* Button Transition Tokens */
+  --hph-transition-fast: all 150ms var(--hph-ease-out);
+
+  /* Button Focus Ring Tokens */
+  --hph-btn-focus-ring: 0 0 0 3px rgba(81, 186, 224, 0.25);
+  --hph-btn-focus-ring-danger: 0 0 0 3px rgba(239, 68, 68, 0.25);
+  --hph-btn-focus-ring-success: 0 0 0 3px rgba(34, 197, 94, 0.25);
 }

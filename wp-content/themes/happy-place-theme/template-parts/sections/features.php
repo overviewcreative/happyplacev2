@@ -14,21 +14,21 @@ if (function_exists('hph_register_template_part')) {
 
 // Default arguments
 $defaults = array(
-    'layout' => 'grid',
-    'background' => 'white',
-    'padding' => 'xl',
-    'content_width' => 'normal',
-    'alignment' => 'center',
-    'columns' => 3,
-    'badge' => '',
-    'headline' => 'Our Features',
-    'subheadline' => '',
-    'content' => '',
-    'features' => array(),
-    'icon_style' => 'default',
-    'icon_position' => 'top',
-    'animation' => false,
-    'section_id' => ''
+    'layout' => 'grid', // Options: 'grid', 'cards', 'list', 'alternating', 'timeline'
+    'background' => 'white', // Options: 'white', 'light', 'dark', 'primary', 'gradient'
+    'padding' => 'xl', // Options: 'sm', 'md', 'lg', 'xl', '2xl'
+    'content_width' => 'normal', // Options: 'narrow', 'normal', 'wide', 'full'
+    'alignment' => 'center', // Options: 'left', 'center', 'right'
+    'columns' => 3, // Number of columns for grid layout (2, 3, 4)
+    'badge' => '', // Badge text to display above headline
+    'headline' => 'Our Features', // Main headline text
+    'subheadline' => '', // Subheadline text below headline
+    'content' => '', // Additional content text
+    'features' => array(), // Array of feature objects with title, content, icon, etc.
+    'icon_style' => 'default', // Options: 'default', 'circle', 'square', 'outline', 'filled'
+    'icon_position' => 'top', // Options: 'top', 'left', 'inline'
+    'animation' => false, // Boolean: true/false - enable entrance animations
+    'section_id' => '' // HTML ID for the section
 );
 
 // Merge with provided args - use consistent null coalescing
@@ -69,25 +69,25 @@ switch ($background) {
 // Padding styles
 switch ($padding) {
     case 'sm':
-        $section_styles[] = 'padding-top: var(--hph-padding-lg)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-lg)';
+        $section_styles[] = 'padding-top: var(--hph-space-6)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-6)';
         break;
     case 'md':
-        $section_styles[] = 'padding-top: var(--hph-padding-xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-8)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-8)';
         break;
     case 'lg':
-        $section_styles[] = 'padding-top: var(--hph-padding-2xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-2xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-12)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-12)';
         break;
     case '2xl':
-        $section_styles[] = 'padding-top: var(--hph-padding-4xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-4xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-24)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-24)';
         break;
     case 'xl':
     default:
-        $section_styles[] = 'padding-top: var(--hph-padding-3xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-3xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-16)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-16)';
         break;
 }
 
@@ -96,8 +96,8 @@ $container_styles = array(
     'position: relative',
     'margin-left: auto',
     'margin-right: auto',
-    'padding-left: var(--hph-padding-lg)',
-    'padding-right: var(--hph-padding-lg)'
+    'padding-left: var(--hph-space-6)',
+    'padding-right: var(--hph-space-6)'
 );
 
 // Content width
@@ -221,12 +221,12 @@ function getIconStyles($icon_style) {
         
         <?php if ($badge || $headline || $subheadline || $content): ?>
         <!-- Section Header -->
-        <div style="margin-bottom: var(--hph-margin-3xl); <?php echo $header_alignment; ?> <?php echo $animation ? 'animation: fadeInUp 0.8s ease-out;' : ''; ?>">
+        <div style="margin-bottom: var(--hph-space-16); <?php echo $header_alignment; ?> <?php echo $animation ? 'animation: fadeInUp 0.8s ease-out;' : ''; ?>">
             
             <?php if ($badge): ?>
             <!-- Badge -->
-            <div style="margin-bottom: var(--hph-margin-lg);">
-                <span style="display: inline-block; padding: var(--hph-padding-sm) var(--hph-padding-md); background: var(--hph-primary-100); color: var(--hph-primary-700); border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
+            <div style="margin-bottom: var(--hph-space-6);">
+                <span style="display: inline-block; padding: var(--hph-space-2) var(--hph-space-4); background: var(--hph-primary-100); color: var(--hph-primary-700); border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
                     <?php echo esc_html($badge); ?>
                 </span>
             </div>
@@ -234,14 +234,14 @@ function getIconStyles($icon_style) {
             
             <?php if ($headline): ?>
             <!-- Headline -->
-            <h2 style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-4xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
+            <h2 style="margin: 0 0 var(--hph-space-6) 0; font-size: var(--hph-text-4xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
                 <?php echo esc_html($headline); ?>
             </h2>
             <?php endif; ?>
             
             <?php if ($subheadline): ?>
             <!-- Subheadline -->
-            <p style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); opacity: 0.9;">
+            <p style="margin: 0 0 var(--hph-space-6) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); opacity: 0.9;">
                 <?php echo esc_html($subheadline); ?>
             </p>
             <?php endif; ?>
@@ -289,7 +289,7 @@ function getIconStyles($icon_style) {
                     $item_styles[] = 'background: var(--hph-white)';
                     $item_styles[] = 'border-radius: var(--hph-radius-lg)';
                     $item_styles[] = 'box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)';
-                    $item_styles[] = 'padding: var(--hph-padding-xl)';
+                    $item_styles[] = 'padding: var(--hph-space-8)';
                     $item_styles[] = 'transition: all 300ms ease';
                 } elseif ($layout === 'list') {
                     if ($icon_position === 'left') {
@@ -348,7 +348,7 @@ function getIconStyles($icon_style) {
                     
                     <?php if (!empty($feature['icon']) && $icon_position !== 'inline'): ?>
                     <!-- Icon -->
-                    <div style="<?php echo $icon_position === 'top' ? 'margin-bottom: var(--hph-margin-lg);' : ''; ?>">
+                    <div style="<?php echo $icon_position === 'top' ? 'margin-bottom: var(--hph-space-6);' : ''; ?>">
                         <?php if ($icon_style === 'default'): ?>
                         <i class="<?php echo esc_attr($feature['icon']); ?>" style="font-size: var(--hph-text-4xl); color: var(--hph-primary);"></i>
                         <?php else: ?>
@@ -361,9 +361,9 @@ function getIconStyles($icon_style) {
                     
                     <?php if (!empty($feature['title'])): ?>
                     <!-- Title -->
-                    <h3 style="margin: 0 0 var(--hph-margin-md) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-semibold); line-height: var(--hph-leading-tight);">
+                    <h3 style="margin: 0 0 var(--hph-space-4) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-semibold); line-height: var(--hph-leading-tight);">
                         <?php if (!empty($feature['icon']) && $icon_position === 'inline'): ?>
-                        <i class="<?php echo esc_attr($feature['icon']); ?>" style="font-size: var(--hph-text-lg); color: var(--hph-primary); margin-right: var(--hph-margin-sm);"></i>
+                        <i class="<?php echo esc_attr($feature['icon']); ?>" style="font-size: var(--hph-text-lg); color: var(--hph-primary); margin-right: var(--hph-space-2);"></i>
                         <?php endif; ?>
                         <?php echo esc_html($feature['title']); ?>
                     </h3>
@@ -371,14 +371,14 @@ function getIconStyles($icon_style) {
                     
                     <?php if (!empty($feature['content'])): ?>
                     <!-- Content -->
-                    <p style="color: var(--hph-gray-600); line-height: var(--hph-leading-relaxed); margin-bottom: var(--hph-margin-lg);">
+                    <p style="color: var(--hph-gray-600); line-height: var(--hph-leading-relaxed); margin-bottom: var(--hph-space-6);">
                         <?php echo wp_kses_post($feature['content']); ?>
                     </p>
                     <?php endif; ?>
                     
                     <?php if (!empty($feature['button'])): ?>
                     <!-- Button -->
-                    <div style="margin-bottom: var(--hph-margin-md);">
+                    <div style="margin-bottom: var(--hph-space-4);">
                         <?php
                         $button = wp_parse_args($feature['button'], array(
                             'text' => 'Learn More',
@@ -404,16 +404,16 @@ function getIconStyles($icon_style) {
                         // Size styles
                         switch ($button['size']) {
                             case 'sm':
-                                $button_styles[] = 'padding: var(--hph-padding-sm) var(--hph-padding-md)';
+                                $button_styles[] = 'padding: var(--hph-space-2) var(--hph-space-4)';
                                 $button_styles[] = 'font-size: var(--hph-text-sm)';
                                 break;
                             case 'lg':
-                                $button_styles[] = 'padding: var(--hph-padding-lg) var(--hph-padding-xl)';
+                                $button_styles[] = 'padding: var(--hph-space-6) var(--hph-space-8)';
                                 $button_styles[] = 'font-size: var(--hph-text-lg)';
                                 break;
                             case 'md':
                             default:
-                                $button_styles[] = 'padding: var(--hph-padding-md) var(--hph-padding-lg)';
+                                $button_styles[] = 'padding: var(--hph-space-4) var(--hph-space-6)';
                                 $button_styles[] = 'font-size: var(--hph-text-base)';
                                 break;
                         }
@@ -442,7 +442,7 @@ function getIconStyles($icon_style) {
                             case 'text':
                                 $button_styles[] = 'background-color: transparent';
                                 $button_styles[] = 'color: var(--hph-primary)';
-                                $button_styles[] = 'padding: var(--hph-padding-sm) 0';
+                                $button_styles[] = 'padding: var(--hph-space-2) 0';
                                 $hover_color = 'var(--hph-primary-dark)';
                                 break;
                             case 'primary':
@@ -495,7 +495,7 @@ function getIconStyles($icon_style) {
                         <?php if (!empty($feature['link']['target'])): ?>target="<?php echo esc_attr($feature['link']['target']); ?>"<?php endif; ?>
                     >
                         <?php echo esc_html($feature['link']['text'] ?? 'Learn More'); ?>
-                        <i class="fas fa-arrow-right" style="margin-left: var(--hph-margin-sm); font-size: var(--hph-text-sm);"></i>
+                        <i class="fas fa-arrow-right" style="margin-left: var(--hph-space-2); font-size: var(--hph-text-sm);"></i>
                     </a>
                     <?php endif; ?>
                     

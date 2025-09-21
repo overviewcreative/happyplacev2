@@ -1,0 +1,252 @@
+/**
+ * Hamburger Menu Button Atom
+ * Reusable animated hamburger menu toggle button
+ *
+ * @package HappyPlaceTheme
+ */
+
+/* ================================================
+   HAMBURGER BUTTON ATOM - BASE
+   ================================================ */
+
+.hph-hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 1.5rem;
+  height: 1.125rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* ================================================
+   HAMBURGER LINES
+   ================================================ */
+
+.hph-hamburger-line {
+  width: 100%;
+  height: 2px;
+  background: var(--hph-gray-700);
+  border-radius: 1px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+/* ================================================
+   HAMBURGER SIZES
+   ================================================ */
+
+.hph-hamburger--xs {
+  width: 1rem;
+  height: 0.75rem;
+}
+
+.hph-hamburger--xs .hph-hamburger-line {
+  height: 1.5px;
+}
+
+.hph-hamburger--sm {
+  width: 1.25rem;
+  height: 1rem;
+}
+
+.hph-hamburger--lg {
+  width: 1.75rem;
+  height: 1.375rem;
+}
+
+.hph-hamburger--lg .hph-hamburger-line {
+  height: 3px;
+}
+
+.hph-hamburger--xl {
+  width: 2rem;
+  height: 1.5rem;
+}
+
+.hph-hamburger--xl .hph-hamburger-line {
+  height: 3px;
+}
+
+/* ================================================
+   HAMBURGER VARIANTS
+   ================================================ */
+
+/* Light variant for dark backgrounds */
+.hph-hamburger--light .hph-hamburger-line {
+  background: var(--hph-white);
+}
+
+/* Dark variant for light backgrounds */
+.hph-hamburger--dark .hph-hamburger-line {
+  background: var(--hph-gray-900);
+}
+
+/* Primary color variant */
+.hph-hamburger--primary .hph-hamburger-line {
+  background: var(--hph-primary);
+}
+
+/* ================================================
+   HAMBURGER ACTIVE STATES (X ANIMATION)
+   ================================================ */
+
+/* Default X animation */
+.hph-hamburger.is-active .hph-hamburger-line:first-child {
+  transform: rotate(45deg) translate(4px, 4px);
+}
+
+.hph-hamburger.is-active .hph-hamburger-line:nth-child(2) {
+  opacity: 0;
+  transform: scale(0);
+}
+
+.hph-hamburger.is-active .hph-hamburger-line:last-child {
+  transform: rotate(-45deg) translate(4px, -4px);
+}
+
+/* ================================================
+   HAMBURGER ANIMATION VARIANTS
+   ================================================ */
+
+/* Arrow animation */
+.hph-hamburger--arrow.is-active .hph-hamburger-line:first-child {
+  transform: rotate(-45deg) translate(-3px, 3px);
+}
+
+.hph-hamburger--arrow.is-active .hph-hamburger-line:nth-child(2) {
+  transform: translateX(-6px);
+}
+
+.hph-hamburger--arrow.is-active .hph-hamburger-line:last-child {
+  transform: rotate(45deg) translate(-3px, -3px);
+}
+
+/* Minus animation */
+.hph-hamburger--minus.is-active .hph-hamburger-line:first-child,
+.hph-hamburger--minus.is-active .hph-hamburger-line:last-child {
+  transform: translateY(0) rotate(0);
+  top: 50%;
+  position: relative;
+}
+
+.hph-hamburger--minus.is-active .hph-hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+/* Spin animation */
+.hph-hamburger--spin.is-active {
+  transform: rotate(180deg);
+}
+
+.hph-hamburger--spin.is-active .hph-hamburger-line:first-child {
+  transform: rotate(45deg) translate(4px, 4px);
+}
+
+.hph-hamburger--spin.is-active .hph-hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.hph-hamburger--spin.is-active .hph-hamburger-line:last-child {
+  transform: rotate(-45deg) translate(4px, -4px);
+}
+
+/* ================================================
+   HAMBURGER HOVER STATES
+   ================================================ */
+
+.hph-hamburger:hover .hph-hamburger-line {
+  background: var(--hph-primary);
+}
+
+.hph-hamburger--light:hover .hph-hamburger-line {
+  background: var(--hph-gray-200);
+}
+
+.hph-hamburger--dark:hover .hph-hamburger-line {
+  background: var(--hph-gray-700);
+}
+
+.hph-hamburger--primary:hover .hph-hamburger-line {
+  background: var(--hph-primary-dark);
+}
+
+/* ================================================
+   ACCESSIBILITY
+   ================================================ */
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .hph-hamburger-line {
+    height: 3px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .hph-hamburger,
+  .hph-hamburger-line {
+    transition: none;
+  }
+
+  /* Simplified active state without animation */
+  .hph-hamburger.is-active .hph-hamburger-line:first-child {
+    transform: rotate(45deg);
+  }
+
+  .hph-hamburger.is-active .hph-hamburger-line:nth-child(2) {
+    opacity: 0;
+  }
+
+  .hph-hamburger.is-active .hph-hamburger-line:last-child {
+    transform: rotate(-45deg);
+  }
+}
+
+/* Focus management */
+.hph-hamburger:focus {
+  outline: 2px solid var(--hph-primary);
+  outline-offset: 2px;
+}
+
+/* ================================================
+   RESPONSIVE BEHAVIOR
+   ================================================ */
+
+@media (max-width: 768px) {
+  .hph-hamburger {
+    width: 1.25rem;
+    height: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hph-hamburger {
+    width: 1rem;
+    height: 0.875rem;
+  }
+
+  .hph-hamburger-line {
+    height: 1.5px;
+  }
+}
+
+/* ================================================
+   USAGE EXAMPLES
+   ================================================ */
+
+/*
+ * Basic hamburger:
+ * <button class="hph-hamburger" aria-label="Toggle menu">
+ *   <span class="hph-hamburger-line"></span>
+ *   <span class="hph-hamburger-line"></span>
+ *   <span class="hph-hamburger-line"></span>
+ * </button>
+ *
+ * Large dark hamburger with arrow animation:
+ * <button class="hph-hamburger hph-hamburger--lg hph-hamburger--dark hph-hamburger--arrow" aria-label="Toggle menu">
+ *   <span class="hph-hamburger-line"></span>
+ *   <span class="hph-hamburger-line"></span>
+ *   <span class="hph-hamburger-line"></span>
+ * </button>
+ */

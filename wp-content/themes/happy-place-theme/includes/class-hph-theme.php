@@ -142,14 +142,17 @@ class HPH_Theme {
         // Load integrations
         $this->load_integrations();
         
-        // Load agent user synchronization system
-        require_once HPH_INC_DIR . '/class-agent-user-sync.php';
+        // Agent user synchronization system - MIGRATED to plugin (UnifiedAgentUserService)
+
+        // Load template router for archive views
+        require_once HPH_INC_DIR . '/template-router.php';
         
         // Load organized AJAX handlers (New organized system)
-        require_once HPH_INC_DIR . '/ajax/contact-forms.php';
+        // NOTE: contact-forms.php disabled - using plugin FormRouter instead
         require_once HPH_INC_DIR . '/ajax/user-interactions.php';
         require_once HPH_INC_DIR . '/ajax/search-ajax.php';
         require_once HPH_INC_DIR . '/ajax/archive-ajax.php';
+        require_once HPH_INC_DIR . '/ajax/archive-unified-ajax.php';
         require_once HPH_INC_DIR . '/ajax/dashboard-ajax.php';
         require_once HPH_INC_DIR . '/ajax/listings-dashboard-ajax.php';
         
@@ -258,7 +261,12 @@ class HPH_Theme {
             'agent-bridge.php',
             'community-bridge.php',
             'open-house-bridge.php',
+            'lead-bridge.php', // Lead management bridge to plugin service
+            'user-bridge.php', // User management bridge to plugin services
             'dashboard-bridge.php',
+            'local-place-bridge.php', // Local place bridge functions
+            'universal-card-bridge.php', // Universal card data adapters
+            'listing-changes-bridge.php', // Listing change tracking system
         );
         
         foreach ($bridge_files as $bridge_file) {

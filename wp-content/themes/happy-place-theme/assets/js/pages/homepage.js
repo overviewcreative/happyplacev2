@@ -149,6 +149,7 @@
                 title: 'Check out this property',
                 text: 'I found this amazing property!',
                 url: window.location.origin + '/listing/' + propertyId + '/'
+            
             });
         } else {
             // Fallback: copy to clipboard

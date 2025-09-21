@@ -15,19 +15,19 @@ if (function_exists('hph_register_template_part')) {
 // Default arguments
 $defaults = array(
     'style' => 'accordion', // Options: 'accordion', 'grid', 'list', 'cards'
-    'theme' => 'white', // Color theme: 'white', 'light', 'dark', 'primary'
-    'columns' => 2, // For grid layout
-    'padding' => 'xl',
-    'container' => 'default',
-    'alignment' => 'center',
-    'badge' => '',
-    'headline' => 'Frequently Asked Questions',
-    'subheadline' => '',
-    'content' => '',
-    'faqs' => array(),
+    'theme' => 'white', // Options: 'white', 'light', 'dark', 'primary'
+    'columns' => 2, // Number of columns for grid layout (1-4)
+    'padding' => 'xl', // Options: 'sm', 'md', 'lg', 'xl', '2xl'
+    'container' => 'default', // Options: 'narrow', 'default', 'wide', 'full'
+    'alignment' => 'center', // Options: 'left', 'center', 'right'
+    'badge' => '', // Badge text to display above headline
+    'headline' => 'Frequently Asked Questions', // Main headline text
+    'subheadline' => '', // Subheadline text below headline
+    'content' => '', // Additional content text
+    'faqs' => array(), // Array of FAQ objects with 'question' and 'answer'
     'accordion_style' => 'clean', // Options: 'clean', 'bordered', 'elevated'
-    'animation' => false,
-    'section_id' => ''
+    'animation' => false, // Boolean: true/false - enable entrance animations
+    'section_id' => '' // HTML ID for the section
 );
 
 // Merge with provided args
@@ -64,25 +64,25 @@ switch ($theme) {
 // Padding styles
 switch ($padding) {
     case 'sm':
-        $section_styles[] = 'padding-top: var(--hph-padding-lg)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-lg)';
+        $section_styles[] = 'padding-top: var(--hph-space-6)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-6)';
         break;
     case 'md':
-        $section_styles[] = 'padding-top: var(--hph-padding-xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-8)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-8)';
         break;
     case 'lg':
-        $section_styles[] = 'padding-top: var(--hph-padding-2xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-2xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-12)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-12)';
         break;
     case '2xl':
-        $section_styles[] = 'padding-top: var(--hph-padding-4xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-4xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-24)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-24)';
         break;
     case 'xl':
     default:
-        $section_styles[] = 'padding-top: var(--hph-padding-3xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-3xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-16)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-16)';
         break;
 }
 
@@ -91,8 +91,8 @@ $container_styles = array(
     'position: relative',
     'margin-left: auto',
     'margin-right: auto',
-    'padding-left: var(--hph-padding-lg)',
-    'padding-right: var(--hph-padding-lg)'
+    'padding-left: var(--hph-space-6)',
+    'padding-right: var(--hph-space-6)'
 );
 
 switch ($container) {
@@ -173,12 +173,12 @@ $faq_section_id = 'hph_faq_' . uniqid();
         
         <?php if ($badge || $headline || $subheadline || $content): ?>
         <!-- Section Header -->
-        <div style="margin-bottom: var(--hph-margin-3xl); <?php echo $header_alignment; ?> <?php echo $animation ? 'animation: fadeInUp 0.8s ease-out;' : ''; ?>">
+        <div style="margin-bottom: var(--hph-space-16); <?php echo $header_alignment; ?> <?php echo $animation ? 'animation: fadeInUp 0.8s ease-out;' : ''; ?>">
             
             <?php if ($badge): ?>
             <!-- Badge -->
-            <div style="margin-bottom: var(--hph-margin-lg);">
-                <span style="display: inline-block; padding: var(--hph-padding-sm) var(--hph-padding-md); background: var(--hph-primary-100); color: var(--hph-primary-700); border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
+            <div style="margin-bottom: var(--hph-space-6);">
+                <span style="display: inline-block; padding: var(--hph-space-2) var(--hph-space-4); background: var(--hph-primary-100); color: var(--hph-primary-700); border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
                     <?php echo esc_html($badge); ?>
                 </span>
             </div>
@@ -186,14 +186,14 @@ $faq_section_id = 'hph_faq_' . uniqid();
             
             <?php if ($headline): ?>
             <!-- Headline -->
-            <h2 style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-4xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
+            <h2 style="margin: 0 0 var(--hph-space-6) 0; font-size: var(--hph-text-4xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
                 <?php echo esc_html($headline); ?>
             </h2>
             <?php endif; ?>
             
             <?php if ($subheadline): ?>
             <!-- Subheadline -->
-            <p style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); opacity: 0.9;">
+            <p style="margin: 0 0 var(--hph-space-6) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); opacity: 0.9;">
                 <?php echo esc_html($subheadline); ?>
             </p>
             <?php endif; ?>
@@ -238,7 +238,7 @@ $faq_section_id = 'hph_faq_' . uniqid();
                 <button 
                     class="hph-faq-question"
                     onclick="toggleFAQ('<?php echo esc_js($item_id); ?>')"
-                    style="width: 100%; padding: var(--hph-padding-lg); background: none; border: none; text-align: left; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-size: var(--hph-text-lg); font-weight: var(--hph-font-semibold); color: var(--hph-gray-900); <?php echo $accordion_style === 'clean' ? 'border-bottom: 1px solid var(--hph-gray-200);' : ''; ?>"
+                    style="width: 100%; padding: var(--hph-space-6); background: none; border: none; text-align: left; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-size: var(--hph-text-lg); font-weight: var(--hph-font-semibold); color: var(--hph-gray-900); <?php echo $accordion_style === 'clean' ? 'border-bottom: 1px solid var(--hph-gray-200);' : ''; ?>"
                     aria-expanded="false"
                     aria-controls="<?php echo esc_attr($item_id); ?>_answer"
                 >
@@ -257,7 +257,7 @@ $faq_section_id = 'hph_faq_' . uniqid();
                     class="hph-faq-answer"
                     style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease;"
                 >
-                    <div style="padding: 0 var(--hph-padding-lg) var(--hph-padding-lg) var(--hph-padding-lg); color: var(--hph-gray-600); line-height: var(--hph-leading-relaxed);">
+                    <div style="padding: 0 var(--hph-space-6) var(--hph-space-6) var(--hph-space-6); color: var(--hph-gray-600); line-height: var(--hph-leading-relaxed);">
                         <?php echo wp_kses_post($faq['answer']); ?>
                     </div>
                 </div>
@@ -267,10 +267,10 @@ $faq_section_id = 'hph_faq_' . uniqid();
             <!-- Grid/List/Card Item -->
             <div 
                 class="hph-faq-item"
-                style="<?php echo $style === 'cards' ? 'background: var(--hph-white); padding: var(--hph-padding-xl); border-radius: var(--hph-radius-xl); box-shadow: 0 4px 15px rgba(0,0,0,0.1);' : 'padding: var(--hph-padding-lg);'; ?> <?php echo $animation_delay; ?>"
+                style="<?php echo $style === 'cards' ? 'background: var(--hph-white); padding: var(--hph-space-8); border-radius: var(--hph-radius-xl); box-shadow: 0 4px 15px rgba(0,0,0,0.1);' : 'padding: var(--hph-space-6);'; ?> <?php echo $animation_delay; ?>"
             >
                 <!-- Question -->
-                <h3 style="margin: 0 0 var(--hph-margin-md) 0; font-size: var(--hph-text-lg); font-weight: var(--hph-font-semibold); color: var(--hph-gray-900); display: flex; align-items: center; gap: var(--hph-gap-sm);">
+                <h3 style="margin: 0 0 var(--hph-space-4) 0; font-size: var(--hph-text-lg); font-weight: var(--hph-font-semibold); color: var(--hph-gray-900); display: flex; align-items: center; gap: var(--hph-gap-sm);">
                     <?php if ($faq['icon']): ?>
                     <i class="<?php echo esc_attr($faq['icon']); ?>" style="color: var(--hph-primary);"></i>
                     <?php endif; ?>
@@ -359,7 +359,7 @@ function toggleFAQ(itemId) {
     
     .hph-faq-question {
         font-size: var(--hph-text-base) !important;
-        padding: var(--hph-padding-md) !important;
+        padding: var(--hph-space-4) !important;
     }
 }
 </style>

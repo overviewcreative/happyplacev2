@@ -16,30 +16,35 @@ get_header();
     // Hero Section - For Home Sellers
     // ============================================
     get_template_part('template-parts/sections/hero', null, array(
-        'style' => 'gradient',
+        'style' => 'image',
         'theme' => 'primary',
         'height' => 'lg',
-        'background_image' => function_exists('hph_get_image_url') ? hph_get_image_url('sellers-hero.jpg') : '',
-        'parallax' => true,
-        'overlay' => 'gradient',
+        'is_top_of_page' => true,
+        'background_image' => hph_add_fastly_optimization(get_template_directory_uri() . '/assets/images/hero-bg4.jpg', 'full'),
+        'ken_burns' => true,
+        'ken_burns_direction' => 'zoom-out',
+        'ken_burns_duration' => 35,
+        'overlay' => 'dark-subtle',
         'alignment' => 'left',
         'headline' => 'The Keys to Close.',
         'subheadline' => "Selling a home is a big deal, but it shouldn't be difficult. From pre-list to close, we have you covered.",
         'buttons' => array(
             array(
                 'text' => 'Get Home Value',
-                'url' => 'https://theparkergroup.hifello.com/lp/653fdb9fcdcda500276ff520',
+                'url' => '#',
                 'style' => 'white',
                 'size' => 'xl',
                 'icon' => 'fas fa-calculator',
-                'icon_position' => 'right'
+                'icon_position' => 'right',
+                'data_attributes' => 'data-modal-form="fello-search-widget" data-modal-id="hph-fello-modal" data-modal-title="Search Homes" data-modal-subtitle="Find your perfect home with our advanced search tools."'
             ),
             array(
                 'text' => 'Schedule Consultation',
-                'url' => '/contact/',
+                'url' => '#',
                 'style' => 'outline-white',
                 'size' => 'xl',
-                'icon' => 'fas fa-calendar'
+                'icon' => 'fas fa-calendar',
+                'data_attributes' => 'data-modal-form="general-contact" data-modal-id="hph-consultation-modal" data-modal-title="Schedule Consultation" data-modal-subtitle="Let\'s discuss your real estate goals and how we can help."'
             )
         ),
         'section_id' => 'hero-sellers'
@@ -64,10 +69,11 @@ get_header();
         'content' => "We believe selling your home should be an experience filled with confidence, clarity and genuine care. That's why we've build our entire approach around you--your needs, your timeline, and your dreams for what comes next.",
         'buttons' => array(
             array(
-                'text' => 'The road-map to selling your home',
-                'url' => '#sellers-road-map',
+                'text' => 'Schedule Consultation',
+                'url' => '#',
                 'style' => 'primary',
-                'icon' => 'fas fa-compass'
+                'icon' => 'fas fa-calendar',
+                'data_attributes' => 'data-modal-form="general-contact" data-modal-id="hph-consultation-modal" data-modal-title="Schedule Consultation" data-modal-subtitle="Let\'s discuss your real estate goals and how we can help."'
             )
         ),
         'animation' => true,
@@ -138,7 +144,7 @@ get_header();
         'overlay' => 'dark',
         'badge' => 'Selling Results',
         'headline' => 'Proven Track Record of Success',
-        'subheadline' => 'See why sellers choose Happy Place Real Estate to maximize their returns',
+        'subheadline' => 'See why sellers choose The Parker Group to maximize their returns',
         'stats' => array(
             array(
                 'number' => '102%',
@@ -214,8 +220,9 @@ get_header();
 
     <?php
     // ============================================
-    // Testimonials Section - Seller Success Stories
+    // Testimonials Section - Seller Success Stories (COMMENTED OUT)
     // ============================================
+    /*
     get_template_part('template-parts/sections/testimonials', null, array(
         'background' => 'white',
         'padding' => 'xl',
@@ -228,12 +235,14 @@ get_header();
         'auto_play' => true,
         'section_id' => 'testimonials-sellers'
     ));
+    */
     ?>
 
     <?php
     // ============================================
-    // CTA Section - Get Your Home Value
+    // CTA Section - Get Your Home Value (COMMENTED OUT)
     // ============================================
+    /*
     get_template_part('template-parts/sections/cta', null, array(
         'layout' => 'split',
         'background' => 'gradient',
@@ -245,31 +254,40 @@ get_header();
         'buttons' => array(
             array(
                 'text' => 'Get Free Home Value',
-                'url' => 'https://theparkergroup.hifello.com/lp/653fdb9fcdcda500276ff520',
+                'url' => '#',
                 'style' => 'white',
                 'size' => 'xl',
-                'icon' => 'fas fa-calculator'
+                'icon' => 'fas fa-calculator',
+                'data_attributes' => 'data-modal-form="fello-search-widget" data-modal-id="hph-fello-modal" data-modal-title="Get Free Home Valuation" data-modal-subtitle="Discover what your home is worth in today\'s market."'
             ),
             array(
                 'text' => 'Schedule Consultation',
-                'url' => '/contact/',
+                'url' => '#',
                 'style' => 'outline-white',
                 'size' => 'xl',
-                'icon' => 'fas fa-calendar'
+                'icon' => 'fas fa-calendar',
+                'data_attributes' => 'data-modal-form="general-contact" data-modal-id="hph-consultation-modal" data-modal-title="Schedule Consultation" data-modal-subtitle="Let\'s discuss your real estate goals and how we can help."'
             )
         ),
         'form' => array(
             'title' => 'Quick Home Valuation',
             'button_text' => 'Get My Home Value',
-            'action_url' => 'https://theparkergroup.hifello.com/lp/653fdb9fcdcda500276ff520'
+            'modal_trigger' => true,
+            'modal_form' => 'fello-search-widget',
+            'modal_id' => 'hph-fello-modal',
+            'modal_title' => 'Get Your Home Value',
+            'modal_subtitle' => 'Find out what your home is worth in today\'s market.',
+            'action_url' => '#'
         ),
         'animation' => true,
         'section_id' => 'cta-sellers'
     ));
+    */
     ?>
     
-    <!-- Market Insights Section -->
+    <!-- Market Insights Section (COMMENTED OUT) -->
     <?php
+    /*
     get_template_part('template-parts/sections/content', null, array(
         'layout' => 'left-image',
         'background' => 'light',
@@ -295,10 +313,12 @@ get_header();
         'animation' => true,
         'section_id' => 'market-insights'
     ));
+    */
     ?>
     
-    <!-- Selling Advantages Section -->
+    <!-- Selling Advantages Section (COMMENTED OUT) -->
     <?php
+    /*
     get_template_part('template-parts/sections/content', null, array(
         'layout' => 'grid',
         'background' => 'white',
@@ -332,6 +352,7 @@ get_header();
         ),
         'section_id' => 'selling-advantages'
     ));
+    */
     ?>
 
 <?php get_footer(); ?>

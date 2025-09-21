@@ -101,7 +101,7 @@ if ($args['calendly_enabled'] && $property_data) {
         method="post"
         action="<?php echo admin_url('admin-ajax.php'); ?>"
     >
-        <?php wp_nonce_field('hph_property_inquiry', 'inquiry_nonce'); ?>
+        <?php wp_nonce_field('hph_route_form_nonce', 'nonce'); ?>
         
         <!-- Hidden Fields -->
         <input type="hidden" name="form_type" value="property_inquiry">
@@ -261,13 +261,13 @@ if ($args['calendly_enabled'] && $property_data) {
 
         <!-- Form Actions -->
         <div class="hph-form-buttons">
-            <button type="submit" class="hph-btn hph-btn-primary hph-btn-full">
+            <button type="submit" class="hph-btn hph-btn-primary w-full">
                 <i class="fas fa-paper-plane"></i>
                 <?php echo esc_html($args['submit_text']); ?>
             </button>
             
             <?php if ($args['calendly_enabled']): ?>
-            <button type="button" class="hph-btn hph-btn-outline hph-schedule-direct">
+            <button type="button" class="hph-btn hph-btn-outline-primary hph-schedule-direct">
                 <i class="fas fa-calendar-alt"></i>
                 <?php _e('Schedule Showing Directly', 'happy-place-theme'); ?>
             </button>

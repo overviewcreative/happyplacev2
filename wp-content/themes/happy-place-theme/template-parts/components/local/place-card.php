@@ -32,12 +32,24 @@ $is_family_friendly = get_field('is_family_friendly', $place_id);
 $lat = get_field('lat', $place_id);
 $lng = get_field('lng', $place_id);
 
-// Get place category from taxonomy or post meta
-$categories = wp_get_post_terms($place_id, 'place_category');
-$primary_category = !empty($categories) ? $categories[0]->name : 'Local Business';
+// Get place category from taxonomy (with error handling)
+$categories = [];
+$primary_category = 'Local Business';
+
+// Try place-type taxonomy first, then place_category
+if (taxonomy_exists('place-type')) {
+    $categories = wp_get_post_terms($place_id, 'place-type');
+} elseif (taxonomy_exists('place_category')) {
+    $categories = wp_get_post_terms($place_id, 'place_category');
+}
+
+// Check if we got valid terms and not an error
+if (!is_wp_error($categories) && !empty($categories)) {
+    $primary_category = $categories[0]->name;
+}
 
 // Image handling
-$image_url = $thumbnail_id ? wp_get_attachment_image_url($thumbnail_id, 'medium_large') : get_template_directory_uri() . '/assets/images/placeholder-place.jpg';
+$image_url = $thumbnail_id ? wp_get_attachment_image_url($thumbnail_id, 'medium_large') : hph_get_image_url_only('assets/images/placeholder-place.jpg');
 $image_alt = $thumbnail_id ? get_post_meta($thumbnail_id, '_wp_attachment_image_alt', true) : $title;
 
 // Build modifier classes
@@ -153,13 +165,13 @@ if ($is_family_friendly) {
         
         <!-- Card Actions -->
         <div class="hph-place-card__actions">
-            <a href="<?php echo esc_url($permalink); ?>" class="hph-btn hph-btn--ghost hph-btn--small">
+            <a href="<?php echo esc_url($permalink); ?>" class="hph-btn hph-btn-ghost hph-btn-small">
                 View Details
                 <i class="hph-icon hph-icon--arrow-right"></i>
             </a>
             
             <?php if ($website && $variant !== 'minimal'): ?>
-            <a href="<?php echo esc_url($website); ?>" target="_blank" rel="noopener" class="hph-btn hph-btn--text hph-btn--small">
+            <a href="<?php echo esc_url($website); ?>" target="_blank" rel="noopener" class="hph-btn hph-btn-text hph-btn-small">
                 Website
                 <i class="hph-icon hph-icon--external"></i>
             </a>

@@ -3168,10 +3168,10 @@ class AdminMenu {
                         
                         <div class="hp-tool-grid">
                             <div class="hp-tool-card">
-                                <h3><span class="dashicons dashicons-admin-appearance"></span> CSS Bundles</h3>
-                                <p>Generate optimized CSS bundles from 107+ framework files into 7 efficient bundles.</p>
+                                <h3><span class="dashicons dashicons-admin-appearance"></span> Asset Bundles</h3>
+                                <p>Build optimized CSS and JavaScript bundles using Vite. Compiles all framework assets into efficient production bundles.</p>
                                 <button type="button" class="button button-primary hp-tool-action" data-action="hp_build_css_bundles">
-                                    <span class="dashicons dashicons-update"></span> Build CSS Bundles
+                                    <span class="dashicons dashicons-update"></span> Build Asset Bundles
                                 </button>
                                 <div class="hp-tool-result" id="css-bundles-result"></div>
                             </div>
@@ -3457,94 +3457,61 @@ class AdminMenu {
                 return;
             }
             
-            // Try Node.js builder first, fallback to PHP builder
-            $node_script = $theme_dir . '/build-css.js';
-            $php_script = $theme_dir . '/build-css-php.php';
+            // Check if we have Vite build system
+            $package_json = $theme_dir . '/package.json';
+            $vite_config = $theme_dir . '/vite.config.js';
             
-            if (file_exists($node_script)) {
-                // Try Node.js build
+            if (file_exists($package_json) && file_exists($vite_config)) {
+                // Use Vite build system
                 $output = [];
                 $return_var = 0;
                 
                 $original_dir = getcwd();
                 if (chdir($theme_dir)) {
-                    exec('node build-css.js 2>&1', $output, $return_var);
+                    // Try npm run build first, fallback to npx vite build
+                    exec('npm run build 2>&1', $output, $return_var);
+                    
+                    // If npm run build fails, try npx vite build directly
+                    if ($return_var !== 0) {
+                        $output = [];
+                        exec('npx vite build 2>&1', $output, $return_var);
+                    }
                     chdir($original_dir);
                     
                     if ($return_var === 0) {
                         $bundles = glob($theme_dir . '/dist/css/*.css');
-                        $bundle_count = count($bundles);
+                        $js_bundles = glob($theme_dir . '/dist/js/*.js');
+                        $bundle_count = count($bundles) + count($js_bundles);
                         
                         if ($bundle_count > 0) {
                             $total_size = 0;
-                            foreach ($bundles as $bundle) {
+                            foreach (array_merge($bundles, $js_bundles) as $bundle) {
                                 if (file_exists($bundle)) {
                                     $total_size += filesize($bundle);
                                 }
                             }
                             
                             wp_send_json_success([
-                                'message' => "Successfully generated {$bundle_count} CSS bundles with Node.js!",
-                                'details' => 'Total size: ' . round($total_size / 1024, 1) . 'KB. Page refresh recommended.'
+                                'message' => "Successfully built {$bundle_count} asset bundles with Vite!",
+                                'details' => 'Total size: ' . round($total_size / 1024, 1) . 'KB (' . count($bundles) . ' CSS, ' . count($js_bundles) . ' JS). Page refresh recommended.'
                             ]);
+                            return;
+                        } else {
+                            wp_send_json_error('Vite build completed but no bundles found in dist/ directory');
                             return;
                         }
                     } else {
-                        // Log Node.js errors but continue to PHP fallback
-                        error_log('HP CSS Builder - Node.js build failed: ' . implode("\n", $output));
+                        wp_send_json_error('Vite build failed: ' . implode('<br>', array_slice($output, -5)));
+                        return;
                     }
                 } else {
-                    error_log('HP CSS Builder - Could not change to theme directory: ' . $theme_dir);
+                    wp_send_json_error('Could not change to theme directory: ' . $theme_dir);
+                    return;
                 }
             }
             
-            // Fallback to PHP builder
-            if (!file_exists($php_script)) {
-                wp_send_json_error('CSS build scripts not found. Expected: ' . $php_script);
-                return;
-            }
-            
-            // Load the PHP builder with error checking
-            require_once $php_script;
-            
-            if (!class_exists('HP_CSS_Builder')) {
-                wp_send_json_error('HP_CSS_Builder class not found in build script');
-                return;
-            }
-            
-            $builder = new HP_CSS_Builder();
-            
-            // Check if builder has required methods
-            if (!method_exists($builder, 'build_all') || !method_exists($builder, 'get_statistics')) {
-                wp_send_json_error('HP_CSS_Builder missing required methods');
-                return;
-            }
-            
-            $results = $builder->build_all();
-            $stats = $builder->get_statistics();
-            
-            if ($stats['successful_bundles'] > 0) {
-                $messages = [];
-                foreach ($results as $name => $result) {
-                    if ($result['success']) {
-                        $messages[] = $result['message'];
-                    }
-                }
-                
-                wp_send_json_success([
-                    'message' => "Generated {$stats['successful_bundles']}/{$stats['total_bundles']} CSS bundles with PHP builder!",
-                    'details' => 'Total size: ' . $stats['total_size_kb'] . 'KB. ' . implode('<br>', array_slice($messages, 0, 3))
-                ]);
-            } else {
-                $error_messages = [];
-                foreach ($results as $name => $result) {
-                    if (!$result['success']) {
-                        $error_messages[] = $result['message'];
-                    }
-                }
-                
-                wp_send_json_error('Build failed: ' . implode('<br>', array_slice($error_messages, 0, 3)));
-            }
+            // No build system found
+            wp_send_json_error('No supported build system found. Expected Vite configuration (package.json + vite.config.js) in theme directory.');
             
         } catch (Throwable $e) {
             // Catch all errors including fatal errors and exceptions

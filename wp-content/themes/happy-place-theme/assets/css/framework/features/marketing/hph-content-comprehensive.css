@@ -321,3 +321,277 @@
         font-size: var(--hph-text-5xl, 3rem);
     }
 }
+
+/* ================================================
+   CARD WIDTH CONFIGURATION SYSTEM
+   ================================================ */
+
+/* Base grid setup for content sections */
+.hph-layout-grid .hph-content-container {
+    display: grid;
+    gap: var(--gap-size, var(--hph-gap-lg, 1.5rem));
+    grid-template-columns: repeat(var(--columns, 3), 1fr);
+}
+
+/* ================================================
+   CARD WIDTH MODIFIERS
+   ================================================ */
+
+/* Narrow card width - for skinny vertical cards */
+.hph-card-width-narrow.hph-layout-grid .hph-content-container {
+    grid-template-columns: repeat(var(--columns, 3), minmax(200px, 280px));
+    justify-content: center;
+}
+
+.hph-card-width-narrow .hph-feature-card,
+.hph-card-width-narrow .grid-item {
+    max-width: 280px;
+    margin: 0 auto;
+}
+
+/* Normal card width - default behavior */
+.hph-card-width-normal.hph-layout-grid .hph-content-container {
+    grid-template-columns: repeat(var(--columns, 3), 1fr);
+}
+
+/* Wide card width - for larger cards */
+.hph-card-width-wide.hph-layout-grid .hph-content-container {
+    grid-template-columns: repeat(var(--columns, 3), minmax(350px, 1fr));
+}
+
+.hph-card-width-wide .hph-feature-card,
+.hph-card-width-wide .grid-item {
+    min-width: 350px;
+}
+
+/* ================================================
+   CARD ASPECT RATIO MODIFIERS
+   ================================================ */
+
+.hph-card-ratio-square .hph-feature-card,
+.hph-card-ratio-square .grid-item,
+.hph-card-ratio-square .card-image {
+    aspect-ratio: 1/1;
+}
+
+.hph-card-ratio-portrait .hph-feature-card,
+.hph-card-ratio-portrait .grid-item,
+.hph-card-ratio-portrait .card-image {
+    aspect-ratio: 3/4;
+}
+
+.hph-card-ratio-landscape .hph-feature-card,
+.hph-card-ratio-landscape .grid-item,
+.hph-card-ratio-landscape .card-image {
+    aspect-ratio: 4/3;
+}
+
+.hph-card-ratio-auto .hph-feature-card,
+.hph-card-ratio-auto .grid-item {
+    aspect-ratio: auto;
+    height: auto;
+}
+
+/* ================================================
+   GAP SIZE MODIFIERS
+   ================================================ */
+
+.hph-gap-tight .hph-content-container {
+    --gap-size: var(--hph-gap-sm, 1rem);
+}
+
+.hph-gap-normal .hph-content-container {
+    --gap-size: var(--hph-gap-lg, 1.5rem);
+}
+
+.hph-gap-loose .hph-content-container {
+    --gap-size: var(--hph-gap-xl, 2.5rem);
+}
+
+/* ================================================
+   MASONRY LAYOUT ENHANCEMENTS
+   ================================================ */
+
+.hph-layout-masonry .hph-content-container {
+    column-count: var(--columns, 3);
+    column-gap: var(--gap-size, var(--hph-gap-lg, 1.5rem));
+    column-fill: balance;
+}
+
+.hph-layout-masonry .hph-feature-card,
+.hph-layout-masonry .grid-item {
+    break-inside: avoid;
+    display: inline-block;
+    width: 100%;
+    margin-bottom: var(--gap-size, var(--hph-gap-lg, 1.5rem));
+}
+
+/* Narrow cards in masonry */
+.hph-card-width-narrow.hph-layout-masonry .hph-content-container {
+    column-width: 250px;
+    column-count: auto;
+}
+
+/* ================================================
+   RESPONSIVE BEHAVIOR
+   ================================================ */
+
+/* Prevent row wrapping for narrow cards on larger screens */
+@media (min-width: 1200px) {
+    .hph-card-width-narrow.hph-layout-grid .hph-content-container {
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(200px, 280px);
+        justify-content: flex-start;
+        overflow-x: auto; /* Allow horizontal scroll if needed */
+        scroll-snap-type: x mandatory;
+    }
+    
+    .hph-card-width-narrow .hph-feature-card,
+    .hph-card-width-narrow .grid-item {
+        scroll-snap-align: start;
+    }
+    
+    /* Specific column configurations for narrow cards */
+    .hph-cols-4.hph-card-width-narrow .hph-content-container {
+        grid-template-columns: repeat(4, minmax(180px, 1fr));
+    }
+    
+    .hph-cols-5.hph-card-width-narrow .hph-content-container {
+        grid-template-columns: repeat(5, minmax(160px, 1fr));
+    }
+    
+    .hph-cols-6.hph-card-width-narrow .hph-content-container {
+        grid-template-columns: repeat(6, minmax(140px, 1fr));
+    }
+}
+
+/* Tablet responsive */
+@media (min-width: 768px) and (max-width: 1199px) {
+    .hph-layout-grid .hph-content-container {
+        grid-template-columns: repeat(var(--columns-tablet, 2), 1fr);
+    }
+    
+    .hph-card-width-narrow.hph-layout-grid .hph-content-container {
+        grid-template-columns: repeat(var(--columns-tablet, 2), minmax(200px, 280px));
+        justify-content: center;
+    }
+    
+    .hph-layout-masonry .hph-content-container {
+        column-count: var(--columns-tablet, 2);
+    }
+}
+
+/* Mobile responsive */
+@media (max-width: 767px) {
+    .hph-layout-grid .hph-content-container {
+        grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
+    }
+    
+    .hph-card-width-narrow.hph-layout-grid .hph-content-container {
+        grid-template-columns: repeat(var(--columns-mobile, 1), 1fr);
+        justify-content: stretch;
+    }
+    
+    .hph-layout-masonry .hph-content-container {
+        column-count: var(--columns-mobile, 1);
+    }
+    
+    /* Reset card width constraints on mobile */
+    .hph-card-width-narrow .hph-feature-card,
+    .hph-card-width-narrow .grid-item {
+        max-width: none;
+        width: 100%;
+    }
+}
+
+/* ================================================
+   CARD CONTENT ENHANCEMENTS
+   ================================================ */
+
+/* Enhanced padding for narrow cards */
+.hph-card-width-narrow .hph-feature-card {
+    padding: var(--hph-space-6, 1.5rem) var(--hph-space-4, 1rem);
+}
+
+.hph-card-width-narrow .card-content {
+    text-align: center;
+}
+
+.hph-card-width-narrow .card-title {
+    font-size: var(--hph-text-lg, 1.125rem);
+    line-height: 1.4;
+}
+
+.hph-card-width-narrow .card-description {
+    font-size: var(--hph-text-sm, 0.875rem);
+    line-height: 1.5;
+}
+
+/* Wide card content adjustments */
+.hph-card-width-wide .card-title {
+    font-size: var(--hph-text-xl, 1.25rem);
+}
+
+.hph-card-width-wide .card-description {
+    font-size: var(--hph-text-base, 1rem);
+}
+
+/* ================================================
+   ANIMATION ENHANCEMENTS
+   ================================================ */
+
+.hph-card-width-narrow .hph-feature-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hph-card-width-narrow .hph-feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Staggered animation for narrow cards */
+.hph-card-width-narrow .hph-feature-card:nth-child(1) { animation-delay: 0ms; }
+.hph-card-width-narrow .hph-feature-card:nth-child(2) { animation-delay: 100ms; }
+.hph-card-width-narrow .hph-feature-card:nth-child(3) { animation-delay: 200ms; }
+.hph-card-width-narrow .hph-feature-card:nth-child(4) { animation-delay: 300ms; }
+.hph-card-width-narrow .hph-feature-card:nth-child(5) { animation-delay: 400ms; }
+.hph-card-width-narrow .hph-feature-card:nth-child(6) { animation-delay: 500ms; }
+
+/* ================================================
+   ACCESSIBILITY IMPROVEMENTS
+   ================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    .hph-card-width-narrow .hph-feature-card {
+        transition: none;
+    }
+    
+    .hph-card-width-narrow .hph-feature-card:nth-child(n) {
+        animation-delay: 0ms;
+    }
+}
+
+/* Focus states */
+.hph-feature-card:focus-visible {
+    outline: 2px solid var(--hph-primary);
+    outline-offset: 2px;
+}
+
+/* ================================================
+   PRINT STYLES
+   ================================================ */
+
+@media print {
+    .hph-layout-grid .hph-content-container {
+        display: block;
+    }
+    
+    .hph-layout-masonry .hph-content-container {
+        column-count: 1;
+    }
+    
+    .hph-feature-card {
+        break-inside: avoid;
+        margin-bottom: 1rem;
+    }
+}

@@ -26,32 +26,58 @@ function get_listing_card_props($listing_id, $options = []) {
     $bathrooms = function_exists('hpt_get_listing_bathrooms') ? hpt_get_listing_bathrooms($listing_id) : null;
     $sqft = function_exists('hpt_get_listing_square_feet') ? hpt_get_listing_square_feet($listing_id) : null;
     $address = function_exists('hpt_get_listing_address') ? hpt_get_listing_address($listing_id) : [];
-    $featured_image = function_exists('hpt_get_listing_featured_image') ? hpt_get_listing_featured_image($listing_id) : '';
+    $featured_image_data = function_exists('hpt_get_listing_featured_image') ? hpt_get_listing_featured_image($listing_id) : null;
     
-    error_log('ADAPTER DEBUG: Bridge data - Price: ' . ($price ?: 'null') . ', Status: ' . ($status ?: 'null') . ', Image: ' . ($featured_image ?: 'none'));
+    // Extract URL from image data
+    $featured_image_url = '';
+    $featured_image_alt = '';
+    if ($featured_image_data && is_array($featured_image_data)) {
+        $featured_image_url = $featured_image_data['url'] ?? '';
+        $featured_image_alt = $featured_image_data['alt'] ?? '';
+    }
+    
+    error_log('ADAPTER DEBUG: Bridge data - Price: ' . ($price ?: 'null') . ', Status: ' . ($status ?: 'null') . ', Image: ' . ($featured_image_url ?: 'none'));
     
     $card_props = [
         'variant' => $options['variant'] ?? 'elevated',
         'layout' => $options['layout'] ?? 'vertical',
         'image' => [
-            'src' => $featured_image,
-            'alt' => get_the_title($listing_id),
+            'src' => $featured_image_url,
+            'alt' => $featured_image_alt ?: get_the_title($listing_id),
             'ratio' => 'landscape'
         ],
         'title' => [
             'text' => get_the_title($listing_id),
             'link' => get_permalink($listing_id)
         ],
-        'subtitle' => $address['city'] ?? '',
-        'badges' => array_filter([
-            $status ? ['text' => function_exists('hpt_get_listing_status_label') ? hpt_get_listing_status_label($listing_id) : $status, 'variant' => 'primary'] : null,
-            $price ? ['text' => function_exists('hpt_get_listing_price_formatted') ? hpt_get_listing_price_formatted($listing_id) : '$' . number_format($price), 'variant' => 'default'] : null
-        ]),
+        'subtitle' => $price ? (function_exists('hpt_get_listing_price_formatted') ? hpt_get_listing_price_formatted($listing_id) : '$' . number_format($price)) : '',
+        'description' => $address['full'] ?? ($address['street'] . ', ' . $address['city'] . ', ' . $address['state']),
+        'badges' => (function() use ($listing_id, $status) {
+            $badges = [];
+
+            // Get listing change badges (priority)
+            if (function_exists('hpt_bridge_get_listing_badges')) {
+                $change_badges = hpt_bridge_get_listing_badges($listing_id, 2);
+                $badges = array_merge($badges, $change_badges);
+            }
+
+            // Add status badge only if we have room (max 2 badges total)
+            if (count($badges) < 2 && $status) {
+                $status_badge = [
+                    'text' => function_exists('hpt_get_listing_status_label') ? hpt_get_listing_status_label($listing_id) : $status,
+                    'variant' => 'primary'
+                ];
+                $badges[] = $status_badge;
+            }
+
+            return $badges;
+        })(),
         'meta_items' => array_filter([
             $bedrooms ? ['icon' => 'bed', 'text' => $bedrooms . ' bed' . ($bedrooms != 1 ? 's' : '')] : null,
             $bathrooms ? ['icon' => 'bath', 'text' => $bathrooms . ' bath' . ($bathrooms != 1 ? 's' : '')] : null,
-            $sqft ? ['icon' => 'ruler', 'text' => number_format($sqft) . ' sqft'] : null
+            $sqft ? ['icon' => 'ruler-combined', 'text' => number_format($sqft) . ' sqft'] : null
         ]),
+        'price_per_sqft' => $sqft && $price ? '$' . number_format($price / $sqft) . ' per sqft' : null,
         'actions' => [
             ['text' => 'View Details', 'href' => get_permalink($listing_id), 'variant' => 'primary']
         ],

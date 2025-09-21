@@ -236,9 +236,10 @@
         padding-right: 1rem;
     }
     
-    .hph-btn {
+    /* Responsive button utility class - Use instead of direct .hph-btn override */
+    .hph-btn--responsive-mobile {
         width: 100%;
-        margin-bottom: 0.5rem;
+        margin-bottom: var(--hph-space-2);
     }
     
     .hph-stats {

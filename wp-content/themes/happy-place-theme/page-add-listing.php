@@ -36,7 +36,7 @@ get_header(); ?>
                             <p class="text-muted mb-0">Create a comprehensive property listing with all details</p>
                         </div>
                         <div>
-                            <a href="<?php echo home_url('/user-dashboard/'); ?>" class="btn btn-outline-secondary">
+                            <a href="<?php echo home_url('/user-dashboard/'); ?>" class="hph-btn hph-btn-outline-primary-secondary">
                                 <i class="fas fa-arrow-left me-1"></i>
                                 Back to Dashboard
                             </a>
@@ -835,7 +835,7 @@ get_header(); ?>
                     <!-- Navigation Buttons -->
                     <div class="form-navigation mt-4">
                         <div class="d-flex justify-content-between">
-                            <button type="button" class="btn btn-outline-secondary" id="prevStep" style="visibility: hidden;">
+                            <button type="button" class="hph-btn hph-btn-outline-primary-secondary" id="prevStep" style="visibility: hidden;">
                                 <i class="fas fa-chevron-left me-1"></i>
                                 Previous
                             </button>
@@ -845,17 +845,17 @@ get_header(); ?>
                             </div>
                             
                             <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-outline-primary" id="saveDraft">
+                                <button type="button" class="hph-btn hph-btn-outline-primary-primary" id="saveDraft">
                                     <i class="fas fa-save me-1"></i>
                                     Save Draft
                                 </button>
                                 
-                                <button type="button" class="btn btn-primary" id="nextStep">
+                                <button type="button" class="hph-btn hph-btn-primary" id="nextStep">
                                     Next
                                     <i class="fas fa-chevron-right ms-1"></i>
                                 </button>
                                 
-                                <button type="submit" class="btn btn-success" id="submitListing" style="display: none;">
+                                <button type="submit" class="hph-btn hph-btn-success" id="submitListing" style="display: none;">
                                     <i class="fas fa-check me-1"></i>
                                     Publish Listing
                                 </button>
@@ -1150,7 +1150,11 @@ get_header(); ?>
 </style>
 
 <script>
-jQuery(document).ready(function($) {
+if (window.HPH) {
+    HPH.register('addListingPage', function() {
+        return {
+            init: function() {
+                const $ = jQuery;
     
     // Form state
     let currentStep = 1;
@@ -1197,11 +1201,11 @@ jQuery(document).ready(function($) {
         }
         
         if (step === totalSteps) {
-            $('#nextStep').hide();
-            $('#submitListing').show();
+            HPH.dom.hide('#nextStep');
+            HPH.dom.show('#submitListing');
         } else {
-            $('#nextStep').show();
-            $('#submitListing').hide();
+            HPH.dom.show('#nextStep');
+            HPH.dom.hide('#submitListing');
         }
         
         // Update review summary if moving to step 7
@@ -1502,8 +1506,11 @@ jQuery(document).ready(function($) {
         $(this).removeClass('is-invalid');
     });
     
-    console.log('Add Listing Form initialized');
-});
+                console.log('Add Listing Form initialized');
+            }
+        };
+    });
+}
 </script>
 
 <?php get_footer(); ?>

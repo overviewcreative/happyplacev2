@@ -127,7 +127,7 @@ if (!$is_agent) {
         <!-- Quick Search -->
         <div class="hph-flex hph-gap-md hph-mb-md">
             <div class="hph-flex-1">
-                <input type="text" class="hph-form-control" id="listingSearchInput" placeholder="Search listings by title, address, or MLS...">
+                <input type="text" class="hph-form-input" id="listingSearchInput" placeholder="Search listings by title, address, or MLS...">
             </div>
             <button class="hph-btn hph-btn-secondary" id="searchListingsBtn">Search</button>
         </div>

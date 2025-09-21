@@ -59,6 +59,7 @@ function hpt_get_local_place($local_place = null) {
         // Business details
         'hours' => hpt_get_local_place_hours($local_place->ID),
         'price_range' => hpt_get_local_place_price_range($local_place->ID),
+        'is_family_friendly' => hpt_is_local_place_family_friendly($local_place->ID),
         'amenities' => hpt_get_local_place_amenities($local_place->ID),
         'features' => hpt_get_local_place_features($local_place->ID),
         'parking' => hpt_get_local_place_parking($local_place->ID),
@@ -105,20 +106,36 @@ function hpt_get_local_place_name($local_place_id) {
  * Get local place description
  */
 function hpt_get_local_place_description($local_place_id) {
-    $description = get_field('description', $local_place_id);
-    
-    if (!$description) {
-        $post = get_post($local_place_id);
-        $description = $post->post_content;
+    // Try micro_summary first, then excerpt, then content
+    $micro_summary = get_field('micro_summary', $local_place_id);
+    if ($micro_summary) {
+        return $micro_summary;
     }
     
-    return $description;
+    $description = get_field('description', $local_place_id);
+    if ($description) {
+        return $description;
+    }
+    
+    $post = get_post($local_place_id);
+    if ($post && $post->post_content) {
+        return wp_trim_words($post->post_content, 20);
+    }
+    
+    return '';
 }
 
 /**
  * Get place type
  */
 function hpt_get_local_place_type($local_place_id) {
+    // Try taxonomy first
+    $terms = wp_get_post_terms($local_place_id, 'place-type');
+    if (!is_wp_error($terms) && !empty($terms)) {
+        return $terms[0]->name;
+    }
+    
+    // Fallback to ACF field
     return get_field('place_type', $local_place_id) ?: 'business';
 }
 
@@ -177,9 +194,16 @@ function hpt_get_local_place_tags($local_place_id) {
  * Get local place address
  */
 function hpt_get_local_place_address($local_place_id, $format = 'full') {
+    // Try the address field from our ACF (which is a textarea)
+    $address_field = get_field('address', $local_place_id);
+    if ($address_field) {
+        return $address_field;
+    }
+    
+    // Fallback to building from separate fields
     $address = array(
         'street' => get_field('street_address', $local_place_id) ?: '',
-        'city' => get_field('city', $local_place_id) ?: '',
+        'city' => hpt_get_local_place_city($local_place_id),
         'state' => get_field('state', $local_place_id) ?: '',
         'zip' => get_field('zip_code', $local_place_id) ?: '',
     );
@@ -211,8 +235,8 @@ function hpt_get_local_place_address($local_place_id, $format = 'full') {
  */
 function hpt_get_local_place_coordinates($local_place_id) {
     return array(
-        'lat' => floatval(get_field('latitude', $local_place_id)),
-        'lng' => floatval(get_field('longitude', $local_place_id)),
+        'lat' => floatval(get_field('lat', $local_place_id)),
+        'lng' => floatval(get_field('lng', $local_place_id)),
     );
 }
 
@@ -220,6 +244,13 @@ function hpt_get_local_place_coordinates($local_place_id) {
  * Get local place city
  */
 function hpt_get_local_place_city($local_place_id) {
+    // Try primary_city field first (which is a post object)
+    $primary_city = get_field('primary_city', $local_place_id);
+    if ($primary_city && is_object($primary_city)) {
+        return $primary_city->post_title;
+    }
+    
+    // Fallback to direct city field
     return get_field('city', $local_place_id) ?: '';
 }
 
@@ -299,6 +330,13 @@ function hpt_get_local_place_price_range_label($local_place_id) {
     );
     
     return $labels[$range] ?? $range;
+}
+
+/**
+ * Check if place is family friendly
+ */
+function hpt_is_local_place_family_friendly($local_place_id) {
+    return (bool) get_field('is_family_friendly', $local_place_id);
 }
 
 /**

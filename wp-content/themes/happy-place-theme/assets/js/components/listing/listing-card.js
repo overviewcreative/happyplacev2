@@ -12,7 +12,6 @@
 
     // Check for required dependencies
     if (typeof $ === 'undefined') {
-        console.error('ListingCard: jQuery is required');
         return;
     }
 
@@ -51,7 +50,6 @@
             
             // Initialize only if we have content
             if (this.totalSlides === 0 && !this.$card.find('.hph-card__content').length) {
-                console.warn('Card component initialized but no content found');
                 return false;
             }
             
@@ -311,7 +309,6 @@
          */
         openLightbox() {
             if (this.images.length === 0) {
-                console.warn('No images available for lightbox');
                 return;
             }
             
@@ -414,7 +411,6 @@
             
             // Use Web Share API if available on mobile
             if (navigator.share && this.isMobile()) {
-                navigator.share(shareData).catch(err => console.log('Error sharing:', err));
             } else {
                 this.showShareModal(url, title);
             }
@@ -527,7 +523,6 @@
                 window.hphNotify(message, type);
             } else {
                 // Simple fallback
-                console.log(`${type.toUpperCase()}: ${message}`);
                 
                 // Simple toast notification
                 const toast = $(`

@@ -98,7 +98,7 @@ $post_type_configs = [
         'color_scheme' => 'primary'
     ],
     'agent' => [
-        'card_template' => 'agent-card-enhanced',
+        'card_template' => 'agent-card-grid',
         'icon' => 'hph-icon--user',
         'color_scheme' => 'secondary'
     ],
@@ -137,8 +137,9 @@ $post_type_configs = [
 $config = $post_type_configs[$post_type] ?? $post_type_configs['post'];
 
 // Enqueue carousel styles and scripts
-wp_enqueue_style('hph-universal-carousel', get_template_directory_uri() . '/assets/css/framework/components/organisms/universal-carousel.css', ['hph-framework'], '1.0.0');
-wp_enqueue_script('hph-universal-carousel', get_template_directory_uri() . '/assets/js/components/universal-carousel.js', ['hph-framework'], '1.0.0', true);
+// Universal carousel assets now handled by Vite Asset Loader bundles
+// wp_enqueue_style('hph-universal-carousel', get_template_directory_uri() . '/assets/css/framework/components/organisms/universal-carousel.css', ['hph-framework'], '1.0.0');
+// wp_enqueue_script('hph-universal-carousel', get_template_directory_uri() . '/assets/js/components/universal-carousel.js', ['jquery'], '1.0.1', true);
 
 // Don't render if no posts
 if (!$carousel_query->have_posts()) {
@@ -168,7 +169,7 @@ if (!$carousel_query->have_posts()) {
             <?php if (get_post_type_archive_link($post_type)): ?>
             <div class="hph-carousel__actions">
                 <a href="<?php echo esc_url(get_post_type_archive_link($post_type)); ?>" 
-                   class="hph-btn hph-btn--outline hph-btn--small">
+                   class="hph-btn hph-btn-outline-primary hph-btn-small">
                     View All
                     <i class="hph-icon hph-icon--arrow-right"></i>
                 </a>
@@ -180,13 +181,14 @@ if (!$carousel_query->have_posts()) {
     
     <!-- Carousel Container - Full Width -->
     <div class="hph-container-full">
-        <div class="hph-carousel__container" 
+        <div class="hph-carousel__container"
              id="<?php echo esc_attr($carousel_id); ?>"
              data-post-type="<?php echo esc_attr($post_type); ?>"
              data-autoplay="<?php echo $autoplay ? 'true' : 'false'; ?>"
              data-autoplay-speed="<?php echo esc_attr($autoplay_speed); ?>"
              data-show-navigation="<?php echo $show_navigation ? 'true' : 'false'; ?>"
-             data-show-dots="<?php echo $show_dots ? 'true' : 'false'; ?>">
+             data-show-dots="<?php echo $show_dots ? 'true' : 'false'; ?>"
+             data-infinite="true">
             
             <?php if ($show_navigation): ?>
             <!-- Navigation Arrows -->
@@ -204,25 +206,20 @@ if (!$carousel_query->have_posts()) {
             
             <!-- Carousel Track -->
             <div class="hph-carousel__track-container">
-                <div class="hph-carousel__track" data-carousel-track>
+                <div class="hph-carousel__track hph-gap-xl" data-carousel-track style="gap: 1.5rem !important;">
                     
                     <?php while ($carousel_query->have_posts()): $carousel_query->the_post(); ?>
                     <div class="hph-carousel__slide" data-slide-index="<?php echo $carousel_query->current_post; ?>">
                         <div class="hph-carousel__slide-content">
                             <?php
-                            // Determine which card template to use
-                            $card_args = [
-                                $post_type . '_id' => get_the_ID(),
+                            // Use universal card component for all post types
+                            hph_component('universal-card', [
+                                'post_id' => get_the_ID(),
+                                'post_type' => $post_type,
+                                'layout' => 'vertical',
                                 'variant' => $card_variant,
-                                'carousel_mode' => true
-                            ];
-                            
-                            // Load the appropriate card template
-                            get_template_part(
-                                'template-parts/' . $config['card_template'], 
-                                null, 
-                                $card_args
-                            );
+                                'size' => 'md'
+                            ]);
                             ?>
                         </div>
                     </div>

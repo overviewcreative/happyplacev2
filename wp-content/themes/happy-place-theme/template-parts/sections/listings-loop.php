@@ -206,7 +206,7 @@ if (empty($listings) && !empty($query_args)) {
                 'bathrooms' => 4.5,
                 'square_feet' => 4200,
                 'featured_image' => array(
-                    'url' => get_template_directory_uri() . '/assets/images/listing-1.jpg',
+                    'url' => hph_get_image_url_only('assets/images/listing-1.jpg'),
                     'alt' => 'Luxury Oceanfront Villa'
                 ),
                 'is_featured' => true,
@@ -223,7 +223,7 @@ if (empty($listings) && !empty($query_args)) {
                 'bathrooms' => 2,
                 'square_feet' => 1450,
                 'featured_image' => array(
-                    'url' => get_template_directory_uri() . '/assets/images/listing-2.jpg',
+                    'url' => hph_get_image_url_only('assets/images/listing-2.jpg'),
                     'alt' => 'Modern Downtown Condo'
                 ),
                 'is_featured' => false,
@@ -240,7 +240,7 @@ if (empty($listings) && !empty($query_args)) {
                 'bathrooms' => 3,
                 'square_feet' => 2800,
                 'featured_image' => array(
-                    'url' => get_template_directory_uri() . '/assets/images/listing-3.jpg',
+                    'url' => hph_get_image_url_only('assets/images/listing-3.jpg'),
                     'alt' => 'Suburban Family Home'
                 ),
                 'is_featured' => false,
@@ -257,7 +257,7 @@ if (empty($listings) && !empty($query_args)) {
                 'bathrooms' => 2.5,
                 'square_feet' => 2200,
                 'featured_image' => array(
-                    'url' => get_template_directory_uri() . '/assets/images/listing-4.jpg',
+                    'url' => hph_get_image_url_only('assets/images/listing-4.jpg'),
                     'alt' => 'Historic Townhouse'
                 ),
                 'is_featured' => false,
@@ -287,7 +287,7 @@ if (empty($listings) || count($listings) === 0) {
             'bathrooms' => 2,
             'square_feet' => 1500,
             'featured_image' => array(
-                'url' => get_template_directory_uri() . '/assets/images/listing-placeholder.jpg',
+                'url' => hph_get_image_url_only('assets/images/listing-placeholder.jpg'),
                 'alt' => 'Sample Property'
             ),
             'is_featured' => false,
@@ -326,25 +326,25 @@ switch ($background) {
 // Padding
 switch ($padding) {
     case 'sm':
-        $section_styles[] = 'padding: var(--hph-padding-lg) 0';
+        $section_styles[] = 'padding: var(--hph-space-6) 0';
         break;
     case 'md':
-        $section_styles[] = 'padding: var(--hph-padding-xl) 0';
+        $section_styles[] = 'padding: var(--hph-space-8) 0';
         break;
     case 'lg':
-        $section_styles[] = 'padding: var(--hph-padding-2xl) 0';
+        $section_styles[] = 'padding: var(--hph-space-12) 0';
         break;
     case '2xl':
-        $section_styles[] = 'padding: var(--hph-padding-4xl) 0';
+        $section_styles[] = 'padding: var(--hph-space-24) 0';
         break;
     default:
-        $section_styles[] = 'padding: var(--hph-padding-3xl) 0';
+        $section_styles[] = 'padding: var(--hph-space-16) 0';
 }
 
 // Container styles
 $container_styles = array(
     'margin: 0 auto',
-    'padding: 0 var(--hph-padding-lg)'
+    'padding: 0 var(--hph-space-6)'
 );
 
 switch ($content_width) {
@@ -470,7 +470,7 @@ function hph_get_listing_image($listing, $size = 'large') {
     
     // Final fallback
     return array(
-        'url' => get_template_directory_uri() . '/assets/images/listing-placeholder.jpg',
+        'url' => hph_get_image_url_only('assets/images/listing-placeholder.jpg'),
         'alt' => 'Property Image Placeholder'
     );
 }
@@ -489,9 +489,9 @@ $text_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.9)' : 'var(--hph-gray-700)';
     <div style="<?php echo implode('; ', $container_styles); ?>">
         
         <?php if ($headline || $subheadline): ?>
-        <div style="text-align: center; margin-bottom: var(--hph-margin-3xl); <?php echo $animation ? 'animation: fadeInUp 0.8s ease-out;' : ''; ?>">
+        <div style="text-align: center; margin-bottom: var(--hph-space-16); <?php echo $animation ? 'animation: fadeInUp 0.8s ease-out;' : ''; ?>">
             <?php if ($headline): ?>
-            <h2 style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-4xl); font-weight: var(--hph-font-bold); color: <?php echo $heading_color; ?>;">
+            <h2 style="margin: 0 0 var(--hph-space-6) 0; font-size: var(--hph-text-4xl); font-weight: var(--hph-font-bold); color: <?php echo $heading_color; ?>;">
                 <?php echo esc_html($headline); ?>
             </h2>
             <?php endif; ?>
@@ -506,15 +506,15 @@ $text_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.9)' : 'var(--hph-gray-700)';
         
         <?php if ($filters): ?>
         <!-- Filters Bar -->
-        <div style="display: flex; gap: var(--hph-gap-md); margin-bottom: var(--hph-margin-2xl); padding: var(--hph-padding-lg); background: var(--hph-white); border-radius: var(--hph-radius-lg); box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-            <select style="flex: 1; padding: var(--hph-padding-sm) var(--hph-padding-md); border: 1px solid var(--hph-gray-200); border-radius: var(--hph-radius-md); background: var(--hph-white); color: var(--hph-gray-700);">
+        <div style="display: flex; gap: var(--hph-gap-md); margin-bottom: var(--hph-space-12); padding: var(--hph-space-6); background: var(--hph-white); border-radius: var(--hph-radius-lg); box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <select style="flex: 1; padding: var(--hph-space-2) var(--hph-space-4); border: 1px solid var(--hph-gray-200); border-radius: var(--hph-radius-md); background: var(--hph-white); color: var(--hph-gray-700);">
                 <option>All Types</option>
                 <option>House</option>
                 <option>Condo</option>
                 <option>Townhouse</option>
             </select>
             
-            <select style="flex: 1; padding: var(--hph-padding-sm) var(--hph-padding-md); border: 1px solid var(--hph-gray-200); border-radius: var(--hph-radius-md); background: var(--hph-white); color: var(--hph-gray-700);">
+            <select style="flex: 1; padding: var(--hph-space-2) var(--hph-space-4); border: 1px solid var(--hph-gray-200); border-radius: var(--hph-radius-md); background: var(--hph-white); color: var(--hph-gray-700);">
                 <option>Any Price</option>
                 <option>Under $500k</option>
                 <option>$500k - $1M</option>
@@ -522,7 +522,7 @@ $text_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.9)' : 'var(--hph-gray-700)';
                 <option>Over $2M</option>
             </select>
             
-            <select style="flex: 1; padding: var(--hph-padding-sm) var(--hph-padding-md); border: 1px solid var(--hph-gray-200); border-radius: var(--hph-radius-md); background: var(--hph-white); color: var(--hph-gray-700);">
+            <select style="flex: 1; padding: var(--hph-space-2) var(--hph-space-4); border: 1px solid var(--hph-gray-200); border-radius: var(--hph-radius-md); background: var(--hph-white); color: var(--hph-gray-700);">
                 <option>Any Beds</option>
                 <option>1+</option>
                 <option>2+</option>
@@ -530,7 +530,7 @@ $text_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.9)' : 'var(--hph-gray-700)';
                 <option>4+</option>
             </select>
             
-            <button style="padding: var(--hph-padding-sm) var(--hph-padding-xl); background: var(--hph-primary); color: var(--hph-white); border: none; border-radius: var(--hph-radius-md); font-weight: var(--hph-font-medium); cursor: pointer;">
+            <button style="padding: var(--hph-space-2) var(--hph-space-8); background: var(--hph-primary); color: var(--hph-white); border: none; border-radius: var(--hph-radius-md); font-weight: var(--hph-font-medium); cursor: pointer;">
                 Search
             </button>
         </div>
@@ -577,23 +577,23 @@ $text_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.9)' : 'var(--hph-gray-700)';
                     <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 60%; background: var(--hph-gradient-card-overlay);"></div>
                     
                     <!-- Content -->
-                    <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: var(--hph-padding-2xl); color: var(--hph-white);">
+                    <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: var(--hph-space-12); color: var(--hph-white);">
                         <?php if ($show_status && !empty($featured['listing_status'])): ?>
-                        <span style="display: inline-block; padding: var(--hph-padding-xs) var(--hph-padding-sm); background: <?php echo hph_get_listing_status_color($featured['listing_status']); ?>; color: var(--hph-white); border-radius: var(--hph-radius-md); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold); margin-bottom: var(--hph-margin-md);">
+                        <span style="display: inline-block; padding: var(--hph-space-1) var(--hph-space-2); background: <?php echo hph_get_listing_status_color($featured['listing_status']); ?>; color: var(--hph-white); border-radius: var(--hph-radius-md); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold); margin-bottom: var(--hph-space-4);">
                             <?php echo esc_html($featured['listing_status']); ?>
                         </span>
                         <?php endif; ?>
                         
-                        <h3 style="margin: 0 0 var(--hph-margin-sm) 0; font-size: var(--hph-text-3xl); font-weight: var(--hph-font-bold);">
+                        <h3 style="margin: 0 0 var(--hph-space-2) 0; font-size: var(--hph-text-3xl); font-weight: var(--hph-font-bold);">
                             <?php echo esc_html($featured['title'] ?? 'Featured Property'); ?>
                         </h3>
                         
-                        <p style="margin: 0 0 var(--hph-margin-lg) 0; opacity: 0.9;">
+                        <p style="margin: 0 0 var(--hph-space-6) 0; opacity: 0.9;">
                             <?php echo esc_html($featured['address'] ?? 'Location Available Upon Request'); ?>
                         </p>
                         
                         <?php if ($show_price): ?>
-                        <div style="font-size: var(--hph-text-4xl); font-weight: var(--hph-font-bold); margin-bottom: var(--hph-margin-lg);">
+                        <div style="font-size: var(--hph-text-4xl); font-weight: var(--hph-font-bold); margin-bottom: var(--hph-space-6);">
                             <?php echo hph_format_listing_price($featured['price'] ?? null); ?>
                         </div>
                         <?php endif; ?>
@@ -615,7 +615,7 @@ $text_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.9)' : 'var(--hph-gray-700)';
                     
                     <!-- Favorite Button -->
                     <?php if ($show_favorite): ?>
-                    <button style="position: absolute; top: var(--hph-padding-lg); right: var(--hph-padding-lg); width: 40px; height: 40px; border-radius: var(--hph-radius-full); background: rgba(255,255,255,0.9); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 300ms ease;"
+                    <button style="position: absolute; top: var(--hph-space-6); right: var(--hph-space-6); width: 40px; height: 40px; border-radius: var(--hph-radius-full); background: rgba(255,255,255,0.9); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 300ms ease;"
                             onmouseover="this.style.background='var(--hph-white)'; this.style.transform='scale(1.1)';"
                             onmouseout="this.style.background='rgba(255,255,255,0.9)'; this.style.transform='scale(1)';">
                         <svg style="width: 20px; height: 20px; color: var(--hph-danger);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -650,30 +650,30 @@ $text_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.9)' : 'var(--hph-gray-700)';
                         </div>
                         
                         <?php if ($show_status && !empty($listing['listing_status'])): ?>
-                        <span style="position: absolute; top: var(--hph-padding-md); left: var(--hph-padding-md); padding: var(--hph-padding-xs) var(--hph-padding-sm); background: <?php echo hph_get_listing_status_color($listing['listing_status']); ?>; color: var(--hph-white); border-radius: var(--hph-radius-md); font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold);">
+                        <span style="position: absolute; top: var(--hph-space-4); left: var(--hph-space-4); padding: var(--hph-space-1) var(--hph-space-2); background: <?php echo hph_get_listing_status_color($listing['listing_status']); ?>; color: var(--hph-white); border-radius: var(--hph-radius-md); font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold);">
                             <?php echo esc_html($listing['listing_status']); ?>
                         </span>
                         <?php endif; ?>
                     </div>
                     
                     <!-- Content -->
-                    <div style="padding: var(--hph-padding-lg);">
+                    <div style="padding: var(--hph-space-6);">
                         <?php if ($show_price): ?>
-                        <div style="font-size: var(--hph-text-2xl); font-weight: var(--hph-font-bold); color: var(--hph-primary); margin-bottom: var(--hph-margin-sm);">
+                        <div style="font-size: var(--hph-text-2xl); font-weight: var(--hph-font-bold); color: var(--hph-primary); margin-bottom: var(--hph-space-2);">
                             <?php echo hph_format_listing_price($listing['price'] ?? null); ?>
                         </div>
                         <?php endif; ?>
                         
-                        <h4 style="margin: 0 0 var(--hph-margin-xs) 0; font-size: var(--hph-text-lg); font-weight: var(--hph-font-semibold); color: var(--hph-gray-900);">
+                        <h4 style="margin: 0 0 var(--hph-space-1) 0; font-size: var(--hph-text-lg); font-weight: var(--hph-font-semibold); color: var(--hph-gray-900);">
                             <?php echo esc_html($listing['title'] ?? 'Property Listing'); ?>
                         </h4>
                         
-                        <p style="margin: 0 0 var(--hph-margin-md) 0; color: var(--hph-gray-600); font-size: var(--hph-text-sm);">
+                        <p style="margin: 0 0 var(--hph-space-4) 0; color: var(--hph-gray-600); font-size: var(--hph-text-sm);">
                             <?php echo esc_html($listing['address'] ?? 'Location Available Upon Request'); ?>
                         </p>
                         
                         <?php if ($show_details): ?>
-                        <div style="display: flex; gap: var(--hph-gap-md); padding-top: var(--hph-padding-md); border-top: 1px solid var(--hph-gray-100); font-size: var(--hph-text-sm); color: var(--hph-gray-600);">
+                        <div style="display: flex; gap: var(--hph-gap-md); padding-top: var(--hph-space-4); border-top: 1px solid var(--hph-gray-100); font-size: var(--hph-text-sm); color: var(--hph-gray-600);">
                             <?php if (!empty($listing['bedrooms'])): ?>
                             <span><?php echo esc_html($listing['bedrooms']); ?> Beds</span>
                             <?php endif; ?>
@@ -715,13 +715,13 @@ $text_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.9)' : 'var(--hph-gray-700)';
                     </div>
                     
                     <?php if ($show_status && !empty($listing['listing_status'])): ?>
-                    <span style="position: absolute; top: var(--hph-padding-md); left: var(--hph-padding-md); padding: var(--hph-padding-xs) var(--hph-padding-sm); background: <?php echo hph_get_listing_status_color($listing['listing_status']); ?>; color: var(--hph-white); border-radius: var(--hph-radius-md); font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold);">
+                    <span style="position: absolute; top: var(--hph-space-4); left: var(--hph-space-4); padding: var(--hph-space-1) var(--hph-space-2); background: <?php echo hph_get_listing_status_color($listing['listing_status']); ?>; color: var(--hph-white); border-radius: var(--hph-radius-md); font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold);">
                         <?php echo esc_html($listing['listing_status']); ?>
                     </span>
                     <?php endif; ?>
                     
                     <?php if ($show_favorite): ?>
-                    <button style="position: absolute; top: var(--hph-padding-md); right: var(--hph-padding-md); width: 32px; height: 32px; border-radius: var(--hph-radius-full); background: rgba(255,255,255,0.9); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                    <button style="position: absolute; top: var(--hph-space-4); right: var(--hph-space-4); width: 32px; height: 32px; border-radius: var(--hph-radius-full); background: rgba(255,255,255,0.9); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;">
                         <svg style="width: 16px; height: 16px; color: var(--hph-gray-600);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                         </svg>
@@ -730,24 +730,24 @@ $text_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.9)' : 'var(--hph-gray-700)';
                 </div>
                 
                 <!-- Content -->
-                <div style="flex: 1; padding: var(--hph-padding-xl); display: flex; flex-direction: column;">
+                <div style="flex: 1; padding: var(--hph-space-8); display: flex; flex-direction: column;">
                     <div style="flex: 1;">
                         <?php if ($show_price): ?>
-                        <div style="font-size: var(--hph-text-3xl); font-weight: var(--hph-font-bold); color: var(--hph-primary); margin-bottom: var(--hph-margin-md);">
+                        <div style="font-size: var(--hph-text-3xl); font-weight: var(--hph-font-bold); color: var(--hph-primary); margin-bottom: var(--hph-space-4);">
                             <?php echo hph_format_listing_price($listing['price'] ?? null); ?>
                         </div>
                         <?php endif; ?>
                         
-                        <h3 style="margin: 0 0 var(--hph-margin-sm) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-semibold); color: var(--hph-gray-900);">
+                        <h3 style="margin: 0 0 var(--hph-space-2) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-semibold); color: var(--hph-gray-900);">
                             <?php echo esc_html($listing['title'] ?? 'Property Listing'); ?>
                         </h3>
                         
-                        <p style="margin: 0 0 var(--hph-margin-lg) 0; color: var(--hph-gray-600);">
+                        <p style="margin: 0 0 var(--hph-space-6) 0; color: var(--hph-gray-600);">
                             <?php echo esc_html($listing['address'] ?? 'Location Available Upon Request'); ?>
                         </p>
                         
                         <?php if ($show_details): ?>
-                        <div style="display: flex; gap: var(--hph-gap-xl); margin-bottom: var(--hph-margin-lg);">
+                        <div style="display: flex; gap: var(--hph-gap-xl); margin-bottom: var(--hph-space-6);">
                             <?php if (!empty($listing['bedrooms'])): ?>
                             <div style="display: flex; align-items: center; gap: var(--hph-gap-sm);">
                                 <svg style="width: 20px; height: 20px; color: var(--hph-gray-400);" fill="currentColor" viewBox="0 0 20 20">
@@ -781,14 +781,14 @@ $text_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.9)' : 'var(--hph-gray-700)';
                     <!-- Actions -->
                     <div style="display: flex; gap: var(--hph-gap-md); align-items: center;">
                         <a href="<?php echo esc_url($listing['url'] ?? '#'); ?>" 
-                           style="flex: 1; padding: var(--hph-padding-sm) var(--hph-padding-lg); background: var(--hph-primary); color: var(--hph-white); text-decoration: none; border-radius: var(--hph-radius-md); font-weight: var(--hph-font-medium); text-align: center; transition: all 300ms ease;"
+                           style="flex: 1; padding: var(--hph-space-2) var(--hph-space-6); background: var(--hph-primary); color: var(--hph-white); text-decoration: none; border-radius: var(--hph-radius-md); font-weight: var(--hph-font-medium); text-align: center; transition: all 300ms ease;"
                            onmouseover="this.style.background='var(--hph-primary-600)';"
                            onmouseout="this.style.background='var(--hph-primary)';">
                             View Details
                         </a>
                         
                         <?php if ($show_compare): ?>
-                        <button style="padding: var(--hph-padding-sm) var(--hph-padding-lg); background: transparent; color: var(--hph-primary); border: 1px solid var(--hph-primary); border-radius: var(--hph-radius-md); font-weight: var(--hph-font-medium); cursor: pointer;">
+                        <button style="padding: var(--hph-space-2) var(--hph-space-6); background: transparent; color: var(--hph-primary); border: 1px solid var(--hph-primary); border-radius: var(--hph-radius-md); font-weight: var(--hph-font-medium); cursor: pointer;">
                             Compare
                         </button>
                         <?php endif; ?>
@@ -822,16 +822,42 @@ $text_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.9)' : 'var(--hph-gray-700)';
                         </svg>
                     </div>
                     
-                    <!-- Status Badge -->
-                    <?php if ($show_status && !empty($listing['listing_status'])): ?>
-                    <span style="position: absolute; top: var(--hph-padding-md); left: var(--hph-padding-md); padding: var(--hph-padding-xs) var(--hph-padding-sm); background: <?php echo hph_get_listing_status_color($listing['listing_status']); ?>; color: var(--hph-white); border-radius: var(--hph-radius-md); font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold); z-index: 2;">
-                        <?php echo esc_html($listing['listing_status']); ?>
+                    <!-- Enhanced Badges -->
+                    <?php if ($show_status && !empty($listing['id'])):
+                        // Get comprehensive badges from bridge system
+                        $listing_badges = [];
+                        if (function_exists('hpt_bridge_get_comprehensive_badges')) {
+                            $listing_badges = hpt_bridge_get_comprehensive_badges($listing['id'], 2);
+                        }
+
+                        if (!empty($listing_badges)) :
+                            foreach ($listing_badges as $index => $badge) :
+                                $top_position = 'var(--hph-space-4)';
+                                if ($index > 0) {
+                                    $top_position = 'calc(var(--hph-space-4) + ' . ($index * 32) . 'px)';
+                                }
+
+                                // Get color based on variant
+                                $bg_color = 'var(--hph-gray-600)';
+                                switch ($badge['variant']) {
+                                    case 'success': $bg_color = 'var(--hph-success)'; break;
+                                    case 'warning': $bg_color = 'var(--hph-warning)'; break;
+                                    case 'error': $bg_color = 'var(--hph-danger)'; break;
+                                    case 'info': $bg_color = 'var(--hph-info)'; break;
+                                    case 'primary': $bg_color = 'var(--hph-primary)'; break;
+                                }
+                    ?>
+                    <span style="position: absolute; top: <?php echo $top_position; ?>; left: var(--hph-space-4); padding: var(--hph-space-1) var(--hph-space-2); background: <?php echo $bg_color; ?>; color: var(--hph-white); border-radius: var(--hph-radius-md); font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold); z-index: 2; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                        <?php echo esc_html($badge['text']); ?>
                     </span>
-                    <?php endif; ?>
+                    <?php
+                            endforeach;
+                        endif;
+                    endif; ?>
                     
                     <!-- Favorite Button -->
                     <?php if ($show_favorite): ?>
-                    <button style="position: absolute; top: var(--hph-padding-md); right: var(--hph-padding-md); width: 36px; height: 36px; border-radius: var(--hph-radius-full); background: rgba(255,255,255,0.9); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 300ms ease; z-index: 2;"
+                    <button style="position: absolute; top: var(--hph-space-4); right: var(--hph-space-4); width: 36px; height: 36px; border-radius: var(--hph-radius-full); background: rgba(255,255,255,0.9); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 300ms ease; z-index: 2;"
                             onclick="event.preventDefault(); event.stopPropagation(); toggleFavorite(this);"
                             onmouseover="this.style.background='var(--hph-white)'; this.style.transform='scale(1.1)';"
                             onmouseout="this.style.background='rgba(255,255,255,0.9)'; this.style.transform='scale(1)';">
@@ -843,9 +869,9 @@ $text_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.9)' : 'var(--hph-gray-700)';
                     
                     <!-- Compare Checkbox -->
                     <?php if ($show_compare): ?>
-                    <div style="position: absolute; bottom: var(--hph-padding-md); right: var(--hph-padding-md); z-index: 2;">
-                        <label style="display: flex; align-items: center; padding: var(--hph-padding-xs) var(--hph-padding-sm); background: rgba(255,255,255,0.9); border-radius: var(--hph-radius-md); cursor: pointer;">
-                            <input type="checkbox" style="margin-right: var(--hph-margin-xs);">
+                    <div style="position: absolute; bottom: var(--hph-space-4); right: var(--hph-space-4); z-index: 2;">
+                        <label style="display: flex; align-items: center; padding: var(--hph-space-1) var(--hph-space-2); background: rgba(255,255,255,0.9); border-radius: var(--hph-radius-md); cursor: pointer;">
+                            <input type="checkbox" style="margin-right: var(--hph-space-1);">
                             <span style="font-size: var(--hph-text-xs); color: var(--hph-gray-700);">Compare</span>
                         </label>
                     </div>
@@ -853,14 +879,14 @@ $text_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.9)' : 'var(--hph-gray-700)';
                 </a>
                 
                 <!-- Content -->
-                <div style="padding: var(--hph-padding-lg);">
+                <div style="padding: var(--hph-space-6);">
                     <?php if ($show_price): ?>
-                    <div style="font-size: var(--hph-text-2xl); font-weight: var(--hph-font-bold); color: var(--hph-primary); margin-bottom: var(--hph-margin-sm);">
+                    <div style="font-size: var(--hph-text-2xl); font-weight: var(--hph-font-bold); color: var(--hph-primary); margin-bottom: var(--hph-space-2);">
                         <?php echo hph_format_listing_price($listing['price'] ?? null); ?>
                     </div>
                     <?php endif; ?>
                     
-                    <h3 style="margin: 0 0 var(--hph-margin-xs) 0;">
+                    <h3 style="margin: 0 0 var(--hph-space-1) 0;">
                         <a href="<?php echo esc_url($listing['url'] ?? '#'); ?>" 
                            style="font-size: var(--hph-text-lg); font-weight: var(--hph-font-semibold); color: var(--hph-gray-900); text-decoration: none; transition: color 300ms ease;"
                            onmouseover="this.style.color='var(--hph-primary)'"
@@ -869,7 +895,7 @@ $text_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.9)' : 'var(--hph-gray-700)';
                         </a>
                     </h3>
                     
-                    <p style="margin: 0 0 var(--hph-margin-lg) 0; color: var(--hph-gray-600); font-size: var(--hph-text-sm);">
+                    <p style="margin: 0 0 var(--hph-space-6) 0; color: var(--hph-gray-600); font-size: var(--hph-text-sm);">
                         <svg style="width: 14px; height: 14px; display: inline-block; margin-right: 4px; vertical-align: text-bottom;" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
                         </svg>
@@ -877,7 +903,7 @@ $text_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.9)' : 'var(--hph-gray-700)';
                     </p>
                     
                     <?php if ($show_details): ?>
-                    <div style="display: flex; gap: var(--hph-gap-md); padding-top: var(--hph-padding-md); border-top: 1px solid var(--hph-gray-100); font-size: var(--hph-text-sm); color: var(--hph-gray-600);">
+                    <div style="display: flex; gap: var(--hph-gap-md); padding-top: var(--hph-space-4); border-top: 1px solid var(--hph-gray-100); font-size: var(--hph-text-sm); color: var(--hph-gray-600);">
                         <?php if (!empty($listing['bedrooms'])): ?>
                         <div style="display: flex; align-items: center; gap: 4px;">
                             <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -908,7 +934,7 @@ $text_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.9)' : 'var(--hph-gray-700)';
                     <?php endif; ?>
                     
                     <?php if ($show_agent && !empty($listing['agent'])): ?>
-                    <div style="display: flex; align-items: center; gap: var(--hph-gap-sm); margin-top: var(--hph-padding-md); padding-top: var(--hph-padding-md); border-top: 1px solid var(--hph-gray-100);">
+                    <div style="display: flex; align-items: center; gap: var(--hph-gap-sm); margin-top: var(--hph-space-4); padding-top: var(--hph-space-4); border-top: 1px solid var(--hph-gray-100);">
                         <?php 
                         $agent_data = $listing['agent'];
                         $agent_photo_url = '';
@@ -944,8 +970,8 @@ $text_color = $is_dark_bg ? 'rgba(255, 255, 255, 0.9)' : 'var(--hph-gray-700)';
         
         <!-- Load More Button -->
         <?php if (count($listings) >= 6): ?>
-        <div style="text-align: center; margin-top: var(--hph-margin-3xl);">
-            <button style="padding: var(--hph-padding-md) var(--hph-padding-2xl); background: var(--hph-white); color: var(--hph-primary); border: 2px solid var(--hph-primary); border-radius: var(--hph-radius-lg); font-size: var(--hph-text-base); font-weight: var(--hph-font-semibold); cursor: pointer; transition: all 300ms ease;"
+        <div style="text-align: center; margin-top: var(--hph-space-16);">
+            <button style="padding: var(--hph-space-4) var(--hph-space-12); background: var(--hph-white); color: var(--hph-primary); border: 2px solid var(--hph-primary); border-radius: var(--hph-radius-lg); font-size: var(--hph-text-base); font-weight: var(--hph-font-semibold); cursor: pointer; transition: all 300ms ease;"
                     onmouseover="this.style.background='var(--hph-primary)'; this.style.color='var(--hph-white)';"
                     onmouseout="this.style.background='var(--hph-white)'; this.style.color='var(--hph-primary)';">
                 Load More Properties

@@ -1,0 +1,295 @@
+/**
+ * Features Section - Skinny Cards & Responsive Layout
+ * 
+ * Enhanced features section with support for narrow cards,
+ * flexible column layouts, and responsive design
+ * 
+ * @package HappyPlaceTheme
+ * @version 3.2.1
+ */
+
+/* ================================================
+   BASE GRID SETUP FOR FEATURES
+   ================================================ */
+
+.hph-features-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--columns, 3), 1fr);
+    gap: var(--gap, 1.5rem);
+    width: 100%;
+}
+
+/* ================================================
+   CARD WIDTH MODIFIERS
+   ================================================ */
+
+/* Narrow card width modifier */
+.hph-card-width-narrow .hph-features-grid {
+    grid-template-columns: repeat(var(--columns, 3), minmax(200px, 280px));
+    justify-content: center;
+}
+
+.hph-card-width-wide .hph-features-grid {
+    grid-template-columns: repeat(var(--columns, 3), minmax(350px, 1fr));
+}
+
+/* ================================================
+   ASPECT RATIO MODIFIERS
+   ================================================ */
+
+/* Portrait aspect ratio for skinny cards */
+.hph-card-ratio-portrait .hph-feature-card-bg {
+    aspect-ratio: 3/4;
+}
+
+.hph-card-ratio-square .hph-feature-card-bg {
+    aspect-ratio: 1/1;
+}
+
+.hph-card-ratio-landscape .hph-feature-card-bg {
+    aspect-ratio: 4/3;
+}
+
+.hph-card-ratio-auto .hph-feature-card-bg {
+    aspect-ratio: auto;
+    min-height: 300px;
+}
+
+/* ================================================
+   GAP MODIFIERS
+   ================================================ */
+
+.hph-gap-tight .hph-features-grid {
+    gap: 1rem;
+}
+
+.hph-gap-normal .hph-features-grid {
+    gap: 1.5rem;
+}
+
+.hph-gap-loose .hph-features-grid {
+    gap: 2rem;
+}
+
+/* ================================================
+   COLUMN SPECIFIC LAYOUTS FOR NARROW CARDS
+   ================================================ */
+
+.hph-cols-4.hph-card-width-narrow .hph-features-grid {
+    grid-template-columns: repeat(4, minmax(180px, 1fr));
+}
+
+.hph-cols-5.hph-card-width-narrow .hph-features-grid {
+    grid-template-columns: repeat(5, minmax(160px, 1fr));
+}
+
+.hph-cols-6.hph-card-width-narrow .hph-features-grid {
+    grid-template-columns: repeat(6, minmax(140px, 1fr));
+}
+
+/* ================================================
+   MASONRY LAYOUT ENHANCEMENT
+   ================================================ */
+
+.hph-layout-masonry .hph-features-grid {
+    column-count: var(--columns, 3);
+    column-gap: var(--gap, 1.5rem);
+    grid-template-columns: none;
+}
+
+.hph-layout-masonry .hph-feature-card-bg {
+    break-inside: avoid;
+    display: inline-block;
+    width: 100%;
+    margin-bottom: var(--gap, 1.5rem);
+}
+
+/* ================================================
+   RESPONSIVE BREAKPOINTS
+   ================================================ */
+
+/* Large screens - prevent wrapping for narrow cards */
+@media (min-width: 1200px) {
+    .hph-card-width-narrow .hph-features-grid {
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(200px, 280px);
+        justify-content: center;
+    }
+    
+    /* Optional: allow horizontal scroll if needed */
+    .hph-card-width-narrow.hph-scroll-horizontal .hph-features-grid {
+        overflow-x: auto;
+        padding-bottom: 1rem;
+    }
+}
+
+/* Tablet responsive */
+@media (max-width: 1024px) {
+    .hph-cols-tablet-1 .hph-features-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .hph-cols-tablet-2 .hph-features-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .hph-cols-tablet-3 .hph-features-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    /* Adjust masonry for tablets */
+    .hph-layout-masonry .hph-features-grid {
+        column-count: var(--tablet-columns, 2);
+    }
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+    .hph-cols-mobile-1 .hph-features-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .hph-cols-mobile-2 .hph-features-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* Adjust aspect ratios for mobile */
+    .hph-card-ratio-portrait .hph-feature-card-bg {
+        aspect-ratio: 4/5; /* Less tall on mobile */
+    }
+    
+    /* Adjust gaps for mobile */
+    .hph-gap-loose .hph-features-grid,
+    .hph-gap-normal .hph-features-grid {
+        gap: 1rem;
+    }
+    
+    .hph-gap-tight .hph-features-grid {
+        gap: 0.75rem;
+    }
+    
+    /* Single column masonry on mobile */
+    .hph-layout-masonry .hph-features-grid {
+        column-count: 1;
+    }
+}
+
+/* ================================================
+   CARD STYLING ENHANCEMENTS
+   ================================================ */
+
+.hph-feature-card-bg {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: var(--hph-radius-lg, 12px);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Enhanced hover effects for narrow cards */
+.hph-card-width-narrow .hph-hover-zoom .hph-feature-card-bg:hover {
+    transform: scale(1.02);
+}
+
+.hph-card-width-narrow .hph-hover-lift .hph-feature-card-bg:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* ================================================
+   CONTENT POSITIONING
+   ================================================ */
+
+.hph-card-content {
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    z-index: 2;
+}
+
+.hph-content-pos-top .hph-card-content {
+    justify-content: flex-start;
+}
+
+.hph-content-pos-center .hph-card-content {
+    justify-content: center;
+}
+
+.hph-content-pos-bottom .hph-card-content {
+    justify-content: flex-end;
+}
+
+/* ================================================
+   OVERLAY ENHANCEMENTS
+   ================================================ */
+
+.hph-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+    transition: opacity 0.3s ease;
+}
+
+.hph-feature-card-bg:hover .hph-card-overlay {
+    opacity: 0.6;
+}
+
+/* ================================================
+   ACCESSIBILITY & PERFORMANCE
+   ================================================ */
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    .hph-feature-card-bg {
+        transition: none;
+    }
+    
+    .hph-card-overlay {
+        transition: none;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .hph-card-overlay {
+        background: rgba(0, 0, 0, 0.8);
+    }
+}
+
+/* Print styles */
+@media print {
+    .hph-features-grid {
+        display: block;
+    }
+    
+    .hph-feature-card-bg {
+        break-inside: avoid;
+        margin-bottom: 1rem;
+        transform: none !important;
+    }
+}
+
+/* ================================================
+   UTILITY CLASSES
+   ================================================ */
+
+/* Force horizontal scroll for narrow cards */
+.hph-features-scroll-horizontal {
+    overflow-x: auto;
+    padding-bottom: 1rem;
+}
+
+/* Prevent card wrapping */
+.hph-features-no-wrap .hph-features-grid {
+    flex-wrap: nowrap;
+}
+
+/* Center grid content */
+.hph-features-center .hph-features-grid {
+    justify-content: center;
+    margin: 0 auto;
+}

@@ -1,3 +1,4 @@
+
 /* ================================================
    Enhanced Color Scheme System with Primary Blue Shades
    
@@ -324,7 +325,8 @@ button i {
   text-decoration: none;
 }
 
-/* Font Awesome Icon Color Inheritance in Buttons */
+/* Font Awesome Icon Color Inheritance in Buttons - ACCESSIBILITY IMPROVED */
+/* NOTE: Specific contrast-safe overrides are handled in button.css */
 .button .fa,
 .button .fas,
 .button .far,
@@ -340,12 +342,22 @@ button .fas,
 button .far,
 button .fal,
 button .fab,
-[class*="btn"] .fa,
-[class*="btn"] .fas,
-[class*="btn"] .far,
-[class*="btn"] .fal,
-[class*="btn"] .fab {
-  color: inherit !important;
+.btn .fa,
+.btn .fas,
+.btn .far,
+.btn .fal,
+.btn .fab,
+.hph-btn .fa,
+.hph-btn .fas,
+.hph-btn .far,
+.hph-btn .fal,
+.hph-btn .fab,
+.button .fa,
+.button .fas,
+.button .far,
+.button .fal,
+.button .fab {
+  color: inherit !important; /* Icons in buttons must match button text color */
 }
 
 /* Borders */
@@ -360,14 +372,42 @@ section .border-bottom {
   border-color: var(--hph-current-border);
 }
 
-/* Icons */
-[data-bg] .icon,
-[data-bg] .hph-icon,
-[data-bg] i[class*="fa-"],
-section .icon,
-section .hph-icon,
-section i[class*="fa-"] {
-  color: var(--hph-current-accent);
+/* Icons - exclude icons inside buttons */
+[data-bg] .icon:not(.btn *, .button *, .hph-btn *, button *),
+[data-bg] .hph-icon:not(.btn *, .button *, .hph-btn *, button *),
+[data-bg] i[class*="fa-"]:not(.btn *, .button *, .hph-btn *, button *),
+section .icon:not(.btn *, .button *, .hph-btn *, button *),
+section .hph-icon:not(.btn *, .button *, .hph-btn *, button *),
+section i[class*="fa-"]:not(.btn *, .button *, .hph-btn *, button *) {
+  color: inherit;
+}
+
+/* Button icons should inherit button text color */
+[data-bg] .btn .icon,
+[data-bg] .btn .hph-icon,
+[data-bg] .btn i[class*="fa-"],
+[data-bg] .button .icon,
+[data-bg] .button .hph-icon,
+[data-bg] .button i[class*="fa-"],
+[data-bg] .hph-btn .icon,
+[data-bg] .hph-btn .hph-icon,
+[data-bg] .hph-btn i[class*="fa-"],
+[data-bg] button .icon,
+[data-bg] button .hph-icon,
+[data-bg] button i[class*="fa-"],
+section .btn .icon,
+section .btn .hph-icon,
+section .btn i[class*="fa-"],
+section .button .icon,
+section .button .hph-icon,
+section .button i[class*="fa-"],
+section .hph-btn .icon,
+section .hph-btn .hph-icon,
+section .hph-btn i[class*="fa-"],
+section button .icon,
+section button .hph-icon,
+section button i[class*="fa-"] {
+  color: inherit !important;
 }
 
 /* Stats and numbers */

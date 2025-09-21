@@ -49,25 +49,25 @@ if (!$agent_id) return;
     <div class="hph-form-group">
         <label class="hph-form-label">Preferred Contact Method</label>
         <div class="hph-form-radio-group">
-            <label class="hph-form-radio">
-                <input type="radio" name="contact_method" value="email" checked>
-                <span>Email</span>
-            </label>
-            <label class="hph-form-radio">
-                <input type="radio" name="contact_method" value="phone">
-                <span>Phone</span>
-            </label>
-            <label class="hph-form-radio">
-                <input type="radio" name="contact_method" value="text">
-                <span>Text</span>
-            </label>
+            <div class="hph-form-check hph-form-check-inline">
+                <input type="radio" name="contact_method" value="email" class="hph-form-check-input" checked>
+                <label class="hph-form-check-label">Email</label>
+            </div>
+            <div class="hph-form-check hph-form-check-inline">
+                <input type="radio" name="contact_method" value="phone" class="hph-form-check-input">
+                <label class="hph-form-check-label">Phone</label>
+            </div>
+            <div class="hph-form-check hph-form-check-inline">
+                <input type="radio" name="contact_method" value="text" class="hph-form-check-input">
+                <label class="hph-form-check-label">Text</label>
+            </div>
         </div>
     </div>
     
     <input type="hidden" name="agent_id" value="<?php echo esc_attr($agent_id); ?>">
     <input type="hidden" name="listing_id" value="<?php echo esc_attr($listing_id); ?>">
     
-    <button type="submit" class="hph-btn hph-btn--primary hph-btn--full">
+    <button type="submit" class="hph-btn hph-btn-primary w-full">
         <i class="fas fa-paper-plane"></i>
         Send Message
     </button>

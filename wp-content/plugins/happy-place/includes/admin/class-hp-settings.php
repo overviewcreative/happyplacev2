@@ -118,7 +118,7 @@ class HP_Settings {
     }
     
     public function render_office_name_field() {
-        $office = get_option('hp_default_listing_office', 'Happy Place Homes');
+        $office = get_option('hp_default_listing_office', 'The Parker Group');
         ?>
         <input type="text" 
                name="hp_default_listing_office" 
@@ -128,13 +128,13 @@ class HP_Settings {
     }
     
     public function render_office_phone_field() {
-        $phone = get_option('hp_default_office_phone', '');
+        $phone = get_option('hp_default_office_phone', '(302) 217-6692');
         ?>
         <input type="text" 
                name="hp_default_office_phone" 
                value="<?php echo esc_attr($phone); ?>" 
                class="regular-text" 
-               placeholder="(302) 555-0123" />
+               placeholder="(302) 217-6692" />
         <?php
     }
     

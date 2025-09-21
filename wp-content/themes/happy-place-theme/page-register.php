@@ -169,11 +169,11 @@ get_header();
                     <label class="checkbox-label">
                         <input type="checkbox" name="terms" value="1" required>
                         <span class="checkmark"></span>
-                        I agree to the <a href="<?php echo home_url('/terms/'); ?>" target="_blank">Terms of Service</a> and <a href="<?php echo home_url('/privacy/'); ?>" target="_blank">Privacy Policy</a>
+                        I agree to the <a href="<?php echo home_url('/legal/#terms'); ?>" target="_blank">Terms of Service</a> and <a href="<?php echo home_url('/legal/#privacy'); ?>" target="_blank">Privacy Policy</a>
                     </label>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-full">
+                <button type="submit" class="hph-btn hph-btn-primary btn-full">
                     Create Account
                 </button>
             </form>
@@ -281,143 +281,164 @@ get_header();
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const passwordInput = document.getElementById('password');
-    const confirmInput = document.getElementById('password_confirm');
-    const form = document.querySelector('.auth-form');
-    
-    // Password strength checker
-    function checkPasswordStrength(password) {
-        let strength = 0;
-        
-        if (password.length >= 8) strength += 1;
-        if (/[a-z]/.test(password)) strength += 1;
-        if (/[A-Z]/.test(password)) strength += 1;
-        if (/[0-9]/.test(password)) strength += 1;
-        if (/[^A-Za-z0-9]/.test(password)) strength += 1;
-        
-        return strength;
-    }
-    
-    function displayPasswordStrength(strength) {
-        let existingIndicator = document.querySelector('.password-strength');
-        if (existingIndicator) {
-            existingIndicator.remove();
-        }
-        
-        if (passwordInput.value.length === 0) return;
-        
-        const indicator = document.createElement('div');
-        indicator.className = 'password-strength';
-        
-        if (strength < 2) {
-            indicator.className += ' weak';
-            indicator.textContent = 'Weak password';
-        } else if (strength < 4) {
-            indicator.className += ' medium';
-            indicator.textContent = 'Medium strength password';
-        } else {
-            indicator.className += ' strong';
-            indicator.textContent = 'Strong password';
-        }
-        
-        passwordInput.parentNode.appendChild(indicator);
-    }
-    
-    // Username availability checker (debounced)
-    let usernameTimeout;
-    function checkUsernameAvailability(username) {
-        clearTimeout(usernameTimeout);
-        usernameTimeout = setTimeout(() => {
-            if (username.length < 3) return;
-            
-            // You can add an AJAX call here to check username availability
-            // For now, just validate format
-            if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-                showFieldError(document.getElementById('username'), 'Username can only contain letters, numbers, and underscores');
-            } else {
-                clearFieldError(document.getElementById('username'));
+if (window.HPH) {
+    HPH.register('registerPage', function() {
+        return {
+            usernameTimeout: null,
+
+            init: function() {
+                this.initPasswordValidation();
+                this.initUsernameValidation();
+                this.initFormValidation();
+            },
+
+            checkPasswordStrength: function(password) {
+                let strength = 0;
+                if (password.length >= 8) strength += 1;
+                if (/[a-z]/.test(password)) strength += 1;
+                if (/[A-Z]/.test(password)) strength += 1;
+                if (/[0-9]/.test(password)) strength += 1;
+                if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+                return strength;
+            },
+
+            displayPasswordStrength: function(strength, passwordInput) {
+                let existingIndicator = document.querySelector('.password-strength');
+                if (existingIndicator) {
+                    existingIndicator.remove();
+                }
+
+                if (passwordInput.value.length === 0) return;
+
+                const indicator = document.createElement('div');
+                indicator.className = 'password-strength';
+
+                if (strength < 2) {
+                    indicator.className += ' weak';
+                    indicator.textContent = 'Weak password';
+                } else if (strength < 4) {
+                    indicator.className += ' medium';
+                    indicator.textContent = 'Medium strength password';
+                } else {
+                    indicator.className += ' strong';
+                    indicator.textContent = 'Strong password';
+                }
+
+                passwordInput.parentNode.appendChild(indicator);
+            },
+
+            showFieldError: function(field, message) {
+                this.clearFieldError(field);
+                const error = document.createElement('div');
+                error.className = 'field-error';
+                error.style.color = '#e53e3e';
+                error.style.fontSize = '0.875rem';
+                error.style.marginTop = '0.25rem';
+                error.textContent = message;
+                field.parentNode.appendChild(error);
+                field.style.borderColor = '#e53e3e';
+            },
+
+            clearFieldError: function(field) {
+                const error = field.parentNode.querySelector('.field-error');
+                if (error) error.remove();
+                field.style.borderColor = '';
+            },
+
+            initPasswordValidation: function() {
+                const passwordInput = document.getElementById('password');
+                const confirmInput = document.getElementById('password_confirm');
+
+                if (passwordInput && confirmInput) {
+                    HPH.events.on(passwordInput, 'input', () => {
+                        const strength = this.checkPasswordStrength(passwordInput.value);
+                        this.displayPasswordStrength(strength, passwordInput);
+
+                        if (confirmInput.value) {
+                            this.validatePasswordMatch(passwordInput, confirmInput);
+                        }
+                    });
+
+                    HPH.events.on(confirmInput, 'input', () => {
+                        this.validatePasswordMatch(passwordInput, confirmInput);
+                    });
+                }
+            },
+
+            validatePasswordMatch: function(passwordInput, confirmInput) {
+                if (passwordInput.value !== confirmInput.value) {
+                    this.showFieldError(confirmInput, 'Passwords do not match');
+                } else {
+                    this.clearFieldError(confirmInput);
+                }
+            },
+
+            initUsernameValidation: function() {
+                const usernameInput = document.getElementById('username');
+                if (usernameInput) {
+                    HPH.events.on(usernameInput, 'input', () => {
+                        this.checkUsernameAvailability(usernameInput.value);
+                    });
+                }
+            },
+
+            checkUsernameAvailability: function(username) {
+                clearTimeout(this.usernameTimeout);
+                this.usernameTimeout = setTimeout(() => {
+                    if (username.length < 3) return;
+
+                    const usernameInput = document.getElementById('username');
+                    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+                        this.showFieldError(usernameInput, 'Username can only contain letters, numbers, and underscores');
+                    } else {
+                        this.clearFieldError(usernameInput);
+                    }
+                }, 500);
+            },
+
+            initFormValidation: function() {
+                const form = document.querySelector('.auth-form');
+                if (form) {
+                    HPH.events.on(form, 'submit', (e) => {
+                        let isValid = true;
+                        const passwordInput = document.getElementById('password');
+                        const confirmInput = document.getElementById('password_confirm');
+
+                        // Clear previous errors
+                        document.querySelectorAll('.field-error').forEach(error => error.remove());
+                        document.querySelectorAll('input').forEach(input => input.style.borderColor = '');
+
+                        // Validate required fields
+                        const requiredFields = form.querySelectorAll('[required]');
+                        requiredFields.forEach(field => {
+                            if (!field.value.trim()) {
+                                this.showFieldError(field, 'This field is required');
+                                isValid = false;
+                            }
+                        });
+
+                        // Validate password match
+                        if (passwordInput.value !== confirmInput.value) {
+                            this.showFieldError(confirmInput, 'Passwords do not match');
+                            isValid = false;
+                        }
+
+                        // Validate password strength
+                        const strength = this.checkPasswordStrength(passwordInput.value);
+                        if (strength < 2) {
+                            this.showFieldError(passwordInput, 'Password is too weak');
+                            isValid = false;
+                        }
+
+                        if (!isValid) {
+                            e.preventDefault();
+                        }
+                    });
+                }
             }
-        }, 500);
-    }
-    
-    function showFieldError(field, message) {
-        clearFieldError(field);
-        const error = document.createElement('div');
-        error.className = 'field-error';
-        error.style.color = '#e53e3e';
-        error.style.fontSize = '0.875rem';
-        error.style.marginTop = '0.25rem';
-        error.textContent = message;
-        field.parentNode.appendChild(error);
-        field.style.borderColor = '#e53e3e';
-    }
-    
-    function clearFieldError(field) {
-        const error = field.parentNode.querySelector('.field-error');
-        if (error) error.remove();
-        field.style.borderColor = '';
-    }
-    
-    // Event listeners
-    passwordInput.addEventListener('input', function() {
-        const strength = checkPasswordStrength(this.value);
-        displayPasswordStrength(strength);
-        
-        if (confirmInput.value) {
-            validatePasswordMatch();
-        }
+        };
     });
-    
-    confirmInput.addEventListener('input', validatePasswordMatch);
-    
-    function validatePasswordMatch() {
-        if (passwordInput.value !== confirmInput.value) {
-            showFieldError(confirmInput, 'Passwords do not match');
-        } else {
-            clearFieldError(confirmInput);
-        }
-    }
-    
-    document.getElementById('username').addEventListener('input', function() {
-        checkUsernameAvailability(this.value);
-    });
-    
-    // Form validation
-    form.addEventListener('submit', function(e) {
-        let isValid = true;
-        
-        // Clear previous errors
-        document.querySelectorAll('.field-error').forEach(error => error.remove());
-        document.querySelectorAll('input').forEach(input => input.style.borderColor = '');
-        
-        // Validate required fields
-        const requiredFields = form.querySelectorAll('[required]');
-        requiredFields.forEach(field => {
-            if (!field.value.trim()) {
-                showFieldError(field, 'This field is required');
-                isValid = false;
-            }
-        });
-        
-        // Validate password match
-        if (passwordInput.value !== confirmInput.value) {
-            showFieldError(confirmInput, 'Passwords do not match');
-            isValid = false;
-        }
-        
-        // Validate password strength
-        const strength = checkPasswordStrength(passwordInput.value);
-        if (strength < 2) {
-            showFieldError(passwordInput, 'Password is too weak');
-            isValid = false;
-        }
-        
-        if (!isValid) {
-            e.preventDefault();
-        }
-    });
-});
+}
 </script>
 
 <?php get_footer(); ?>

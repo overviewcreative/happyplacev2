@@ -156,7 +156,7 @@
                     title: postTitle,
                     url: postUrl
                 }).catch(function(error) {
-                    console.log('Error sharing:', error);
+                    console.log('Share failed:', error);
                 });
             } else {
                 // Fallback to modal

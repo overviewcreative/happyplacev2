@@ -117,7 +117,7 @@ if ($is_admin) {
         </div>
         
         <div class="hph-header-actions hph-flex hph-flex-row hph-gap-sm">
-            <button class="hph-btn hph-btn-outline hph-btn-sm" id="importLeadsBtn">
+            <button class="hph-btn hph-btn-outline-primary hph-btn-sm" id="importLeadsBtn">
                 <i class="fas fa-upload hph-mr-xs"></i>
                 <?php _e('Import Leads', 'happy-place-theme'); ?>
             </button>
@@ -165,7 +165,7 @@ if ($is_admin) {
                     <?php _e('Apply', 'happy-place-theme'); ?>
                 </button>
                 
-                <button type="button" class="hph-btn hph-btn-outline hph-btn-sm" id="clearLeadFilters">
+                <button type="button" class="hph-btn hph-btn-outline-primary hph-btn-sm" id="clearLeadFilters">
                     <?php _e('Clear', 'happy-place-theme'); ?>
                 </button>
             </div>
@@ -466,7 +466,7 @@ if ($is_admin) {
                             
                             <div class="hph-flex hph-gap-xs">
                                 <?php if ($lead_phone): ?>
-                                    <button class="hph-btn hph-btn-sm hph-btn-outline" 
+                                    <button class="hph-btn hph-btn-sm hph-btn-outline-primary" 
                                             data-action="call" 
                                             data-phone="<?php echo esc_attr($lead_phone); ?>"
                                             title="<?php _e('Call Lead', 'happy-place-theme'); ?>">
@@ -475,7 +475,7 @@ if ($is_admin) {
                                     </button>
                                 <?php endif; ?>
                                 
-                                <button class="hph-btn hph-btn-sm hph-btn-outline" 
+                                <button class="hph-btn hph-btn-sm hph-btn-outline-primary" 
                                         data-action="email" 
                                         data-email="<?php echo esc_attr($lead_email); ?>"
                                         title="<?php _e('Email Lead', 'happy-place-theme'); ?>">
@@ -494,7 +494,7 @@ if ($is_admin) {
                                 <?php if (!empty($followup_boss_url)): ?>
                                 <a href="<?php echo esc_url($followup_boss_url); ?>" 
                                    target="_blank" 
-                                   class="hph-btn hph-btn-sm hph-btn-outline"
+                                   class="hph-btn hph-btn-sm hph-btn-outline-primary"
                                    title="<?php _e('Open in FollowUp Boss', 'happy-place-theme'); ?>">
                                     <i class="fas fa-external-link-alt"></i>
                                     <?php _e('Open in FUB', 'happy-place-theme'); ?>
@@ -579,7 +579,7 @@ if ($is_admin) {
                             <?php _e('Add Your First Lead', 'happy-place-theme'); ?>
                         </button>
                     <?php else: ?>
-                        <a href="?section=leads" class="hph-btn hph-btn-outline">
+                        <a href="?section=leads" class="hph-btn hph-btn-outline-primary">
                             <?php _e('View All Leads', 'happy-place-theme'); ?>
                         </a>
                     <?php endif; ?>
@@ -800,7 +800,7 @@ jQuery(document).ready(function($) {
                         </div>
                     </div>
                     <div class="hph-modal-footer">
-                        <button class="hph-btn hph-btn-outline" id="cancelAssign"><?php _e('Cancel', 'happy-place-theme'); ?></button>
+                        <button class="hph-btn hph-btn-outline-primary" id="cancelAssign"><?php _e('Cancel', 'happy-place-theme'); ?></button>
                         <button class="hph-btn hph-btn-primary" id="confirmAssign"><?php _e('Assign Lead', 'happy-place-theme'); ?></button>
                     </div>
                 </div>

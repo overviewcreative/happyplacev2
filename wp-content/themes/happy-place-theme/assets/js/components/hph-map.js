@@ -6,7 +6,9 @@
 
 // HPH Map Component loaded
 
-class HPHMap {
+// Prevent duplicate class declaration
+if (typeof HPHMap === 'undefined') {
+    class HPHMap {
     /**
      * Get appropriate map style based on theme
      */
@@ -54,18 +56,26 @@ class HPHMap {
      */
     init() {
         if (!this.container) {
-            console.error('HPH Map: Container not found');
             return;
         }
 
-        if (!window.hph_mapbox_config || !window.hph_mapbox_config.access_token) {
-            console.error('HPH Map: Mapbox access token not found');
+        if (!window.hph_mapbox_config) {
             this.showError('Map configuration not available');
             return;
         }
 
+        if (!window.hph_mapbox_config.access_token && window.hph_mapbox_config.has_token !== false) {
+            this.showError('Map configuration not available');
+            return;
+        }
+
+        // Handle case when no token is configured
+        if (window.hph_mapbox_config.has_token === false) {
+            this.showConfigurationMessage();
+            return;
+        }
+
         if (typeof mapboxgl === 'undefined') {
-            console.error('HPH Map: Mapbox GL JS not loaded');
             this.showError('Mapbox GL JS library not available');
             return;
         }
@@ -109,7 +119,6 @@ class HPHMap {
             }));
 
         } catch (error) {
-            console.error('HPH Map: Initialization error', error);
             this.showError('Failed to load map');
         }
     }
@@ -157,7 +166,6 @@ class HPHMap {
      */
     addListingMarker(listing, options = {}) {
         if (!listing.latitude || !listing.longitude) {
-            console.warn('HPH Map: Listing missing coordinates', listing);
             return null;
         }
 
@@ -193,26 +201,536 @@ class HPHMap {
     }
 
     /**
-     * Add multiple listing markers
+     * Add multiple listing markers with clustering support
      */
     addListingMarkers(listings, options = {}) {
-        const markers = [];
-        listings.forEach(listing => {
-            const marker = this.addListingMarker(listing, options);
-            if (marker) markers.push(marker);
-        });
         
-        // Fit bounds if requested
-        if (options.fitBounds && markers.length > 1) {
-            this.fitToMarkers(markers);
+        const markerOptions = {
+            enableClustering: true,
+            clusterRadius: 50,
+            clusterMaxZoom: 14,
+            showPopup: true,
+            fitBounds: true,
+            ...options
+        };
+
+
+        if (markerOptions.enableClustering && listings.length > 1) {
+            this.addClusteredMarkers(listings, markerOptions);
+        } else {
+            // Use individual markers for small numbers
+            const markers = [];
+            listings.forEach(listing => {
+                const marker = this.addListingMarker(listing, markerOptions);
+                if (marker) markers.push(marker);
+            });
+            
+            // Fit bounds if requested
+            if (markerOptions.fitBounds && markers.length > 1) {
+                this.fitToMarkers(markers);
+            }
         }
 
         // Add zip code boundary if filtering by zip code
-        if (options.showZipBoundary && options.zipCode) {
-            this.addZipCodeBoundary(listings, options.zipCode);
+        if (markerOptions.showZipBoundary && markerOptions.zipCode) {
+            this.addZipCodeBoundary(listings, markerOptions.zipCode);
         }
 
-        return markers;
+        return this.markers;
+    }
+
+    /**
+     * Get HPH theme colors from CSS variables
+     */
+    getHPHColors() {
+        // Get computed styles from document root to read CSS variables
+        const rootStyles = getComputedStyle(document.documentElement);
+        
+        return {
+            primary: rootStyles.getPropertyValue('--hph-primary').trim() || '#1e40af',
+            secondary: rootStyles.getPropertyValue('--hph-secondary').trim() || '#059669', 
+            accent: rootStyles.getPropertyValue('--hph-accent').trim() || '#dc2626',
+            warning: rootStyles.getPropertyValue('--hph-warning').trim() || '#f59e0b',
+            muted: rootStyles.getPropertyValue('--hph-muted').trim() || '#6b7280'
+        };
+    }
+
+    /**
+     * Add clustered markers using Mapbox GL JS clustering
+     */
+    addClusteredMarkers(listings, options = {}) {
+        console.log('HPHMap: Starting addClusteredMarkers with', listings.length, 'listings');
+        console.log('HPHMap: Options:', options);
+
+        // Clear existing markers and sources
+        this.clearMapMarkers();
+
+        // Get HPH theme colors
+        const colors = this.getHPHColors();
+        console.log('HPHMap: Colors:', colors);
+
+        // Filter out listings without valid coordinates
+        const validListings = listings.filter(listing => {
+            const hasCoords = listing.latitude && listing.longitude &&
+                             !isNaN(parseFloat(listing.latitude)) &&
+                             !isNaN(parseFloat(listing.longitude));
+            if (!hasCoords && listing.id) {
+                console.warn('HPHMap: Listing', listing.id, 'missing valid coordinates:', {
+                    lat: listing.latitude,
+                    lng: listing.longitude
+                });
+            }
+            return hasCoords;
+        });
+
+        console.log('HPHMap: Valid listings with coordinates:', validListings.length);
+
+        if (validListings.length === 0) {
+            console.warn('HPHMap: No listings with valid coordinates found');
+            return;
+        }
+
+        // Prepare GeoJSON data for clustering
+        const geojsonData = {
+            type: 'FeatureCollection',
+            features: validListings.map(listing => ({
+                type: 'Feature',
+                geometry: {
+                    type: 'Point',
+                    coordinates: [parseFloat(listing.longitude), parseFloat(listing.latitude)]
+                },
+                properties: {
+                    id: listing.id,
+                    title: listing.title || '',
+                    price: listing.price || 0,
+                    address: listing.street_address || '',
+                    status: listing.status || 'active',
+                    featured_image: listing.featured_image || '',
+                    bedrooms: listing.bedrooms || 0,
+                    bathrooms: listing.bathrooms || 0,
+                    square_feet: listing.square_feet || 0,
+                    permalink: listing.permalink || '#'
+                }
+            }))
+        };
+
+        console.log('HPHMap: GeoJSON prepared with', geojsonData.features.length, 'features');
+        console.log('HPHMap: Sample feature:', geojsonData.features[0]);
+
+
+        // Add source for clustering
+        try {
+            const sourceConfig = {
+                type: 'geojson',
+                data: geojsonData,
+                cluster: true,
+                clusterMaxZoom: options.clusterMaxZoom || 14,
+                clusterRadius: options.clusterRadius || 50
+            };
+
+            console.log('HPHMap: Adding source with config:', sourceConfig);
+            this.map.addSource('listings', sourceConfig);
+            console.log('HPHMap: Source added successfully');
+        } catch (error) {
+            console.error('HPHMap: Error adding source:', error);
+            return;
+        }
+
+        // Add cluster circles layer with brand colors
+        try {
+            const clusterLayerConfig = {
+                id: 'clusters',
+                type: 'circle',
+                source: 'listings',
+                filter: ['has', 'point_count'],
+                paint: {
+                    'circle-color': [
+                        'step',
+                        ['get', 'point_count'],
+                        colors.primary || '#2563eb',      // HPH brand primary for small clusters
+                        5,
+                        colors.secondary || '#06b6d4',    // HPH brand secondary for medium clusters
+                        10,
+                        colors.accent || '#dc2626'       // HPH brand accent for large clusters
+                    ],
+                    'circle-radius': [
+                        'step',
+                        ['get', 'point_count'],
+                        25,   // Larger base size for better visibility
+                        5,
+                        35,   // Medium clusters
+                        10,
+                        45    // Large clusters
+                    ],
+                    'circle-stroke-width': 3,
+                    'circle-stroke-color': '#ffffff',
+                    'circle-opacity': 0.9
+                }
+            };
+
+            console.log('HPHMap: Adding cluster layer with config:', clusterLayerConfig);
+            this.map.addLayer(clusterLayerConfig);
+            console.log('HPHMap: Cluster layer added successfully');
+        } catch (error) {
+            console.error('HPHMap: Error adding cluster layer:', error);
+            return;
+        }
+
+        // Add cluster count labels with better styling
+        this.map.addLayer({
+            id: 'cluster-count',
+            type: 'symbol',
+            source: 'listings',
+            filter: ['has', 'point_count'],
+            layout: {
+                'text-field': '{point_count}',
+                'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+                'text-size': 16,
+                'text-anchor': 'center'
+            },
+            paint: {
+                'text-color': '#ffffff',
+                'text-halo-color': 'rgba(0, 0, 0, 0.3)',
+                'text-halo-width': 1
+            }
+        });
+
+        // Add individual unclustered points with better brand styling
+        try {
+            const unclusteredLayerConfig = {
+                id: 'unclustered-point',
+                type: 'circle',
+                source: 'listings',
+                filter: ['!', ['has', 'point_count']],
+                paint: {
+                    'circle-color': [
+                        'match',
+                        ['get', 'status'],
+                        'active', colors.secondary || '#10b981',     // HPH green for active
+                        'pending', colors.warning || '#f59e0b',     // HPH warning for pending
+                        'sold', colors.muted || '#6b7280',          // HPH muted for sold
+                        colors.primary || '#2563eb'                 // HPH primary default
+                    ],
+                    'circle-radius': 12,         // Larger for better visibility
+                    'circle-stroke-width': 3,
+                    'circle-stroke-color': '#ffffff',
+                    'circle-opacity': 0.9
+                }
+            };
+
+            console.log('HPHMap: Adding unclustered point layer with config:', unclusteredLayerConfig);
+            this.map.addLayer(unclusteredLayerConfig);
+            console.log('HPHMap: Unclustered point layer added successfully');
+        } catch (error) {
+            console.error('HPHMap: Error adding unclustered point layer:', error);
+            return;
+        }
+
+        // Remove price labels from individual points - details will show in popup instead
+
+        // Add click handlers
+        console.log('HPHMap: Adding cluster event handlers...');
+        this.addClusterEventHandlers(options);
+
+        // Fit bounds to show all markers
+        if (options.fitBounds && geojsonData.features.length > 0) {
+            console.log('HPHMap: Fitting bounds to show all markers...');
+            this.fitToGeoJSON(geojsonData);
+        }
+
+        console.log('HPHMap: Clustered markers setup complete');
+    }
+
+    /**
+     * Highlight a specific listing marker
+     */
+    highlightListingMarker(listingId) {
+        if (!this.map || !listingId) return;
+
+        // Remove any existing highlight
+        this.unhighlightAllMarkers();
+
+        // Add highlight source if it doesn't exist
+        if (!this.map.getSource('highlight-marker')) {
+            this.map.addSource('highlight-marker', {
+                type: 'geojson',
+                data: {
+                    type: 'FeatureCollection',
+                    features: []
+                }
+            });
+
+            // Add highlight layer
+            this.map.addLayer({
+                id: 'highlight-marker-circle',
+                type: 'circle',
+                source: 'highlight-marker',
+                paint: {
+                    'circle-radius': 20,
+                    'circle-color': 'rgba(255, 255, 255, 0.8)',
+                    'circle-stroke-width': 4,
+                    'circle-stroke-color': '#ff6b35'
+                }
+            });
+        }
+
+        // Find the listing in our GeoJSON data
+        const listingsSource = this.map.getSource('listings');
+        if (listingsSource && listingsSource._data) {
+            const targetFeature = listingsSource._data.features.find(feature => 
+                feature.properties.id == listingId
+            );
+
+            if (targetFeature) {
+                // Update highlight source with the target feature
+                this.map.getSource('highlight-marker').setData({
+                    type: 'FeatureCollection',
+                    features: [targetFeature]
+                });
+
+                // Pan to the marker
+                this.map.easeTo({
+                    center: targetFeature.geometry.coordinates,
+                    zoom: Math.max(this.map.getZoom(), 16),
+                    duration: 1000
+                });
+            }
+        }
+    }
+
+    /**
+     * Remove highlight from all markers
+     */
+    unhighlightAllMarkers() {
+        if (!this.map) return;
+
+        try {
+            if (this.map.getSource('highlight-marker')) {
+                this.map.getSource('highlight-marker').setData({
+                    type: 'FeatureCollection',
+                    features: []
+                });
+            }
+        } catch (error) {
+        }
+    }
+
+    /**
+     * Show popup for a specific listing
+     */
+    showListingPopup(listingId) {
+        if (!this.map || !listingId) return;
+
+        // Find the listing in our GeoJSON data
+        const listingsSource = this.map.getSource('listings');
+        if (listingsSource && listingsSource._data) {
+            const targetFeature = listingsSource._data.features.find(feature => 
+                feature.properties.id == listingId
+            );
+
+            if (targetFeature) {
+                const popup = this.createListingPopupFromFeature(
+                    targetFeature.properties, 
+                    targetFeature.geometry.coordinates
+                );
+                popup.addTo(this.map);
+            }
+        }
+    }
+
+    /**
+     * Add event handlers for clustered markers
+     */
+    addClusterEventHandlers(options = {}) {
+        // Click on cluster to zoom in
+        this.map.on('click', 'clusters', (e) => {
+            const features = this.map.queryRenderedFeatures(e.point, {
+                layers: ['clusters']
+            });
+
+            const clusterId = features[0].properties.cluster_id;
+            this.map.getSource('listings').getClusterExpansionZoom(
+                clusterId,
+                (err, zoom) => {
+                    if (err) return;
+
+                    this.map.easeTo({
+                        center: features[0].geometry.coordinates,
+                        zoom: zoom
+                    });
+                }
+            );
+        });
+
+        // Click on individual point to show popup
+        this.map.on('click', 'unclustered-point', (e) => {
+            const features = e.features[0];
+            const listing = features.properties;
+            
+            if (options.showPopup) {
+                const popup = this.createListingPopupFromFeature(listing, e.lngLat);
+                popup.addTo(this.map);
+            }
+
+            // Trigger custom event for external handling and sidebar synchronization
+            this.map.fire('listing-click', {
+                listing: listing,
+                coordinates: e.lngLat
+            });
+
+            // Dispatch custom event for sidebar synchronization
+            document.dispatchEvent(new CustomEvent('hph-map-listing-click', {
+                detail: {
+                    listingId: listing.id,
+                    listing: listing,
+                    coordinates: e.lngLat
+                }
+            }));
+        });
+
+        // Change cursor on hover
+        this.map.on('mouseenter', 'clusters', () => {
+            this.map.getCanvas().style.cursor = 'pointer';
+        });
+
+        this.map.on('mouseleave', 'clusters', () => {
+            this.map.getCanvas().style.cursor = '';
+        });
+
+        this.map.on('mouseenter', 'unclustered-point', () => {
+            this.map.getCanvas().style.cursor = 'pointer';
+        });
+
+        this.map.on('mouseleave', 'unclustered-point', () => {
+            this.map.getCanvas().style.cursor = '';
+        });
+    }
+
+    /**
+     * Create popup from GeoJSON feature
+     */
+    createListingPopupFromFeature(listing, coordinates) {
+        const popup = new mapboxgl.Popup({
+            offset: 25,
+            closeButton: true,
+            closeOnClick: false,
+            className: 'hph-listing-popup hph-map-card-popup'
+        });
+
+        // Get HPH theme colors
+        const colors = this.getHPHColors();
+
+        const price = listing.price ? this.formatPrice(listing.price) : '';
+        const image = listing.featured_image || '';
+        const title = listing.title || listing.address || 'Property';
+        const streetAddress = listing.address || listing.street_address || '';
+        
+        // Status configuration with HPH colors
+        const statusConfig = {
+            'active': { text: 'Active', color: colors.secondary },
+            'pending': { text: 'Pending', color: colors.warning },
+            'sold': { text: 'Sold', color: colors.muted },
+            'new': { text: 'New', color: colors.primary }
+        };
+        
+        const status = listing.status ? statusConfig[listing.status.toLowerCase()] : null;
+
+        // Improved popup content with HPH colors
+        const popupContent = `
+            <div style="width: 320px; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.15);">
+                ${image && !image.includes('placeholder') ? `
+                    <div style="position: relative; height: 200px; overflow: hidden;">
+                        <img src="${image}" alt="${title}" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
+                        ${status ? `
+                            <div style="position: absolute; top: 12px; left: 12px;">
+                                <span style="background: ${status.color}; color: white; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600;">${status.text}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                ` : ''}
+                
+                <div style="padding: 16px;">
+                    <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: #1f2937;">${title}</h3>
+                    
+                    ${streetAddress ? `
+                        <p style="margin: 0 0 12px 0; font-size: 14px; color: #6b7280;">${streetAddress}</p>
+                    ` : ''}
+                    
+                    <div style="font-size: 24px; font-weight: 700; color: ${colors.primary}; margin-bottom: 12px;">${price}</div>
+                    
+                    ${listing.bedrooms || listing.bathrooms || listing.square_feet ? `
+                        <div style="display: flex; gap: 16px; font-size: 14px; color: #6b7280; margin-bottom: 16px;">
+                            ${listing.bedrooms ? `<div style="display: flex; align-items: center; gap: 4px;"><i class="fas fa-bed"></i><span>${listing.bedrooms} bed</span></div>` : ''}
+                            ${listing.bathrooms ? `<div style="display: flex; align-items: center; gap: 4px;"><i class="fas fa-bath"></i><span>${listing.bathrooms} bath</span></div>` : ''}
+                            ${listing.square_feet ? `<div style="display: flex; align-items: center; gap: 4px;"><i class="fas fa-ruler-combined"></i><span>${Number(listing.square_feet).toLocaleString()} sqft</span></div>` : ''}
+                        </div>
+                    ` : ''}
+                    
+                    ${listing.permalink ? `
+                        <a href="${listing.permalink}" style="display: inline-block; background: ${colors.primary}; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 600;">
+                            View Details →
+                        </a>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+
+        popup.setLngLat(coordinates).setHTML(popupContent);
+        return popup;
+    }
+
+    /**
+     * Fit map to GeoJSON bounds
+     */
+    fitToGeoJSON(geojsonData) {
+        if (!geojsonData.features || geojsonData.features.length === 0) return;
+
+        const bounds = new mapboxgl.LngLatBounds();
+        geojsonData.features.forEach(feature => {
+            bounds.extend(feature.geometry.coordinates);
+        });
+
+        this.map.fitBounds(bounds, {
+            padding: 50,
+            maxZoom: 15
+        });
+    }
+
+    /**
+     * Clear all markers and clustering layers from the map
+     */
+    clearMapMarkers() {
+        if (!this.map) return;
+        
+        // Remove individual markers
+        if (this.markers && this.markers.length > 0) {
+            this.markers.forEach(markerObj => {
+                if (markerObj.marker && markerObj.marker.remove) {
+                    markerObj.marker.remove();
+                }
+            });
+            this.markers = [];
+        }
+
+        // Remove clustering layers and source
+        try {
+            if (this.map.getLayer('clusters')) {
+                this.map.removeLayer('clusters');
+            }
+            if (this.map.getLayer('cluster-count')) {
+                this.map.removeLayer('cluster-count');
+            }
+            if (this.map.getLayer('unclustered-point')) {
+                this.map.removeLayer('unclustered-point');
+            }
+            if (this.map.getLayer('unclustered-point-label')) {
+                this.map.removeLayer('unclustered-point-label');
+            }
+            if (this.map.getSource('listings')) {
+                this.map.removeSource('listings');
+            }
+        } catch (error) {
+        }
     }
 
     /**
@@ -252,7 +770,6 @@ class HPHMap {
     createListingMarkerElement(listing, options) {
         // This method is deprecated - we now use simple Mapbox default markers
         // instead of complex custom elements to avoid hover issues
-        console.warn('HPH Map: createListingMarkerElement is deprecated, using simple Mapbox markers instead');
         return null;
     }
 
@@ -267,6 +784,9 @@ class HPHMap {
             className: 'hph-listing-popup hph-map-card-popup'
         });
 
+        // Get HPH theme colors
+        const colors = this.getHPHColors();
+
         const price = listing.price ? this.formatPrice(listing.price) : '';
         const image = listing.featured_image || '';
         
@@ -274,63 +794,93 @@ class HPHMap {
         const streetAddress = listing.street_address || '';
         const location = this.formatLocation(listing);
         
-        // Status configuration matching sidebar cards with BEM methodology
+        // Status configuration with HPH colors
         const statusConfig = {
-            'active': { text: 'Active', class: 'hph-map-card__badge--success' },
-            'pending': { text: 'Pending', class: 'hph-map-card__badge--warning' },
-            'sold': { text: 'Sold', class: 'hph-map-card__badge--danger' },
-            'new': { text: 'New', class: 'hph-map-card__badge--primary' }
+            'active': { text: 'Active', color: colors.secondary },
+            'pending': { text: 'Pending', color: colors.warning },
+            'sold': { text: 'Sold', color: colors.muted },
+            'new': { text: 'New', color: colors.primary }
         };
         
         const status = listing.status ? statusConfig[listing.status.toLowerCase()] : null;
 
-        // Popup content using framework classes for consistency
+        // Popup content using improved framework classes for consistency
         const popupContent = `
-            <div class="hph-listing-card hph-listing-card--map">
-                <!-- Image Section using framework classes -->
-                <div class="hph-card-map__image">
-                    ${image ? `
+            <div class="hph-card hph-card--elevated hph-bg-white hph-overflow-hidden hph-max-w-80">
+                ${image && !image.includes('placeholder') ? `
+                    <div class="hph-relative hph-h-48 hph-overflow-hidden">
                         <img src="${image}" 
-                             alt="${streetAddress}" 
-                             loading="lazy">
-                    ` : `
-                        <div class="hph-card__image-placeholder">
-                            <i class="fas fa-home"></i>
-                        </div>
-                    `}
-                    
-                    ${status ? `
-                        <div class="hph-card__status hph-card__status--${listing.status?.toLowerCase() || 'active'}">
-                            ${status.text}
+                             alt="${listing.title || streetAddress || 'Property'}" 
+                             class="hph-w-full hph-h-full hph-object-cover hph-transition-transform hph-duration-300 hover:hph-scale-105"
+                             loading="lazy"
+                             onerror="this.parentElement.style.display='none'">
+                        
+                        ${status ? `
+                            <div class="hph-absolute hph-top-3 hph-left-3">
+                                <span class="hph-inline-flex hph-items-center hph-px-2 hph-py-1 hph-rounded-md hph-text-xs hph-font-semibold hph-shadow-sm"
+                                      style="background-color: ${status.color}; color: white;">
+                                    ${status.text}
+                                </span>
+                            </div>
+                        ` : ''}
+                        
+                        <button class="hph-absolute hph-top-3 hph-right-3 hph-w-9 hph-h-9 hph-bg-white hph-rounded-full hph-flex hph-items-center hph-justify-center hph-text-gray-500 hover:hph-text-red-500 hph-transition-colors hph-shadow-sm" 
+                                data-listing-id="${listing.id || ''}" 
+                                onclick="event.stopPropagation();">
+                            <i class="fas fa-heart hph-text-sm"></i>
+                        </button>
+                    </div>
+                ` : ''}
+                
+                <div class="hph-p-4">
+                    <!-- Price -->
+                    ${price ? `
+                        <div class="hph-font-bold hph-text-xl hph-mb-2" style="color: ${colors.primary};">
+                            ${price}
                         </div>
                     ` : ''}
                     
-                    <button class="hph-card__favorite" data-listing-id="${listing.id || ''}">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-                
-                <!-- Content Section using framework classes -->
-                <div class="hph-card-map__content">
-                    <!-- Price -->
-                    ${price ? `<div class="hph-card-map__price">${price}</div>` : ''}
+                    <!-- Street Address -->
+                    <h3 class="hph-text-gray-900 hph-font-semibold hph-text-base hph-mb-1 hph-line-clamp-1">
+                        ${streetAddress || listing.title || 'Property Address'}
+                    </h3>
                     
-                    <!-- Address -->
-                    <div class="hph-card-map__address">
-                        ${streetAddress || 'Property Listing'}
-                    </div>
+                    <!-- Location (if different from street address) -->
+                    ${location && location !== streetAddress ? `
+                        <p class="hph-text-sm hph-text-gray-500 hph-mb-3">${location}</p>
+                    ` : ''}
                     
-                    <!-- Features -->
-                    <div class="hph-card-map__details">
-                        ${listing.bedrooms ? `<span>${listing.bedrooms} beds</span>` : ''}
-                        ${listing.bathrooms ? `<span>${listing.bathrooms} baths</span>` : ''}
-                        ${listing.square_feet ? `<span>${this.formatNumber(listing.square_feet)} sq ft</span>` : ''}
-                    </div>
+                    <!-- Property Details -->
+                    ${listing.bedrooms || listing.bathrooms || listing.square_feet ? `
+                        <div class="hph-flex hph-items-center hph-gap-4 hph-text-sm hph-text-gray-600 hph-mb-4">
+                            ${listing.bedrooms ? `
+                                <div class="hph-flex hph-items-center hph-gap-1">
+                                    <i class="fas fa-bed hph-text-gray-500"></i>
+                                    <span>${listing.bedrooms} bed${listing.bedrooms != 1 ? 's' : ''}</span>
+                                </div>
+                            ` : ''}
+                            ${listing.bathrooms ? `
+                                <div class="hph-flex hph-items-center hph-gap-1">
+                                    <i class="fas fa-bath hph-text-gray-500"></i>
+                                    <span>${listing.bathrooms} bath${listing.bathrooms != 1 ? 's' : ''}</span>
+                                </div>
+                            ` : ''}
+                            ${listing.square_feet ? `
+                                <div class="hph-flex hph-items-center hph-gap-1">
+                                    <i class="fas fa-ruler-combined hph-text-gray-500"></i>
+                                    <span>${this.formatNumber(listing.square_feet)} sq ft</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    ` : `<div class="hph-mb-4"></div>`}
                     
-                    <!-- Action Link -->
-                    <a href="${listing.permalink || '#'}" class="hph-card-map__link">
+                    <!-- Action Button -->
+                    <a href="${listing.permalink || '#'}" 
+                       class="hph-btn hph-w-full hph-text-center hph-py-3 hph-font-semibold hph-transition-all hph-duration-200 hover:hph-shadow-lg"
+                       style="background-color: ${colors.primary}; color: white; display: inline-block; padding: 8px 16px; border-radius: 6px; text-decoration: none;"
+                       onclick="event.stopPropagation();">
                         View Details
-                        <i class="fas fa-arrow-right"></i>
+                        <i class="fas fa-arrow-right hph-ml-2"></i>
                     </a>
                 </div>
             </div>
@@ -345,7 +895,6 @@ class HPHMap {
      */
     addPOIMarker(poi, options = {}) {
         if (!poi.latitude || !poi.longitude) {
-            console.warn('HPH Map: POI missing coordinates', poi);
             return null;
         }
 
@@ -377,7 +926,6 @@ class HPHMap {
      */
     createPOIMarkerElement(poi, options) {
         // This method is deprecated - we now use simple Mapbox default markers
-        console.warn('HPH Map: createPOIMarkerElement is deprecated, using simple Mapbox markers instead');
         return null;
     }
 
@@ -480,6 +1028,30 @@ class HPHMap {
         return this.markers.find(m => 
             m.id === id && (!type || m.type === type)
         );
+    }
+
+    /**
+     * Show configuration message when no Mapbox token is set
+     */
+    showConfigurationMessage() {
+        if (!this.container) return;
+
+        this.container.innerHTML = `
+            <div class="hph-map-error">
+                <div class="hph-map-error-icon">
+                    <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <div class="hph-map-error-message">
+                    <h4>Map Configuration Required</h4>
+                    <p>To enable map view, please configure your Mapbox access token in the Happy Place plugin settings.</p>
+                    <div style="margin-top: 1rem;">
+                        <small style="color: #666; font-style: italic;">
+                            Visit the Happy Place admin panel to add your Mapbox API key.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        `;
     }
 
     /**
@@ -691,7 +1263,6 @@ class HPHMap {
         );
         
         if (zipListings.length < 2) {
-            console.log('HPH Map: Not enough listings in zip code to create boundary');
             return;
         }
         
@@ -751,10 +1322,8 @@ class HPHMap {
                 }
             });
             
-            console.log(`HPH Map: Added boundary for zip code ${zipCode}`);
             
         } catch (error) {
-            console.error('HPH Map: Error adding zip boundary:', error);
         }
     }
     
@@ -809,7 +1378,43 @@ class HPHMap {
                 this.map.removeSource('zip-boundary');
             }
         } catch (error) {
-            console.error('HPH Map: Error removing zip boundary:', error);
+        }
+    }
+
+    /**
+     * Clear all markers from the map
+     */
+    clearMarkers() {
+        if (!this.map) return;
+        
+        // Clear individual markers if they exist
+        if (this.markers && this.markers.length > 0) {
+            this.markers.forEach(markerObj => {
+                if (markerObj.marker && markerObj.marker.remove) {
+                    markerObj.marker.remove();
+                }
+            });
+            this.markers = [];
+        }
+        
+        // Clear clustering layers and sources directly (not calling another method)
+        try {
+            if (this.map.getLayer('clusters')) {
+                this.map.removeLayer('clusters');
+            }
+            if (this.map.getLayer('cluster-count')) {
+                this.map.removeLayer('cluster-count');
+            }
+            if (this.map.getLayer('unclustered-point')) {
+                this.map.removeLayer('unclustered-point');
+            }
+            if (this.map.getLayer('unclustered-point-label')) {
+                this.map.removeLayer('unclustered-point-label');
+            }
+            if (this.map.getSource('listings')) {
+                this.map.removeSource('listings');
+            }
+        } catch (error) {
         }
     }
 
@@ -818,7 +1423,7 @@ class HPHMap {
      */
     destroy() {
         if (this.map) {
-            this.clearMarkers();
+            this.clearMapMarkers();
             this.removeZipCodeBoundary();
             this.map.remove();
             this.map = null;
@@ -829,8 +1434,12 @@ class HPHMap {
 // Auto-initialize maps with data attributes
 document.addEventListener('DOMContentLoaded', () => {
     const mapContainers = document.querySelectorAll('[data-hph-map]');
-    
+
     mapContainers.forEach(container => {
+        // Skip containers managed by archive-listing-enhanced.js
+        if (container.hasAttribute('data-archive-map')) {
+            return;
+        }
         try {
             // Parse map options from data attributes
             const options = {};
@@ -876,14 +1485,16 @@ document.addEventListener('DOMContentLoaded', () => {
             container.hphMap = map;
             
         } catch (error) {
-            console.error('HPH Map: Auto-initialization error', error);
         }
     });
 });
 
-// Export for module use
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = HPHMap;
-} else {
-    window.HPHMap = HPHMap;
+    // End of HPHMap class declaration guard
+    
+    // Export for module use
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports = HPHMap;
+    } else {
+        window.HPHMap = HPHMap;
+    }
 }

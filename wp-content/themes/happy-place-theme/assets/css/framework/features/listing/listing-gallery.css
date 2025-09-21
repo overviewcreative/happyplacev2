@@ -192,10 +192,9 @@
     border-top: 1px solid var(--hph-color-gray-200);
 }
 
-.hph-gallery__actions .hph-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--hph-spacing-xs);
+/* Gallery Button Variant - Uses framework tokens */
+.hph-btn--gallery {
+    gap: var(--hph-gap-xs);
 }
 
 /* Utility Classes

@@ -22,18 +22,14 @@ class Bootstrap {
      * Initialize the plugin
      */
     public static function init(): void {
-        error_log('Happy Place: Bootstrap::init() called');
-        
         // Set up autoloader FIRST
         self::setup_autoloader();
-        
+
         // Load helper functions
         self::load_helpers();
-        
+
         // Set up hooks (don't initialize components yet!)
         self::setup_hooks();
-        
-        error_log('Happy Place: Bootstrap setup complete');
     }
     
     /**
@@ -108,14 +104,18 @@ class Bootstrap {
         add_action('wp_ajax_run_user_system_migration', [__CLASS__, 'handle_migration_ajax']);
         add_action('wp_ajax_clear_user_system_crons', [__CLASS__, 'handle_clear_crons_ajax']);
         
-        error_log('Happy Place: Hooks registered');
+        if (HP_DEBUG) {
+            error_log('Happy Place: Hooks registered');
+        }
     }
     
     /**
      * Initialize core components (called on 'init' action)
      */
     public static function init_core(): void {
-        error_log('Happy Place: init_core() called on init action');
+        if (HP_DEBUG) {
+            error_log('Happy Place: init_core() called on init action');
+        }
         
         // Manually load Configuration Manager if not already loaded
         $config_manager_file = HP_INCLUDES_DIR . 'core/class-configuration-manager.php';
@@ -126,7 +126,9 @@ class Bootstrap {
         // Initialize Configuration Manager first (this handles all API keys and settings)
         if (class_exists('HappyPlace\\Core\\ConfigurationManager')) {
             \HappyPlace\Core\ConfigurationManager::get_instance();
-            error_log('Happy Place: Configuration Manager initialized');
+            if (HP_DEBUG) {
+                error_log('Happy Place: Configuration Manager initialized');
+            }
         }
         
         // Initialize integrations after Configuration Manager
@@ -139,20 +141,26 @@ class Bootstrap {
         if (class_exists('HappyPlace\\Core\\PostTypes')) {
             $post_types = \HappyPlace\Core\PostTypes::get_instance();
             $post_types->init();
-            error_log('Happy Place: Post types initialized');
+            if (HP_DEBUG) {
+                error_log('Happy Place: Post types initialized');
+            }
         }
         
         // Initialize Taxonomies
         if (class_exists('HappyPlace\\Core\\Taxonomies')) {
             $taxonomies = \HappyPlace\Core\Taxonomies::get_instance();
             $taxonomies->init();
-            error_log('Happy Place: Taxonomies initialized');
+            if (HP_DEBUG) {
+                error_log('Happy Place: Taxonomies initialized');
+            }
         }
         
         // Initialize Listing Title Automation (for auto-generating listing titles from address)
         if (class_exists('HappyPlace\\Core\\ListingTitleAutomation')) {
             \HappyPlace\Core\ListingTitleAutomation::get_instance();
-            error_log('Happy Place: Listing Title Automation initialized');
+            if (HP_DEBUG) {
+                error_log('Happy Place: Listing Title Automation initialized');
+            }
         }
         
         // Initialize Core Services
@@ -162,20 +170,26 @@ class Bootstrap {
         if (is_admin() && class_exists('HappyPlace\\Admin\\AdminMenu')) {
             $admin_menu = \HappyPlace\Admin\AdminMenu::get_instance();
             $admin_menu->init();
-            error_log('Happy Place: Admin menu initialized');
+            if (HP_DEBUG) {
+                error_log('Happy Place: Admin menu initialized');
+            }
         }
         
         // Initialize Email Settings Admin Page
         if (is_admin() && class_exists('HappyPlace\\Admin\\EmailSettings')) {
             new \HappyPlace\Admin\EmailSettings();
-            error_log('Happy Place: Email settings admin page initialized');
+            if (HP_DEBUG) {
+                error_log('Happy Place: Email settings admin page initialized');
+            }
         }
         
         // Initialize Admin Service Test (only in debug mode)
         if (is_admin() && HP_DEBUG && class_exists('HappyPlace\\Admin\\AdminServiceTest')) {
             $service_test = new \HappyPlace\Admin\AdminServiceTest();
             $service_test->init();
-            error_log('Happy Place: Admin service test initialized');
+            if (HP_DEBUG) {
+                error_log('Happy Place: Admin service test initialized');
+            }
         }
         
         // Initialize Form Handlers
@@ -197,7 +211,9 @@ class Bootstrap {
             
             if (class_exists('HappyPlace\\Integrations\\DashboardBridge')) {
                 $dashboard_bridge = \HappyPlace\Integrations\DashboardBridge::get_instance();
-                error_log('Happy Place: Dashboard bridge initialized');
+                if (HP_DEBUG) {
+                    error_log('Happy Place: Dashboard bridge initialized');
+                }
             }
         }
     }
@@ -210,14 +226,18 @@ class Bootstrap {
         if (class_exists('HappyPlace\\Services\\ListingService')) {
             $listing_service = new \HappyPlace\Services\ListingService();
             $listing_service->init();
-            error_log('Happy Place: Listing service initialized');
+            if (HP_DEBUG) {
+                error_log('Happy Place: Listing service initialized');
+            }
         }
         
         // Initialize Form Service
         if (class_exists('HappyPlace\\Services\\FormService')) {
             $form_service = new \HappyPlace\Services\FormService();
             $form_service->init();
-            error_log('Happy Place: Form service initialized');
+            if (HP_DEBUG) {
+                error_log('Happy Place: Form service initialized');
+            }
         }
         
         // Initialize Import Service
@@ -234,11 +254,11 @@ class Bootstrap {
             error_log('Happy Place: Export service initialized');
         }
         
-        // Initialize Lead Service
-        if (class_exists('HappyPlace\\Services\\LeadService')) {
-            $lead_service = new \HappyPlace\Services\LeadService();
-            $lead_service->init();
-            error_log('Happy Place: Lead service initialized');
+        // Initialize Unified Lead Service (replaces old LeadService)
+        if (class_exists('HappyPlace\\Services\\UnifiedLeadService')) {
+            $unified_lead_service = new \HappyPlace\Services\UnifiedLeadService();
+            $unified_lead_service->init();
+            error_log('Happy Place: Unified Lead Service initialized');
         }
         
         // Initialize User Role Service (before Agent Service)
@@ -260,6 +280,13 @@ class Bootstrap {
             $open_house_service = new \HappyPlace\Services\OpenHouseService();
             $open_house_service->init();
             error_log('Happy Place: Open House service initialized');
+        }
+
+        // Initialize Media Organization Service (add after Open House Service)
+        if (class_exists('HappyPlace\\Services\\MediaOrganizationService')) {
+        $media_service = new \HappyPlace\Services\MediaOrganizationService();
+        $media_service->init();
+        error_log('Happy Place: Media Organization service initialized');
         }
         
         // Initialize Address Intelligence Bridge (for auto-geocoding)
@@ -291,6 +318,40 @@ class Bootstrap {
             $form_router = new \HappyPlace\Services\FormRouter();
             $form_router->init();
             error_log('Happy Place: Form Router initialized');
+        }
+
+        // Initialize Unified Agent User Service (migrated from theme)
+        if (class_exists('HappyPlace\\Services\\UnifiedAgentUserService')) {
+            $agent_user_service = new \HappyPlace\Services\UnifiedAgentUserService();
+            $agent_user_service->init();
+            error_log('Happy Place: Unified Agent User Service initialized');
+        }
+
+        // Initialize Dashboard Service (migrated from theme)
+        if (class_exists('HappyPlace\\Services\\DashboardService')) {
+            $dashboard_service = new \HappyPlace\Services\DashboardService();
+            $dashboard_service->init();
+            if (HP_DEBUG) {
+                error_log('Happy Place: Dashboard Service initialized');
+            }
+        }
+
+        // Initialize Search Service (migrated from theme)
+        if (class_exists('HappyPlace\\Services\\SearchService')) {
+            $search_service = new \HappyPlace\Services\SearchService();
+            $search_service->init();
+            if (HP_DEBUG) {
+                error_log('Happy Place: Search Service initialized');
+            }
+        }
+
+        // Initialize User Interactions Service (migrated from theme)
+        if (class_exists('HappyPlace\\Services\\UserInteractionsService')) {
+            $user_interactions_service = new \HappyPlace\Services\UserInteractionsService();
+            $user_interactions_service->init();
+            if (HP_DEBUG) {
+                error_log('Happy Place: User Interactions Service initialized');
+            }
         }
     }
     

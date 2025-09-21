@@ -325,7 +325,7 @@ if (!$city_post && !$community_post) {
                         <!-- Call to Action -->
                         <div class="hph-magazine-cta hph-mt-xl">
                             <a href="<?php echo esc_url($city_url); ?>" 
-                               class="hph-btn hph-btn--primary hph-btn--lg">
+                               class="hph-btn hph-btn-primary hph-btn-lg">
                                 <span>Learn More About <?php echo esc_html($city_title); ?></span>
                                 <i class="fas fa-arrow-right hph-ml-2"></i>
                             </a>
@@ -462,7 +462,7 @@ if (!$city_post && !$community_post) {
                 
                 <div class="hph-card-footer hph-p-lg hph-bg-gray-50">
                     <a href="<?php echo esc_url($community_url); ?>" 
-                       class="hph-btn hph-btn--secondary hph-btn--full">
+                       class="hph-btn hph-btn-secondary w-full">
                         <i class="fas fa-users hph-mr-2"></i>
                         View Community Details
                     </a>

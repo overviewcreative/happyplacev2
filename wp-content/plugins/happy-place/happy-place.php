@@ -3,7 +3,7 @@
  * Plugin Name: Happy Place
  * Plugin URI: https://happyplace.com
  * Description: Comprehensive Real Estate Management Plugin
- * Version: 4.0.0
+ * Version: 1.0.0
  * Author: Happy Place Team
  * Author URI: https://happyplace.com
  * Text Domain: happy-place
@@ -20,19 +20,10 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Enable error reporting for debugging
-if (!defined('WP_DEBUG')) {
-    define('WP_DEBUG', true);
-}
-if (!defined('WP_DEBUG_LOG')) {
-    define('WP_DEBUG_LOG', true);
-}
-if (!defined('WP_DEBUG_DISPLAY')) {
-    define('WP_DEBUG_DISPLAY', true);
-}
+// Debug constants are controlled by wp-config.php environment settings
 
 // Define plugin constants
-define('HP_VERSION', '4.0.0');
+define('HP_VERSION', '1.0.0');
 define('HP_PLUGIN_FILE', __FILE__);
 define('HP_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('HP_PLUGIN_URL', plugin_dir_url(__FILE__));
@@ -45,8 +36,8 @@ define('HP_ASSETS_DIR', HP_PLUGIN_DIR . 'assets/');
 define('HP_ASSETS_URL', HP_PLUGIN_URL . 'assets/');
 define('HP_CONFIG_DIR', HP_PLUGIN_DIR . 'config/');
 
-// Debug/Development mode
-define('HP_DEBUG', true);
+// Debug mode based on WordPress environment
+define('HP_DEBUG', defined('WP_DEBUG') && WP_DEBUG);
 
 // Database
 global $wpdb;
@@ -54,9 +45,6 @@ define('HP_TABLE_PREFIX', $wpdb->prefix . 'hp_');
 
 // Security
 define('HP_AJAX_NONCE_KEY', 'hp_ajax_security');
-
-// Test if we can even get here
-error_log('Happy Place: Plugin file loaded');
 
 // Try to load the bootstrap file
 $bootstrap_file = HP_INCLUDES_DIR . 'class-bootstrap.php';
@@ -68,10 +56,10 @@ require_once $bootstrap_file;
 
 // Initialize the plugin
 try {
-    error_log('Happy Place: Attempting to initialize bootstrap');
     \HappyPlace\Bootstrap::init();
-    error_log('Happy Place: Bootstrap initialized successfully');
 } catch (Exception $e) {
-    error_log('Happy Place Fatal Error: ' . $e->getMessage());
+    if (HP_DEBUG) {
+        error_log('Happy Place Fatal Error: ' . $e->getMessage());
+    }
     wp_die('Happy Place Plugin Error: ' . $e->getMessage());
 }

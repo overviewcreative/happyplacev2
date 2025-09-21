@@ -118,14 +118,12 @@
         // === INITIALIZATION ===
         
         init: function() {
-            console.log('🚀 HPH Forms: Initializing Unified Form System...');
             
             this.setupNonce();
             this.bindEvents();
             this.setupFormEnhancements();
             this.initializeExistingForms();
             
-            console.log('✅ HPH Forms: Unified Form System initialized');
         },
         
         // Setup AJAX nonce
@@ -140,8 +138,6 @@
                                  '/wp-admin/admin-ajax.php';
                                  
             if (this.config.debug) {
-                console.log('🔧 Form nonce:', this.config.nonce ? 'Found' : 'Missing');
-                console.log('🔧 AJAX URL:', this.config.ajaxUrl);
             }
         },
         
@@ -179,15 +175,13 @@
             
             // Prevent duplicate submissions
             if ($form.data('hph-submitting')) {
-                console.warn('🚨 HPH.Forms: Form is already being submitted, ignoring duplicate');
                 return false;
             }
             
             const formData = this.getFormData($form);
             
-            console.log('📤 HPH.Forms: Processing form submission (unified system)');
             if (this.config.debug) {
-                console.log('📤 Form submission details:', {
+                console.log('Form submission debug:', {
                     form: $form[0],
                     data: formData,
                     routeType: $form.data('route-type')
@@ -227,19 +221,27 @@
         },
         
         getSubmissionMethod: function($form, routeType) {
-            // Determine the correct AJAX action based on form type
+            // Check if form has specific action set
+            const formAction = $form.find('input[name="action"]').val();
+            if (formAction) {
+                return formAction;
+            }
+
+            // Route ALL forms through the plugin's unified FormRouter
+            // This consolidates all form processing in the plugin instead of theme
             const routeMap = {
-                'contact': 'hph_handle_contact_form',
-                'property-inquiry': 'hph_handle_property_inquiry',
-                'agent-contact': 'hph_handle_agent_contact',
-                'valuation-request': 'hph_handle_valuation_request',
-                'showing-request': 'hph_handle_showing_request',
-                'general-inquiry': 'hph_handle_general_inquiry',
-                'listing-form': 'hph_handle_listing_form',
-                'lead-form': 'hph_handle_lead_form'
+                'contact': 'hph_route_form',
+                'property-inquiry': 'hph_route_form',
+                'agent-contact': 'hph_route_form',
+                'valuation-request': 'hph_route_form',
+                'showing-request': 'hph_route_form',
+                'general-inquiry': 'hph_route_form',
+                'listing-form': 'hph_route_form',
+                'lead-form': 'hph_route_form',
+                'lead_capture': 'hph_route_form'
             };
-            
-            return routeMap[routeType] || 'hph_handle_form_submission';
+
+            return routeMap[routeType] || 'hph_route_form';
         },
         
         submitForm: function($form, formData, action) {
@@ -279,7 +281,6 @@
             $form.removeData('hph-submitting');
             
             if (response.success) {
-                console.log('✅ HPH.Forms: Form submitted successfully');
                 this.showFormMessage($form, response.data.message || 'Form submitted successfully!', 'success');
                 this.resetForm({ target: $form[0] });
                 
@@ -301,7 +302,6 @@
             // Reset submitting flag
             $form.removeData('hph-submitting');
             
-            console.error('❌ HPH.Forms: Form submission error:', errorMessage);
             this.showFormMessage($form, errorMessage, 'error');
             
             // Trigger custom error event

@@ -482,7 +482,11 @@
 .hph-text-gray-100 { color: var(--hph-gray-100); }
 .hph-text-gray-200 { color: var(--hph-gray-200); }
 .hph-text-gray-300 { color: var(--hph-gray-300); }
-.hph-text-gray-400 { color: var(--hph-gray-400); }
+.hph-text-gray-400 { 
+  color: var(--hph-gray-700); /* ACCESSIBILITY: Changed from gray-400 to gray-700 for better contrast */
+  /* Original: var(--hph-gray-400) = #7bc0dc - Failed WCAG AA (2.8:1 contrast) */
+  /* Improved: var(--hph-gray-700) = #326d89 - Meets WCAG AA (4.5:1+ contrast) */
+}
 .hph-text-gray-500 { color: var(--hph-gray-500); }
 .hph-text-gray-600 { color: var(--hph-gray-600); }
 .hph-text-gray-700 { color: var(--hph-gray-700); }

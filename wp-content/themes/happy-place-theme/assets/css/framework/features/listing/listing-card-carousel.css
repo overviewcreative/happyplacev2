@@ -1,0 +1,397 @@
+/**
+ * Listing Card Carousel & Gallery Styles
+ * Image carousel, photo galleries, and media functionality for listing cards
+ *
+ * @package HappyPlaceTheme
+ * @since 3.0.0
+ */
+
+/* ============================================================================
+   CARD CAROUSEL SYSTEM
+   ============================================================================ */
+
+/* Background Carousel - covers entire card */
+.hph-card__carousel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.hph-card__carousel-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 500ms ease-in-out;
+}
+
+.hph-card__carousel-slide--active {
+    opacity: 1;
+}
+
+/* Gradient overlay for readability */
+.hph-card__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.1) 0%,
+        rgba(0, 0, 0, 0.2) 30%,
+        rgba(0, 0, 0, 0.5) 70%,
+        rgba(0, 0, 0, 0.8) 100%
+    );
+    z-index: 2;
+    transition: opacity 0.3s ease;
+}
+
+.hph-listing-card--grid:hover .hph-card__overlay {
+    background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.2) 0%,
+        rgba(0, 0, 0, 0.3) 30%,
+        rgba(0, 0, 0, 0.6) 70%,
+        rgba(0, 0, 0, 0.85) 100%
+    );
+}
+
+/* ============================================================================
+   CARD IMAGE SECTION & CAROUSEL
+   ============================================================================ */
+.hph-card__image-wrapper {
+    position: relative;
+    overflow: hidden;
+    background: var(--hph-gray-100);
+    aspect-ratio: var(--hph-card-image-ratio-standard);
+}
+
+.hph-card__image-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.hph-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+}
+
+/* Navigation arrows */
+.hph-card__nav {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 1rem;
+    z-index: 4;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.hph-listing-card--grid:hover .hph-card__nav {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.hph-card__nav-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: none;
+    border-radius: 50%;
+    color: var(--hph-gray-700);
+    cursor: pointer;
+    transition: var(--hph-card-transition);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.hph-card__nav-btn:hover {
+    background: var(--hph-white);
+    transform: scale(1.1);
+}
+
+.hph-card__nav-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.hph-card__nav-btn i {
+    font-size: 0.875rem;
+}
+
+/* Carousel navigation for cards */
+.hph-card__carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    color: var(--hph-gray-700);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    opacity: 0;
+    z-index: 3;
+}
+
+.hph-card__carousel-nav:hover {
+    background: var(--hph-white);
+    color: var(--hph-primary);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.hph-card__carousel-nav--prev {
+    left: 0.5rem;
+}
+
+.hph-card__carousel-nav--next {
+    right: 0.5rem;
+}
+
+.hph-card__image-wrapper:hover .hph-card__carousel-nav {
+    opacity: 1;
+}
+
+.hph-card__carousel-nav i {
+    font-size: 0.75rem;
+}
+
+/* ============================================================================
+   PHOTO COUNT & INDICATORS
+   ============================================================================ */
+
+/* Photo count badge */
+.hph-card__photo-count {
+    position: absolute;
+    bottom: 0.75rem;
+    right: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    background: rgba(0, 0, 0, 0.75);
+    color: var(--hph-white);
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    z-index: 2;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.hph-card__photo-count:hover {
+    background: rgba(0, 0, 0, 0.85);
+    transform: translateY(-2px);
+}
+
+.hph-card__photo-count i {
+    font-size: 0.75rem;
+}
+
+.hph-card__current-photo {
+    font-weight: 700;
+}
+
+/* Virtual tour indicator */
+.hph-card__virtual-tour {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.375rem 0.625rem;
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--hph-primary);
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(81, 186, 224, 0.3);
+    z-index: 2;
+}
+
+.hph-card__virtual-tour i {
+    font-size: 0.875rem;
+}
+
+/* ============================================================================
+   IMAGE LOADING & EFFECTS
+   ============================================================================ */
+
+/* Loading skeleton for images */
+.hph-card__image-skeleton {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+        var(--hph-gray-200) 0%,
+        var(--hph-gray-100) 50%,
+        var(--hph-gray-200) 100%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Image overlay gradient */
+.hph-card__image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.hph-listing-card:hover .hph-card__image-overlay {
+    opacity: 1;
+}
+
+/* ============================================================================
+   GALLERY VIEW SPECIFIC
+   ============================================================================ */
+.hph-listing-card--gallery {
+    position: relative;
+    aspect-ratio: var(--hph-card-image-ratio-standard);
+}
+
+.hph-listing-card--gallery:hover .hph-card-gallery__overlay {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.hph-card-gallery__link {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.hph-card-gallery__image {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.hph-card-gallery__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hph-card-gallery__overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem;
+    background: linear-gradient(to top,
+        rgba(0, 0, 0, 0.95) 0%,
+        rgba(0, 0, 0, 0.7) 50%,
+        transparent 100%);
+    color: var(--hph-white);
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.hph-card-gallery__price {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hph-card-gallery__address {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.hph-card-gallery__details {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.875rem;
+    opacity: 0.95;
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================ */
+
+/* Mobile */
+@media (max-width: 768px) {
+    .hph-card__nav {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .hph-card__nav-btn {
+        width: 28px;
+        height: 28px;
+    }
+
+    .hph-listing-card--gallery {
+        aspect-ratio: var(--hph-card-image-ratio-wide);
+    }
+
+    .hph-card__photo-count {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.625rem;
+    }
+}
+
+/* ============================================================================
+   ACCESSIBILITY
+   ============================================================================ */
+@media (prefers-reduced-motion: reduce) {
+    .hph-card__carousel-slide,
+    .hph-card-gallery__overlay {
+        transition: none;
+    }
+
+    @keyframes skeleton-loading {
+        from, to { background-position: 200% 0; }
+    }
+}

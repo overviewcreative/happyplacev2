@@ -194,26 +194,53 @@ $hero_id = 'hero-' . $hero_args['post_id'];
                                 'hph-tracking-wide'
                             ];
                             
-                            // Status-specific colors
-                            switch ($post_data['status']) {
-                                case 'active':
-                                case 'available':
-                                    $status_classes = array_merge($status_classes, ['hph-bg-success-600', 'hph-text-white']);
-                                    break;
-                                case 'sold':
-                                case 'rented':
-                                    $status_classes = array_merge($status_classes, ['hph-bg-gray-600', 'hph-text-white']);
-                                    break;
-                                case 'pending':
-                                    $status_classes = array_merge($status_classes, ['hph-bg-warning-600', 'hph-text-white']);
-                                    break;
-                                default:
-                                    $status_classes = array_merge($status_classes, ['hph-bg-primary-600', 'hph-text-white']);
+                            // Get enhanced badges from bridge system
+                            $single_hero_badges = [];
+                            if ($hero_args['post_type'] === 'listing' && function_exists('hpt_bridge_get_comprehensive_badges')) {
+                                $single_hero_badges = hpt_bridge_get_comprehensive_badges($hero_args['post_id'], 2);
                             }
+
+                            if (!empty($single_hero_badges)) :
+                                foreach ($single_hero_badges as $badge) :
+                                    // Map badge variants to CSS classes
+                                    $badge_classes = $status_classes;
+                                    switch ($badge['variant']) {
+                                        case 'success':
+                                            $badge_classes = array_merge($badge_classes, ['hph-bg-success-600', 'hph-text-white']);
+                                            break;
+                                        case 'warning':
+                                            $badge_classes = array_merge($badge_classes, ['hph-bg-warning-600', 'hph-text-white']);
+                                            break;
+                                        case 'error':
+                                            $badge_classes = array_merge($badge_classes, ['hph-bg-red-600', 'hph-text-white']);
+                                            break;
+                                        case 'info':
+                                            $badge_classes = array_merge($badge_classes, ['hph-bg-blue-600', 'hph-text-white']);
+                                            break;
+                                        case 'primary':
+                                            $badge_classes = array_merge($badge_classes, ['hph-bg-primary-600', 'hph-text-white']);
+                                            break;
+                                        default:
+                                            $badge_classes = array_merge($badge_classes, ['hph-bg-gray-600', 'hph-text-white']);
+                                    }
                             ?>
-                            <span class="<?php echo esc_attr(implode(' ', $status_classes)); ?>">
+                            <span class="<?php echo esc_attr(implode(' ', $badge_classes)); ?>">
+                                <?php echo esc_html($badge['text']); ?>
+                            </span>
+                            <?php
+                                endforeach;
+                            else :
+                                // Fallback to original status display if no enhanced badges
+                                if (!empty($post_data['status'])) :
+                                    $fallback_classes = array_merge($status_classes, ['hph-bg-primary-600', 'hph-text-white']);
+                            ?>
+                            <span class="<?php echo esc_attr(implode(' ', $fallback_classes)); ?>">
                                 <?php echo esc_html(ucfirst(str_replace('_', ' ', $post_data['status']))); ?>
                             </span>
+                            <?php
+                                endif;
+                            endif;
+                            ?>
                         </div>
                     <?php endif; ?>
                     

@@ -34,7 +34,7 @@ if ($args['css_classes']) $form_classes[] = $args['css_classes'];
 // Get office information
 $office_info = [
     'phone' => get_option('hp_office_phone', '(555) 123-4567'),
-    'email' => get_option('hp_office_email', 'info@happyplace.com'),
+    'email' => get_option('hp_office_email', 'cheers@theparkergroup.com'),
     'address' => get_option('hp_office_address', '123 Main Street, City, ST 12345'),
     'hours' => get_option('hp_office_hours', 'Mon-Fri: 9am-6pm, Sat-Sun: 10am-4pm')
 ];
@@ -61,7 +61,7 @@ $office_info = [
                 method="post"
                 action="<?php echo admin_url('admin-ajax.php'); ?>"
             >
-                <?php wp_nonce_field('hph_general_contact', 'contact_nonce'); ?>
+                <?php wp_nonce_field('hph_route_form_nonce', 'nonce'); ?>
                 
                 <!-- Hidden Fields -->
                 <input type="hidden" name="action" value="hph_route_form">
@@ -108,9 +108,69 @@ $office_info = [
 
                 <?php else: ?>
                 <!-- Vertical Layout -->
-                <div class="hph-form-row">
+                <?php if ($args['modal_context']): ?>
+                <!-- Single Column Layout for Modals -->
+                <div class="hph-form-group hph-mb-4">
+                    <label for="contact-name" class="hph-form-label">
+                        <?php _e('Full Name', 'happy-place-theme'); ?>
+                        <span class="hph-required">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="contact-name"
+                        name="name"
+                        class="hph-form-input"
+                        required
+                        placeholder="<?php _e('John Smith', 'happy-place-theme'); ?>"
+                    >
+                </div>
+
+                <div class="hph-form-group hph-mb-4">
+                    <label for="contact-email" class="hph-form-label">
+                        <?php _e('Email Address', 'happy-place-theme'); ?>
+                        <span class="hph-required">*</span>
+                    </label>
+                    <input
+                        type="email"
+                        id="contact-email"
+                        name="email"
+                        class="hph-form-input"
+                        required
+                        placeholder="<?php _e('john@example.com', 'happy-place-theme'); ?>"
+                    >
+                </div>
+
+                <div class="hph-form-group hph-mb-4">
+                    <label for="contact-phone" class="hph-form-label">
+                        <?php _e('Phone Number', 'happy-place-theme'); ?>
+                    </label>
+                    <input
+                        type="tel"
+                        id="contact-phone"
+                        name="phone"
+                        class="hph-form-input"
+                        placeholder="<?php _e('(555) 123-4567', 'happy-place-theme'); ?>"
+                    >
+                </div>
+
+                <div class="hph-form-group hph-mb-4">
+                    <label for="contact-subject" class="hph-form-label">
+                        <?php _e('Subject', 'happy-place-theme'); ?>
+                    </label>
+                    <input
+                        type="text"
+                        id="contact-subject"
+                        name="subject"
+                        class="hph-form-input"
+                        placeholder="<?php _e('How can we help?', 'happy-place-theme'); ?>"
+                    >
+                </div>
+
+                <?php else: ?>
+                <!-- Two Column Layout for Regular Pages -->
+                <div class="hph-form-row hph-flex hph-flex-wrap hph-gap-4">
                     <!-- Full Name -->
-                    <div class="hph-form-group hph-form-col--half">
+                    <div class="hph-form-group hph-form-col--half hph-flex-1 hph-min-w-0">
                         <label for="contact-name" class="hph-form-label">
                             <?php _e('Full Name', 'happy-place-theme'); ?>
                             <span class="hph-required">*</span>
@@ -126,7 +186,7 @@ $office_info = [
                     </div>
 
                     <!-- Email -->
-                    <div class="hph-form-group hph-form-col--half">
+                    <div class="hph-form-group hph-form-col--half hph-flex-1 hph-min-w-0">
                         <label for="contact-email" class="hph-form-label">
                             <?php _e('Email Address', 'happy-place-theme'); ?>
                             <span class="hph-required">*</span>
@@ -142,40 +202,41 @@ $office_info = [
                     </div>
                 </div>
 
-                <div class="hph-form-row">
+                <div class="hph-form-row hph-flex hph-flex-wrap hph-gap-4">
                     <!-- Phone -->
-                    <div class="hph-form-group hph-form-col--half">
+                    <div class="hph-form-group hph-form-col--half hph-flex-1 hph-min-w-0">
                         <label for="contact-phone" class="hph-form-label">
                             <?php _e('Phone Number', 'happy-place-theme'); ?>
                         </label>
-                        <input 
-                            type="tel" 
-                            id="contact-phone" 
-                            name="phone" 
-                            class="hph-form-input" 
+                        <input
+                            type="tel"
+                            id="contact-phone"
+                            name="phone"
+                            class="hph-form-input"
                             placeholder="<?php _e('(555) 123-4567', 'happy-place-theme'); ?>"
                         >
                     </div>
 
                     <!-- Subject/Topic -->
-                    <div class="hph-form-group hph-form-col--half">
+                    <div class="hph-form-group hph-form-col--half hph-flex-1 hph-min-w-0">
                         <label for="contact-subject" class="hph-form-label">
                             <?php _e('Subject', 'happy-place-theme'); ?>
                         </label>
-                        <input 
-                            type="text" 
-                            id="contact-subject" 
-                            name="subject" 
-                            class="hph-form-input" 
+                        <input
+                            type="text"
+                            id="contact-subject"
+                            name="subject"
+                            class="hph-form-input"
                             placeholder="<?php _e('How can we help?', 'happy-place-theme'); ?>"
                         >
                     </div>
                 </div>
+                <?php endif; // End modal_context ?>
 
                 <?php if ($args['department_routing']): ?>
                 <!-- Department/Topic Selection -->
-                <div class="hph-form-group">
-                    <label for="contact-department" class="hph-form-label">
+                <div class="hph-form-group hph-mb-4">
+                    <label for="contact-department" class="hph-form-label hph-mb-2">
                         <?php _e('How can we help you?', 'happy-place-theme'); ?>
                     </label>
                     <select id="contact-department" name="department" class="hph-form-select">
@@ -195,8 +256,8 @@ $office_info = [
                 <?php endif; ?>
 
                 <!-- Message -->
-                <div class="hph-form-group">
-                    <label for="contact-message" class="hph-form-label">
+                <div class="hph-form-group hph-mb-4">
+                    <label for="contact-message" class="hph-form-label hph-mb-2">
                         <?php _e('Message', 'happy-place-theme'); ?>
                         <span class="hph-required">*</span>
                     </label>
@@ -208,26 +269,26 @@ $office_info = [
                         required 
                         placeholder="<?php _e('Tell us more about what you need help with...', 'happy-place-theme'); ?>"
                     ></textarea>
-                    <div class="hph-form-text">
+                    <div class="hph-form-text hph-text-sm hph-text-muted hph-mt-2">
                         <?php _e('Please provide as much detail as possible so we can assist you better.', 'happy-place-theme'); ?>
                     </div>
                 </div>
 
                 <!-- Preferred Contact Method -->
-                <div class="hph-form-group">
-                    <label class="hph-form-label">
+                <div class="hph-form-group hph-mb-4">
+                    <label class="hph-form-label hph-mb-3">
                         <?php _e('Preferred Contact Method', 'happy-place-theme'); ?>
                     </label>
-                    <div class="hph-checkbox-group">
-                        <label class="hph-form-check">
+                    <div class="hph-checkbox-group hph-flex hph-flex-wrap hph-gap-4">
+                        <label class="hph-form-check hph-flex hph-items-center hph-gap-2">
                             <input type="radio" name="contact_preference" value="email" class="hph-form-check-input" checked>
                             <span class="hph-form-check-label"><?php _e('Email', 'happy-place-theme'); ?></span>
                         </label>
-                        <label class="hph-form-check">
+                        <label class="hph-form-check hph-flex hph-items-center hph-gap-2">
                             <input type="radio" name="contact_preference" value="phone" class="hph-form-check-input">
                             <span class="hph-form-check-label"><?php _e('Phone Call', 'happy-place-theme'); ?></span>
                         </label>
-                        <label class="hph-form-check">
+                        <label class="hph-form-check hph-flex hph-items-center hph-gap-2">
                             <input type="radio" name="contact_preference" value="text" class="hph-form-check-input">
                             <span class="hph-form-check-label"><?php _e('Text Message', 'happy-place-theme'); ?></span>
                         </label>
@@ -235,8 +296,8 @@ $office_info = [
                 </div>
 
                 <!-- Best Time to Contact -->
-                <div class="hph-form-group">
-                    <label for="contact-time" class="hph-form-label">
+                <div class="hph-form-group hph-mb-4">
+                    <label for="contact-time" class="hph-form-label hph-mb-2">
                         <?php _e('Best Time to Contact', 'happy-place-theme'); ?>
                     </label>
                     <select id="contact-time" name="best_time" class="hph-form-select">
@@ -249,13 +310,13 @@ $office_info = [
                 </div>
 
                 <!-- Privacy Notice -->
-                <div class="hph-form-group">
-                    <label class="hph-form-check">
-                        <input type="checkbox" name="privacy_consent" value="1" class="hph-form-check-input" required>
-                        <span class="hph-form-check-label">
+                <div class="hph-form-group hph-mb-6">
+                    <label class="hph-form-check hph-flex hph-items-start hph-gap-3">
+                        <input type="checkbox" name="privacy_consent" value="1" class="hph-form-check-input hph-mt-1" required>
+                        <span class="hph-form-check-label hph-text-sm hph-leading-relaxed">
                             <?php _e('I agree to the', 'happy-place-theme'); ?> 
-                            <a href="<?php echo get_privacy_policy_url(); ?>" target="_blank"><?php _e('Privacy Policy', 'happy-place-theme'); ?></a> 
-                            <?php _e('and consent to being contacted by Happy Place Real Estate.', 'happy-place-theme'); ?>
+                            <a href="<?php echo home_url('/legal/#privacy'); ?>" target="_blank" class="hph-text-primary hph-underline"><?php _e('Privacy Policy', 'happy-place-theme'); ?></a> 
+                            <?php _e('and consent to being contacted by The Parker Group.', 'happy-place-theme'); ?>
                             <span class="hph-required">*</span>
                         </span>
                     </label>
@@ -263,7 +324,7 @@ $office_info = [
 
                 <!-- Form Actions -->
                 <div class="hph-form-buttons">
-                    <button type="submit" class="hph-btn hph-btn-primary hph-btn-full">
+                    <button type="submit" class="hph-btn hph-btn-primary w-full">
                         <i class="fas fa-paper-plane"></i>
                         <?php echo esc_html($args['submit_text']); ?>
                     </button>
@@ -349,12 +410,12 @@ $office_info = [
                 <!-- Quick Actions -->
                 <div class="hph-quick-actions">
                     <a href="tel:<?php echo esc_attr(preg_replace('/[^0-9+]/', '', $office_info['phone'])); ?>" 
-                       class="hph-btn hph-btn-outline hph-btn-sm">
+                       class="hph-btn hph-btn-outline-primary hph-btn-sm">
                         <i class="fas fa-phone"></i>
                         <?php _e('Call Now', 'happy-place-theme'); ?>
                     </a>
                     <a href="mailto:<?php echo esc_attr($office_info['email']); ?>" 
-                       class="hph-btn hph-btn-outline hph-btn-sm">
+                       class="hph-btn hph-btn-outline-primary hph-btn-sm">
                         <i class="fas fa-envelope"></i>
                         <?php _e('Email Us', 'happy-place-theme'); ?>
                     </a>

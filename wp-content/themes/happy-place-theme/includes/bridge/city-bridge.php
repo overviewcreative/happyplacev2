@@ -36,48 +36,34 @@ function hpt_get_city($city = null) {
         'date_created' => $city->post_date,
         'date_modified' => $city->post_modified,
         
-        // Basic information
+        // Basic information - using actual ACF fields only
         'description' => hpt_get_city_description($city->ID),
         'state' => hpt_get_city_state($city->ID),
         'county' => hpt_get_city_county($city->ID),
-        'zip_codes' => hpt_get_city_zip_codes($city->ID),
-        'area_codes' => hpt_get_city_area_codes($city->ID),
-        'time_zone' => hpt_get_city_time_zone($city->ID),
+        'tagline' => get_field('tagline', $city->ID) ?: '',
         
-        // Location and geography
-        'coordinates' => hpt_get_city_coordinates($city->ID),
-        'elevation' => hpt_get_city_elevation($city->ID),
-        'area_sq_miles' => hpt_get_city_area($city->ID),
-        'climate' => hpt_get_city_climate($city->ID),
+        // Location - fix coordinates to use correct field names
+        'lat' => get_field('lat', $city->ID) ?: '',
+        'lng' => get_field('lng', $city->ID) ?: '',
+        'coordinates' => array(
+            'lat' => floatval(get_field('lat', $city->ID) ?: 0),
+            'lng' => floatval(get_field('lng', $city->ID) ?: 0),
+        ),
         
-        // Demographics
+        // Demographics - only what exists
         'population' => hpt_get_city_population($city->ID),
-        'population_density' => hpt_get_city_population_density($city->ID),
-        'median_age' => hpt_get_city_median_age($city->ID),
-        'median_income' => hpt_get_city_median_income($city->ID),
-        'cost_of_living_index' => hpt_get_city_cost_of_living($city->ID),
         
-        // Housing market
-        'median_home_price' => hpt_get_city_median_home_price($city->ID),
-        'average_rent' => hpt_get_city_average_rent($city->ID),
-        'property_tax_rate' => hpt_get_city_property_tax_rate($city->ID),
-        'home_appreciation' => hpt_get_city_home_appreciation($city->ID),
+        // Media - direct field access
+        'hero_image' => get_field('hero_image', $city->ID) ?: null,
+        'gallery' => get_field('gallery', $city->ID) ?: array(),
         
-        // Economy and employment
-        'major_employers' => hpt_get_city_major_employers($city->ID),
-        'unemployment_rate' => hpt_get_city_unemployment_rate($city->ID),
-        'job_growth_rate' => hpt_get_city_job_growth_rate($city->ID),
-        'primary_industries' => hpt_get_city_primary_industries($city->ID),
-        
-        // Education
-        'school_districts' => hpt_get_city_school_districts($city->ID),
-        'school_ratings' => hpt_get_city_school_ratings($city->ID),
-        'colleges_universities' => hpt_get_city_colleges($city->ID),
-        
-        // Lifestyle and amenities
-        'attractions' => hpt_get_city_attractions($city->ID),
-        'parks_recreation' => hpt_get_city_parks($city->ID),
-        'dining_entertainment' => hpt_get_city_dining($city->ID),
+        // Relationships - direct field access
+        'related_places' => get_field('related_places', $city->ID) ?: array(),
+        'featured_places' => get_field('featured_places', $city->ID) ?: array(),
+        'upcoming_events' => get_field('upcoming_events', $city->ID) ?: array(),
+        'featured_stories' => get_field('featured_stories', $city->ID) ?: array(),
+        'featured_deals' => get_field('featured_deals', $city->ID) ?: array(),
+        'external_links' => get_field('external_links', $city->ID) ?: array(),
         'shopping' => hpt_get_city_shopping($city->ID),
         'transportation' => hpt_get_city_transportation($city->ID),
         'hospitals_healthcare' => hpt_get_city_healthcare($city->ID),
@@ -173,8 +159,8 @@ function hpt_get_city_time_zone($city_id) {
  */
 function hpt_get_city_coordinates($city_id) {
     return array(
-        'lat' => floatval(get_field('latitude', $city_id)),
-        'lng' => floatval(get_field('longitude', $city_id)),
+        'lat' => floatval(get_field('lat', $city_id) ?: 0),
+        'lng' => floatval(get_field('lng', $city_id) ?: 0),
     );
 }
 

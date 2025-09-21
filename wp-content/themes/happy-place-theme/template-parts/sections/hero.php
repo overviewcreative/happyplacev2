@@ -36,6 +36,7 @@ $defaults = array(
     'typing_speed' => 100, // Milliseconds per character (for typing effect)
     'subheadline' => '',
     'content' => '',
+    'meta' => array(), // Meta information array (author, date, read_time, etc.)
     'buttons' => array(),
     'scroll_indicator' => false,
     'section_id' => '',
@@ -45,7 +46,18 @@ $defaults = array(
     'show_gallery' => false,
     'show_status' => false,
     'show_price' => false,
-    'show_stats' => false
+    'show_stats' => false,
+    'is_top_of_page' => false, // Add 20vh padding when this is the first section on page
+    // New blur and animation effects
+    'backdrop_blur' => false, // Enable backdrop blur on overlay
+    'backdrop_blur_intensity' => 'md', // sm, md, lg, xl
+    'content_animation' => 'fade-up', // fade-up, slide-up, zoom-in, bounce-in, none
+    'animation_delay' => 0, // Delay in milliseconds
+    'animation_duration' => 800, // Duration in milliseconds
+    'parallax_intensity' => 'normal', // subtle, normal, strong
+    'ken_burns' => false, // Enable Ken Burns effect on background image
+    'ken_burns_direction' => 'zoom-in', // zoom-in, zoom-out, pan-left, pan-right, zoom-pan
+    'ken_burns_duration' => 20, // Duration in seconds
 );
 
 // Merge with provided args - use consistent null coalescing
@@ -242,10 +254,40 @@ switch ($height) {
 
 // Background styles
 if ($background_image) {
+    // Get overlay color for smooth loading background
+    $loading_bg = '';
+    if (!empty($theme_config['solid_bg'])) {
+        $loading_bg = $theme_config['solid_bg'];
+    } else {
+        // Default loading background based on overlay type
+        switch ($overlay) {
+            case 'dark':
+            case 'dark-subtle':
+            case 'dark-heavy':
+                $loading_bg = 'var(--hph-gray-900)';
+                break;
+            case 'light':
+            case 'light-subtle':
+                $loading_bg = 'var(--hph-gray-100)';
+                break;
+            case 'gradient':
+            case 'primary':
+            case 'primary-gradient':
+                $loading_bg = 'var(--hph-primary)';
+                break;
+            default:
+                $loading_bg = 'var(--hph-gray-800)';
+                break;
+        }
+    }
+
+    $hero_styles[] = "background: " . $loading_bg; // Start with solid color
     $hero_styles[] = "background-image: url('" . esc_url($background_image) . "')";
     $hero_styles[] = "background-size: cover";
     $hero_styles[] = "background-position: center";
     $hero_styles[] = "background-repeat: no-repeat";
+    $hero_styles[] = "transition: background-color 0.5s ease-out"; // Smooth transition
+
     if ($parallax) {
         $hero_styles[] = "background-attachment: fixed";
     }
@@ -269,6 +311,27 @@ $hero_style_attr = !empty($hero_styles) ? 'style="' . implode('; ', $hero_styles
 
 // Build overlay styles
 $overlay_styles = array();
+
+// Add backdrop blur if enabled
+$backdrop_blur_style = '';
+if ($backdrop_blur) {
+    switch ($backdrop_blur_intensity) {
+        case 'sm':
+            $backdrop_blur_style = 'backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);';
+            break;
+        case 'md':
+            $backdrop_blur_style = 'backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);';
+            break;
+        case 'lg':
+            $backdrop_blur_style = 'backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);';
+            break;
+        case 'xl':
+            $backdrop_blur_style = 'backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);';
+            break;
+        default:
+            $backdrop_blur_style = 'backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);';
+    }
+}
 
 // If a gradient_overlay CSS variable is specified, use it directly
 if (!empty($gradient_overlay)) {
@@ -325,13 +388,19 @@ if (!empty($gradient_overlay)) {
             break;
     }
 }
+
+// Add backdrop blur to overlay styles
+if ($backdrop_blur_style) {
+    $overlay_styles[] = $backdrop_blur_style;
+}
+
 $overlay_style_attr = !empty($overlay_styles) ? 'style="' . implode('; ', $overlay_styles) . '"' : '';
 
 // Content container width
 $container_max_width = '';
 switch ($content_width) {
     case 'narrow':
-        $container_max_width = 'max-width: var(--hph-container-sm);';
+        $container_max_width = 'max-width: var(--hph-container-md);';
         break;
     case 'wide':
         $container_max_width = 'max-width: var(--hph-container-2xl);';
@@ -401,19 +470,37 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
     <div class="hph-hero-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 1; pointer-events: none; <?php echo implode('; ', $overlay_styles); ?>"></div>
     <?php endif; ?>
     
+    <?php if ($background_image && $ken_burns): ?>
+    <!-- Ken Burns Background Image -->
+    <div class="hph-ken-burns-container" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; overflow: hidden;">
+        <div class="hph-ken-burns-image hph-ken-burns-<?php echo esc_attr($ken_burns_direction); ?>"
+             style="position: absolute; top: -10%; left: -10%; width: 120%; height: 120%;
+             background-image: url('<?php echo esc_url($background_image); ?>');
+             background-size: cover; background-position: center; background-repeat: no-repeat;
+             animation: kenBurns<?php echo ucfirst(str_replace('-', '', $ken_burns_direction)); ?> <?php echo intval($ken_burns_duration); ?>s ease-in-out infinite alternate;">
+        </div>
+    </div>
+    <?php endif; ?>
+
     <!-- Content Container -->
-    <div class="hph-hero-container" style="position: relative; z-index: 2; width: 100%; padding: var(--hph-padding-xl) var(--hph-padding-lg);">
+    <div class="hph-hero-container <?php echo $content_animation !== 'none' ? 'hph-animate-' . esc_attr($content_animation) : ''; ?>"
+         style="position: relative; z-index: 2; width: 100%; padding: <?php echo $args['is_top_of_page'] ? '5vh' : 'var(--hph-space-8)'; ?> var(--hph-space-6) var(--hph-space-8) var(--hph-space-6);
+         <?php if ($content_animation !== 'none'): ?>
+         animation-delay: <?php echo intval($animation_delay); ?>ms;
+         animation-duration: <?php echo intval($animation_duration); ?>ms;
+         <?php endif; ?>">
         <div class="hph-hero-inner" style="<?php echo $container_max_width; ?> margin-left: auto; margin-right: auto;">
-            <div class="hph-hero-content" style="display: flex; flex-direction: column; <?php echo $content_justify; ?> gap: var(--hph-gap-lg); <?php echo $text_align_style; ?>">
+            <div class="hph-hero-content"
+                 style="display: flex; flex-direction: column; <?php echo $content_justify; ?> gap: var(--hph-gap-lg); <?php echo $text_align_style; ?>">
                 
                 <?php if ($badge): ?>
                 <!-- Badge -->
-                <div style="margin-bottom: var(--hph-margin-sm);">
+                <div style="margin-bottom: var(--hph-space-2);">
                     <?php 
                     $badge_bg = !empty($theme_config['badge_bg']) ? $theme_config['badge_bg'] : 'rgba(255, 255, 255, 0.2)';
                     $badge_color = !empty($theme_config['badge_color']) ? $theme_config['badge_color'] : 'currentColor';
                     ?>
-                    <span style="display: inline-flex; align-items: center; gap: var(--hph-gap-sm); padding: var(--hph-padding-sm) var(--hph-padding-md); background: <?php echo $badge_bg; ?>; color: <?php echo $badge_color; ?>; backdrop-filter: blur(10px); border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
+                    <span style="display: inline-flex; align-items: center; gap: var(--hph-gap-sm); padding: var(--hph-space-2) var(--hph-space-4); background: <?php echo $badge_bg; ?>; color: <?php echo $badge_color; ?>; backdrop-filter: blur(10px); border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
                         <?php if ($badge_icon): ?>
                         <i class="<?php echo esc_attr($badge_icon); ?>"></i>
                         <?php endif; ?>
@@ -427,7 +514,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                 <?php if (!empty($rotating_words) && ($headline_prefix || $headline_suffix)): ?>
                     <!-- Rotating Headline -->
                     <h1 class="hph-hero-headline hph-rotating-headline <?php echo $fade_in ? 'hph-animate-fade-in-up' : ''; ?>" 
-                        style="margin: 0 0 var(--hph-margin-md) 0; font-size: var(--hph-text-5xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight); <?php echo $fade_in ? 'animation-delay: 0s;' : ''; ?>"
+                        style="margin: 0 0 var(--hph-space-4) 0; font-size: var(--hph-text-5xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight); <?php echo $fade_in ? 'animation-delay: 0s;' : ''; ?>"
                         data-rotation-type="<?php echo esc_attr($rotation_type); ?>"
                         data-rotation-speed="<?php echo esc_attr($rotation_speed); ?>"
                         data-typing-speed="<?php echo esc_attr($typing_speed); ?>">
@@ -451,7 +538,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                 <?php elseif ($headline): ?>
                     <!-- Static Headline -->
                     <h1 class="hph-hero-headline <?php echo $fade_in ? 'hph-animate-fade-in-up' : ''; ?>" 
-                        style="margin: 0 0 var(--hph-margin-md) 0; font-size: var(--hph-text-5xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight); <?php echo $fade_in ? 'animation-delay: 0s;' : ''; ?>">
+                        style="margin: 0 0 var(--hph-space-2) 0; font-size: var(--hph-text-5xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight); <?php echo $fade_in ? 'animation-delay: 0s;' : ''; ?>">
                         <?php echo esc_html($headline); ?>
                     </h1>
                 <?php endif; ?>
@@ -460,15 +547,40 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                 <?php if ($subheadline): ?>
                 <!-- Hero Subheadline -->
                 <h2 class="hph-hero-subheadline <?php echo $fade_in ? 'hph-animate-fade-in-up' : ''; ?>" 
-                    style="margin: 0 0 var(--hph-margin-md) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); line-height: var(--hph-leading-snug); opacity: 0.9; <?php echo $fade_in ? 'animation-delay: 0.1s;' : ''; ?>">
+                    style="margin: 0 var(--hph-space-6) var(--hph-space-2) 0; max-width: 700px; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); line-height: var(--hph-leading-snug); opacity: 0.9; <?php echo $fade_in ? 'animation-delay: 0.1s;' : ''; ?>">
                     <?php echo esc_html($subheadline); ?>
                 </h2>
+                <?php endif; ?>
+                
+                <?php if (!empty($meta) && is_array($meta)): ?>
+                <!-- Hero Meta Information -->
+                <div class="hph-hero-meta <?php echo $fade_in ? 'hph-animate-fade-in-up' : ''; ?>" 
+                     style="margin: 0 var(--hph-space-6) var(--hph-space-2) 0; display: flex; align-items: center; justify-content: <?php echo $alignment === 'center' ? 'center' : ($alignment === 'right' ? 'flex-end' : 'flex-start'); ?>; gap: var(--hph-gap-lg); flex-wrap: wrap; font-size: var(--hph-text-sm); opacity: 0.8; <?php echo $fade_in ? 'animation-delay: 0.15s;' : ''; ?>">
+                    <?php foreach ($meta as $key => $value): ?>
+                        <?php if (!empty($value)): ?>
+                            <span class="hph-meta-item" style="display: flex; align-items: center; gap: var(--hph-gap-xs);">
+                                <?php if ($key === 'author'): ?>
+                                    <i class="fas fa-user" style="opacity: 0.7;"></i>
+                                    <span>By <?php echo esc_html($value); ?></span>
+                                <?php elseif ($key === 'date'): ?>
+                                    <i class="fas fa-calendar" style="opacity: 0.7;"></i>
+                                    <span><?php echo esc_html($value); ?></span>
+                                <?php elseif ($key === 'read_time'): ?>
+                                    <i class="fas fa-clock" style="opacity: 0.7;"></i>
+                                    <span><?php echo esc_html($value); ?></span>
+                                <?php else: ?>
+                                    <span><?php echo esc_html($value); ?></span>
+                                <?php endif; ?>
+                            </span>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </div>
                 <?php endif; ?>
                 
                 <?php if ($content): ?>
                 <!-- Hero Content -->
                 <div class="hph-hero-content-text <?php echo $fade_in ? 'hph-animate-fade-in-up' : ''; ?>" 
-                     style="margin: 0 0 var(--hph-margin-xl) 0; font-size: var(--hph-text-lg); line-height: var(--hph-leading-normal); opacity: 0.85; <?php echo $fade_in ? 'animation-delay: 0.2s;' : ''; ?>">
+                     style="margin: 0 var(--hph-space-8) var(--hph-space-8) 0; font-size: var(--hph-text-lg); line-height: var(--hph-leading-normal); max-width: 600px; 0.85; <?php echo $fade_in ? 'animation-delay: 0.2s;' : ''; ?>">
                     <?php echo wp_kses_post($content); ?>
                 </div>
                 <?php endif; ?>
@@ -476,10 +588,10 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                 <?php if ($style === 'property' && $listing_id): ?>
                 <!-- Property-specific content -->
                 <div class="hph-property-hero-details <?php echo $fade_in ? 'hph-animate-fade-in-up' : ''; ?>" 
-                     style="margin: 0 0 var(--hph-margin-xl) 0; <?php echo $fade_in ? 'animation-delay: 0.25s;' : ''; ?>">
+                     style="margin: 0 0 var(--hph-space-8) 0; <?php echo $fade_in ? 'animation-delay: 0.25s;' : ''; ?>">
                     
                     <?php if ($show_price || $show_status): ?>
-                    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: var(--hph-gap-md); margin-bottom: var(--hph-margin-lg); <?php echo $alignment === 'center' ? 'justify-content: center;' : ($alignment === 'right' ? 'justify-content: flex-end;' : ''); ?>">
+                    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: var(--hph-gap-md); margin-bottom: var(--hph-space-6); <?php echo $alignment === 'center' ? 'justify-content: center;' : ($alignment === 'right' ? 'justify-content: flex-end;' : ''); ?>">
                         <?php if ($show_price && function_exists('hpt_get_listing_price_formatted')): ?>
                             <?php $price = hpt_get_listing_price_formatted($listing_id); ?>
                             <?php if ($price): ?>
@@ -492,7 +604,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                         <?php if ($show_status && function_exists('hpt_get_listing_status')): ?>
                             <?php $status = hpt_get_listing_status($listing_id); ?>
                             <?php if ($status): ?>
-                            <span style="padding: var(--hph-padding-sm) var(--hph-padding-lg); background: rgba(255, 255, 255, 0.9); color: var(--hph-primary); border-radius: var(--hph-radius-full); font-size: var(--hph-text-base); font-weight: var(--hph-font-semibold);">
+                            <span style="padding: var(--hph-space-2) var(--hph-space-6); background: rgba(255, 255, 255, 0.9); color: var(--hph-primary); border-radius: var(--hph-radius-full); font-size: var(--hph-text-base); font-weight: var(--hph-font-semibold);">
                                 <?php echo esc_html($status); ?>
                             </span>
                             <?php endif; ?>
@@ -551,7 +663,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                             'text' => 'Button',
                             'url' => '#',
                             'style' => 'white',
-                            'size' => 'xl',
+                            'size' => 'm',
                             'icon' => '',
                             'icon_position' => 'left',
                             'target' => '_self',
@@ -585,19 +697,19 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                         // Size-based padding
                         switch($btn['size']) {
                             case 's':
-                                $btn_styles[] = 'padding: var(--hph-padding-sm) var(--hph-padding-md)';
+                                $btn_styles[] = 'padding: var(--hph-space-2) var(--hph-space-4)';
                                 $btn_styles[] = 'font-size: var(--hph-text-sm)';
                                 break;
                             case 'm':
-                                $btn_styles[] = 'padding: var(--hph-padding-md) var(--hph-padding-lg)';
+                                $btn_styles[] = 'padding: var(--hph-space-4) var(--hph-space-6)';
                                 $btn_styles[] = 'font-size: var(--hph-text-base)';
                                 break;
                             case 'l':
-                                $btn_styles[] = 'padding: var(--hph-padding-md) var(--hph-padding-xl)';
+                                $btn_styles[] = 'padding: var(--hph-space-4) var(--hph-space-8)';
                                 $btn_styles[] = 'font-size: var(--hph-text-base)';
                                 break;
                             case 'xl':
-                                $btn_styles[] = 'padding: var(--hph-padding-lg) var(--hph-padding-2xl)';
+                                $btn_styles[] = 'padding: var(--hph-space-6) var(--hph-space-12)';
                                 $btn_styles[] = 'font-size: var(--hph-text-lg)';
                                 break;
                         }
@@ -644,19 +756,19 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                     ?>
                     <a 
                         href="<?php echo esc_url($btn['url']); ?>"
-                        class="hph-hero-btn hph-hero-btn-<?php echo esc_attr($btn['style']); ?>"
+                        class="hph-hero-btn hph-hero-btn-<?php echo esc_attr($btn['style']); ?><?php echo (!empty($btn['data_attributes']) && strpos($btn['data_attributes'], 'data-modal') !== false && strpos($btn['data_attributes'], 'modal-trigger') === false) ? ' modal-trigger' : ''; ?>"
                         <?php echo $btn_style_attr; ?>
                         <?php if ($btn['target'] !== '_self'): ?>target="<?php echo esc_attr($btn['target']); ?>"<?php endif; ?>
-                        <?php if ($btn['data_attributes']): echo $btn['data_attributes']; endif; ?>
+                        <?php if (!empty($btn['data_attributes'])): echo ' ' . $btn['data_attributes']; endif; ?>
                         onmouseover="this.style.transform='translateY(-2px)'"
                         onmouseout="this.style.transform='translateY(0)'"
                     >
                         <?php if ($btn['icon'] && $btn['icon_position'] === 'left'): ?>
-                        <i class="<?php echo esc_attr($btn['icon']); ?>" style="margin-right: var(--hph-margin-sm);"></i>
+                        <i class="<?php echo esc_attr($btn['icon']); ?>" style="margin-right: var(--hph-space-2);"></i>
                         <?php endif; ?>
                         <span><?php echo esc_html($btn['text']); ?></span>
                         <?php if ($btn['icon'] && $btn['icon_position'] === 'right'): ?>
-                        <i class="<?php echo esc_attr($btn['icon']); ?>" style="margin-left: var(--hph-margin-sm);"></i>
+                        <i class="<?php echo esc_attr($btn['icon']); ?>" style="margin-left: var(--hph-space-2);"></i>
                         <?php endif; ?>
                     </a>
                     <?php endforeach; ?>
@@ -669,9 +781,9 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
     
     <?php if ($scroll_indicator): ?>
     <!-- Scroll Indicator -->
-    <div class="hph-hero-scroll" style="position: absolute; bottom: var(--hph-margin-lg); left: 50%; transform: translateX(-50%); cursor: pointer; transition: opacity 0.3s ease;">
+    <div class="hph-hero-scroll" style="position: absolute; bottom: var(--hph-space-6); left: 50%; transform: translateX(-50%); cursor: pointer; transition: opacity 0.3s ease;">
         <div class="hph-scroll-indicator" style="display: flex; flex-direction: column; align-items: center; color: var(--hph-white); opacity: 0.75;">
-            <span style="font-size: var(--hph-text-sm); margin-bottom: var(--hph-margin-sm); font-weight: var(--hph-font-medium);">Scroll</span>
+            <span style="font-size: var(--hph-text-sm); margin-bottom: var(--hph-space-2); font-weight: var(--hph-font-medium);">Scroll</span>
             <div style="width: 2rem; height: 2.5rem; border: 2px solid currentColor; border-radius: var(--hph-radius-full); position: relative;">
                 <div class="hph-scroll-dot" style="position: absolute; top: 0.5rem; left: 50%; width: 0.25rem; height: 0.5rem; background: currentColor; border-radius: var(--hph-radius-full); transform: translateX(-50%); animation: bounce 1.5s infinite;"></div>
             </div>
@@ -857,6 +969,327 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         setTimeout(rotateWord, rotationSpeed);
     }
+});
+</script>
+<?php endif; ?>
+
+<?php if ($background_image): ?>
+<!-- Smooth Image Loading Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const heroSection = document.querySelector('<?php echo $section_id ? "#" . esc_js($section_id) : ".hph-hero.hph-hero-image"; ?>');
+    
+    if (heroSection && heroSection.style.backgroundImage) {
+        // Create a temporary image to preload
+        const img = new Image();
+        const bgUrl = '<?php echo esc_js($background_image); ?>';
+        
+        // Set loading state
+        heroSection.classList.add('hph-hero-loading');
+        
+        img.onload = function() {
+            // Image loaded successfully, fade out overlay color
+            heroSection.classList.add('hph-hero-loaded');
+            heroSection.classList.remove('hph-hero-loading');
+        };
+        
+        img.onerror = function() {
+            // Image failed to load, keep overlay color
+            heroSection.classList.remove('hph-hero-loading');
+        };
+        
+        // Start loading the image
+        img.src = bgUrl;
+    }
+});
+</script>
+
+<style>
+.hph-hero-loading {
+    /* Keep the solid background color visible while loading */
+    position: relative;
+}
+
+.hph-hero-loading::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: inherit;
+    z-index: 0;
+    opacity: 1;
+    transition: opacity 0.8s ease-out;
+}
+
+.hph-hero-loaded::before {
+    /* Fade out the overlay to reveal the image */
+    opacity: 0;
+}
+
+/* Smooth transition for the background color fade */
+.hph-hero[data-hero-style="image"] {
+    transition: background-color 0.8s ease-out;
+}
+</style>
+<?php endif; ?>
+
+<!-- Enhanced Blur and Animation Effects -->
+<style>
+/* Content Animation Keyframes */
+@keyframes hph-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes hph-slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes hph-zoom-in {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes hph-bounce-in {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(30px);
+    }
+    60% {
+        opacity: 1;
+        transform: scale(1.05) translateY(0);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes hph-float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes hph-float-slow {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-15px) rotate(1deg);
+    }
+}
+
+@keyframes hph-float-delayed {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+/* Animation Classes */
+.hph-animate-fade-up {
+    animation: hph-fade-up 0.8s ease-out forwards;
+    opacity: 0;
+}
+
+.hph-animate-slide-up {
+    animation: hph-slide-up 0.8s ease-out forwards;
+    opacity: 0;
+}
+
+.hph-animate-zoom-in {
+    animation: hph-zoom-in 0.8s ease-out forwards;
+    opacity: 0;
+}
+
+.hph-animate-bounce-in {
+    animation: hph-bounce-in 1s ease-out forwards;
+    opacity: 0;
+}
+
+/* Ken Burns Effect Animations */
+@keyframes kenBurnszoomin {
+    0% {
+        transform: scale(1) translate(0, 0);
+    }
+    100% {
+        transform: scale(1.1) translate(-2%, -1%);
+    }
+}
+
+@keyframes kenBurnszoomout {
+    0% {
+        transform: scale(1.1) translate(-2%, -1%);
+    }
+    100% {
+        transform: scale(1) translate(0, 0);
+    }
+}
+
+@keyframes kenBurnspanleft {
+    0% {
+        transform: scale(1.05) translate(0, 0);
+    }
+    100% {
+        transform: scale(1.05) translate(-4%, 0);
+    }
+}
+
+@keyframes kenBurnspanright {
+    0% {
+        transform: scale(1.05) translate(-4%, 0);
+    }
+    100% {
+        transform: scale(1.05) translate(0, 0);
+    }
+}
+
+@keyframes kenBurnszoomPan {
+    0% {
+        transform: scale(1) translate(0, 0);
+    }
+    50% {
+        transform: scale(1.08) translate(-3%, -2%);
+    }
+    100% {
+        transform: scale(1.05) translate(2%, 1%);
+    }
+}
+
+/* Parallax Intensity Effects */
+.hph-hero-parallax.parallax-subtle {
+    transform: translateY(0);
+    transition: transform 0.5s ease-out;
+}
+
+.hph-hero-parallax.parallax-normal {
+    transform: translateY(0);
+    transition: transform 0.3s ease-out;
+}
+
+.hph-hero-parallax.parallax-strong {
+    transform: translateY(0);
+    transition: transform 0.1s ease-out;
+}
+
+/* Enhanced Backdrop Blur Support */
+@supports (backdrop-filter: blur(1px)) {
+    .hph-hero-overlay {
+        backdrop-filter: inherit;
+    }
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+    .hph-hero-overlay {
+        background: rgba(0, 0, 0, 0.3) !important;
+    }
+}
+
+/* Smooth scroll indicator animation */
+.hph-hero-scroll:hover .hph-scroll-indicator {
+    opacity: 1;
+    transform: translateY(-5px);
+    transition: all 0.3s ease;
+}
+
+/* Ken Burns Performance Optimization */
+.hph-ken-burns-image {
+    will-change: transform;
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+/* Media Queries for Mobile Optimization */
+@media (max-width: 768px) {
+    .hph-ken-burns-image {
+        animation-duration: 30s; /* Slower on mobile for better performance */
+    }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    .hph-animate-fade-up,
+    .hph-animate-slide-up,
+    .hph-animate-zoom-in,
+    .hph-animate-bounce-in {
+        animation: none;
+        opacity: 1;
+    }
+
+    .hph-ken-burns-image {
+        animation: none;
+    }
+}
+</style>
+
+<!-- Enhanced Parallax Script -->
+<?php if ($parallax && $parallax_intensity !== 'normal'): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const heroSection = document.querySelector('<?php echo $section_id ? "#" . esc_js($section_id) : ".hph-hero"; ?>');
+    if (!heroSection) return;
+
+    const intensity = '<?php echo esc_js($parallax_intensity); ?>';
+    let multiplier = 0.5;
+
+    switch(intensity) {
+        case 'subtle':
+            multiplier = 0.2;
+            break;
+        case 'strong':
+            multiplier = 0.8;
+            break;
+        default:
+            multiplier = 0.5;
+    }
+
+    function updateParallax() {
+        const scrolled = window.pageYOffset;
+        const offset = scrolled * multiplier;
+        heroSection.style.transform = `translateY(${offset}px)`;
+    }
+
+    // Throttled scroll event
+    let ticking = false;
+    function requestTick() {
+        if (!ticking) {
+            requestAnimationFrame(updateParallax);
+            ticking = true;
+            setTimeout(() => { ticking = false; }, 16);
+        }
+    }
+
+    window.addEventListener('scroll', requestTick);
+
+    // Initial call
+    updateParallax();
 });
 </script>
 <?php endif; ?>

@@ -130,7 +130,6 @@ foreach ($processed_items as $card_props) {
         }
     } else {
         // No component loader, use get_template_part
-        set_query_var('args', $card_props);
-        get_template_part('template-parts/base/card');
+        hph_component('universal-card', $card_props);
     }
 }

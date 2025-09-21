@@ -5,10 +5,12 @@
  */
 
 /* 1. Core Foundation */
+@import url('../../assets/css/framework/core/tokens.css');
 @import url('../../assets/css/framework/core/variables.css');
 @import url('../../assets/css/framework/core/reset.css');
 @import url('../../assets/css/framework/core/typography.css');
 @import url('../../assets/css/framework/core/color-schemes.css');
+@import url('../../assets/css/framework/components/organisms/section.css');
 
 /* 2. Base HTML Elements */
 @import url('../../assets/css/framework/base/links.css');
@@ -17,6 +19,7 @@
 @import url('../../assets/css/framework/base/media.css');
 @import url('../../assets/css/framework/base/lazy-loading.css');
 
+
 /* 3. Atomic Components - Essential only */
 @import url('../../assets/css/framework/components/atoms/button.css');
 @import url('../../assets/css/framework/components/atoms/icon.css');
@@ -24,10 +27,29 @@
 @import url('../../assets/css/framework/components/atoms/form-input.css');
 @import url('../../assets/css/framework/components/atoms/form-controls.css');
 
+/* 3.5. Core UI Molecules */
+@import url('../../assets/css/framework/components/molecules/button-core.css');
+@import url('../../assets/css/framework/components/molecules/header-actions.css');
+
 /* 4. Core Layout */
 @import url('../../assets/css/framework/layout/containers.css');
+@import url('../../assets/css/framework/layout/grid.css');
 @import url('../../assets/css/framework/layout/header.css');
 @import url('../../assets/css/framework/layout/footer.css');
+/* OPTIMIZATION: features-cards.css moved to homepage bundle - not core functionality */
+
+/* 5. Essential Utilities - Loaded Sitewide */
+@import url('../../assets/css/framework/utilities/colors.css');
+@import url('../../assets/css/framework/utilities/layout.css');
+@import url('../../assets/css/framework/utilities/spacing.css');
+@import url('../../assets/css/framework/utilities/typography.css');
+@import url('../../assets/css/framework/utilities/effects.css');
+@import url('../../assets/css/framework/utilities/responsive.css');
+
+/* Features moved to appropriate page-specific bundles:
+   - site-header-enhanced.css → sitewide.css
+   - hero-search-form.css → homepage bundle
+*/
 
 /* 5. Vendor Overrides */
 @import url('../../assets/css/framework/vendor/wordpress.css');

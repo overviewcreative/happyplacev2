@@ -188,23 +188,23 @@ $hero_image = $hero_images[$status_slug] ?? $hero_images['active'];
                 
                 <!-- Hero Actions -->
                 <div class="hph-hero-actions hph-flex hph-flex-wrap hph-gap-4">
-                    <a href="#listings-archive" class="hph-btn hph-btn--primary hph-btn--lg">
+                    <a href="#listings-archive" class="hph-btn hph-btn-primary hph-btn-lg">
                         <i class="<?php echo esc_attr($config['icon']); ?> hph-mr-2"></i>
                         <?php echo esc_html($config['cta']); ?>
                     </a>
                     
                     <?php if ($status_slug === 'active'): ?>
-                    <a href="#contact-form" class="hph-btn hph-btn--outline-white hph-btn--lg">
+                    <a href="#contact-form" class="hph-btn hph-btn-outline-primary-white hph-btn-lg">
                         <i class="fas fa-envelope hph-mr-2"></i>
                         Get Alerts
                     </a>
                     <?php elseif ($status_slug === 'sold'): ?>
-                    <a href="#market-stats" class="hph-btn hph-btn--outline-white hph-btn--lg">
+                    <a href="#market-stats" class="hph-btn hph-btn-outline-primary-white hph-btn-lg">
                         <i class="fas fa-chart-bar hph-mr-2"></i>
                         Market Report
                     </a>
                     <?php else: ?>
-                    <a href="#contact-form" class="hph-btn hph-btn--outline-white hph-btn--lg">
+                    <a href="#contact-form" class="hph-btn hph-btn-outline-primary-white hph-btn-lg">
                         <i class="fas fa-info-circle hph-mr-2"></i>
                         Learn More
                     </a>

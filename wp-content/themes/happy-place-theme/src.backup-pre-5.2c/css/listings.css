@@ -1,0 +1,13 @@
+/**
+ * Listings CSS Bundle
+ * All listing-related styles for single and archive pages
+ */
+
+/* Consolidated Listing Features - All listing styles in one bundle */
+@import url('../../assets/css/framework/features/listing.css');
+
+/* Map Components - Keep separate as also used by other pages */
+@import url('../../assets/css/framework/components/organisms/map.css');
+
+/* Form Components for Listings - Keep separate as also used by other pages */
+@import url('../../assets/css/framework/components/molecules/accordion.css');

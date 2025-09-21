@@ -1,0 +1,288 @@
+/**
+ * HEADER ACTION BUTTON ATOM
+ * Isolated button component for header actions (search toggle, mobile menu)
+ *
+ * This component is intentionally isolated from generic .hph-btn styles
+ * to prevent conflicts from page-specific button overrides.
+ *
+ * @package HappyPlaceTheme
+ * @version 4.0.0
+ */
+
+/* ================================================
+   HEADER ACTION BUTTON BASE
+   Completely isolated from .hph-btn to prevent conflicts
+   ================================================ */
+
+.hph-header-action-btn {
+  /* Reset and base styles */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-decoration: none;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1;
+
+  /* Header-specific styling */
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--hph-radius);
+  color: var(--hph-gray-600);
+  transition: all 0.2s ease;
+
+  /* Ensure consistent appearance across browsers */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: none;
+
+  /* Prevent text selection */
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Hover State */
+.hph-header-action-btn:hover {
+  background: var(--hph-gray-100);
+  color: var(--hph-gray-800);
+  transform: none; /* Prevent any inherited transforms */
+}
+
+/* Focus State */
+.hph-header-action-btn:focus {
+  background: var(--hph-gray-100);
+  color: var(--hph-gray-800);
+  box-shadow: 0 0 0 3px rgba(81, 186, 224, 0.15);
+  outline: none;
+}
+
+/* Active State */
+.hph-header-action-btn:active {
+  background: var(--hph-gray-200);
+  color: var(--hph-gray-900);
+  transform: scale(0.98);
+}
+
+/* Disabled State */
+.hph-header-action-btn:disabled,
+.hph-header-action-btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ================================================
+   ICON STYLING
+   ================================================ */
+
+.hph-header-action-btn .fas,
+.hph-header-action-btn .far,
+.hph-header-action-btn .fal,
+.hph-header-action-btn .fab,
+.hph-header-action-btn i {
+  /* Ensure icons inherit button color and don't get overridden */
+  color: inherit !important;
+  font-size: 1rem;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+/* ================================================
+   BUTTON VARIANTS
+   ================================================ */
+
+/* Search Toggle Variant */
+.hph-header-action-btn--search {
+  /* Inherits base styles */
+}
+
+.hph-header-action-btn--search.is-active {
+  background: var(--hph-primary-100);
+  color: var(--hph-primary-700);
+}
+
+.hph-header-action-btn--search.is-active:hover {
+  background: var(--hph-primary-200);
+  color: var(--hph-primary-800);
+}
+
+/* Mobile Menu Toggle Variant */
+.hph-header-action-btn--mobile {
+  /* Inherits base styles */
+}
+
+.hph-header-action-btn--mobile.is-active {
+  background: var(--hph-gray-200);
+  color: var(--hph-gray-900);
+}
+
+.hph-header-action-btn--mobile.is-active .hph-hamburger {
+  /* Let hamburger.css handle the animation */
+}
+
+/* ================================================
+   SIZE VARIATIONS
+   ================================================ */
+
+/* Small size for compact headers */
+.hph-header-action-btn--sm {
+  width: 2rem;
+  height: 2rem;
+}
+
+.hph-header-action-btn--sm .fas,
+.hph-header-action-btn--sm .far,
+.hph-header-action-btn--sm .fal,
+.hph-header-action-btn--sm .fab,
+.hph-header-action-btn--sm i {
+  font-size: 0.875rem;
+}
+
+/* Large size for prominent headers */
+.hph-header-action-btn--lg {
+  width: 3rem;
+  height: 3rem;
+}
+
+.hph-header-action-btn--lg .fas,
+.hph-header-action-btn--lg .far,
+.hph-header-action-btn--lg .fal,
+.hph-header-action-btn--lg .fab,
+.hph-header-action-btn--lg i {
+  font-size: 1.125rem;
+}
+
+/* ================================================
+   THEME VARIATIONS
+   ================================================ */
+
+/* Light theme (default) */
+.hph-header-action-btn--light {
+  color: var(--hph-gray-600);
+}
+
+.hph-header-action-btn--light:hover {
+  background: var(--hph-gray-100);
+  color: var(--hph-gray-800);
+}
+
+/* Dark theme */
+.hph-header-action-btn--dark {
+  color: var(--hph-gray-300);
+}
+
+.hph-header-action-btn--dark:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--hph-white);
+}
+
+/* On primary background */
+.hph-header-action-btn--on-primary {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.hph-header-action-btn--on-primary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--hph-white);
+}
+
+/* ================================================
+   MOBILE RESPONSIVE
+   ================================================ */
+
+@media (max-width: 768px) {
+  .hph-header-action-btn {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .hph-header-action-btn .fas,
+  .hph-header-action-btn .far,
+  .hph-header-action-btn .fal,
+  .hph-header-action-btn .fab,
+  .hph-header-action-btn i {
+    font-size: 0.9375rem;
+  }
+}
+
+/* ================================================
+   ACCESSIBILITY
+   ================================================ */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .hph-header-action-btn {
+    border: 2px solid currentColor;
+  }
+
+  .hph-header-action-btn:hover,
+  .hph-header-action-btn:focus {
+    background: HighlightText;
+    color: Highlight;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .hph-header-action-btn {
+    transition: none;
+  }
+
+  .hph-header-action-btn:active {
+    transform: none;
+  }
+}
+
+/* Focus-visible for keyboard navigation */
+.hph-header-action-btn:focus-visible {
+  outline: 3px solid var(--hph-primary);
+  outline-offset: 2px;
+}
+
+/* ================================================
+   PRINT STYLES
+   ================================================ */
+
+@media print {
+  .hph-header-action-btn {
+    display: none;
+  }
+}
+
+/* ================================================
+   OVERRIDE PROTECTION
+   Ensure this component doesn't get affected by global button overrides
+   ================================================ */
+
+/* Protect against any .hph-btn overrides that might cascade down */
+.hph-header-action-btn {
+  /* Force specific values to override any inherited styles */
+  box-shadow: none !important;
+  border-style: none !important;
+  border-width: 0 !important;
+  text-transform: none !important;
+  font-weight: inherit !important;
+  letter-spacing: normal !important;
+}
+
+/* Reset any button group styles that might affect this */
+.hph-header-action-btn:first-child,
+.hph-header-action-btn:last-child,
+.hph-header-action-btn:only-child {
+  border-radius: var(--hph-radius) !important;
+}
+
+/* Ensure consistent appearance in button groups or flex containers */
+.hph-header-action-btn {
+  flex-shrink: 0;
+  position: relative;
+  z-index: auto;
+}

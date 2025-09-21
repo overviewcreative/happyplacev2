@@ -104,6 +104,7 @@
             }
             
             const dataSrc = img.dataset.src;
+            const dataSrcset = img.dataset.srcset;
             if (!dataSrc) return;
             
             try {
@@ -116,10 +117,10 @@
                 }
                 
                 // Load the image
-                await this.loadImageWithRetry(img, dataSrc);
+                await this.loadImageWithRetry(img, dataSrc, dataSrcset);
                 
                 // Handle successful load
-                this.handleImageLoad(img, dataSrc);
+                this.handleImageLoad(img, dataSrc, dataSrcset);
                 
             } catch (error) {
                 // Handle error
@@ -130,7 +131,7 @@
         /**
          * Load image with retry logic
          */
-        loadImageWithRetry(img, src) {
+        loadImageWithRetry(img, src, srcset = null) {
             return new Promise((resolve, reject) => {
                 const loadImage = (attemptNumber = 1) => {
                     const image = new Image();
@@ -149,6 +150,11 @@
                         }
                     };
                     
+                    // Set srcset first if available (better for responsive images)
+                    if (srcset) {
+                        image.srcset = srcset;
+                    }
+                    
                     // Set source to trigger load
                     image.src = src;
                     
@@ -163,9 +169,14 @@
         /**
          * Handle successful image load
          */
-        handleImageLoad(img, src) {
+        handleImageLoad(img, src, srcset = null) {
             // Update image source
             img.src = src;
+            
+            // Update srcset if available
+            if (srcset) {
+                img.srcset = srcset;
+            }
             
             // Mark as loaded
             this.loadedImages.add(img);
@@ -178,8 +189,11 @@
                 img.classList.add('hph-loaded');
             });
             
-            // Remove data-src attribute
+            // Remove data attributes
             delete img.dataset.src;
+            if (img.dataset.srcset) {
+                delete img.dataset.srcset;
+            }
             
             // Hide loading placeholder
             if (this.options.enableProgressiveLoading) {
@@ -188,7 +202,11 @@
             
             // Trigger custom event
             img.dispatchEvent(new CustomEvent('hph-image-loaded', {
-                detail: { src: src, retryCount: this.retryCount.get(img) || 1 }
+                detail: { 
+                    src: src, 
+                    srcset: srcset,
+                    retryCount: this.retryCount.get(img) || 1 
+                }
             }));
             
             // Clean up retry count
@@ -199,7 +217,6 @@
          * Handle image loading error
          */
         handleImageError(img, error) {
-            console.warn('Enhanced Lazy Loading: Failed to load image', img.dataset.src, error);
             
             // Mark as error
             this.errorImages.add(img);
@@ -377,7 +394,7 @@
         
         // Create instance with theme-specific options
         const lazyLoader = new EnhancedLazyLoading({
-            selector: 'img[data-src], img[loading="lazy"][data-src]',
+            selector: 'img[data-src], img[data-srcset], img[loading="lazy"][data-src]',
             rootMargin: '100px 0px',
             threshold: 0.1,
             enableBlurEffect: true,
@@ -394,7 +411,6 @@
             // Replace original lazy loading
             window.HPH.initLazyLoading = () => {
                 // Enhanced lazy loading is already active
-                console.log('Enhanced lazy loading active');
             };
         }
     }

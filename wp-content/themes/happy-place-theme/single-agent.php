@@ -99,133 +99,88 @@ if (!$agent_photo) {
         style="position: relative; width: 100%; background: var(--hph-gradient-primary); color: var(--hph-white); padding-top: var(--hph-padding-3xl); padding-bottom: var(--hph-padding-3xl);"
         data-animation="false"
     >
-        <div style="position: relative; z-index: 10; margin-left: auto; margin-right: auto; padding-left: var(--hph-padding-lg); padding-right: var(--hph-padding-lg); max-width: var(--hph-container-xl);">
-            
+        <div style="position: relative; z-index: 10; margin-left: auto; margin-right: auto; padding-left: var(--hph-space-6); padding-right: var(--hph-space-6); max-width: var(--hph-container-xl); padding-top: var(--hph-space-20);">
+
             <!-- Hero Content -->
             <div style="text-align: center;">
-                
+
                 <!-- Agent Profile Photo -->
-                <div style="margin-bottom: var(--hph-margin-2xl);">
+                <div style="margin-bottom: var(--hph-space-12);">
                     <div style="display: inline-block; position: relative;">
                         <div style="width: 200px; height: 200px; border-radius: var(--hph-radius-full); overflow: hidden; border: 6px solid rgba(255, 255, 255, 0.2); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); margin: 0 auto;">
-                            <img 
-                                src="<?php echo esc_url($agent_photo); ?>" 
-                                alt="<?php echo esc_attr($full_name); ?>" 
+                            <img
+                                src="<?php echo esc_url($agent_photo); ?>"
+                                alt="<?php echo esc_attr($full_name); ?>"
                                 style="width: 100%; height: 100%; object-fit: cover;"
                                 loading="eager"
                             >
                         </div>
-                        
+
                         <?php if ($featured): ?>
                         <!-- Featured Badge -->
-                        <div style="position: absolute; top: -10px; right: -10px; background: var(--hph-accent); color: var(--hph-white); border-radius: var(--hph-radius-full); padding: var(--hph-padding-sm) var(--hph-padding-md); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
-                            <i class="fas fa-star" style="margin-right: var(--hph-margin-xs);"></i>
+                        <div style="position: absolute; top: -10px; right: -10px; background: var(--hph-accent); color: var(--hph-white); border-radius: var(--hph-radius-full); padding: var(--hph-space-2) var(--hph-space-4); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+                            <i class="fas fa-star" style="margin-right: var(--hph-space-1);"></i>
                             <span><?php _e('Featured', 'happy-place-theme'); ?></span>
                         </div>
                         <?php endif; ?>
                     </div>
                 </div>
-                
+
                 <!-- Agent Name -->
-                <h1 style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-5xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
+                <h1 style="margin: 0 0 var(--hph-space-4) 0; font-size: var(--hph-text-5xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
                     <?php echo esc_html($full_name); ?>
                 </h1>
-                
+
                 <!-- Agent Title -->
                 <?php if ($title): ?>
-                <p style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); opacity: 0.9;">
+                <p style="margin: 0 0 var(--hph-space-8) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); opacity: 0.9;">
                     <?php echo esc_html($title); ?>
                 </p>
                 <?php endif; ?>
-                
+
                 <!-- Office Info -->
                 <?php if ($office_name): ?>
-                <p style="margin: 0 0 var(--hph-margin-xl) 0; font-size: var(--hph-text-base); opacity: 0.8;">
-                    <i class="fas fa-building" style="margin-right: var(--hph-margin-sm);"></i>
+                <p style="margin: 0 0 var(--hph-space-10) 0; font-size: var(--hph-text-base); opacity: 0.8;">
+                    <i class="fas fa-building" style="margin-right: var(--hph-space-2);"></i>
                     <?php echo esc_html($office_name); ?>
                 </p>
                 <?php endif; ?>
-                
+
                 <!-- Bio Preview -->
-                <div style="font-size: var(--hph-text-base); line-height: var(--hph-leading-relaxed); max-width: 65ch; margin: 0 auto var(--hph-margin-2xl) auto; opacity: 0.85;">
+                <div style="font-size: var(--hph-text-lg); line-height: var(--hph-leading-relaxed); max-width: 65ch; margin: 0 auto var(--hph-space-12) auto; opacity: 0.85;">
                     <?php echo esc_html($bio_preview); ?>
                 </div>
-                
+
                 <!-- Action Buttons -->
-                <div style="display: flex; flex-wrap: wrap; gap: var(--hph-gap-lg); align-items: center; justify-content: center;">
+                <div style="display: flex; flex-wrap: wrap; gap: var(--hph-space-6); align-items: center; justify-content: center; margin-top: var(--hph-space-8); margin-bottom: var(--hph-space-10);">
                     <?php if ($phone): ?>
-                    <a 
+                    <a
                         href="tel:<?php echo esc_attr($phone); ?>"
-                        style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none; font-weight: var(--hph-font-semibold); border-radius: var(--hph-radius-lg); transition: all 300ms ease; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); padding: var(--hph-padding-lg) var(--hph-padding-2xl); font-size: var(--hph-text-lg); background-color: var(--hph-white); color: var(--hph-primary); border: 2px solid var(--hph-white);"
+                        style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none; font-weight: var(--hph-font-semibold); border-radius: var(--hph-radius-lg); transition: all 300ms ease; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); padding: var(--hph-space-4) var(--hph-space-8); font-size: var(--hph-text-base); background-color: var(--hph-white); color: var(--hph-primary); border: 2px solid var(--hph-white); min-width: 180px;"
                         onmouseover="this.style.transform='translateY(-2px)'"
                         onmouseout="this.style.transform='translateY(0)'"
                     >
-                        <i class="fas fa-phone" style="margin-right: var(--hph-margin-sm);"></i>
+                        <i class="fas fa-phone" style="margin-right: var(--hph-space-3);"></i>
                         <span>Call <?php echo esc_html($phone); ?></span>
                     </a>
                     <?php endif; ?>
-                    
+
                     <?php if ($email): ?>
-                    <a 
+                    <a
                         href="mailto:<?php echo esc_attr($email); ?>"
-                        style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none; font-weight: var(--hph-font-semibold); border-radius: var(--hph-radius-lg); transition: all 300ms ease; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); padding: var(--hph-padding-lg) var(--hph-padding-2xl); font-size: var(--hph-text-lg); background-color: transparent; color: var(--hph-white); border: 2px solid var(--hph-white);"
+                        style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none; font-weight: var(--hph-font-semibold); border-radius: var(--hph-radius-lg); transition: all 300ms ease; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); padding: var(--hph-space-4) var(--hph-space-8); font-size: var(--hph-text-base); background-color: transparent; color: var(--hph-white); border: 2px solid var(--hph-white); min-width: 180px;"
                         onmouseover="this.style.transform='translateY(-2px)'"
                         onmouseout="this.style.transform='translateY(0)'"
                     >
-                        <i class="fas fa-envelope" style="margin-right: var(--hph-margin-sm);"></i>
+                        <i class="fas fa-envelope" style="margin-right: var(--hph-space-3);"></i>
                         <span>Send Email</span>
                     </a>
                     <?php endif; ?>
                 </div>
-                
+
             </div>
         </div>
     </section>
-    <?php
-    // ============================================
-    // Stats Section - Agent Performance
-    // ============================================
-    $agent_stats = array_filter(array(
-        $years_experience ? array(
-            'number' => $years_experience,
-            'label' => 'Years Experience',
-            'icon' => 'fas fa-calendar',
-            'description' => 'In real estate industry'
-        ) : null,
-        $total_listings_sold ? array(
-            'number' => number_format($total_listings_sold),
-            'label' => 'Properties Sold',
-            'icon' => 'fas fa-home',
-            'description' => 'Successfully closed transactions'
-        ) : null,
-        $total_sales_volume ? array(
-            'number' => '$' . number_format($total_sales_volume / 1000000, 1) . 'M',
-            'label' => 'Total Sales Volume',
-            'icon' => 'fas fa-chart-line',
-            'description' => 'In real estate sales'
-        ) : null,
-        array(
-            'number' => '98%',
-            'label' => 'Client Satisfaction',
-            'icon' => 'fas fa-star',
-            'description' => 'Happy clients who recommend'
-        )
-    ));
-
-    if (!empty($agent_stats)) {
-        get_template_part('template-parts/sections/stats', null, array(
-            'style' => 'counters',
-            'theme' => 'primary',
-            'padding' => 'xl',
-            'badge' => 'Performance Record',
-            'headline' => $full_name . '\'s Track Record',
-            'subheadline' => 'Proven results from an experienced professional',
-            'stats' => $agent_stats,
-            'animate_counters' => true,
-            'section_id' => 'stats-agent-' . $agent_id
-        ));
-    }
-    ?>
 
     <?php
     // ============================================
@@ -237,8 +192,7 @@ if (!$agent_photo) {
             'padding' => 'xl',
             'content_width' => 'normal',
             'badge' => 'About ' . ($first_name ?: $full_name),
-            'headline' => 'Get to Know Your Agent',
-            'subheadline' => 'Experience, expertise, and dedication to your success',
+            'headline' => 'Get to Know ' . ($full_name),
             'content' => $bio ? wp_kses_post(wpautop($bio)) : '',
             'layout' => 'single-column',
             'section_id' => 'about-agent-' . $agent_id
@@ -302,15 +256,18 @@ if (!$agent_photo) {
     // ============================================
     // Listings Section - Agent's Properties
     // ============================================
-    // Query agent's listings
+    // Get the user ID associated with this agent post via bridge function
+    $agent_user_id = hpt_get_agent_user_id($agent_id);
+    
+    // Query agent's listings using the user ID (since listing_agent is a user field)
     $listings_args = array(
         'post_type' => 'listing',
-        'posts_per_page' => 6,
+        'posts_per_page' => 8,
         'post_status' => 'publish',
         'meta_query' => array(
             array(
-                'key' => 'agent',
-                'value' => $agent_id,
+                'key' => 'listing_agent',
+                'value' => $agent_user_id ?: $agent_id, // Fallback to agent post ID if no user found
                 'compare' => '='
             )
         ),
@@ -319,107 +276,58 @@ if (!$agent_photo) {
     );
     
     $listings_query = new WP_Query($listings_args);
-    $has_listings = $listings_query->have_posts();
+    
+    if ($listings_query->have_posts()) : ?>
+    
+    <!-- Agent Listings Section -->
+    <section class="hph-section" style="background: var(--hph-gray-50); padding: var(--hph-padding-3xl) 0;">
+        <div class="hph-container">
+            
+            <!-- Section Header -->
+            <div class="hph-section-header" style="text-align: center; margin-bottom: var(--hph-margin-3xl);">
+                <div style="display: inline-block; background: var(--hph-primary); color: var(--hph-white); padding: var(--hph-space-2) var(--hph-space-6); border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold); margin-bottom: var(--hph-space-6);">
+                    Current Listings
+                </div>
+                <h2 style="margin: 0 0 var(--hph-space-6) 0; font-size: var(--hph-text-4xl); font-weight: var(--hph-font-bold); color: var(--hph-gray-900);">
+                    <?php echo esc_html($full_name); ?>'s Properties
+                </h2>
+                <p style="margin: 0; font-size: var(--hph-text-lg); color: var(--hph-gray-600); max-width: 65ch; margin-left: auto; margin-right: auto;">
+                    Explore available properties currently listed by <?php echo esc_html($first_name ?: $full_name); ?>
+                </p>
+            </div>
+            
+            <!-- Listings Grid -->
+            <div class="hph-listings-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: var(--hph-gap-xl); margin-bottom: var(--hph-margin-2xl);">
+                
+                <?php while ($listings_query->have_posts()) : $listings_query->the_post(); ?>
+                    <?php hph_component('universal-card', [
+                        'post_id' => get_the_ID(),
+                        'layout' => 'vertical',
+                        'show_agent' => false
+                    ]); ?>
+                <?php endwhile; ?>
+                
+            </div>
+            
+            <!-- View All Link -->
+            <?php if ($listings_query->found_posts > 8) : ?>
+            <div style="text-align: center;">
+                <a href="<?php echo esc_url(add_query_arg('agent', $agent_id, get_post_type_archive_link('listing'))); ?>" 
+                   style="display: inline-flex; align-items: center; text-decoration: none; background: var(--hph-primary); color: var(--hph-white); padding: var(--hph-space-6) var(--hph-padding-2xl); border-radius: var(--hph-radius-lg); font-weight: var(--hph-font-semibold); transition: all 300ms ease;"
+                   onmouseover="this.style.transform='translateY(-2px)'"
+                   onmouseout="this.style.transform='translateY(0)'">
+                    <span>View All <?php echo esc_html($listings_query->found_posts); ?> Properties</span>
+                    <i class="fas fa-arrow-right" style="margin-left: var(--hph-space-2);"></i>
+                </a>
+            </div>
+            <?php endif; ?>
+            
+        </div>
+    </section>
+    
+    <?php 
+    endif; 
     wp_reset_postdata();
-
-    if ($has_listings) {
-        get_template_part('template-parts/sections/listings-loop', null, array(
-            'background' => 'light',
-            'padding' => 'xl',
-            'badge' => 'Current Listings',
-            'headline' => $full_name . '\'s Properties',
-            'subheadline' => 'Explore available properties from this agent',
-            'posts_per_page' => 6,
-            'agent_filter' => $agent_id,
-            'show_agent' => false,
-            'view_all_url' => add_query_arg('agent', $agent_id, get_post_type_archive_link('listing')),
-            'section_id' => 'listings-agent-' . $agent_id
-        ));
-    }
-    ?>
-    <?php
-    // ============================================
-    // Contact Form Section
-    // ============================================
-    get_template_part('template-parts/sections/form', null, array(
-        'background' => 'primary',
-        'padding' => 'xl',
-        'badge' => 'Get In Touch',
-        'headline' => 'Contact ' . $full_name,
-        'subheadline' => 'Ready to start your real estate journey? Let\'s connect today.',
-        'content' => 'Whether you\'re buying, selling, or have questions about the market, I\'m here to help with personalized service and expert guidance.',
-        'form_fields' => array(
-            array(
-                'type' => 'text',
-                'name' => 'name',
-                'placeholder' => 'Your Full Name',
-                'required' => true
-            ),
-            array(
-                'type' => 'email',
-                'name' => 'email',
-                'placeholder' => 'Your Email Address',
-                'required' => true
-            ),
-            array(
-                'type' => 'tel',
-                'name' => 'phone',
-                'placeholder' => 'Your Phone Number',
-                'required' => false
-            ),
-            array(
-                'type' => 'select',
-                'name' => 'interest',
-                'placeholder' => 'I\'m interested in...',
-                'options' => array(
-                    'buying' => 'Buying a Home',
-                    'selling' => 'Selling a Home',
-                    'investing' => 'Real Estate Investment',
-                    'consultation' => 'Market Consultation',
-                    'other' => 'Other'
-                )
-            ),
-            array(
-                'type' => 'textarea',
-                'name' => 'message',
-                'placeholder' => 'Tell me more about your needs...',
-                'required' => true,
-                'rows' => 4
-            )
-        ),
-        'button_text' => 'Send Message',
-        'contact_info' => array_filter(array(
-            $phone ? array('type' => 'phone', 'value' => $phone, 'icon' => 'fas fa-phone') : null,
-            $email ? array('type' => 'email', 'value' => $email, 'icon' => 'fas fa-envelope') : null,
-            $office_address ? array('type' => 'address', 'value' => $office_address, 'icon' => 'fas fa-map-marker-alt') : null
-        )),
-        'social_links' => array_filter(array(
-            $facebook ? array('url' => $facebook, 'icon' => 'fab fa-facebook', 'label' => 'Facebook') : null,
-            $instagram ? array('url' => $instagram, 'icon' => 'fab fa-instagram', 'label' => 'Instagram') : null,
-            $linkedin ? array('url' => $linkedin, 'icon' => 'fab fa-linkedin', 'label' => 'LinkedIn') : null,
-            $twitter ? array('url' => $twitter, 'icon' => 'fab fa-twitter', 'label' => 'Twitter') : null
-        )),
-        'section_id' => 'contact-agent-' . $agent_id
-    ));
-    ?>
-
-    <?php
-    // ============================================
-    // Testimonials Section - Client Reviews
-    // ============================================
-    get_template_part('template-parts/sections/testimonials', null, array(
-        'background' => 'light',
-        'padding' => 'xl',
-        'badge' => 'Client Reviews',
-        'headline' => 'What Clients Say About ' . $full_name,
-        'subheadline' => 'Real feedback from satisfied clients',
-        'testimonials_count' => 3,
-        'layout' => 'slider',
-        'show_ratings' => true,
-        'auto_play' => true,
-        'agent_filter' => $agent_id,
-        'section_id' => 'testimonials-agent-' . $agent_id
-    ));
     ?>
 
 

@@ -28,7 +28,6 @@ class MediaHeroComponent {
         // Find the unique ID from the media data
         this.findUniqueId();
         if (!this.uniqueId || !this.mediaData) {
-            console.warn('MediaHero: Could not find media data for', this.containerId);
             return;
         }
         
@@ -39,7 +38,6 @@ class MediaHeroComponent {
         // Initialize thumbnail states
         this.updateThumbnails();
         
-        console.log('MediaHero initialized for', this.uniqueId);
     }
     
     findUniqueId() {
@@ -367,7 +365,6 @@ class MediaHeroComponent {
         // Remove event listeners (if we stored references)
         // This would be implemented if needed for dynamic component removal
         
-        console.log('MediaHero destroyed for', this.uniqueId);
     }
 }
 

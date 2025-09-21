@@ -1,588 +1,283 @@
 <?php
 /**
  * Template Name: Mortgages Landing Page - Simplified
- * Clean, focused page with calculator, Remy's info, and essential FAQs
+ * Rebuilt using proper framework components and template parts
+ * 
+ * @package HappyPlaceTheme
+ * @version 3.0.0
  */
 
 get_header(); ?>
 
-<main id="main-content" class="site-main">
+<main id="main-content" class="hph-main">
     
     <?php
-    // ============================================
     // Hero Section
-    // ============================================
-    get_template_part('template-parts/sections/hero', null, array(
+    get_template_part('template-parts/sections/hero', null, [
         'style' => 'gradient',
         'theme' => 'primary',
         'height' => 'lg',
-        'background_image' => function_exists('hph_get_image_url') ? hph_get_image_url('mortgage-hero.jpg') : '',
-        'parallax' => true,
-        'overlay' => 'gradient',
+        'is_top_of_page' => true,
         'alignment' => 'center',
-        'headline' => 'Get Pre-Approved & Find Your Dream Home',
-        'subheadline' => 'Expert mortgage guidance from Mustache Mortgages',
-        'content' => 'Get pre-approved with confidence and start your home search knowing exactly what you can afford.',
-        'content_width' => 'normal',
-        'buttons' => array(
-            array(
-                'text' => 'Calculate Your Payment',
-                'url' => '#mortgage-calculator',
+        'headline' => 'Get Pre-Approved for Your Dream Home',
+        'subheadline' => 'Expert mortgage guidance to help you move forward with confidence',
+        'content' => 'Know exactly what you can afford before you start shopping. Get pre-approved quickly and easily with our trusted mortgage partner.',
+        'buttons' => [
+            [
+                'text' => 'Get Pre-Approved Now',
+                'url' => 'https://myloan.mustachemortgages.com/homehub/signup/rhaynes@mustachemortgages.com',
                 'style' => 'white',
                 'size' => 'xl',
-                'icon' => 'fas fa-calculator',
-                'icon_position' => 'right'
-            ),
-            array(
-                'text' => 'Get Pre-Approved',
-                'url' => '#remy-contact',
+                'icon' => 'fas fa-arrow-right',
+                'target' => '_blank'
+            ],
+            [
+                'text' => 'Learn More',
+                'url' => '#why-preapproval',
                 'style' => 'outline-white',
                 'size' => 'xl'
-            )
-        ),
-        'section_id' => 'mortgage-hero'
-    ));
+            ]
+        ]
+    ]);
     ?>
     
-    <!-- Pre-Approval Benefits Section -->
-    <section class="hph-section hph-bg-white hph-py-3xl">
-        <div class="hph-container">
-            <div class="hph-grid hph-grid-cols-2 hph-gap-2xl hph-items-center">
-                
-                <!-- Content -->
-                <div class="hph-preapproval-content">
-                    <div class="hph-section-number hph-display-1 hph-text-primary hph-font-bold hph-mb-md">01</div>
-                    <h2 class="hph-heading-2xl hph-text-primary hph-mb-lg">Pre-Approval or Proof of Funds</h2>
-                    <p class="hph-text-lg hph-text-gray-700 hph-mb-xl">
-                        Getting pre-approved by a lender is an essential step when you're starting your home search, and provides you with:
-                    </p>
-                    
-                    <div class="hph-benefits-grid hph-grid hph-grid-cols-3 hph-gap-lg hph-mb-xl">
-                        <div class="hph-benefit-item">
-                            <h3 class="hph-text-lg hph-text-primary hph-font-semibold hph-mb-sm">Market Confidence</h3>
-                            <p class="hph-text-sm hph-text-gray-600">Sellers will only consider cash offers with proof of funds or offers from pre-approved buyers.</p>
-                        </div>
-                        <div class="hph-benefit-item">
-                            <h3 class="hph-text-lg hph-text-primary hph-font-semibold hph-mb-sm">Financial Clarity</h3>
-                            <p class="hph-text-sm hph-text-gray-600">Know exactly what you can afford before falling in love with properties beyond your budget.</p>
-                        </div>
-                        <div class="hph-benefit-item">
-                            <h3 class="hph-text-lg hph-text-primary hph-font-semibold hph-mb-sm">Smoother Process</h3>
-                            <p class="hph-text-sm hph-text-gray-600">Move more easily from offer to closing with your financing already in motion.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="hph-expert-text hph-mb-lg">
-                        <p class="hph-text-base hph-text-gray-700">
-                            Your dedicated agent can connect you with our network of trusted lending partners who offer transparent, straightforward financing solutions tailored to your specific needs.
-                        </p>
-                    </div>
-                    
-                    <div class="hph-cash-buyers hph-mb-lg">
-                        <p class="hph-text-base hph-text-gray-700">
-                            If you're purchasing with cash, we'll help you prepare proper documentation showing proof of funds.
-                        </p>
-                    </div>
-                    
-                    <div class="hph-remy-tip hph-card hph-bg-primary-50 hph-border-primary-200 hph-p-lg">
-                        <h4 class="hph-text-lg hph-text-primary hph-font-semibold hph-mb-sm">Financing Tips From Remy</h4>
-                        <p class="hph-text-base hph-text-gray-700 hph-mb-0">
-                            Today's mortgage landscape offers numerous paths to homeownership — from conventional and FHA loans to VA, USDA, and specialized first-time buyer programs. Your agent will ensure you're paired with a lender who understands your homeownership goals.
-                        </p>
-                    </div>
-                </div>
-                
-                <!-- Image -->
-                <div class="hph-preapproval-image">
-                    <?php if (function_exists('hph_get_image_url')) : ?>
-                    <img src="<?php echo hph_get_image_url('mortgage-preapproval.jpg'); ?>" 
-                         alt="Pre-approval documents" 
-                         class="hph-img-responsive hph-rounded-lg">
-                    <?php endif; ?>
-                </div>
-                
-            </div>
-        </div>
-    </section>
-    
-    <!-- Mortgage Calculator Section -->
-    <section id="mortgage-calculator" class="hph-section hph-bg-gray-50 hph-py-3xl">
-        <div class="hph-container">
-            
-            <div class="hph-section-header hph-text-center hph-mb-3xl">
-                <div class="hph-badge hph-badge-primary hph-mb-lg">Mortgage Calculator</div>
-                <h2 class="hph-heading-xl">Calculate Your Monthly Payment</h2>
-                <p class="hph-text-lg hph-text-gray-600">Get an estimate of your monthly mortgage payment including principal, interest, taxes, and insurance</p>
-            </div>
-            
-            <div class="hph-grid hph-grid-cols-2 hph-gap-xl hph-items-start">
-                
-                <!-- Calculator Form -->
-                <div class="hph-card hph-p-xl">
-                    <h3 class="hph-heading-lg hph-mb-xl">Loan Details</h3>
-                    
-                    <form id="mortgage-calculator-form" class="hph-form hph-form--stacked">
-                        
-                        <!-- Home Price -->
-                        <div class="hph-form-group">
-                            <label for="home-price" class="hph-form-label">Home Price</label>
-                            <div class="hph-input-group">
-                                <span class="hph-input-prefix">$</span>
-                                <input type="number" id="home-price" value="400000" min="0" step="1000" placeholder="400,000">
-                            </div>
-                        </div>
-                        
-                        <!-- Down Payment -->
-                        <div class="hph-form-group">
-                            <label for="down-payment" class="hph-form-label">Down Payment</label>
-                            <div class="hph-form-row">
-                                <div class="hph-input-group">
-                                    <span class="hph-input-prefix">$</span>
-                                    <input type="number" id="down-payment" value="80000" min="0" step="1000">
-                                </div>
-                                <div class="hph-input-group hph-w-20">
-                                    <input type="number" id="down-payment-percent" value="20" min="0" max="100" step="0.1">
-                                    <span class="hph-input-suffix">%</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Interest Rate -->
-                        <div class="hph-form-group">
-                            <label for="interest-rate" class="hph-form-label">Interest Rate</label>
-                            <div class="hph-input-group">
-                                <input type="number" id="interest-rate" value="6.5" min="0" max="20" step="0.01" placeholder="6.5">
-                                <span class="hph-input-suffix">%</span>
-                            </div>
-                        </div>
-                        
-                        <!-- Loan Term -->
-                        <div class="hph-form-group">
-                            <label for="loan-term" class="hph-form-label">Loan Term</label>
-                            <select id="loan-term">
-                                <option value="30">30 years</option>
-                                <option value="15">15 years</option>
-                                <option value="20">20 years</option>
-                                <option value="25">25 years</option>
-                            </select>
-                        </div>
-                        
-                    </form>
-                </div>
-                
-                <!-- Results -->
-                <div class="hph-calculator-results">
-                    
-                    <!-- Monthly Payment Card -->
-                    <div class="hph-card hph-card-gradient hph-text-center hph-mb-xl">
-                        <h3 class="hph-text-lg hph-text-white hph-opacity-90 hph-mb-md">Monthly Payment</h3>
-                        <div id="monthly-payment" class="hph-display-1 hph-text-white hph-mb-sm">$2,234</div>
-                        <p class="hph-text-white hph-opacity-80 hph-mb-0">Principal & Interest</p>
-                    </div>
-                    
-                    <!-- Loan Summary -->
-                    <div class="hph-card hph-bg-white">
-                        <h4 class="hph-heading-lg hph-mb-lg">Loan Summary</h4>
-                        
-                        <div class="hph-summary-list">
-                            <div class="hph-summary-item">
-                                <span class="hph-text-gray-600">Loan Amount</span>
-                                <span id="loan-amount" class="hph-font-semibold">$320,000</span>
-                            </div>
-                            <div class="hph-summary-item">
-                                <span class="hph-text-gray-600">Total Interest</span>
-                                <span id="total-interest" class="hph-font-medium">$340,240</span>
-                            </div>
-                            <div class="hph-summary-item">
-                                <span class="hph-text-gray-600">Total Payments</span>
-                                <span id="total-payments" class="hph-font-medium">$660,240</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                </div>
-                
-            </div>
-            
-            <!-- Disclaimer -->
-            <div class="hph-disclaimer hph-card hph-bg-gray-50 hph-text-center hph-mt-2xl">
-                <p class="hph-text-sm hph-text-gray-600 hph-mb-0">
-                    <strong>Disclaimer:</strong> This calculator provides estimates only. Contact Remy for personalized quotes.
-                </p>
-            </div>
-            
-        </div>
-    </section>
-    
-    <!-- Loan Types Section -->
     <?php
-    get_template_part('template-parts/sections/content', null, array(
-        'layout' => 'grid',
+    // Why Pre-Approval Matters - Features Section
+    get_template_part('template-parts/sections/features', null, [
         'background' => 'white',
         'padding' => 'xl',
         'columns' => 3,
-        'badge' => 'Loan Options',
-        'headline' => 'Choose the Right Loan for You',
-        'subheadline' => 'We work with multiple loan types to find the perfect fit for your situation',
-        'animation' => true,
-        'items' => array(
-            array(
-                'icon' => 'fas fa-home',
-                'title' => 'Conventional Loans',
-                'content' => 'Traditional financing with competitive rates. Perfect for buyers with good credit and stable income. Down payments as low as 3%.',
-                'link' => array(
-                    'text' => 'Learn More',
-                    'url' => '#'
-                )
-            ),
-            array(
-                'icon' => 'fas fa-shield-alt',
-                'title' => 'FHA Loans',
-                'content' => 'Government-backed loans with lower down payment requirements. Ideal for first-time buyers with down payments as low as 3.5%.',
-                'link' => array(
-                    'text' => 'Learn More',
-                    'url' => '#'
-                )
-            ),
-            array(
-                'icon' => 'fas fa-star',
-                'title' => 'VA Loans',
-                'content' => 'Exclusive benefits for veterans and service members. No down payment required, no private mortgage insurance needed.',
-                'link' => array(
-                    'text' => 'Learn More',
-                    'url' => '#'
-                )
-            )
-        ),
-        'section_id' => 'loan-types'
-    ));
+        'alignment' => 'center',
+        'headline' => 'Why Pre-Approval Matters',
+        'subheadline' => 'In today\'s competitive market, sellers want to know you\'re a serious buyer. Pre-approval gives you the edge you need.',
+        'section_id' => 'why-preapproval',
+        'features' => [
+            [
+                'icon' => 'fas fa-check-circle',
+                'title' => 'Know Your Budget',
+                'content' => 'Shop with confidence knowing exactly what you can afford before you fall in love with a home.'
+            ],
+            [
+                'icon' => 'fas fa-handshake',
+                'title' => 'Stronger Offers',
+                'content' => 'Sellers prefer pre-approved buyers. Your offer will stand out in multiple offer situations.'
+            ],
+            [
+                'icon' => 'fas fa-clock',
+                'title' => 'Faster Closing',
+                'content' => 'With financing already in motion, you can move from offer to closing more quickly.'
+            ]
+        ]
+    ]);
     ?>
     
-    <!-- Process Section -->
-    <?php
-    get_template_part('template-parts/sections/content', null, array(
-        'layout' => 'two-column',
-        'background' => 'light',
-        'padding' => 'xl',
-        'alignment' => 'left',
-        'badge' => 'The Process',
-        'headline' => 'Simple Steps to Homeownership',
-        'subheadline' => 'We guide you through every step',
-        'content' => '<ol style="padding-left: 1.5rem; line-height: 1.8;">
-            <li style="margin-bottom: 1rem;"><strong>Get Pre-approved:</strong> Submit your application and receive your pre-approval letter within 24 hours.</li>
-            <li style="margin-bottom: 1rem;"><strong>Shop for Homes:</strong> Armed with your pre-approval, start looking for your perfect home with confidence.</li>
-            <li style="margin-bottom: 1rem;"><strong>Make an Offer:</strong> Your pre-approval letter shows sellers you\'re a serious buyer.</li>
-            <li style="margin-bottom: 1rem;"><strong>Complete the Process:</strong> We handle the paperwork and coordinate with all parties to ensure a smooth closing.</li>
-        </ol>',
-        'buttons' => array(
-            array(
-                'text' => 'Start Your Pre-approval',
-                'url' => '#mortgage-calculator',
-                'style' => 'primary',
-                'size' => 'lg',
-                'icon' => 'fas fa-play'
-            )
-        ),
-        'image' => array(
-            'url' => function_exists('hph_get_image_url') ? hph_get_image_url('mortgage-process.jpg') : '',
-            'alt' => 'Mortgage application process'
-        ),
-        'animation' => true,
-        'section_id' => 'process'
-    ));
-    ?>
-    
-    <!-- Benefits Stats Section -->
-    <?php
-    get_template_part('template-parts/sections/content', null, array(
-        'layout' => 'stats',
-        'background' => 'primary',
-        'padding' => 'xl',
-        'badge' => 'Why Choose Us',
-        'headline' => 'Trusted by Delaware Homebuyers',
-        'subheadline' => 'Our track record speaks for itself',
-        'animation' => true,
-        'stats' => array(
-            array(
-                'number' => '500+',
-                'label' => 'Loans Processed',
-                'description' => 'Successfully closed in 2024'
-            ),
-            array(
-                'number' => '24',
-                'suffix' => 'hrs',
-                'label' => 'Average Approval Time',
-                'description' => 'Fast pre-approval process'
-            ),
-            array(
-                'number' => '98%',
-                'label' => 'Client Satisfaction',
-                'description' => 'Would recommend to others'
-            ),
-            array(
-                'number' => '15+',
-                'suffix' => 'yrs',
-                'label' => 'Combined Experience',
-                'description' => 'In Delaware real estate'
-            )
-        ),
-        'section_id' => 'stats'
-    ));
-    ?>
-    
-    <!-- Remy Haynes Contact Section -->
-    <section id="remy-contact" class="hph-section hph-bg-gray-900 hph-text-white hph-py-3xl">
+    <!-- Getting Started & Remy Contact Section -->
+    <section class="hph-section" style="padding: var(--hph-spacing-3xl) 0; background: var(--hph-white);">
         <div class="hph-container">
-            <div class="hph-grid hph-grid-cols-3 hph-gap-xl hph-items-center">
+            <div class="hph-grid hph-grid-cols-1 hph-grid-cols-lg-2 hph-gap-xl hph-items-center">
                 
-                <!-- Remy's Photo -->
-                <div class="hph-remy-photo hph-text-center">
-                    <div class="hph-avatar-xl hph-mx-auto hph-mb-md">
-                        <?php if (function_exists('hph_get_image_url')) : ?>
-                        <img src="<?php echo hph_get_image_url('remy-haynes.jpg'); ?>" 
-                             alt="Remy Haynes" 
-                             class="hph-rounded-full hph-w-full hph-h-full hph-object-cover">
-                        <?php endif; ?>
+                <!-- CTA Content Card -->
+                <div class="hph-card hph-card-elevated hph-bg-white hph-rounded-lg hph-shadow-lg hph-p-xl">
+                    <h3 class="hph-text-2xl hph-font-semibold hph-mb-md">Getting Started is Easy</h3>
+                    <p class="hph-text-gray-700 hph-mb-md">
+                        Our recommended mortgage partner, Mustache Mortgages, offers a streamlined online application process. 
+                        The process typically takes 24-48 hours, and you'll receive a pre-approval letter that shows sellers you mean business.
+                    </p>
+                    <div class="hph-mb-md">
+                        <a href="https://myloan.mustachemortgages.com/homehub/signup/rhaynes@mustachemortgages.com" 
+                           target="_blank" 
+                           class="hph-btn hph-btn-primary hph-btn-lg hph-mb-md">
+                            Start Your Pre-Approval Application
+                            <i class="fas fa-external-link-alt hph-ml-2"></i>
+                        </a>
                     </div>
+                    <p class="hph-text-sm hph-text-gray-500">
+                        <em>Note: You are not required to use Mustache Mortgages. You're free to shop around and choose any lender that best meets your needs.</em>
+                    </p>
                 </div>
                 
-                <!-- Remy's Info -->
-                <div class="hph-remy-info hph-col-span-2">
-                    <h2 class="hph-heading-xl hph-text-white hph-mb-md">Remy Haynes</h2>
-                    <p class="hph-text-lg hph-text-gray-300 hph-mb-sm">Loan Officer | NMLS 2433656</p>
-                    <p class="hph-text-base hph-text-gray-300 hph-mb-lg">
-                        <a href="tel:302-504-3396" class="hph-text-primary hph-no-underline hover:hph-underline">302.504.3396</a>
-                    </p>
-                    <p class="hph-text-base hph-text-gray-300 hph-mb-xl">
-                        <a href="mailto:rhaynes@mustachomortgages.com" class="hph-text-primary hph-no-underline hover:hph-underline">rhaynes@mustachomortgages.com</a>
-                    </p>
-                    
-                    <!-- Mustache Mortgages Logo -->
-                    <div class="hph-mustache-logo">
-                        <?php if (function_exists('hph_get_image_url')) : ?>
-                        <img src="<?php echo hph_get_image_url('mustache-mortgages-logo.png'); ?>" 
-                             alt="Mustache Mortgages" 
-                             class="hph-h-12 hph-w-auto">
-                        <?php endif; ?>
+                <!-- Remy Contact Card -->
+                <div class="hph-card hph-card-elevated hph-bg-white hph-rounded-lg hph-shadow-lg hph-p-xl">
+                    <div class="hph-text-center">
+                        <div class="hph-rounded-full hph-bg-primary hph-text-white hph-mx-auto hph-mb-md hph-flex hph-items-center hph-justify-center" style="width: 96px; height: 96px;">
+                            <span class="hph-text-2xl hph-font-bold">RH</span>
+                        </div>
+                        
+                        <h4 class="hph-text-xl hph-font-bold hph-mb-xs">Remy Haynes</h4>
+                        <p class="hph-text-sm hph-text-gray-600 hph-mb-xs">Loan Officer</p>
+                        <p class="hph-text-xs hph-text-gray-500 hph-mb-md">NMLS #2433656</p>
+                        
+                        <div class="hph-text-left hph-border-t hph-pt-md">
+                            <p class="hph-text-sm hph-mb-sm">
+                                <i class="fas fa-phone hph-text-primary hph-mr-sm"></i>
+                                <a href="tel:302-504-3396" class="hph-text-gray-700 hover:hph-text-primary">302-504-3396</a>
+                            </p>
+                            <p class="hph-text-sm">
+                                <i class="fas fa-envelope hph-text-primary hph-mr-sm"></i>
+                                <a href="mailto:rhaynes@mustachemortgages.com" class="hph-text-gray-700 hover:hph-text-primary hph-text-xs">rhaynes@mustachemortgages.com</a>
+                            </p>
+                        </div>
                     </div>
                 </div>
                 
             </div>
-            
-            <!-- Disclaimer -->
-            <div class="hph-disclaimer hph-mt-xl hph-pt-lg hph-border-t hph-border-gray-700">
-                <p class="hph-text-xs hph-text-gray-400 hph-text-center">
-                    Clients are not required to use or recommend Mustache Mortgage as a condition for the 
-                    purchase, sale, or refinancing of the subject property. There are other mortgage lenders 
-                    available with similar services and you are free to shop around to determine that you are 
-                    receiving the best services and rates for your needs.
-                </p>
+        </div>
+    </section>
+    
+    <!-- Meet Remy Section -->
+    <section class="hph-section" style="padding: var(--hph-spacing-3xl) 0; background: var(--hph-gray-50);">
+        <div class="hph-container">
+            <div class="hph-grid hph-grid-cols-1 hph-grid-cols-lg-2 hph-gap-2xl hph-items-center">
+                
+                <div class="hph-text-center hph-text-lg-left">
+                    <h2 class="hph-text-3xl hph-font-bold hph-mb-md">Meet Your Mortgage Expert</h2>
+                    <h3 class="hph-text-2xl hph-text-primary hph-mb-sm">Remy Haynes</h3>
+                    <p class="hph-text-gray-600 hph-mb-lg">Loan Officer | NMLS #2433656</p>
+                    
+                    <p class="hph-text-lg hph-mb-lg">
+                        With years of experience in the Delaware mortgage market, Remy specializes in helping first-time buyers, 
+                        move-up buyers, and investors secure the right financing for their needs.
+                    </p>
+                    
+                    <p class="hph-mb-xl">
+                        Remy takes pride in making the mortgage process simple and stress-free. Whether you're looking for 
+                        conventional, FHA, VA, or USDA financing, Remy will guide you through your options and help you 
+                        choose the loan that's right for you.
+                    </p>
+                    
+                    <a href="https://myloan.mustachemortgages.com/homehub/signup/rhaynes@mustachemortgages.com" 
+                       target="_blank" 
+                       class="hph-btn hph-btn-primary hph-btn-lg hph-mb-md">
+                        Get Pre-Approved with Remy
+                        <i class="fas fa-external-link-alt hph-ml-2"></i>
+                    </a>
+                    
+                    <p class="hph-text-sm hph-text-gray-500">
+                        <em>Clients are not required to use Mustache Mortgages. There are other mortgage lenders available 
+                        and you are free to shop around for the best services and rates.</em>
+                    </p>
+                </div>
+                
+                <!-- Enhanced Remy Contact Card -->
+                <div class="hph-card hph-card-elevated hph-bg-white hph-rounded-lg hph-shadow-xl hph-p-xl">
+                    <div class="hph-text-center">
+                        <div class="hph-rounded-full hph-bg-primary hph-text-white hph-mx-auto hph-mb-lg hph-flex hph-items-center hph-justify-center hph-w-36 hph-h-36">
+                            <span class="hph-text-4xl hph-font-bold">RH</span>
+                        </div>
+                        
+                        <h4 class="hph-text-2xl hph-font-bold hph-mb-sm">Remy Haynes</h4>
+                        <p class="hph-text-gray-600 hph-mb-xs">Loan Officer</p>
+                        <p class="hph-text-sm hph-text-gray-500 hph-mb-lg">NMLS #2433656</p>
+                        
+                        <div class="hph-border-t hph-pt-lg">
+                            <div class="hph-text-left hph-space-y-md">
+                                <a href="tel:302-504-3396" class="hph-flex hph-items-center hph-text-gray-700 hover:hph-text-primary">
+                                    <i class="fas fa-phone hph-text-primary hph-mr-md hph-w-5"></i>
+                                    <span class="hph-font-medium">302-504-3396</span>
+                                </a>
+                                <a href="mailto:rhaynes@mustachemortgages.com" class="hph-flex hph-items-center hph-text-gray-700 hover:hph-text-primary">
+                                    <i class="fas fa-envelope hph-text-primary hph-mr-md hph-w-5"></i>
+                                    <span class="hph-text-sm">rhaynes@mustachemortgages.com</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
             </div>
         </div>
     </section>
     
     <?php
-    // ============================================
-    // Simple FAQ Section
-    // ============================================
-    get_template_part('template-parts/sections/faq', null, array(
-        'background' => 'light',
+    // FAQ Section using framework component
+    $faqs = [
+        [
+            'question' => 'How much do I need for a down payment?',
+            'answer' => 'Down payment requirements vary by loan type. FHA loans require as little as 3.5% down, conventional loans can go as low as 3%, and VA/USDA loans may offer 0% down options for qualified buyers. A 20% down payment on conventional loans avoids the need for mortgage insurance.'
+        ],
+        [
+            'question' => 'What credit score do I need?',
+            'answer' => 'Credit score requirements depend on the loan type. Conventional loans typically require a minimum score of 620, FHA loans may accept scores as low as 580 (or 500 with 10% down), and VA loans are often more flexible. Remember, higher credit scores generally qualify for better interest rates.'
+        ],
+        [
+            'question' => 'How long does the pre-approval process take?',
+            'answer' => 'With all required documents ready, pre-approval can often be completed within 24-48 hours. The full mortgage process from application to closing typically takes 30-45 days, though this can vary based on the complexity of your situation.'
+        ],
+        [
+            'question' => 'What documents will I need to provide?',
+            'answer' => 'Common documents include: recent pay stubs (last 30 days), W-2s (last 2 years), tax returns (last 2 years), bank statements (last 2 months), driver\'s license, and employment verification. Self-employed borrowers may need additional documentation such as profit/loss statements.'
+        ],
+        [
+            'question' => 'What\'s the difference between pre-qualification and pre-approval?',
+            'answer' => 'Pre-qualification is an informal estimate based on self-reported information. Pre-approval involves a formal application, credit check, and documentation review, resulting in a conditional commitment from the lender. Pre-approval carries much more weight with sellers.'
+        ],
+        [
+            'question' => 'Can I get pre-approved if I\'m self-employed?',
+            'answer' => 'Yes! Self-employed borrowers can absolutely get pre-approved. You\'ll typically need to provide additional documentation such as two years of tax returns, profit/loss statements, and possibly bank statements to verify your income.'
+        ],
+        [
+            'question' => 'Should I get pre-approved before looking at homes?',
+            'answer' => 'Yes, getting pre-approved before house hunting is highly recommended. It helps you understand your budget, makes your offers more competitive, and can speed up the closing process once you find your perfect home.'
+        ],
+        [
+            'question' => 'Do I have to use the lender who pre-approved me?',
+            'answer' => 'No, you\'re not obligated to use the lender who provided your pre-approval. You\'re free to shop around for the best rates and terms. However, if you switch lenders, you\'ll need to go through the approval process again with the new lender.'
+        ]
+    ];
+    
+    get_template_part('template-parts/sections/faq', null, [
+        'style' => 'accordion',
+        'theme' => 'white',
         'padding' => 'xl',
-        'badge' => 'Mortgage FAQs',
-        'headline' => 'Common Questions',
-        'subheadline' => 'Get answers to frequently asked mortgage questions',
-        'layout' => 'accordion',
-        'columns' => 1,
-        'faqs' => array(
-            array(
-                'question' => 'What credit score do I need for a mortgage?',
-                'answer' => 'Credit requirements vary by loan type. Conventional loans typically require 620+, FHA loans accept 580+, and VA loans are more flexible. Higher scores qualify for better rates.'
-            ),
-            array(
-                'question' => 'How much should I put down?',
-                'answer' => 'Down payments vary by loan type: FHA requires 3.5%, conventional can go as low as 3%, and VA/USDA offer 0% down options. 20% down avoids PMI on conventional loans.'
-            ),
-            array(
-                'question' => 'How long does pre-approval take?',
-                'answer' => 'Pre-approval can often be completed within 24-48 hours with all required documents. Full approval and closing typically takes 30-45 days.'
-            ),
-            array(
-                'question' => 'What documents do I need?',
-                'answer' => 'You\'ll need recent pay stubs, W-2s, bank statements, tax returns (2 years), and employment verification. Self-employed borrowers need additional documentation.'
-            )
-        ),
-        'section_id' => 'mortgage-faq'
-    ));
+        'alignment' => 'center',
+        'headline' => 'Frequently Asked Questions',
+        'subheadline' => 'Get answers to common mortgage questions',
+        'faqs' => $faqs,
+        'accordion_style' => 'clean'
+    ]);
     ?>
-
-    <!-- Custom Styles -->
-    <style>
-    /* Calculator Specific Styles */
-    .hph-input-group {
-        position: relative;
-        display: flex;
-        align-items: center;
-    }
     
-    .hph-input-prefix,
-    .hph-input-suffix {
-        position: absolute;
-        color: var(--hph-gray-600);
-        font-weight: 500;
-        z-index: 2;
-        pointer-events: none;
-    }
-    
-    .hph-input-prefix {
-        left: 1rem;
-    }
-    
-    .hph-input-suffix {
-        right: 1rem;
-    }
-    
-    .hph-input-group input {
-        padding-left: 2.5rem !important;
-    }
-    
-    .hph-input-group input:last-child {
-        padding-right: 2.5rem !important;
-    }
-    
-    .hph-form-row {
-        display: flex;
-        gap: 1rem;
-        align-items: end;
-    }
-    
-    .hph-w-20 {
-        width: 5rem;
-        flex-shrink: 0;
-    }
-    
-    .hph-card-gradient {
-        background: linear-gradient(135deg, var(--hph-primary), var(--hph-primary-dark)) !important;
-        color: var(--hph-white);
-    }
-    
-    .hph-display-1 {
-        font-size: 3rem;
-        font-weight: 700;
-        line-height: 1;
-    }
-    
-    .hph-summary-list {
-        display: grid;
-        gap: 0.75rem;
-    }
-    
-    .hph-summary-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-bottom: 0.75rem;
-        border-bottom: 1px solid var(--hph-border-color-light);
-    }
-    
-    .hph-summary-item:last-child {
-        border-bottom: none;
-        padding-bottom: 0;
-    }
-    
-    .hph-avatar-xl {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        overflow: hidden;
-    }
-    
-    /* Mobile responsive */
-    @media (max-width: 768px) {
-        .hph-grid-cols-2,
-        .hph-grid-cols-3 {
-            grid-template-columns: 1fr;
-        }
-        
-        .hph-form-row {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 0.75rem;
-        }
-        
-        .hph-w-20 {
-            width: 100%;
-        }
-        
-        .hph-display-1 {
-            font-size: 2rem;
-        }
-        
-        .hph-benefits-grid {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-        
-        .hph-col-span-2 {
-            text-align: center;
-        }
-    }
-    </style>
-
-    <!-- Calculator JavaScript -->
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('mortgage-calculator-form');
-        const inputs = form.querySelectorAll('input, select');
-        
-        function calculateMortgage() {
-            const homePrice = parseFloat(document.getElementById('home-price').value) || 400000;
-            const downPayment = parseFloat(document.getElementById('down-payment').value) || 80000;
-            const interestRate = parseFloat(document.getElementById('interest-rate').value) || 6.5;
-            const loanTerm = parseFloat(document.getElementById('loan-term').value) || 30;
-            
-            const loanAmount = homePrice - downPayment;
-            const monthlyRate = (interestRate / 100) / 12;
-            const numPayments = loanTerm * 12;
-            
-            const monthlyPayment = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / 
-                                  (Math.pow(1 + monthlyRate, numPayments) - 1);
-            
-            const totalInterest = (monthlyPayment * numPayments) - loanAmount;
-            const totalPayments = loanAmount + totalInterest;
-            
-            // Update display
-            document.getElementById('monthly-payment').textContent = '$' + Math.round(monthlyPayment).toLocaleString();
-            document.getElementById('loan-amount').textContent = '$' + Math.round(loanAmount).toLocaleString();
-            document.getElementById('total-interest').textContent = '$' + Math.round(totalInterest).toLocaleString();
-            document.getElementById('total-payments').textContent = '$' + Math.round(totalPayments).toLocaleString();
-        }
-        
-        // Sync down payment dollar and percentage
-        document.getElementById('down-payment').addEventListener('input', function() {
-            const homePrice = parseFloat(document.getElementById('home-price').value) || 400000;
-            const downPayment = parseFloat(this.value) || 0;
-            const percentage = (downPayment / homePrice) * 100;
-            document.getElementById('down-payment-percent').value = percentage.toFixed(1);
-            calculateMortgage();
-        });
-        
-        document.getElementById('down-payment-percent').addEventListener('input', function() {
-            const homePrice = parseFloat(document.getElementById('home-price').value) || 400000;
-            const percentage = parseFloat(this.value) || 0;
-            const downPayment = (homePrice * percentage) / 100;
-            document.getElementById('down-payment').value = Math.round(downPayment);
-            calculateMortgage();
-        });
-        
-        // Calculate on all input changes
-        inputs.forEach(input => {
-            input.addEventListener('input', calculateMortgage);
-        });
-        
-        // Initial calculation
-        calculateMortgage();
-    });
-    </script>
+    <?php
+    // Final CTA Section
+    get_template_part('template-parts/sections/cta', null, [
+        'layout' => 'split',
+        'background' => 'primary',
+        'padding' => 'xl',
+        'alignment' => 'left',
+        'headline' => 'Ready to Take the Next Step?',
+        'content' => 'Don\'t let financing uncertainty hold you back from finding your dream home. Get pre-approved today and start shopping with confidence.',
+        'buttons' => [
+            [
+                'text' => 'Get Pre-Approved Now',
+                'url' => 'https://myloan.mustachemortgages.com/homehub/signup/rhaynes@mustachemortgages.com',
+                'style' => 'white',
+                'size' => 'lg',
+                'icon' => 'fas fa-external-link-alt',
+                'target' => '_blank'
+            ]
+        ],
+        'form' => '
+            <div class="hph-bg-white hph-text-gray-900 hph-rounded-lg hph-p-lg hph-shadow-xl">
+                <div class="hph-flex hph-items-center hph-gap-lg">
+                    <div class="hph-rounded-full hph-bg-primary hph-text-white hph-flex-shrink-0 hph-flex hph-items-center hph-justify-center hph-w-20 hph-h-20">
+                        <span class="hph-text-2xl hph-font-bold">RH</span>
+                    </div>
+                    
+                    <div class="hph-flex-grow">
+                        <h5 class="hph-text-lg hph-font-bold hph-mb-xs">Remy Haynes</h5>
+                        <p class="hph-text-sm hph-text-gray-600 hph-mb-xs">Loan Officer | NMLS #2433656</p>
+                        <a href="tel:302-504-3396" class="hph-text-primary hph-font-semibold hover:hph-text-primary-dark">
+                            <i class="fas fa-phone hph-mr-xs"></i> 302-504-3396
+                        </a>
+                        <p class="hph-text-sm hph-opacity-75 hph-mt-sm">
+                            Remember: You\'re not required to use Mustache Mortgages and are free to choose any lender.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        '
+    ]);
+    ?>
 
 </main>
 

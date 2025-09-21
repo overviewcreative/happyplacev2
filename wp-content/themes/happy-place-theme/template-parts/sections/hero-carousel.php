@@ -16,19 +16,19 @@ if (function_exists('hph_register_template_part')) {
 
 // Default arguments
 $defaults = array(
-    'slides' => array(), // Array of slide configurations
-    'autoplay' => true,
-    'autoplay_speed' => 5000, // Milliseconds between slides
-    'transition_speed' => 800, // Milliseconds for transition
+    'slides' => array(), // Array of slide configurations (each slide has hero.php options)
+    'autoplay' => true, // Boolean: true/false - automatically advance slides
+    'autoplay_speed' => 5000, // Milliseconds between slides (1000-10000)
+    'transition_speed' => 800, // Milliseconds for transition animation (300-1500)
     'transition_type' => 'slide', // Options: 'slide', 'fade', 'zoom'
-    'show_navigation' => true,
-    'show_pagination' => true,
-    'show_progress' => false,
-    'pause_on_hover' => true,
-    'infinite_loop' => true,
-    'height' => 'lg',
-    'section_id' => '',
-    'fade_in' => false
+    'show_navigation' => true, // Boolean: true/false - show prev/next arrows
+    'show_pagination' => true, // Boolean: true/false - show dot indicators
+    'show_progress' => false, // Boolean: true/false - show progress bar
+    'pause_on_hover' => true, // Boolean: true/false - pause autoplay on hover
+    'infinite_loop' => true, // Boolean: true/false - loop back to first slide
+    'height' => 'lg', // Options: 'sm', 'md', 'lg', 'xl', 'full'
+    'section_id' => '', // HTML ID for the section
+    'fade_in' => false // Boolean: true/false - enable entrance animations
 );
 
 // Merge with provided args
@@ -41,7 +41,7 @@ if (empty($slides)) {
     $slides = array(
         array(
             'style' => 'image',
-            'background_image' => get_template_directory_uri() . '/assets/images/hero-bg.jpg',
+            'background_image' => hph_get_image_url_only('assets/images/hero-bg.jpg'),
             'overlay' => 'dark',
             'headline' => 'Find Your Dream Home',
             'subheadline' => 'Discover amazing properties in the most desirable locations',
@@ -283,14 +283,14 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
             <?php endif; ?>
             
             <!-- Content Container -->
-            <div class="hph-slide-container" style="position: relative; z-index: 2; width: 100%; padding: var(--hph-padding-xl) var(--hph-padding-lg);">
+            <div class="hph-slide-container" style="position: relative; z-index: 2; width: 100%; padding: var(--hph-space-8) var(--hph-space-6);">
                 <div class="hph-slide-inner" style="<?php echo $container_max_width; ?> margin-left: auto; margin-right: auto;">
                     <div class="hph-slide-content" style="display: flex; flex-direction: column; <?php echo $content_justify; ?> gap: var(--hph-gap-lg); <?php echo $text_align_style; ?>">
                         
                         <?php if ($slide['badge']): ?>
                         <!-- Badge -->
-                        <div style="margin-bottom: var(--hph-margin-sm);">
-                            <span style="display: inline-flex; align-items: center; gap: var(--hph-gap-sm); padding: var(--hph-padding-sm) var(--hph-padding-md); background: rgba(255, 255, 255, 0.2); color: currentColor; backdrop-filter: blur(10px); border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
+                        <div style="margin-bottom: var(--hph-space-2);">
+                            <span style="display: inline-flex; align-items: center; gap: var(--hph-gap-sm); padding: var(--hph-space-2) var(--hph-space-4); background: rgba(255, 255, 255, 0.2); color: currentColor; backdrop-filter: blur(10px); border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
                                 <?php if ($slide['badge_icon']): ?>
                                 <i class="<?php echo esc_attr($slide['badge_icon']); ?>"></i>
                                 <?php endif; ?>
@@ -302,7 +302,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                         <?php if ($slide['headline']): ?>
                         <!-- Headline -->
                         <h1 class="hph-slide-headline" 
-                            style="margin: 0 0 var(--hph-margin-md) 0; font-size: var(--hph-text-5xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
+                            style="margin: 0 0 var(--hph-space-4) 0; font-size: var(--hph-text-5xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
                             <?php echo esc_html($slide['headline']); ?>
                         </h1>
                         <?php endif; ?>
@@ -310,7 +310,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                         <?php if ($slide['subheadline']): ?>
                         <!-- Subheadline -->
                         <h2 class="hph-slide-subheadline" 
-                            style="margin: 0 0 var(--hph-margin-md) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); line-height: var(--hph-leading-snug); opacity: 0.9;">
+                            style="margin: 0 0 var(--hph-space-4) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); line-height: var(--hph-leading-snug); opacity: 0.9;">
                             <?php echo esc_html($slide['subheadline']); ?>
                         </h2>
                         <?php endif; ?>
@@ -318,7 +318,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                         <?php if ($slide['content']): ?>
                         <!-- Content -->
                         <div class="hph-slide-content-text" 
-                             style="margin: 0 0 var(--hph-margin-xl) 0; font-size: var(--hph-text-lg); line-height: var(--hph-leading-normal); opacity: 0.85;">
+                             style="margin: 0 0 var(--hph-space-8) 0; font-size: var(--hph-text-lg); line-height: var(--hph-leading-normal); opacity: 0.85;">
                             <?php echo wp_kses_post($slide['content']); ?>
                         </div>
                         <?php endif; ?>
@@ -354,19 +354,19 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                                 // Size-based padding
                                 switch($btn['size']) {
                                     case 's':
-                                        $btn_styles[] = 'padding: var(--hph-padding-sm) var(--hph-padding-md)';
+                                        $btn_styles[] = 'padding: var(--hph-space-2) var(--hph-space-4)';
                                         $btn_styles[] = 'font-size: var(--hph-text-sm)';
                                         break;
                                     case 'm':
-                                        $btn_styles[] = 'padding: var(--hph-padding-md) var(--hph-padding-lg)';
+                                        $btn_styles[] = 'padding: var(--hph-space-4) var(--hph-space-6)';
                                         $btn_styles[] = 'font-size: var(--hph-text-base)';
                                         break;
                                     case 'l':
-                                        $btn_styles[] = 'padding: var(--hph-padding-md) var(--hph-padding-xl)';
+                                        $btn_styles[] = 'padding: var(--hph-space-4) var(--hph-space-8)';
                                         $btn_styles[] = 'font-size: var(--hph-text-base)';
                                         break;
                                     case 'xl':
-                                        $btn_styles[] = 'padding: var(--hph-padding-lg) var(--hph-padding-2xl)';
+                                        $btn_styles[] = 'padding: var(--hph-space-6) var(--hph-space-12)';
                                         $btn_styles[] = 'font-size: var(--hph-text-lg)';
                                         break;
                                 }
@@ -410,11 +410,11 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                                 onmouseout="this.style.transform='translateY(0)'"
                             >
                                 <?php if ($btn['icon'] && $btn['icon_position'] === 'left'): ?>
-                                <i class="<?php echo esc_attr($btn['icon']); ?>" style="margin-right: var(--hph-margin-sm);"></i>
+                                <i class="<?php echo esc_attr($btn['icon']); ?>" style="margin-right: var(--hph-space-2);"></i>
                                 <?php endif; ?>
                                 <span><?php echo esc_html($btn['text']); ?></span>
                                 <?php if ($btn['icon'] && $btn['icon_position'] === 'right'): ?>
-                                <i class="<?php echo esc_attr($btn['icon']); ?>" style="margin-left: var(--hph-margin-sm);"></i>
+                                <i class="<?php echo esc_attr($btn['icon']); ?>" style="margin-left: var(--hph-space-2);"></i>
                                 <?php endif; ?>
                             </a>
                             <?php endforeach; ?>
@@ -434,7 +434,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
     <?php if ($show_navigation && count($slides) > 1): ?>
     <!-- Navigation Arrows -->
     <button class="hph-carousel-prev" 
-            style="position: absolute; top: 50%; left: var(--hph-padding-lg); transform: translateY(-50%); z-index: 10; background: rgba(255, 255, 255, 0.2); color: var(--hph-white); border: none; border-radius: 50%; width: 3rem; height: 3rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 300ms ease; backdrop-filter: blur(10px);"
+            style="position: absolute; top: 50%; left: var(--hph-space-6); transform: translateY(-50%); z-index: 10; background: rgba(255, 255, 255, 0.2); color: var(--hph-white); border: none; border-radius: 50%; width: 3rem; height: 3rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 300ms ease; backdrop-filter: blur(10px);"
             onmouseover="this.style.background='rgba(255, 255, 255, 0.3)'"
             onmouseout="this.style.background='rgba(255, 255, 255, 0.2)'"
             aria-label="Previous slide">
@@ -442,7 +442,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
     </button>
     
     <button class="hph-carousel-next" 
-            style="position: absolute; top: 50%; right: var(--hph-padding-lg); transform: translateY(-50%); z-index: 10; background: rgba(255, 255, 255, 0.2); color: var(--hph-white); border: none; border-radius: 50%; width: 3rem; height: 3rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 300ms ease; backdrop-filter: blur(10px);"
+            style="position: absolute; top: 50%; right: var(--hph-space-6); transform: translateY(-50%); z-index: 10; background: rgba(255, 255, 255, 0.2); color: var(--hph-white); border: none; border-radius: 50%; width: 3rem; height: 3rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 300ms ease; backdrop-filter: blur(10px);"
             onmouseover="this.style.background='rgba(255, 255, 255, 0.3)'"
             onmouseout="this.style.background='rgba(255, 255, 255, 0.2)'"
             aria-label="Next slide">
@@ -453,7 +453,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
     <?php if ($show_pagination && count($slides) > 1): ?>
     <!-- Pagination Dots -->
     <div class="hph-carousel-pagination" 
-         style="position: absolute; bottom: var(--hph-padding-lg); left: 50%; transform: translateX(-50%); z-index: 10; display: flex; gap: var(--hph-gap-sm);">
+         style="position: absolute; bottom: var(--hph-space-6); left: 50%; transform: translateX(-50%); z-index: 10; display: flex; gap: var(--hph-gap-sm);">
         <?php for ($i = 0; $i < count($slides); $i++): ?>
         <button class="hph-carousel-dot <?php echo $i === 0 ? 'active' : ''; ?>" 
                 data-slide="<?php echo $i; ?>"

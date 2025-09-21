@@ -34,7 +34,7 @@ $listings_count = $wp_query->found_posts ?? 0;
 
 // Get theme options
 $agency_phone = get_option('hph_agency_phone', '(302) 555-0123');
-$agency_email = get_option('hph_agency_email', 'info@happyplace.com');
+$agency_email = get_option('hph_agency_email', 'cheers@theparkergroup.com');
 $social_links = array(
     'facebook' => get_option('hph_facebook_url', '#'),
     'instagram' => get_option('hph_instagram_url', '#'),
@@ -216,76 +216,6 @@ $social_links = array(
                     </div>
                 </div>
             </form>
-            
-            <!-- Results & View Controls -->
-            <div class="hph-results-controls">
-                <div class="hph-results-info">
-                    <span class="hph-results-count">
-                        <?php if ($listings_count > 0) : ?>
-                            <strong><?php echo number_format($listings_count); ?></strong> 
-                            propert<?php echo $listings_count != 1 ? 'ies' : 'y'; ?> found
-                        <?php else : ?>
-                            No properties found
-                        <?php endif; ?>
-                    </span>
-                    
-                    <!-- Active Filters Display -->
-                    <?php 
-                    $active_filters = [];
-                    if (!empty($search)) $active_filters[] = 'Search: "' . $search . '"';
-                    if (!empty($property_type)) $active_filters[] = ucwords(str_replace('_', ' ', $property_type));
-                    if ($min_price) $active_filters[] = 'Min: $' . number_format($min_price);
-                    if ($max_price) $active_filters[] = 'Max: $' . number_format($max_price);
-                    if (!empty($zip_code)) $active_filters[] = 'Zip: ' . $zip_code;
-                    if (!empty($bedrooms)) $active_filters[] = $bedrooms . '+ beds';
-                    if (!empty($bathrooms)) $active_filters[] = $bathrooms . '+ baths';
-                    
-                    if (!empty($active_filters)) : ?>
-                        <div class="hph-active-filters">
-                            <?php foreach ($active_filters as $filter) : ?>
-                                <span class="hph-filter-badge"><?php echo esc_html($filter); ?></span>
-                            <?php endforeach; ?>
-                        </div>
-                    <?php endif; ?>
-                    
-                    <?php if (!empty($search) || !empty($property_type) || $min_price || $max_price || !empty($zip_code) || !empty($bedrooms) || !empty($bathrooms)) : ?>
-                        <a href="<?php echo get_post_type_archive_link('listing'); ?>" class="hph-clear-filters">
-                            <i class="fas fa-times"></i> Clear filters
-                        </a>
-                    <?php endif; ?>
-                </div>
-                
-                <div class="hph-view-controls">
-                    <!-- View Mode Switcher -->
-                    <div class="hph-view-modes" role="tablist">
-                        <button type="button" class="hph-view-btn active" data-view="grid" role="tab" aria-selected="true">
-                            <i class="fas fa-th-large"></i>
-                            <span class="hph-view-label">Grid</span>
-                        </button>
-                        <button type="button" class="hph-view-btn" data-view="list" role="tab" aria-selected="false">
-                            <i class="fas fa-list"></i>
-                            <span class="hph-view-label">List</span>
-                        </button>
-                        <button type="button" class="hph-view-btn" data-view="map" role="tab" aria-selected="false">
-                            <i class="fas fa-map-marked-alt"></i>
-                            <span class="hph-view-label">Map</span>
-                        </button>
-                    </div>
-                    
-                    <!-- Sort Controls -->
-                    <div class="hph-sort-controls">
-                        <label for="sort-select" class="hph-sort-label">Sort:</label>
-                        <select id="sort-select" class="hph-form-select hph-form-select--sm" data-sort-select>
-                            <option value="date_desc">Newest</option>
-                            <option value="date_asc">Oldest</option>
-                            <option value="price_desc">Price ↓</option>
-                            <option value="price_asc">Price ↑</option>
-                            <option value="sqft_desc">Size ↓</option>
-                            <option value="sqft_asc">Size ↑</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </header>

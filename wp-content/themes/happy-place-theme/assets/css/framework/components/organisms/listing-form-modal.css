@@ -1,0 +1,820 @@
+/**
+ * HPH Modal Styles - Enhanced for all form types
+ */
+
+/* Modal Base */
+.hph-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.hph-modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+}
+
+/* Modal Content - works for both listing and contact modals */
+.hph-listing-modal,
+.hph-modal-content {
+    position: relative;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    width: 90vw;
+    max-width: 600px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Modal Header */
+.hph-modal-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f8f9fa;
+    flex-shrink: 0;
+}
+
+.hph-modal-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.hph-modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hph-modal-close:hover {
+    background: #e9ecef;
+    color: #495057;
+}
+
+/* Modal Body */
+.hph-modal-body {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+/* ================================================
+   CONTACT FORM MODAL SPECIFIC STYLES
+   ================================================ */
+
+/* Form improvements inside modal */
+.hph-modal .hph-form-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -0.5rem 1rem;
+}
+
+.hph-modal .hph-form-col--half {
+    flex: 0 0 50%;
+    padding: 0 0.5rem;
+}
+
+.hph-modal .hph-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.hph-modal .hph-form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #374151;
+    font-size: 0.875rem;
+}
+
+.hph-modal .hph-form-input,
+.hph-modal .hph-form-select,
+.hph-modal .hph-form-textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.15s ease;
+    background-color: white;
+}
+
+.hph-modal .hph-form-input:focus,
+.hph-modal .hph-form-select:focus,
+.hph-modal .hph-form-textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.hph-modal .hph-form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23374151' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    padding-right: 2.5rem;
+    appearance: none;
+}
+
+/* Modal Button Variant - Uses framework tokens */
+.hph-btn--modal {
+    padding: var(--hph-btn-modal-padding-y, 0.75rem) var(--hph-btn-modal-padding-x, 1.5rem);
+    border-radius: var(--hph-radius-md);
+    font-size: var(--hph-text-base);
+    font-weight: var(--hph-font-medium);
+    transition: var(--hph-transition-fast);
+    min-height: var(--hph-btn-height, 44px);
+}
+
+.hph-modal .hph-btn-primary {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.hph-modal .hph-btn-primary:hover {
+    background-color: #2563eb;
+}
+
+.hph-modal .hph-required {
+    color: #ef4444;
+}
+
+/* Close button improvements */
+.hph-modal .hph-modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hph-modal .hph-modal-close:hover {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+/* ================================================
+   LISTING FORM MODAL SPECIFIC STYLES  
+   ================================================ */
+
+/* Progress Bar */
+.hph-form-progress {
+    margin-bottom: 2rem;
+}
+
+.hph-progress-bar {
+    width: 100%;
+    height: 4px;
+    background: #e9ecef;
+    border-radius: 2px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.hph-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3498db, #2980b9);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.hph-step-indicators {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hph-step-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    position: relative;
+}
+
+.hph-step-indicator::after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    right: -50%;
+    height: 2px;
+    background: #e9ecef;
+    z-index: -1;
+}
+
+.hph-step-indicator:last-child::after {
+    display: none;
+}
+
+.hph-step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e9ecef;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.hph-step-indicator.active .hph-step-number {
+    background: #3498db;
+    color: white;
+}
+
+.hph-step-indicator.completed .hph-step-number {
+    background: #27ae60;
+    color: white;
+}
+
+.hph-step-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+    text-align: center;
+    font-weight: 500;
+}
+
+.hph-step-indicator.active .hph-step-label {
+    color: #3498db;
+    font-weight: 600;
+}
+
+.hph-step-indicator.completed .hph-step-label {
+    color: #27ae60;
+}
+
+/* Form Steps */
+.hph-form-step {
+    display: none;
+}
+
+.hph-form-step.active {
+    display: block;
+}
+
+.hph-step-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.hph-step-title {
+    font-size: 1.375rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.hph-step-description {
+    color: #6c757d;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Form Grid */
+.hph-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.hph-form-group.hph-col-full {
+    grid-column: 1 / -1;
+}
+
+.hph-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.hph-form-label {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-size: 0.9375rem;
+}
+
+.hph-required {
+    color: #e74c3c;
+    margin-left: 4px;
+}
+
+.hph-form-input,
+.hph-form-select,
+.hph-form-textarea {
+    padding: 0.75rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.hph-form-input:focus,
+.hph-form-select:focus,
+.hph-form-textarea:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.hph-form-input.hph-input-error {
+    border-color: #e74c3c;
+}
+
+.hph-form-input.hph-input-valid {
+    border-color: #27ae60;
+}
+
+.hph-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.hph-input-prefix {
+    position: absolute;
+    left: 0.75rem;
+    color: #6c757d;
+    font-weight: 500;
+    z-index: 1;
+}
+
+.hph-input-group .hph-form-input {
+    padding-left: 2rem;
+}
+
+.hph-form-help {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+    line-height: 1.4;
+}
+
+.hph-char-count {
+    color: #6c757d;
+    font-size: 0.8125rem;
+}
+
+.hph-field-error {
+    color: #e74c3c;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Checkboxes */
+.hph-checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.hph-checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.hph-checkbox-label:hover {
+    background: #f8f9fa;
+}
+
+.hph-checkbox {
+    margin-right: 0.75rem;
+    width: 18px;
+    height: 18px;
+    accent-color: #3498db;
+}
+
+.hph-checkbox-text {
+    font-size: 0.9375rem;
+    color: #2c3e50;
+}
+
+/* Image Uploads */
+.hph-image-upload,
+.hph-gallery-upload {
+    position: relative;
+    margin-top: 0.5rem;
+}
+
+.hph-upload-area {
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #f8f9fa;
+}
+
+.hph-upload-area:hover,
+.hph-upload-area.hph-drag-over {
+    border-color: #3498db;
+    background: #e3f2fd;
+}
+
+.hph-upload-icon {
+    font-size: 2.5rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+.hph-upload-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.hph-upload-text strong {
+    color: #2c3e50;
+    font-size: 1.125rem;
+}
+
+.hph-upload-text span {
+    color: #6c757d;
+}
+
+.hph-upload-hint {
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+.hph-file-input {
+    display: none;
+}
+
+/* Image Previews */
+.hph-image-preview {
+    position: relative;
+    margin-top: 1rem;
+}
+
+.hph-preview-image {
+    width: 100%;
+    max-width: 300px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.hph-remove-image {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(231, 76, 60, 0.9);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.hph-remove-image:hover {
+    background: #e74c3c;
+    transform: scale(1.1);
+}
+
+.hph-gallery-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.hph-gallery-item {
+    position: relative;
+}
+
+.hph-gallery-item img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Review Section */
+.hph-review-content {
+    margin-top: 1rem;
+}
+
+.hph-review-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    background: #f8f9fa;
+}
+
+.hph-review-heading {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 0.5rem;
+}
+
+.hph-review-grid {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.hph-review-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.hph-review-item:last-child {
+    border-bottom: none;
+}
+
+.hph-review-label {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.hph-review-value {
+    color: #495057;
+}
+
+.hph-status-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.hph-radio-label {
+    display: flex;
+    align-items: flex-start;
+    cursor: pointer;
+    padding: 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.hph-radio-label:hover {
+    border-color: #3498db;
+    background: #f8f9fa;
+}
+
+.hph-radio {
+    margin-right: 0.75rem;
+    margin-top: 0.25rem;
+    accent-color: #3498db;
+}
+
+.hph-radio-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.hph-radio-text strong {
+    color: #2c3e50;
+    margin-bottom: 0.25rem;
+}
+
+.hph-radio-text small {
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+
+/* Modal Footer */
+.hph-modal-footer {
+    padding: 1.5rem 2rem;
+    border-top: 1px solid #e9ecef;
+    background: #f8f9fa;
+    flex-shrink: 0;
+}
+
+.hph-modal-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hph-modal-actions-right {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+/* Modal Form Button Variant - Specific styling for modal forms */
+.hph-btn--modal-form {
+    padding: var(--hph-btn-modal-form-padding-y, 0.75rem) var(--hph-btn-modal-form-padding-x, 1.5rem);
+    border-radius: var(--hph-radius-lg);
+    font-weight: var(--hph-font-semibold);
+    font-size: var(--hph-text-sm);
+    gap: var(--hph-gap-sm);
+    border: 2px solid transparent;
+    min-height: var(--hph-btn-height, 44px);
+    margin: var(--hph-space-1) 0;
+}
+
+/* Modal Button State Modifiers - Use framework tokens */
+.hph-btn--modal-form:disabled {
+    opacity: var(--hph-btn-disabled-opacity, 0.6);
+    cursor: not-allowed;
+}
+
+.hph-btn--modal-form.hph-btn-primary {
+    background: var(--hph-primary);
+    color: var(--hph-white);
+    border-color: var(--hph-primary);
+}
+
+.hph-btn--modal-form.hph-btn-primary:hover:not(:disabled) {
+    background: var(--hph-primary-600);
+    border-color: var(--hph-primary-600);
+    transform: translateY(-1px);
+}
+
+/* Modal Button Semantic Variants - Use framework tokens */
+.hph-btn--modal-form.hph-btn-success {
+    background: var(--hph-success);
+    color: var(--hph-white);
+    border-color: var(--hph-success);
+}
+
+.hph-btn--modal-form.hph-btn-success:hover:not(:disabled) {
+    background: var(--hph-success-dark);
+    border-color: var(--hph-success-dark);
+    transform: translateY(-1px);
+}
+
+.hph-btn--modal-form.hph-btn-outline {
+    background: transparent;
+    color: var(--hph-gray-600);
+    border-color: var(--hph-border-color);
+}
+
+.hph-btn--modal-form.hph-btn-outline:hover:not(:disabled) {
+    background: var(--hph-gray-50);
+    color: var(--hph-gray-700);
+    border-color: var(--hph-gray-300);
+}
+
+.hph-btn--modal-form.hph-btn-ghost {
+    background: transparent;
+    color: var(--hph-gray-600);
+    border-color: transparent;
+}
+
+.hph-btn--modal-form.hph-btn-ghost:hover:not(:disabled) {
+    color: var(--hph-gray-700);
+    background: var(--hph-gray-50);
+}
+
+/* Notifications */
+.hph-notification {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+}
+
+.hph-notification-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.hph-notification-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.hph-notification-info {
+    background: #cce8ff;
+    color: #0c4a6e;
+    border: 1px solid #b3d9ff;
+}
+
+.hph-notification-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    margin-left: auto;
+    border-radius: 4px;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.hph-notification-close:hover {
+    opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hph-listing-modal,
+    .hph-modal-content {
+        width: 95vw;
+        max-height: 95vh;
+    }
+    
+    .hph-modal-header,
+    .hph-modal-body,
+    .hph-modal-footer {
+        padding: 1rem;
+    }
+    
+    .hph-form-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .hph-step-indicators {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .hph-step-indicator::after {
+        display: none;
+    }
+    
+    .hph-checkbox-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .hph-modal-actions {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .hph-modal-actions-right {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Contact Form Responsive Styles */
+@media (max-width: 640px) {
+    .hph-modal .hph-form-col--half {
+        flex: 0 0 100%;
+    }
+}

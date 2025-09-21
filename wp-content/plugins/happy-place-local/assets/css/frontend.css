@@ -1,0 +1,7 @@
+.hpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.hpl-card{border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.hpl-card__media img{display:block;width:100%;height:160px;object-fit:cover}
+.hpl-card__body{padding:12px}
+.hpl-card__eyebrow{font-size:12px;opacity:.7;margin-bottom:6px}
+.hpl-card__title{font-size:16px;margin:0 0 6px 0;line-height:1.3}
+.hpl-card__meta{font-size:13px;opacity:.8}

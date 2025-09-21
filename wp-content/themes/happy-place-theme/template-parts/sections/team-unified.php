@@ -81,25 +81,25 @@ switch ($theme) {
 // Padding styles
 switch ($padding) {
     case 'sm':
-        $section_styles[] = 'padding-top: var(--hph-padding-lg)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-lg)';
+        $section_styles[] = 'padding-top: var(--hph-space-6)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-6)';
         break;
     case 'md':
-        $section_styles[] = 'padding-top: var(--hph-padding-xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-8)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-8)';
         break;
     case 'lg':
-        $section_styles[] = 'padding-top: var(--hph-padding-2xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-2xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-12)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-12)';
         break;
     case '2xl':
-        $section_styles[] = 'padding-top: var(--hph-padding-4xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-4xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-24)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-24)';
         break;
     case 'xl':
     default:
-        $section_styles[] = 'padding-top: var(--hph-padding-3xl)';
-        $section_styles[] = 'padding-bottom: var(--hph-padding-3xl)';
+        $section_styles[] = 'padding-top: var(--hph-space-16)';
+        $section_styles[] = 'padding-bottom: var(--hph-space-16)';
         break;
 }
 
@@ -108,8 +108,8 @@ $container_styles = array(
     'position: relative',
     'margin-left: auto',
     'margin-right: auto',
-    'padding-left: var(--hph-padding-lg)',
-    'padding-right: var(--hph-padding-lg)'
+    'padding-left: var(--hph-space-6)',
+    'padding-right: var(--hph-space-6)'
 );
 
 switch ($content_width) {
@@ -180,7 +180,7 @@ switch ($style) {
         $grid_styles[] = 'gap: var(--hph-gap-xl)';
         $grid_styles[] = 'overflow-x: auto';
         $grid_styles[] = 'scroll-snap-type: x mandatory';
-        $grid_styles[] = 'padding-bottom: var(--hph-padding-sm)';
+        $grid_styles[] = 'padding-bottom: var(--hph-space-2)';
         break;
 }
 
@@ -402,18 +402,18 @@ function hph_render_team_member($member, $index, $style, $card_style, $image_sty
                     $item_styles[] = 'background: var(--hph-white)';
                     $item_styles[] = 'border-radius: var(--hph-radius-xl)';
                     $item_styles[] = 'box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1)';
-                    $item_styles[] = 'padding: var(--hph-padding-xl)';
+                    $item_styles[] = 'padding: var(--hph-space-8)';
                     $item_styles[] = 'transition: all 300ms ease';
                     break;
                 case 'outlined':
                     $item_styles[] = 'background: transparent';
                     $item_styles[] = 'border: 2px solid var(--hph-gray-200)';
                     $item_styles[] = 'border-radius: var(--hph-radius-xl)';
-                    $item_styles[] = 'padding: var(--hph-padding-xl)';
+                    $item_styles[] = 'padding: var(--hph-space-8)';
                     $item_styles[] = 'transition: all 300ms ease';
                     break;
                 case 'minimal':
-                    $item_styles[] = 'padding: var(--hph-padding-lg)';
+                    $item_styles[] = 'padding: var(--hph-space-6)';
                     $item_styles[] = 'transition: all 300ms ease';
                     break;
             }
@@ -424,7 +424,7 @@ function hph_render_team_member($member, $index, $style, $card_style, $image_sty
             $item_styles[] = 'align-items: flex-start';
             $item_styles[] = 'gap: var(--hph-gap-xl)';
             $item_styles[] = 'text-align: left';
-            $item_styles[] = 'padding: var(--hph-padding-lg)';
+            $item_styles[] = 'padding: var(--hph-space-6)';
             $item_styles[] = 'border-radius: var(--hph-radius-lg)';
             $item_styles[] = 'transition: all 300ms ease';
             break;
@@ -432,11 +432,11 @@ function hph_render_team_member($member, $index, $style, $card_style, $image_sty
             $item_styles[] = 'min-width: 320px';
             $item_styles[] = 'scroll-snap-align: start';
             $item_styles[] = 'text-align: center';
-            $item_styles[] = 'padding: var(--hph-padding-lg)';
+            $item_styles[] = 'padding: var(--hph-space-6)';
             break;
         default:
             $item_styles[] = 'text-align: center';
-            $item_styles[] = 'padding: var(--hph-padding-lg)';
+            $item_styles[] = 'padding: var(--hph-space-6)';
     }
     
     // Image styles
@@ -491,8 +491,8 @@ function hph_render_team_member($member, $index, $style, $card_style, $image_sty
         
         <?php if ($show_role_badges): ?>
         <!-- Role Badge -->
-        <div style="position: absolute; top: var(--hph-padding-sm); right: var(--hph-padding-sm); z-index: 10;">
-            <span style="display: inline-block; padding: var(--hph-padding-xs) var(--hph-padding-sm); background: <?php echo $member['role'] === 'agent' ? 'var(--hph-primary)' : 'var(--hph-secondary)'; ?>; color: var(--hph-white); border-radius: var(--hph-radius-full); font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold); text-transform: uppercase; letter-spacing: 0.05em;">
+        <div style="position: absolute; top: var(--hph-space-2); right: var(--hph-space-2); z-index: 10;">
+            <span style="display: inline-block; padding: var(--hph-space-1) var(--hph-space-2); background: <?php echo $member['role'] === 'agent' ? 'var(--hph-primary)' : 'var(--hph-secondary)'; ?>; color: var(--hph-white); border-radius: var(--hph-radius-full); font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold); text-transform: uppercase; letter-spacing: 0.05em;">
                 <?php echo esc_html($member['role_label']); ?>
             </span>
         </div>
@@ -500,9 +500,9 @@ function hph_render_team_member($member, $index, $style, $card_style, $image_sty
         
         <?php if ($member['featured']): ?>
         <!-- Featured Badge -->
-        <div style="position: absolute; top: var(--hph-padding-sm); left: var(--hph-padding-sm); z-index: 10;">
-            <span style="display: inline-flex; align-items: center; padding: var(--hph-padding-xs) var(--hph-padding-sm); background: var(--hph-accent); color: var(--hph-white); border-radius: var(--hph-radius-full); font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold);">
-                <i class="fas fa-star" style="margin-right: var(--hph-margin-xs); font-size: 10px;"></i>
+        <div style="position: absolute; top: var(--hph-space-2); left: var(--hph-space-2); z-index: 10;">
+            <span style="display: inline-flex; align-items: center; padding: var(--hph-space-1) var(--hph-space-2); background: var(--hph-accent); color: var(--hph-white); border-radius: var(--hph-radius-full); font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold);">
+                <i class="fas fa-star" style="margin-right: var(--hph-space-1); font-size: 10px;"></i>
                 Featured
             </span>
         </div>
@@ -510,7 +510,7 @@ function hph_render_team_member($member, $index, $style, $card_style, $image_sty
         
         <?php if ($member['image']): ?>
         <!-- Member Image -->
-        <div style="<?php echo $style === 'list' ? 'flex-shrink: 0; width: 150px;' : 'margin-bottom: var(--hph-margin-lg);'; ?>">
+        <div style="<?php echo $style === 'list' ? 'flex-shrink: 0; width: 150px;' : 'margin-bottom: var(--hph-space-6);'; ?>">
             <?php if ($member['link']): ?>
             <a href="<?php echo esc_url($member['link']); ?>" style="display: block; text-decoration: none;">
             <?php endif; ?>
@@ -530,7 +530,7 @@ function hph_render_team_member($member, $index, $style, $card_style, $image_sty
         <div style="<?php echo $style === 'list' ? 'flex: 1;' : ''; ?>">
             
             <!-- Name -->
-            <h3 style="margin: 0 0 var(--hph-margin-xs) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
+            <h3 style="margin: 0 0 var(--hph-space-1) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
                 <?php if ($member['link']): ?>
                 <a href="<?php echo esc_url($member['link']); ?>" style="color: inherit; text-decoration: none;">
                     <?php echo esc_html($member['name']); ?>
@@ -541,28 +541,28 @@ function hph_render_team_member($member, $index, $style, $card_style, $image_sty
             </h3>
             
             <!-- Title -->
-            <p style="margin: 0 0 var(--hph-margin-sm) 0; font-size: var(--hph-text-base); font-weight: var(--hph-font-medium); color: var(--hph-primary); opacity: 0.9;">
+            <p style="margin: 0 0 var(--hph-space-2) 0; font-size: var(--hph-text-base); font-weight: var(--hph-font-medium); color: var(--hph-primary); opacity: 0.9;">
                 <?php echo esc_html($member['title']); ?>
             </p>
             
             <?php if ($member['years_experience']): ?>
             <!-- Experience -->
-            <p style="margin: 0 0 var(--hph-margin-sm) 0; font-size: var(--hph-text-sm); color: var(--hph-gray-600); font-style: italic;">
+            <p style="margin: 0 0 var(--hph-space-2) 0; font-size: var(--hph-text-sm); color: var(--hph-gray-600); font-style: italic;">
                 <?php echo esc_html($member['years_experience']); ?> years experience
             </p>
             <?php endif; ?>
             
             <?php if ($show_bio_preview && $member['bio']): ?>
             <!-- Bio Preview -->
-            <p style="margin: 0 0 var(--hph-margin-md) 0; color: var(--hph-gray-600); line-height: var(--hph-leading-relaxed); font-size: var(--hph-text-sm);">
+            <p style="margin: 0 0 var(--hph-space-4) 0; color: var(--hph-gray-600); line-height: var(--hph-leading-relaxed); font-size: var(--hph-text-sm);">
                 <?php echo esc_html($member['bio']); ?>
             </p>
             <?php endif; ?>
             
             <?php if ($show_specialties && $member['specialties']): ?>
             <!-- Specialties -->
-            <div style="margin: 0 0 var(--hph-margin-md) 0;">
-                <p style="margin: 0 0 var(--hph-margin-xs) 0; font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold); text-transform: uppercase; color: var(--hph-gray-500); letter-spacing: 0.05em;">
+            <div style="margin: 0 0 var(--hph-space-4) 0;">
+                <p style="margin: 0 0 var(--hph-space-1) 0; font-size: var(--hph-text-xs); font-weight: var(--hph-font-semibold); text-transform: uppercase; color: var(--hph-gray-500); letter-spacing: 0.05em;">
                     Specialties
                 </p>
                 <p style="margin: 0; font-size: var(--hph-text-sm); color: var(--hph-gray-600); line-height: var(--hph-leading-relaxed);">
@@ -573,11 +573,11 @@ function hph_render_team_member($member, $index, $style, $card_style, $image_sty
             
             <?php if ($show_contact_info && ($member['email'] || $member['phone'])): ?>
             <!-- Contact Info -->
-            <div style="margin-bottom: var(--hph-margin-md); font-size: var(--hph-text-sm);">
+            <div style="margin-bottom: var(--hph-space-4); font-size: var(--hph-text-sm);">
                 <?php if ($member['email']): ?>
-                <p style="margin: 0 0 var(--hph-margin-xs) 0;">
+                <p style="margin: 0 0 var(--hph-space-1) 0;">
                     <a href="mailto:<?php echo esc_attr($member['email']); ?>" style="color: var(--hph-primary); text-decoration: none; display: inline-flex; align-items: center;">
-                        <i class="fas fa-envelope" style="margin-right: var(--hph-margin-xs); width: 14px;"></i>
+                        <i class="fas fa-envelope" style="margin-right: var(--hph-space-1); width: 14px;"></i>
                         <?php echo esc_html($member['email']); ?>
                     </a>
                 </p>
@@ -586,7 +586,7 @@ function hph_render_team_member($member, $index, $style, $card_style, $image_sty
                 <?php if ($member['phone']): ?>
                 <p style="margin: 0;">
                     <a href="tel:<?php echo esc_attr($member['phone']); ?>" style="color: var(--hph-primary); text-decoration: none; display: inline-flex; align-items: center;">
-                        <i class="fas fa-phone" style="margin-right: var(--hph-margin-xs); width: 14px;"></i>
+                        <i class="fas fa-phone" style="margin-right: var(--hph-space-1); width: 14px;"></i>
                         <?php echo esc_html($member['phone']); ?>
                     </a>
                 </p>
@@ -652,12 +652,12 @@ function hph_render_team_member($member, $index, $style, $card_style, $image_sty
         
         <?php if ($badge || $headline || $subheadline || $content): ?>
         <!-- Section Header -->
-        <div style="margin-bottom: var(--hph-margin-3xl); <?php echo $header_alignment; ?> <?php echo $animation ? 'animation: fadeInUp 0.8s ease-out;' : ''; ?>">
+        <div style="margin-bottom: var(--hph-space-16); <?php echo $header_alignment; ?> <?php echo $animation ? 'animation: fadeInUp 0.8s ease-out;' : ''; ?>">
             
             <?php if ($badge): ?>
             <!-- Badge -->
-            <div style="margin-bottom: var(--hph-margin-lg);">
-                <span style="display: inline-block; padding: var(--hph-padding-sm) var(--hph-padding-md); background: var(--hph-primary-100); color: var(--hph-primary-700); border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
+            <div style="margin-bottom: var(--hph-space-6);">
+                <span style="display: inline-block; padding: var(--hph-space-2) var(--hph-space-4); background: var(--hph-primary-100); color: var(--hph-primary-700); border-radius: var(--hph-radius-full); font-size: var(--hph-text-sm); font-weight: var(--hph-font-semibold);">
                     <?php echo esc_html($badge); ?>
                 </span>
             </div>
@@ -665,14 +665,14 @@ function hph_render_team_member($member, $index, $style, $card_style, $image_sty
             
             <?php if ($headline): ?>
             <!-- Headline -->
-            <h2 style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-4xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
+            <h2 style="margin: 0 0 var(--hph-space-6) 0; font-size: var(--hph-text-4xl); font-weight: var(--hph-font-bold); line-height: var(--hph-leading-tight);">
                 <?php echo esc_html($headline); ?>
             </h2>
             <?php endif; ?>
             
             <?php if ($subheadline): ?>
             <!-- Subheadline -->
-            <p style="margin: 0 0 var(--hph-margin-lg) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); opacity: 0.9;">
+            <p style="margin: 0 0 var(--hph-space-6) 0; font-size: var(--hph-text-xl); font-weight: var(--hph-font-medium); opacity: 0.9;">
                 <?php echo esc_html($subheadline); ?>
             </p>
             <?php endif; ?>
@@ -693,8 +693,8 @@ function hph_render_team_member($member, $index, $style, $card_style, $image_sty
         
         <!-- Grouped Layout: Agents First, Then Staff -->
         <?php if (!empty($agents)): ?>
-        <div style="margin-bottom: var(--hph-margin-3xl);">
-            <h3 style="margin: 0 0 var(--hph-margin-xl) 0; font-size: var(--hph-text-2xl); font-weight: var(--hph-font-semibold); text-align: <?php echo $alignment; ?>; color: var(--hph-primary);">
+        <div style="margin-bottom: var(--hph-space-16);">
+            <h3 style="margin: 0 0 var(--hph-space-8) 0; font-size: var(--hph-text-2xl); font-weight: var(--hph-font-semibold); text-align: <?php echo $alignment; ?>; color: var(--hph-primary);">
                 Our Real Estate Agents
             </h3>
             <div style="<?php echo implode('; ', $grid_styles); ?>">
@@ -707,7 +707,7 @@ function hph_render_team_member($member, $index, $style, $card_style, $image_sty
         
         <?php if (!empty($staff)): ?>
         <div>
-            <h3 style="margin: 0 0 var(--hph-margin-xl) 0; font-size: var(--hph-text-2xl); font-weight: var(--hph-font-semibold); text-align: <?php echo $alignment; ?>; color: var(--hph-secondary);">
+            <h3 style="margin: 0 0 var(--hph-space-8) 0; font-size: var(--hph-text-2xl); font-weight: var(--hph-font-semibold); text-align: <?php echo $alignment; ?>; color: var(--hph-secondary);">
                 Our Support Team
             </h3>
             <div style="<?php echo implode('; ', $grid_styles); ?>">
@@ -791,7 +791,7 @@ function hph_render_team_member($member, $index, $style, $card_style, $image_sty
     
     .hph-team-unified-section [style*="display: flex"] .hph-team-member > div:first-child {
         width: 150px !important;
-        margin: 0 auto var(--hph-margin-lg) auto;
+        margin: 0 auto var(--hph-space-6) auto;
     }
 }
 
@@ -801,7 +801,7 @@ function hph_render_team_member($member, $index, $style, $card_style, $image_sty
     }
     
     .hph-team-member {
-        padding: var(--hph-padding-md) !important;
+        padding: var(--hph-space-4) !important;
     }
 }
 
@@ -812,7 +812,7 @@ function hph_render_team_member($member, $index, $style, $card_style, $image_sty
         top: auto !important;
         right: auto !important;
         left: auto !important;
-        margin-bottom: var(--hph-margin-sm);
+        margin-bottom: var(--hph-space-2);
         display: inline-block;
     }
 }

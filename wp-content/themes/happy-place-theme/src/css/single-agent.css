@@ -3,12 +3,6 @@
  * Styles specific to individual agent pages
  */
 
-/* Single Agent Layout */
-@import url('../../assets/css/framework/features/agent/single-agent.css');
-
-/* Agent Bio Components */
-@import url('../../assets/css/framework/components/molecules/biography.css');
-@import url('../../assets/css/framework/components/molecules/social-links.css');
-
-/* Agent Listings Display */
-@import url('../../assets/css/framework/features/agent/agent-listings.css');
+/* Agent Features */
+@import url('../../assets/css/framework/features/agent/index.css');
+@import url('../../assets/css/framework/features/agent/agent-card.css');

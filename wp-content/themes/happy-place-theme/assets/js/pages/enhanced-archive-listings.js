@@ -241,7 +241,6 @@ class EnhancedListingArchive {
             }
         })
         .catch(error => {
-            console.error('Filter error:', error);
             this.showError('Network error occurred');
         })
         .finally(() => {
@@ -311,7 +310,6 @@ class EnhancedListingArchive {
             }
         })
         .catch(error => {
-            console.error('Load more error:', error);
             this.showError('Network error occurred');
         })
         .finally(() => {
@@ -377,7 +375,6 @@ class EnhancedListingArchive {
     initializeMap() {
         const mapElement = document.getElementById('listings-map');
         if (!mapElement) {
-            console.warn('Map container not found');
             return;
         }
 
@@ -387,7 +384,6 @@ class EnhancedListingArchive {
         } else if (typeof google !== 'undefined' && window.hphArchive?.features?.hasGoogleMaps) {
             this.initializeGoogleMaps(mapElement);
         } else {
-            console.warn('No map API available');
             mapElement.innerHTML = '<div class="alert alert-info">Map functionality requires Google Maps or Mapbox API configuration.</div>';
             return;
         }
@@ -397,7 +393,6 @@ class EnhancedListingArchive {
         const mapboxToken = window.hphArchive?.maps?.mapboxToken || '';
         
         if (!mapboxToken) {
-            console.warn('Mapbox token not available');
             return;
         }
 
@@ -434,7 +429,6 @@ class EnhancedListingArchive {
                 gridSize: 60
             });
         } else {
-            console.warn('MarkerClusterer not loaded, markers will not be clustered');
         }
     }
     
@@ -447,6 +441,28 @@ class EnhancedListingArchive {
             const lng = parseFloat(card.dataset.lng);
             
             if (!isNaN(lat) && !isNaN(lng)) {
+                // Get title from the card content
+                const titleElement = card.querySelector('h3, .hph-listing-title, .listing-title, a[title]');
+                let title = '';
+                if (titleElement) {
+                    title = titleElement.textContent || titleElement.getAttribute('title') || '';
+                } else {
+                    // Fallback to data attributes
+                    title = card.dataset.title || 'Property Listing';
+                }
+                
+                // Get image from the card
+                const imageElement = card.querySelector('img');
+                const image = imageElement ? imageElement.src : '';
+                
+                // Get URL from the card
+                const linkElement = card.querySelector('a');
+                const url = linkElement ? linkElement.href : '';
+                
+                // Get additional data from card attributes
+                const status = card.dataset.status || '';
+                const sqft = card.dataset.sqft || '';
+                
                 listings.push({
                     id: card.dataset.listingId,
                     lat: lat,
@@ -454,9 +470,11 @@ class EnhancedListingArchive {
                     price: card.dataset.price,
                     bedrooms: card.dataset.bedrooms,
                     bathrooms: card.dataset.bathrooms,
-                    title: card.querySelector('h3')?.textContent || '',
-                    image: card.querySelector('img')?.src || '',
-                    url: card.querySelector('a')?.href || ''
+                    sqft: sqft,
+                    status: status,
+                    title: title.trim(),
+                    image: image,
+                    url: url
                 });
             }
         });
@@ -601,14 +619,82 @@ class EnhancedListingArchive {
     
     createMarkerPopup(listing) {
         const price = listing.price ? parseInt(listing.price).toLocaleString() : 'Price Available Upon Request';
+        const bedrooms = listing.bedrooms || 'N/A';
+        const bathrooms = listing.bathrooms || 'N/A';
+        const title = listing.title || 'Property Details';
+        const url = listing.url || '#';
+        const sqft = listing.sqft || '';
+        const status = listing.status || '';
+        
+        // Format price properly
+        let formattedPrice = 'Price Available Upon Request';
+        if (listing.price && !isNaN(parseInt(listing.price))) {
+            const priceNum = parseInt(listing.price);
+            formattedPrice = '$' + priceNum.toLocaleString();
+        }
+        
+        // Check if image is available and not a placeholder
+        const hasValidImage = listing.image && 
+            !listing.image.includes('placeholder') && 
+            !listing.image.includes('no-image');
         
         return `
-            <div class="map-marker-popup">
-                <img src="${listing.image}" alt="${listing.title}" class="listing-thumb" onerror="this.style.display='none'">
-                <h4 class="hph-font-semibold hph-mb-sm">${listing.title}</h4>
-                <p class="hph-text-primary hph-font-bold hph-text-lg hph-mb-sm">$${price}</p>
-                <p class="hph-text-sm hph-text-gray-600 hph-mb-md">${listing.bedrooms} beds • ${listing.bathrooms} baths</p>
-                <a href="${listing.url}" class="hph-btn hph-btn-primary hph-btn-sm hph-w-full">View Details</a>
+            <div class="hph-card hph-card--sm hph-bg-white hph-p-4 hph-max-w-80">
+                ${hasValidImage ? `
+                    <div class="hph-mb-3 hph-overflow-hidden hph-rounded-lg hph-relative">
+                        <img src="${listing.image}" 
+                             alt="${title}" 
+                             class="hph-w-full hph-h-32 hph-object-cover hph-transition-transform hph-duration-300 hover:hph-scale-105"
+                             onerror="this.parentElement.style.display='none'">
+                        
+                        ${status ? `
+                            <div class="hph-absolute hph-top-2 hph-left-2">
+                                <span class="hph-inline-flex hph-items-center hph-px-2 hph-py-1 hph-rounded-md hph-text-xs hph-font-medium 
+                                    ${status === 'active' ? 'hph-bg-green-100 hph-text-green-800' : 
+                                      status === 'pending' ? 'hph-bg-yellow-100 hph-text-yellow-800' : 
+                                      status === 'sold' ? 'hph-bg-red-100 hph-text-red-800' : 
+                                      'hph-bg-blue-100 hph-text-blue-800'}">
+                                    ${status.charAt(0).toUpperCase() + status.slice(1)}
+                                </span>
+                            </div>
+                        ` : ''}
+                    </div>
+                ` : ''}
+                
+                <div class="hph-mb-3">
+                    <h4 class="hph-heading-6 hph-mb-1 hph-text-gray-900 hph-line-clamp-2">${title}</h4>
+                    <div class="hph-text-primary hph-font-bold hph-text-lg hph-mb-2">${formattedPrice}</div>
+                    
+                    ${bedrooms !== 'N/A' || bathrooms !== 'N/A' || sqft ? `
+                        <div class="hph-flex hph-items-center hph-gap-4 hph-text-sm hph-text-gray-600 hph-mb-3 hph-flex-wrap">
+                            ${bedrooms !== 'N/A' ? `
+                                <div class="hph-flex hph-items-center hph-gap-1">
+                                    <i class="fas fa-bed hph-text-xs hph-text-gray-500"></i>
+                                    <span>${bedrooms} ${bedrooms == 1 ? 'bed' : 'beds'}</span>
+                                </div>
+                            ` : ''}
+                            ${bathrooms !== 'N/A' ? `
+                                <div class="hph-flex hph-items-center hph-gap-1">
+                                    <i class="fas fa-bath hph-text-xs hph-text-gray-500"></i>
+                                    <span>${bathrooms} ${bathrooms == 1 ? 'bath' : 'baths'}</span>
+                                </div>
+                            ` : ''}
+                            ${sqft && sqft !== 'N/A' ? `
+                                <div class="hph-flex hph-items-center hph-gap-1">
+                                    <i class="fas fa-ruler-combined hph-text-xs hph-text-gray-500"></i>
+                                    <span>${parseInt(sqft).toLocaleString()} sq ft</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    ` : ''}
+                </div>
+                
+                <a href="${url}" 
+                   class="hph-btn hph-btn-primary hph-btn-sm hph-w-full hph-text-center hph-transition-all hph-duration-200 hover:hph-shadow-md"
+                   onclick="event.stopPropagation();">
+                    <span>View Details</span>
+                    <i class="fas fa-arrow-right hph-ml-2 hph-text-xs"></i>
+                </a>
             </div>
         `;
     }
@@ -677,7 +763,6 @@ class EnhancedListingArchive {
             }
         })
         .catch(error => {
-            console.error('Favorite error:', error);
             this.updateFavoriteButton(button, isFavorited);
             this.showNotification('Network error occurred', 'error');
         });
@@ -708,7 +793,7 @@ class EnhancedListingArchive {
             navigator.share({
                 title: title,
                 url: url
-            }).catch(err => console.log('Error sharing:', err));
+            });
         } else {
             // Fallback to clipboard
             if (navigator.clipboard) {
@@ -754,7 +839,6 @@ class EnhancedListingArchive {
             }
         })
         .catch(error => {
-            console.error('Save search error:', error);
             this.showNotification('Network error occurred', 'error');
         });
     }
@@ -790,7 +874,6 @@ class EnhancedListingArchive {
             }
         })
         .catch(error => {
-            console.error('Bulk favorite error:', error);
             this.showNotification('Network error occurred', 'error');
         });
     }
@@ -1052,7 +1135,6 @@ if (document.readyState === 'loading') {
  */
 function testEnhancedListingArchive() {
     if (typeof window.hphArchive === 'undefined') {
-        console.warn('Archive JavaScript: hphArchive global not found');
         return;
     }
     
@@ -1074,35 +1156,26 @@ function testEnhancedListingArchive() {
     let passed = 0;
     let failed = 0;
     
-    console.group('🏠 Enhanced Listing Archive Tests');
     
     for (const [testName, testFn] of Object.entries(tests)) {
         try {
             if (testFn()) {
-                console.log(`✅ ${testName}: PASS`);
                 passed++;
             } else {
-                console.warn(`❌ ${testName}: FAIL`);
                 failed++;
             }
         } catch (error) {
-            console.error(`❌ ${testName}: ERROR -`, error.message);
             failed++;
         }
     }
     
-    console.log(`\n📊 Test Results: ${passed} passed, ${failed} failed (${Math.round(passed / (passed + failed) * 100)}% success rate)`);
     
     if (failed === 0) {
-        console.log('🎉 All tests passed! Archive functionality is ready.');
     } else {
-        console.warn('⚠️  Some tests failed. Check the elements and configuration.');
     }
     
-    console.groupEnd();
     
     // Test event binding
-    console.group('🔗 Event Binding Tests');
     
     const eventTests = {
         'Form Submit Handler': () => {
@@ -1122,14 +1195,10 @@ function testEnhancedListingArchive() {
     for (const [testName, testFn] of Object.entries(eventTests)) {
         try {
             if (testFn()) {
-                console.log(`✅ ${testName}: PASS`);
             } else {
-                console.warn(`❌ ${testName}: FAIL`);
             }
         } catch (error) {
-            console.error(`❌ ${testName}: ERROR -`, error.message);
         }
     }
     
-    console.groupEnd();
 }

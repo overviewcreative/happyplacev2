@@ -200,12 +200,12 @@ $date_ranges = [
             
             <!-- Filter Actions -->
             <div class="hph-filter-group hph-filter-group--actions">
-                <button type="submit" class="hph-btn hph-btn--primary hph-btn--small">
+                <button type="submit" class="hph-btn hph-btn-primary hph-btn-small">
                     Apply Filters
                 </button>
                 
                 <?php if (!empty($_GET)): ?>
-                <a href="<?php echo esc_url(get_post_type_archive_link($post_type)); ?>" class="hph-btn hph-btn--ghost hph-btn--small">
+                <a href="<?php echo esc_url(get_post_type_archive_link($post_type)); ?>" class="hph-btn hph-btn-ghost hph-btn-small">
                     Clear All
                 </a>
                 <?php endif; ?>

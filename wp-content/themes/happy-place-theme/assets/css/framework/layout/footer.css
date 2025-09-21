@@ -94,6 +94,130 @@
   color: var(--hph-white);
 }
 
+/* ================================================
+   HPH FOOTER SPECIFIC STYLES
+   ================================================ */
+
+/* HPH Footer Main Container */
+.hph-footer {
+  background: var(--hph-gray-900);
+  color: var(--hph-gray-300);
+  margin-top: auto;
+}
+
+.hph-footer-main {
+  padding: 4rem 0 3rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hph-footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 3rem;
+}
+
+/* Footer Logo Styling */
+.hph-footer-logo {
+  margin-bottom: 1.5rem;
+}
+
+.hph-footer-logo-img {
+  height: 3.5rem;
+  width: auto;
+  filter: brightness(0) invert(1); /* Make logo white for dark footer */
+  opacity: 0.9;
+}
+
+/* Footer Tagline */
+.hph-footer-tagline {
+  font-size: var(--hph-text-lg);
+  color: var(--hph-gray-300);
+  margin-bottom: 2rem;
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* Footer Sections */
+.hph-footer-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.hph-footer-title {
+  font-size: var(--hph-text-lg);
+  font-weight: 700;
+  color: var(--hph-white);
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.hph-footer-title::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 0;
+  width: 2rem;
+  height: 2px;
+  background: var(--hph-primary);
+}
+
+/* Footer Navigation Lists */
+.hph-footer-nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.hph-footer-nav a {
+  color: var(--hph-gray-400);
+  text-decoration: none;
+  font-size: var(--hph-text-base);
+  transition: var(--hph-transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hph-footer-nav a:hover {
+  color: var(--hph-white);
+  transform: translateX(4px);
+}
+
+/* Footer Contact Information */
+.hph-footer-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.hph-footer-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--hph-gray-400);
+  margin: 0;
+}
+
+.hph-footer-contact-item i {
+  color: var(--hph-primary);
+  width: 1rem;
+  text-align: center;
+}
+
+.hph-footer-contact-item a {
+  color: var(--hph-gray-400);
+  text-decoration: none;
+  transition: var(--hph-transition-fast);
+}
+
+.hph-footer-contact-item a:hover {
+  color: var(--hph-white);
+}
+
 .footer-description {
   font-size: var(--hph-text-base);
   line-height: 1.7;
@@ -741,6 +865,139 @@
     gap: 0.5rem;
     text-align: center;
   }
+}
+
+/* Footer Legal Styling */
+.hph-footer-legal {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.hph-footer-legal .separator {
+    color: rgba(255, 255, 255, 0.3);
+    margin: 0 5px;
+}
+
+.hph-footer-compliance {
+    margin-top: var(--hph-space-6);
+    padding-top: var(--hph-space-6);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hph-footer-compliance-badges {
+    display: flex;
+    gap: var(--hph-gap-lg);
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.hph-compliance-item {
+    display: flex;
+    align-items: center;
+    gap: var(--hph-gap-xs);
+    color: var(--hph-white);
+    font-size: var(--hph-text-xs);
+    font-weight: var(--hph-font-normal);
+    opacity: 0.8;
+    transition: var(--hph-transition-base);
+}
+
+.hph-compliance-item:hover {
+    opacity: 1;
+}
+
+.hph-compliance-item img {
+    filter: brightness(0) invert(1); /* Make SVG logos white */
+    opacity: 0.8;
+    transition: var(--hph-transition-base);
+    max-width: 42px;
+    height: auto;
+    flex-shrink: 0;
+}
+
+.hph-compliance-item:hover img {
+    opacity: 1;
+}
+
+.hph-compliance-item span {
+    color: var(--hph-white);
+    white-space: nowrap;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .hph-footer-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        text-align: center;
+    }
+
+    .hph-footer-logo-img {
+        height: 2.5rem;
+    }
+
+    .hph-footer-tagline {
+        font-size: var(--hph-text-base);
+        margin-bottom: 1.5rem;
+    }
+
+    .hph-footer-contact {
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .hph-social-links--footer {
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    .hph-footer-legal .separator {
+        display: none;
+    }
+
+    .hph-footer-legal a {
+        display: inline-block;
+        margin: 0.25rem 0.5rem;
+    }
+
+    .hph-footer-compliance-badges {
+        gap: var(--hph-gap-sm);
+        flex-direction: row;
+        justify-content: space-evenly;
+    }
+
+    .hph-compliance-item {
+        flex-direction: column;
+        gap: var(--hph-gap-xs);
+        text-align: center;
+        font-size: var(--hph-text-2xs);
+    }
+
+    .hph-compliance-item img {
+        max-width: 24px;
+        height: auto;
+    }
+
+    .hph-compliance-item span {
+        font-size: inherit;
+    }
+}
+
+/* Tablet responsive */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .hph-footer-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 2.5rem;
+    }
+
+    .hph-footer-section.hph-footer-about {
+        grid-column: 1 / -1;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
 }
 
 /* File Location: /wp-content/themes/happy-place/assets/css/framework/layout/footers.css */

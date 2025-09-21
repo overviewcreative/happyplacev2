@@ -1,0 +1,188 @@
+/* ================================================
+   ICON CONTRAST FIXES - HPH Theme
+   Accessibility Improvements for WCAG AA Compliance
+   ================================================ */
+
+/* 
+ * STEP 1: Remove aggressive !important inheritance
+ * Replace the problematic rules in button.css and color-schemes.css
+ */
+
+/* Original problematic rules to REPLACE:
+.hph-btn .fa,
+.hph-btn .fas,
+.hph-btn .far,
+.hph-btn .fal,
+.hph-btn .fab {
+  color: inherit !important;
+}
+*/
+
+/* IMPROVED: Allow inheritance but provide fallbacks for contrast */
+.hph-btn .fa,
+.hph-btn .fas,
+.hph-btn .far,
+.hph-btn .fal,
+.hph-btn .fab {
+  color: inherit; /* Remove !important to allow specific overrides */
+}
+
+/* ================================================
+   SPECIFIC CONTRAST-SAFE OVERRIDES
+   ================================================ */
+
+/* Ghost Button Icons - Ensure sufficient contrast */
+.hph-btn-ghost .fa,
+.hph-btn-ghost .fas,
+.hph-btn-ghost .far,
+.hph-btn-ghost .fal,
+.hph-btn-ghost .fab {
+  color: var(--hph-gray-800); /* Darker for better contrast: #1e4355 */
+}
+
+.hph-btn-ghost:hover .fa,
+.hph-btn-ghost:hover .fas,
+.hph-btn-ghost:hover .far,
+.hph-btn-ghost:hover .fal,
+.hph-btn-ghost:hover .fab {
+  color: var(--hph-black); /* Maximum contrast on hover */
+}
+
+/* Outline Button Icons - WCAG AA compliant colors */
+.hph-btn-outline-primary .fa,
+.hph-btn-outline-primary .fas,
+.hph-btn-outline-primary .far,
+.hph-btn-outline-primary .fal,
+.hph-btn-outline-primary .fab {
+  color: var(--hph-primary-700); /* Darker primary: #285d71 */
+}
+
+.hph-btn-outline-primary:hover .fa,
+.hph-btn-outline-primary:hover .fas,
+.hph-btn-outline-primary:hover .far,
+.hph-btn-outline-primary:hover .fal,
+.hph-btn-outline-primary:hover .fab {
+  color: var(--hph-white); /* White on primary background has good contrast */
+}
+
+.hph-btn-outline-secondary .fa,
+.hph-btn-outline-secondary .fas,
+.hph-btn-outline-secondary .far,
+.hph-btn-outline-secondary .fal,
+.hph-btn-outline-secondary .fab {
+  color: var(--hph-primary-700); /* Use darker variant */
+}
+
+.hph-btn-outline-light .fa,
+.hph-btn-outline-light .fas,
+.hph-btn-outline-light .far,
+.hph-btn-outline-light .fal,
+.hph-btn-outline-light .fab {
+  color: var(--hph-white); /* Already good contrast */
+}
+
+/* Text Button Icons */
+.hph-btn-text .fa,
+.hph-btn-text .fas,
+.hph-btn-text .far,
+.hph-btn-text .fal,
+.hph-btn-text .fab {
+  color: var(--hph-primary-700); /* Darker for better contrast */
+}
+
+.hph-btn-text:hover .fa,
+.hph-btn-text:hover .fas,
+.hph-btn-text:hover .far,
+.hph-btn-text:hover .fal,
+.hph-btn-text:hover .fab {
+  color: var(--hph-primary-800); /* Even darker on hover */
+}
+
+/* ================================================
+   SOCIAL MEDIA ICON FIXES
+   ================================================ */
+
+/* Replace hph-text-gray-400 with contrast-safe colors */
+.hph-social-icon,
+.hph-staff-social .fa,
+.hph-staff-social .fab {
+  color: var(--hph-gray-700) !important; /* #326d89 - better contrast */
+  transition: color 0.2s ease;
+}
+
+.hph-social-icon:hover,
+.hph-staff-social .fa:hover,
+.hph-staff-social .fab:hover {
+  color: var(--hph-primary-700) !important; /* Brand color on hover */
+}
+
+/* ================================================
+   CAROUSEL BUTTON FIXES
+   ================================================ */
+
+/* Replace inline styles with proper CSS classes */
+.hph-carousel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: var(--hph-white);
+  color: var(--hph-primary-700); /* Darker for better contrast */
+  border: 1px solid var(--hph-primary-700);
+  border-radius: var(--hph-radius-full);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.hph-carousel-btn:hover {
+  background: var(--hph-primary-700);
+  color: var(--hph-white);
+  border-color: var(--hph-primary-700);
+}
+
+.hph-carousel-btn .fa,
+.hph-carousel-btn .fas {
+  color: inherit; /* Inherit the contrast-safe button colors */
+}
+
+/* ================================================
+   STAR RATING FIXES
+   ================================================ */
+
+.hph-star-rating .fa-star {
+  color: var(--hph-warning-dark); /* Use darker warning color: #9c6347 */
+}
+
+.hph-star-rating .fa-star.empty {
+  color: var(--hph-gray-600); /* Darker gray for better contrast: #4790b3 */
+}
+
+/* ================================================
+   HIGH CONTRAST MODE ENHANCEMENTS
+   ================================================ */
+
+@media (prefers-contrast: high) {
+  .hph-btn .fa,
+  .hph-btn .fas,
+  .hph-btn .far,
+  .hph-btn .fal,
+  .hph-btn .fab {
+    color: currentColor;
+  }
+  
+  .hph-btn-ghost .fa,
+  .hph-btn-ghost .fas,
+  .hph-btn-ghost .far,
+  .hph-btn-ghost .fal,
+  .hph-btn-ghost .fab {
+    color: var(--hph-black);
+  }
+  
+  .hph-social-icon,
+  .hph-staff-social .fa,
+  .hph-staff-social .fab {
+    color: var(--hph-black) !important;
+  }
+}

@@ -13,7 +13,7 @@
     background: var(--hph-white);
     border-top: 1px solid var(--hph-gray-200);
     box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1), 0 -2px 4px -1px rgba(0, 0, 0, 0.06);
-    padding: var(--hph-padding-lg);
+    padding: var(--hph-space-6);
     transform: translateY(100%);
     transition: transform 0.3s ease-in-out;
     max-height: 80vh;
@@ -55,7 +55,7 @@
 /* Mobile responsive */
 @media (max-width: 768px) {
     .hph-cookie-consent {
-        padding: var(--hph-padding-md);
+        padding: var(--hph-space-4);
     }
     
     .hph-cookie-consent-content {
@@ -76,17 +76,8 @@
     }
 }
 
-/* Dark theme support */
-.hph-theme-dark .hph-cookie-consent,
-[data-theme="dark"] .hph-cookie-consent {
-    background: var(--hph-gray-800);
-    border-top-color: var(--hph-gray-700);
-}
-
-.hph-theme-dark .hph-cookie-consent-content p,
-[data-theme="dark"] .hph-cookie-consent-content p {
-    color: var(--hph-gray-100);
-}
+/* Dark theme support - Removed incomplete implementation */
+/* TODO: Re-implement comprehensive dark mode in future version */
 
 /* High contrast mode */
 @media (prefers-contrast: high) {

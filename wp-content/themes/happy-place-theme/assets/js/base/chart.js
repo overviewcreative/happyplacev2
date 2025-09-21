@@ -26,7 +26,6 @@
          */
         init: function() {
             if (typeof Chart === 'undefined') {
-                console.warn('Chart.js is not loaded. Charts will not be initialized.');
                 return;
             }
             

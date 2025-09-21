@@ -387,20 +387,20 @@ if (!$is_agent) {
                         <div class="hph-review-section">
                             <h5 class="hph-review-heading"><?php _e('Listing Status', 'happy-place-theme'); ?></h5>
                             <div class="hph-status-options">
-                                <label class="hph-radio-label">
-                                    <input type="radio" name="listing_status" value="draft" checked class="hph-radio">
-                                    <span class="hph-radio-text">
+                                <div class="hph-form-check">
+                                    <input type="radio" name="listing_status" value="draft" checked class="hph-form-check-input">
+                                    <label class="hph-form-check-label">
                                         <strong><?php _e('Save as Draft', 'happy-place-theme'); ?></strong>
                                         <small><?php _e('Save for later editing - not visible to public', 'happy-place-theme'); ?></small>
-                                    </span>
-                                </label>
-                                <label class="hph-radio-label">
-                                    <input type="radio" name="listing_status" value="active" class="hph-radio">
-                                    <span class="hph-radio-text">
+                                    </label>
+                                </div>
+                                <div class="hph-form-check">
+                                    <input type="radio" name="listing_status" value="active" class="hph-form-check-input">
+                                    <label class="hph-form-check-label">
                                         <strong><?php _e('Publish Active', 'happy-place-theme'); ?></strong>
                                         <small><?php _e('Make listing live and searchable immediately', 'happy-place-theme'); ?></small>
-                                    </span>
-                                </label>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -412,7 +412,7 @@ if (!$is_agent) {
         <!-- Modal Footer -->
         <div class="hph-modal-footer">
             <div class="hph-modal-actions">
-                <button type="button" class="hph-btn hph-btn-outline" id="prevStep" style="display: none;">
+                <button type="button" class="hph-btn hph-btn-outline-primary" id="prevStep" style="display: none;">
                     <i class="fas fa-chevron-left"></i>
                     <?php _e('Previous', 'happy-place-theme'); ?>
                 </button>

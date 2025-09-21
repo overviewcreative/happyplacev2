@@ -71,8 +71,8 @@
     background: var(--hph-white);
     border-radius: var(--hph-radius-lg);
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    padding: var(--hph-space-md);
-    margin-bottom: var(--hph-space-lg);
+    padding: var(--hph-space-4);
+    margin-bottom: var(--hph-space-6);
 }
 
 /* Archive-Style Filters Card */
@@ -80,8 +80,8 @@
     background: var(--hph-white);
     border-radius: var(--hph-radius-xl);
     box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-    padding: var(--hph-space-lg);
-    margin-bottom: var(--hph-space-lg);
+    padding: var(--hph-space-6);
+    margin-bottom: var(--hph-space-6);
 }
 
 /* Archive-Style Pagination */
@@ -100,7 +100,7 @@
     justify-content: center;
     min-width: 40px;
     height: 40px;
-    padding: 0 var(--hph-padding-md);
+    padding: 0 var(--hph-space-4);
     border: 2px solid var(--hph-gray-300);
     border-radius: var(--hph-radius-md);
     color: var(--hph-gray-700);
@@ -472,11 +472,11 @@
 }
 
 /* HPH Card Base Styles */
-.hph-card {
-    background: white;
-    border-radius: 0.75rem;
-    overflow: hidden;
-    transition: all 0.2s ease;
+/* Dashboard-specific card modifier - extends base .hph-card */
+.hph-card--dashboard {
+    background: var(--hph-white);
+    border-radius: var(--hph-radius-xl); /* 0.75rem */
+    transition: var(--hph-transition);
 }
 
 .hph-card-elevated {
@@ -584,40 +584,7 @@
     cursor: pointer;
 }
 
-.hph-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem 1rem;
-    border: 1px solid transparent;
-    border-radius: var(--hph-border-radius);
-    font-size: var(--hph-text-sm);
-    font-weight: var(--hph-font-medium);
-    cursor: pointer;
-    transition: var(--hph-transition);
-    text-decoration: none;
-}
-
-.hph-btn-primary {
-    background-color: var(--hph-primary-600);
-    color: var(--hph-white);
-    border-color: var(--hph-primary-600);
-}
-
-.hph-btn-primary:hover {
-    background-color: #1d4ed8;
-    border-color: #1d4ed8;
-}
-
-.hph-btn-ghost {
-    background-color: transparent;
-    color: var(--hph-gray-600);
-    border-color: var(--hph-gray-200);
-}
-
-.hph-btn-ghost:hover {
-    background-color: var(--hph-gray-200);
-}
+/* Button definitions moved to components/atoms/button.css - single source of truth */
 
 /* Overview Section */
 .hph-dashboard-overview {
@@ -674,7 +641,7 @@
     align-items: center;
     gap: var(--hph-gap-4);
     transition: var(--hph-transition);
-    margin-bottom: var(--hph-space-md);
+    margin-bottom: var(--hph-space-4);
 }
 
 .hph-stat-card:hover {
@@ -1190,7 +1157,7 @@
     position: fixed;
     top: 2rem;
     right: 2rem;
-    z-index: 1050;
+    z-index: 1000; /* Dashboard messages - below modals (9999) */
     max-width: 400px;
     padding: var(--hph-padding-4);
     border-radius: var(--hph-border-radius-lg);
@@ -1253,105 +1220,8 @@
 
 /* Basic Component Styles */
 
-/* Button Component */
-.hph-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--hph-gap-2);
-    padding: var(--hph-padding-2) var(--hph-padding-4);
-    border: 1px solid transparent;
-    border-radius: var(--hph-border-radius);
-    font-size: var(--hph-text-sm);
-    font-weight: var(--hph-font-medium);
-    line-height: 1;
-    text-decoration: none;
-    cursor: pointer;
-    transition: var(--hph-transition);
-    white-space: nowrap;
-}
-
-.hph-btn:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px var(--hph-primary-100);
-}
-
-/* Button Variants */
-.hph-btn-primary {
-    background: var(--hph-primary-600);
-    color: var(--hph-white);
-    border-color: var(--hph-primary-600);
-}
-
-.hph-btn-primary:hover {
-    background: var(--hph-primary-700);
-    border-color: var(--hph-primary-700);
-}
-
-.hph-btn-secondary {
-    background: var(--hph-gray-100);
-    color: var(--hph-gray-700);
-    border-color: var(--hph-gray-300);
-}
-
-.hph-btn-secondary:hover {
-    background: var(--hph-gray-200);
-    color: var(--hph-gray-900);
-}
-
-.hph-btn-outline {
-    background: var(--hph-white);
-    color: var(--hph-primary-600);
-    border-color: var(--hph-primary-600);
-}
-
-.hph-btn-outline:hover {
-    background: var(--hph-primary-50);
-    color: var(--hph-primary-700);
-}
-
-.hph-btn-success {
-    background: var(--hph-green-600);
-    color: var(--hph-white);
-    border-color: var(--hph-green-600);
-}
-
-.hph-btn-success:hover {
-    background: var(--hph-green-700);
-    border-color: var(--hph-green-700);
-}
-
-.hph-btn-danger {
-    background: var(--hph-red-600);
-    color: var(--hph-white);
-    border-color: var(--hph-red-600);
-}
-
-.hph-btn-danger:hover {
-    background: var(--hph-red-700);
-    border-color: var(--hph-red-700);
-}
-
-/* Button Sizes */
-.hph-btn-xs {
-    padding: var(--hph-padding-1) var(--hph-padding-2);
-    font-size: var(--hph-text-xs);
-}
-
-.hph-btn-sm {
-    padding: var(--hph-padding-1) var(--hph-padding-3);
-    font-size: var(--hph-text-xs);
-}
-
-.hph-btn-lg {
-    padding: var(--hph-padding-3) var(--hph-padding-6);
-    font-size: var(--hph-text-base);
-}
-
-.hph-btn-disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
+/* Button definitions moved to components/atoms/button.css - single source of truth */
+/* Use .hph-btn and its BEM variants defined in the atomic button system */
 
 /* Badge Component */
 .hph-badge {
@@ -1464,11 +1334,11 @@
 }
 
 /* Card Component */
-.hph-card {
+/* Dashboard widget card modifier - extends base .hph-card */
+.hph-card--dashboard-widget {
     background: var(--hph-white);
-    border: 1px solid var(--hph-gray-200);
-    border-radius: var(--hph-border-radius-lg);
-    overflow: hidden;
+    border: var(--hph-border-width) solid var(--hph-gray-200);
+    border-radius: var(--hph-radius-lg);
 }
 
 .hph-card-default {

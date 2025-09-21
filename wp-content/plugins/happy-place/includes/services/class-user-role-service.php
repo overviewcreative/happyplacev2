@@ -2,6 +2,9 @@
 /**
  * User Role Manager - Clean up and manage custom user roles
  * 
+ * NOTE: Automatic agent post creation has been DISABLED to prevent conflicts.
+ * Manual agent sync can still be performed through the Agent Service if needed.
+ * 
  * @package HappyPlace\Services
  * @version 4.0.0
  */
@@ -335,13 +338,14 @@ class UserRoleService extends Service {
         
         switch ($connection_type) {
             case 'agent':
-                // Create agent post if it doesn't exist
-                if (class_exists('HappyPlace\\Services\\AgentService')) {
-                    $agent_service = new \HappyPlace\Services\AgentService();
-                    if (method_exists($agent_service, 'create_agent_post_for_user')) {
-                        $agent_service->create_agent_post_for_user($user_id);
-                    }
-                }
+                // DISABLED: Automatic agent post creation causes too many conflicts
+                // Manual sync can still be done through Agent Service if needed
+                // if (class_exists('HappyPlace\\Services\\AgentService')) {
+                //     $agent_service = new \HappyPlace\Services\AgentService();
+                //     if (method_exists($agent_service, 'create_agent_post_for_user')) {
+                //         $agent_service->create_agent_post_for_user($user_id);
+                //     }
+                // }
                 break;
                 
             case 'staff':

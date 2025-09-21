@@ -3,28 +3,44 @@
  * Navigation, common molecules, and sitewide functionality
  */
 
-/* Navigation Components */
+/* Navigation & Header Components */
 @import url('../../assets/css/framework/components/organisms/navigation.css');
+@import url('../../assets/css/framework/components/molecules/topbar.css');
+@import url('../../assets/css/framework/features/site/site-header-enhanced.css');
+
 
 /* Search Components - CRITICAL FOR HEADER */
 @import url('../../assets/css/framework/features/search/index.css');
+@import url('../../assets/css/framework/features/search/search-results.css');
+@import url('../../assets/css/framework/components/atoms/search-input.css');
+@import url('../../assets/css/framework/components/organisms/hero-search-form.css');
 
 /* Common Molecules */
 @import url('../../assets/css/framework/components/molecules/breadcrumb.css');
 @import url('../../assets/css/framework/components/molecules/card.css');
 @import url('../../assets/css/framework/components/molecules/form.css');
+@import url('../../assets/css/framework/components/molecules/modal.css');
 @import url('../../assets/css/framework/components/molecules/search-bar.css');
 @import url('../../assets/css/framework/components/molecules/back-to-top.css');
 @import url('../../assets/css/framework/components/molecules/cookie-consent.css');
 
-/* Common Organisms */
-@import url('../../assets/css/framework/components/organisms/gallery.css');
-@import url('../../assets/css/framework/components/organisms/media-hero.css');
+/* Agent/Staff Card Components (used across multiple page types) */
+@import url('../../assets/css/framework/features/agent/agent-card.css');
+
+/* Common Organisms - OPTIMIZATION: Moved heavy components to specific bundles */
+/* MOVED: gallery.css → listings bundle (primarily used on listing pages) */
+/* MOVED: media-hero.css → listings bundle (primarily used on listing pages) */
+@import url('../../assets/css/framework/components/organisms/universal-carousel.css');
+@import url('../../assets/css/framework/components/organisms/universal-loop.css');
+
+@import url('../../assets/css/framework/features/marketing/feature-showcase.css');
+
+/* OPTIMIZATION: Moved from core bundle - Features cards for homepage/marketing sections */
+@import url('../../assets/css/framework/components/organisms/features-cards.css');
 
 /* Utility Classes */
 @import url('../../assets/css/framework/utilities/spacing.css');
-@import url('../../assets/css/framework/utilities/display.css');
-@import url('../../assets/css/framework/utilities/text.css');
+@import url('../../assets/css/framework/utilities/typography.css');
 
 /* Default Theme */
 @import url('../../assets/css/framework/themes/default.css');

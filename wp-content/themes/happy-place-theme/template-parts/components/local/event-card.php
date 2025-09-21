@@ -182,19 +182,19 @@ $image_url = $thumbnail_id ? wp_get_attachment_image_url($thumbnail_id, 'medium'
         <!-- Card Actions -->
         <div class="hph-event-card__actions">
             <?php if (!$is_past && $tickets_url): ?>
-            <a href="<?php echo esc_url($tickets_url); ?>" target="_blank" rel="noopener" class="hph-btn hph-btn--primary hph-btn--small">
+            <a href="<?php echo esc_url($tickets_url); ?>" target="_blank" rel="noopener" class="hph-btn hph-btn-primary hph-btn-small">
                 Get Tickets
                 <i class="hph-icon hph-icon--ticket"></i>
             </a>
             <?php endif; ?>
             
-            <a href="<?php echo esc_url($permalink); ?>" class="hph-btn hph-btn--ghost hph-btn--small">
+            <a href="<?php echo esc_url($permalink); ?>" class="hph-btn hph-btn-ghost hph-btn-small">
                 View Details
                 <i class="hph-icon hph-icon--arrow-right"></i>
             </a>
             
             <?php if (!$is_past): ?>
-            <button class="hph-btn hph-btn--icon hph-btn--small" data-event-id="<?php echo esc_attr($event_id); ?>" aria-label="Add to calendar">
+            <button class="hph-btn hph-btn-icon hph-btn-small" data-event-id="<?php echo esc_attr($event_id); ?>" aria-label="Add to calendar">
                 <i class="hph-icon hph-icon--calendar-add"></i>
             </button>
             <?php endif; ?>

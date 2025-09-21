@@ -1,0 +1,135 @@
+/**
+ * Listing Card Base Styles
+ * Core listing card component styles - extracted from merged file
+ *
+ * @package HappyPlaceTheme
+ * @since 3.0.0
+ */
+
+/* ============================================================================
+   CARD VARIABLES - REMOVED DUPLICATES
+   Variables now imported from listing-card.css to prevent redundancy
+   ============================================================================ */
+/* CSS Variables defined in listing-card.css */
+
+/* ============================================================================
+   BASE CARD STYLES - GRID VIEW
+   ============================================================================ */
+
+/* Base card styles moved to listing-card.css to prevent duplication */
+
+/* Card content overlaid on background */
+.hph-card__content {
+    position: relative;
+    z-index: 3;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.25rem;
+    color: var(--hph-white);
+}
+
+/* Card state modifiers moved to listing-card.css to prevent duplication */
+
+.hph-listing-card.is-selected {
+    border-color: var(--hph-primary);
+    box-shadow: 0 0 0 3px rgba(81, 186, 224, 0.2);
+}
+
+.hph-listing-card.is-comparing {
+    border: 2px solid var(--hph-success);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Card style variations */
+.hph-card--default {
+    /* No additional styling - use base */
+}
+
+.hph-card--modern {
+    box-shadow: var(--hph-card-shadow);
+}
+
+.hph-card--modern:hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.hph-card--classic {
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.hph-card--minimal {
+    /* Minimal style maintains hero layout but with less shadow */
+}
+
+.hph-card--elevated {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.hph-card--elevated:hover {
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.18);
+    transform: translateY(-6px);
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================ */
+
+/* Responsive styles moved to listing-card.css to prevent duplication and orphaned selectors */
+
+/* ============================================================================
+   ACCESSIBILITY
+   ============================================================================ */
+@media (prefers-reduced-motion: reduce) {
+    .hph-card__content {
+        transition: none;
+    }
+}
+
+/* Focus styles for keyboard navigation */
+.hph-card__title a:focus,
+.hph-card__action-btn:focus,
+.hph-card__cta:focus {
+    outline: 2px solid var(--hph-primary);
+    outline-offset: 2px;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .hph-listing-card {
+        border: 2px solid var(--hph-gray-900);
+    }
+
+    .hph-card__action-btn {
+        border-width: 2px;
+        border-color: var(--hph-gray-900);
+    }
+}
+
+/* ============================================================================
+   PRINT STYLES
+   ============================================================================ */
+@media print {
+    .hph-card__actions,
+    .hph-card__badges,
+    .hph-card__virtual-tour,
+    .hph-card__save,
+    .hph-card__compare,
+    .hph-card__share,
+    .hph-card__quick-view {
+        display: none !important;
+    }
+
+    .hph-listing-card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+
+    .hph-listing-card:hover {
+        transform: none;
+    }
+}

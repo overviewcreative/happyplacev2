@@ -18,12 +18,10 @@
         }
 
         init() {
-            console.log('Initializing Archive Listing Enhanced...');
             this.bindEvents();
             this.initFilterToggle();
             this.loadListingsData();
             this.initViewMode();
-            console.log('Archive Listing Enhanced initialized with', this.listings.length, 'listings');
         }
 
         bindEvents() {
@@ -34,7 +32,6 @@
                     if (viewBtn) {
                         e.preventDefault();
                         const view = viewBtn.dataset.view;
-                        console.log('View button clicked:', view);
                         this.switchView(view);
                     }
                 }
@@ -86,30 +83,101 @@
             }
 
             // Map card hover effects with proper event delegation
-            document.addEventListener('mouseenter', (e) => {
-                if (e.target) {
+            document.addEventListener('mouseover', (e) => {
+                if (e.target && typeof e.target.closest === 'function') {
                     const card = e.target.closest('.hph-map-card');
                     if (card) {
                         const listingId = card.dataset.listingId;
                         this.highlightMapMarker(listingId);
                     }
                 }
-            }, true);
+            });
 
-            document.addEventListener('mouseleave', (e) => {
-                if (e.target) {
+            document.addEventListener('mouseout', (e) => {
+                if (e.target && typeof e.target.closest === 'function') {
                     const card = e.target.closest('.hph-map-card');
                     if (card) {
                         this.unhighlightMapMarkers();
                     }
                 }
-            }, true);
+            });
+
+            // Sidebar listing card synchronization with map
+            document.addEventListener('mouseover', (e) => {
+                if (e.target && typeof e.target.closest === 'function') {
+                    const card = e.target.closest('[data-listing-id].listing-card-enhanced, [data-listing-id].hph-listing-card');
+                    if (card && this.currentView === 'map' && this.mapbox) {
+                        const listingId = card.dataset.listingId;
+                        if (listingId && this.mapbox.highlightListingMarker) {
+                            this.mapbox.highlightListingMarker(listingId);
+                            this.highlightSidebarCard(listingId);
+                        }
+                    }
+                }
+            });
+
+            document.addEventListener('mouseout', (e) => {
+                if (e.target && typeof e.target.closest === 'function') {
+                    const card = e.target.closest('[data-listing-id].listing-card-enhanced, [data-listing-id].hph-listing-card');
+                    if (card && this.currentView === 'map' && this.mapbox) {
+                        if (this.mapbox.unhighlightAllMarkers) {
+                            this.mapbox.unhighlightAllMarkers();
+                            this.unhighlightAllSidebarCards();
+                        }
+                    }
+                }
+            });
+
+            // Sidebar listing card click to show map popup
+            document.addEventListener('click', (e) => {
+                if (e.target && typeof e.target.closest === 'function') {
+                    const card = e.target.closest('[data-listing-id].listing-card-enhanced, [data-listing-id].hph-listing-card');
+                    if (card && this.currentView === 'map' && this.mapbox) {
+                        // Only if not clicking on a link or button inside the card
+                        if (!e.target.closest('a, button, .btn, [role="button"]')) {
+                            const listingId = card.dataset.listingId;
+                            if (listingId && this.mapbox.showListingPopup) {
+                                e.preventDefault();
+                                this.mapbox.showListingPopup(listingId);
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Listen for map marker click events to highlight sidebar cards
+            document.addEventListener('hph-map-listing-click', (e) => {
+                if (this.currentView === 'map' && e.detail && e.detail.listingId) {
+                    this.highlightSidebarCard(e.detail.listingId);
+                    
+                    // Scroll to the corresponding sidebar card
+                    const card = document.querySelector(`[data-listing-id="${e.detail.listingId}"].listing-card-enhanced, [data-listing-id="${e.detail.listingId}"].hph-listing-card`);
+                    if (card) {
+                        const sidebar = card.closest('.hph-map-sidebar, .hph-sidebar');
+                        if (sidebar) {
+                            // Scroll within the sidebar container
+                            const cardTop = card.offsetTop;
+                            const sidebarTop = sidebar.scrollTop;
+                            const sidebarHeight = sidebar.clientHeight;
+                            const cardHeight = card.offsetHeight;
+                            
+                            if (cardTop < sidebarTop || cardTop + cardHeight > sidebarTop + sidebarHeight) {
+                                sidebar.scrollTo({
+                                    top: cardTop - (sidebarHeight - cardHeight) / 2,
+                                    behavior: 'smooth'
+                                });
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         switchView(view) {
-            console.log('Switching to view:', view, 'Current view:', this.currentView);
-            
-            if (this.currentView === view) return;
+
+            if (this.currentView === view) {
+                return;
+            }
 
             // Update buttons
             document.querySelectorAll('.hph-view-btn').forEach(btn => {
@@ -121,9 +189,7 @@
             if (activeBtn) {
                 activeBtn.classList.add('active');
                 activeBtn.setAttribute('aria-selected', 'true');
-                console.log('Updated active button for:', view);
             } else {
-                console.warn('Could not find button for view:', view);
             }
 
             // Update content - special handling for map view
@@ -137,12 +203,37 @@
             const activeContent = document.querySelector(`[data-view-content="${view}"]`);
             if (activeContent) {
                 activeContent.classList.add('active');
-                if (!activeContent.classList.contains('hph-map-view-layout')) {
+
+                // Force display for map view if CSS isn't working
+                if (view === 'map') {
+                    activeContent.style.display = 'block';
+                    activeContent.style.position = 'fixed';
+                    activeContent.style.top = '0';
+                    activeContent.style.left = '0';
+                    activeContent.style.width = '100vw';
+                    activeContent.style.height = '100vh';
+                    activeContent.style.zIndex = '100';
+                    activeContent.style.background = 'white';
+                    activeContent.style.margin = '0';
+                    activeContent.style.padding = '0';
+                    activeContent.style.border = 'none';
+                    activeContent.style.boxSizing = 'border-box';
+
+                    // Configure map canvas for proper mobile display
+                    const mapCanvas = activeContent.querySelector('.hph-map-canvas');
+                    if (mapCanvas) {
+                        mapCanvas.style.margin = '0';
+                        mapCanvas.style.border = 'none';
+                        mapCanvas.style.width = '100%';
+                        // Don't override padding and height - let CSS handle mobile responsive header spacing
+                    }
+
+                } else if (!activeContent.classList.contains('hph-map-view-layout')) {
                     activeContent.style.display = 'block';
                 }
-                console.log('Updated active content for:', view);
+
             } else {
-                console.warn('Could not find content for view:', view);
+                const allContent = document.querySelectorAll('[data-view-content]');
             }
 
             const previousView = this.currentView;
@@ -156,18 +247,140 @@
             if (view === 'map') {
                 // Add map-visible class to body
                 document.body.classList.add('hph-map-visible');
-                
+
+                // Force hide regular headers with maximum specificity
+                const regularHeaders = document.querySelectorAll(
+                    '.hph-site-header-enhanced__wrapper, ' +
+                    '.hph-topbar, ' +
+                    '.hph-site-header-enhanced__topbar, ' +
+                    '#masthead, ' +
+                    'header#masthead, ' +
+                    '.hph-site-header-enhanced, ' +
+                    '.hph-site-header-enhanced__search-bar, ' +
+                    '.hph-site-header-enhanced__mobile-menu, ' +
+                    '.hph-site-header-enhanced__mobile-overlay'
+                );
+                regularHeaders.forEach(header => {
+                    header.style.setProperty('display', 'none', 'important');
+                    header.style.setProperty('visibility', 'hidden', 'important');
+                    header.style.setProperty('opacity', '0', 'important');
+                    header.style.setProperty('position', 'absolute', 'important');
+                    header.style.setProperty('left', '-9999px', 'important');
+                    header.style.setProperty('z-index', '-1000', 'important');
+                    header.style.setProperty('pointer-events', 'none', 'important');
+                });
+
+                // Ensure specialized map header is visible
+                const mapHeader = document.querySelector('.hph-map-header');
+                if (mapHeader) {
+                    mapHeader.style.setProperty('display', 'flex', 'important');
+                    mapHeader.style.setProperty('visibility', 'visible', 'important');
+                    mapHeader.style.setProperty('opacity', '1', 'important');
+                    mapHeader.style.setProperty('position', 'fixed', 'important');
+                    mapHeader.style.setProperty('top', '0', 'important');
+                    mapHeader.style.setProperty('left', '0', 'important');
+                    mapHeader.style.setProperty('right', '0', 'important');
+                    mapHeader.style.setProperty('z-index', '1000', 'important');
+                } else {
+                }
+
                 if (!this.mapbox) {
-                    console.log('Initializing map...');
                     // Use requestAnimationFrame for better performance
-                    requestAnimationFrame(() => this.initMap());
+                    requestAnimationFrame(() => {
+                        this.initMap();
+                        // Initialize sidebar with map cards immediately
+                        setTimeout(() => {
+                            this.initMapSidebar();
+                        }, 500);
+                    });
                 } else {
                     // Map exists, just resize it
                     this.debouncedMapResize();
+                    // Show map sidebar immediately
+                    this.initMapSidebar();
                 }
             } else {
                 // Remove map-visible class when leaving map view
                 document.body.classList.remove('hph-map-visible');
+
+                // Restore regular headers
+                const regularHeaders = document.querySelectorAll(
+                    '.hph-site-header-enhanced__wrapper, ' +
+                    '.hph-topbar, ' +
+                    '.hph-site-header-enhanced__topbar, ' +
+                    '#masthead, ' +
+                    'header#masthead, ' +
+                    '.hph-site-header-enhanced, ' +
+                    '.hph-site-header-enhanced__search-bar, ' +
+                    '.hph-site-header-enhanced__mobile-menu, ' +
+                    '.hph-site-header-enhanced__mobile-overlay'
+                );
+                regularHeaders.forEach(header => {
+                    header.style.removeProperty('display');
+                    header.style.removeProperty('visibility');
+                    header.style.removeProperty('opacity');
+                    header.style.removeProperty('position');
+                    header.style.removeProperty('left');
+                    header.style.removeProperty('z-index');
+                    header.style.removeProperty('pointer-events');
+                });
+
+                // Hide specialized map header when leaving map view
+                const mapHeader = document.querySelector('.hph-map-header');
+                if (mapHeader) {
+                    mapHeader.style.setProperty('display', 'none', 'important');
+                }
+
+                // Reset any map-specific inline styles that might interfere
+                const mapContent = document.querySelector('[data-view-content="map"]');
+                if (mapContent) {
+                    mapContent.style.removeProperty('z-index');
+                    mapContent.style.removeProperty('position');
+                    mapContent.style.removeProperty('top');
+                    mapContent.style.removeProperty('left');
+                    mapContent.style.removeProperty('width');
+                    mapContent.style.removeProperty('height');
+                    mapContent.style.removeProperty('background');
+                    mapContent.style.removeProperty('margin');
+                    mapContent.style.removeProperty('padding');
+                    mapContent.style.removeProperty('border');
+                    mapContent.style.removeProperty('box-sizing');
+                    mapContent.style.display = 'none'; // Explicitly hide map content
+                }
+
+                // Reset map canvas properties but preserve responsive CSS
+                const mapCanvas = document.querySelector('.hph-map-canvas');
+                if (mapCanvas) {
+                    mapCanvas.style.removeProperty('z-index');
+                    mapCanvas.style.removeProperty('position');
+                    mapCanvas.style.removeProperty('top');
+                    mapCanvas.style.removeProperty('left');
+                    mapCanvas.style.removeProperty('width');
+                    mapCanvas.style.removeProperty('height');
+                    // Don't remove padding-top as it's set by responsive CSS
+                }
+
+                // Reset any map panel z-index issues
+                const mapPanel = document.querySelector('.hph-map-panel');
+                if (mapPanel) {
+                    mapPanel.style.removeProperty('z-index');
+                    mapPanel.style.removeProperty('position');
+                    mapPanel.style.removeProperty('top');
+                    mapPanel.style.removeProperty('right');
+                }
+
+                // Ensure grid and list content are properly visible with correct z-index
+                const gridContent = document.querySelector('[data-view-content="grid"]');
+                const listContent = document.querySelector('[data-view-content="list"]');
+                if (gridContent) {
+                    gridContent.style.removeProperty('z-index');
+                    gridContent.style.removeProperty('position');
+                }
+                if (listContent) {
+                    listContent.style.removeProperty('z-index');
+                    listContent.style.removeProperty('position');
+                }
+
             }
             
             // Store preference
@@ -253,6 +466,7 @@
             if (mapContainer && mapContainer.dataset.mapListings) {
                 try {
                     const listingsData = JSON.parse(mapContainer.dataset.mapListings);
+                    
                     this.listings = listingsData.map(listing => ({
                         id: listing.id,
                         lat: listing.latitude,
@@ -265,37 +479,95 @@
                         bedrooms: listing.bedrooms,
                         bathrooms: listing.bathrooms,
                         square_feet: listing.square_feet,
-                        status: listing.status
-                    })).filter(listing => listing.lat && listing.lng);
+                        status: listing.status,
+                        street_address: listing.street_address,
+                        city: listing.city,
+                        state: listing.state,
+                        zip_code: listing.zip_code
+                    })).filter(listing => {
+                        const hasCoords = listing.lat && listing.lng && !isNaN(listing.lat) && !isNaN(listing.lng);
+                        if (!hasCoords) {
+                        }
+                        return hasCoords;
+                    });
                     
-                    console.log('Loaded listings from map data:', this.listings.length, 'listings');
                     return;
                 } catch (e) {
-                    console.warn('Could not parse map listings data:', e);
                 }
             }
             
-            // Fallback: Extract listing data from map cards
-            const mapCards = document.querySelectorAll('.hph-map-card');
-            this.listings = Array.from(mapCards).map(card => ({
-                id: card.dataset.listingId,
-                lat: parseFloat(card.dataset.lat),
-                lng: parseFloat(card.dataset.lng),
-                price: card.dataset.price,
-                address: card.dataset.address,
-                element: card
-            })).filter(listing => listing.lat && listing.lng);
+            // Fallback: Extract listing data from map cards or listing cards
+            const mapCards = document.querySelectorAll('.hph-map-card, .hph-listing-card, [data-listing-id][data-lat][data-lng]');
+            this.listings = Array.from(mapCards).map(card => {
+                // Get title from card content if not in attributes
+                let title = card.dataset.title || '';
+                if (!title) {
+                    const titleElement = card.querySelector('h3, .hph-listing-title, .listing-title, a[title]');
+                    if (titleElement) {
+                        title = titleElement.textContent || titleElement.getAttribute('title') || '';
+                    }
+                }
+                
+                // Get image from card
+                let image = card.dataset.image || '';
+                if (!image) {
+                    const imageElement = card.querySelector('img');
+                    if (imageElement) {
+                        image = imageElement.src;
+                    }
+                }
+                
+                // Get URL from card
+                let url = card.dataset.permalink || '';
+                if (!url) {
+                    const linkElement = card.querySelector('a');
+                    if (linkElement) {
+                        url = linkElement.href;
+                    }
+                }
+                
+                return {
+                    id: card.dataset.listingId,
+                    lat: parseFloat(card.dataset.lat),
+                    lng: parseFloat(card.dataset.lng),
+                    price: card.dataset.price,
+                    address: card.dataset.address || title.trim(),
+                    title: title.trim(),
+                    permalink: url,
+                    featured_image: image,
+                    bedrooms: card.dataset.bedrooms,
+                    bathrooms: card.dataset.bathrooms,
+                    square_feet: card.dataset.sqft || card.dataset.squareFeet,
+                    status: card.dataset.status,
+                    street_address: card.dataset.streetAddress,
+                    city: card.dataset.city,
+                    state: card.dataset.state,
+                    zip_code: card.dataset.zipCode,
+                    element: card
+                };
+            }).filter(listing => listing.lat && listing.lng);
             
-            console.log('Loaded listings from cards:', this.listings.length, 'listings');
         }
         
         buildAddress(listing) {
+            // Try to build from components first
             const parts = [];
             if (listing.street_address) parts.push(listing.street_address);
             if (listing.city) parts.push(listing.city);
             if (listing.state) parts.push(listing.state);
             if (listing.zip_code) parts.push(listing.zip_code);
-            return parts.join(', ') || 'Address not available';
+            
+            if (parts.length > 0) {
+                return parts.join(', ');
+            }
+            
+            // Fallback to the data-address attribute if component building fails
+            if (listing.address) {
+                return listing.address;
+            }
+            
+            // Final fallback
+            return 'View Property Details';
         }
 
         waitForMapbox() {
@@ -311,83 +583,81 @@
             });
         }
 
+        waitForHPHMap() {
+            return new Promise((resolve) => {
+                const checkHPHMap = () => {
+                    if (typeof HPHMap !== 'undefined') {
+                        resolve();
+                    } else {
+                        setTimeout(checkHPHMap, 100);
+                    }
+                };
+                checkHPHMap();
+            });
+        }
+
         async initMap() {
-            console.log('initMap called');
-            
-            // Wait for Mapbox to load if it's not ready yet
-            if (typeof mapboxgl === 'undefined') {
-                console.log('Waiting for Mapbox to load...');
-                await this.waitForMapbox();
-                if (typeof mapboxgl === 'undefined') {
-                    console.error('Mapbox GL JS failed to load');
-                    this.showMapError();
+
+            // Check if we have Mapbox configuration
+            if (typeof window.hph_mapbox_config === 'undefined') {
+                this.showMapError('Map configuration not available');
+                return;
+            }
+
+            // If no token is configured, show configuration message
+            if (window.hph_mapbox_config.has_token === false) {
+                this.showMapConfigurationMessage();
+                return;
+            }
+
+            // Wait for HPH Map component to be available
+            if (typeof HPHMap === 'undefined') {
+                await this.waitForHPHMap();
+                if (typeof HPHMap === 'undefined') {
+                    this.showMapError('Map component failed to load');
                     return;
                 }
             }
-            console.log('Mapbox GL JS is loaded');
-
-            // Set access token if not already set
-            if (!mapboxgl.accessToken && typeof hph_mapbox_config !== 'undefined' && hph_mapbox_config.access_token) {
-                mapboxgl.accessToken = hph_mapbox_config.access_token;
-                console.log('Set access token from hph_mapbox_config');
-            }
-
-            // Check if access token is set
-            if (!mapboxgl.accessToken) {
-                console.error('Mapbox access token not set. Current token:', mapboxgl.accessToken);
-                console.log('Available configs:', {
-                    hph_mapbox_config: typeof hph_mapbox_config !== 'undefined' ? hph_mapbox_config : 'undefined'
-                });
-                this.showMapError();
-                return;
-            }
-            console.log('Mapbox access token is set:', mapboxgl.accessToken.substring(0, 20) + '...');
 
             const mapContainer = document.getElementById('mapbox-listings-map');
             if (!mapContainer) {
-                console.error('Map container not found: #mapbox-listings-map');
                 return;
             }
-            console.log('Map container found:', mapContainer);
-            
-            // Clear the map container to avoid Mapbox warning
-            mapContainer.innerHTML = '';
 
-            console.log('Listings data:', this.listings.length, 'listings found');
-            console.log('Sample listing:', this.listings[0] || 'No listings');
 
             try {
-                console.log('Initializing Mapbox map...');
-                
-                // Initialize map
-                this.mapbox = new mapboxgl.Map({
-                    container: 'mapbox-listings-map',
+                // Initialize HPH Map component - this handles all Mapbox setup internally
+
+                this.hphMap = new HPHMap(mapContainer, {
                     style: 'mapbox://styles/mapbox/light-v11',
                     center: this.getMapCenter(),
                     zoom: 12,
-                    attributionControl: false // Remove attribution to save space
+                    navigationControl: true,
+                    attributionControl: false,
+                    styleTheme: 'professional'
                 });
 
-                // Add controls with optimized settings
-                const navControl = new mapboxgl.NavigationControl({
-                    showCompass: true,
-                    showZoom: true,
-                    visualizePitch: false
-                });
-                this.mapbox.addControl(navControl, 'top-right');
+                // Store reference to Mapbox map instance
+                this.mapbox = this.hphMap.map;
+
+                // Store reference on container for external access
+                mapContainer.hphMap = this.hphMap;
 
                 // Wait for map to load then add markers
                 this.mapbox.on('load', () => {
-                    console.log('Map loaded, adding markers');
                     try {
                         this.addMapMarkers();
-                        this.fitMapToMarkers();
+                        // Initial viewport filtering after map is loaded
+                        setTimeout(() => {
+                            if (this.currentView === 'map') {
+                                this.updateSidebarForViewport();
+                            }
+                        }, 1000);
                     } catch (markerError) {
-                        console.error('Error adding markers:', markerError);
                     }
                 });
 
-                // Handle resize when map view becomes active
+                // Handle resize when switching to map view
                 this.mapbox.on('style.load', () => {
                     requestAnimationFrame(() => {
                         if (this.mapbox && this.currentView === 'map') {
@@ -396,9 +666,14 @@
                     });
                 });
 
+                // Add viewport-responsive sidebar filtering
+                this.setupViewportResponsiveFiltering();
+
+                // Setup map search functionality
+                this.setupMapSearchFunctionality();
+
             } catch (error) {
-                console.error('Map initialization error:', error);
-                this.showMapError();
+                this.showMapError('Failed to initialize map');
             }
         }
 
@@ -409,15 +684,306 @@
 
             const avgLat = this.listings.reduce((sum, listing) => sum + listing.lat, 0) / this.listings.length;
             const avgLng = this.listings.reduce((sum, listing) => sum + listing.lng, 0) / this.listings.length;
-            
+
             return [avgLng, avgLat];
         }
 
+        setupViewportResponsiveFiltering() {
+            if (!this.mapbox) return;
+
+
+            // Debounce viewport updates for performance
+            let viewportUpdateTimeout;
+            const debouncedViewportUpdate = () => {
+                clearTimeout(viewportUpdateTimeout);
+                viewportUpdateTimeout = setTimeout(() => {
+                    this.updateSidebarForViewport();
+                }, 250);
+            };
+
+            // Listen for map movement events
+            this.mapbox.on('moveend', debouncedViewportUpdate);
+            this.mapbox.on('zoomend', debouncedViewportUpdate);
+            this.mapbox.on('dragend', debouncedViewportUpdate);
+        }
+
+        updateSidebarForViewport() {
+            if (!this.mapbox || this.currentView !== 'map') return;
+
+
+            // Get current map bounds
+            const bounds = this.mapbox.getBounds();
+            const visibleListings = [];
+
+            // Filter listings that are visible in current viewport
+            this.listings.forEach(listing => {
+                if (listing.lat && listing.lng) {
+                    const isInBounds = bounds.contains([listing.lng, listing.lat]);
+                    if (isInBounds) {
+                        visibleListings.push(listing);
+                    }
+                }
+            });
+
+
+            // Update sidebar cards
+            this.renderSidebarCards(visibleListings);
+
+            // Update results count
+            this.updateResultsCount(visibleListings.length);
+        }
+
+        renderSidebarCards(listings) {
+            const sidebar = document.querySelector('.hph-map-sidebar .hph-sidebar-content');
+            if (!sidebar) return;
+
+            // Show loading state briefly
+            sidebar.style.opacity = '0.7';
+
+            if (listings.length === 0) {
+                sidebar.innerHTML = `
+                    <div class="hph-text-center hph-py-xl">
+                        <div class="hph-mb-md">
+                            <i class="fas fa-search hph-text-gray-300" style="font-size: 3rem;"></i>
+                        </div>
+                        <h3 class="hph-text-lg hph-font-semibold hph-mb-sm">No Properties in View</h3>
+                        <p class="hph-text-gray-600">Zoom out or pan the map to see more listings.</p>
+                    </div>
+                `;
+            } else {
+                // Render map-style cards for visible listings
+                const cardsHtml = listings.map(listing => this.createMapCardHTML(listing)).join('');
+                sidebar.innerHTML = `<div class="hph-map-cards-container">${cardsHtml}</div>`;
+            }
+
+            // Restore opacity
+            setTimeout(() => {
+                sidebar.style.opacity = '1';
+            }, 100);
+        }
+
+        createMapCardHTML(listing) {
+            // Create compact horizontal map-style card HTML
+            const price = listing.price ? `$${parseInt(listing.price).toLocaleString()}` : 'Price on Request';
+            const photoUrl = listing.featured_image || listing.photo || '/wp-content/themes/happy-place-theme/assets/images/placeholder-listing.jpg';
+            const title = listing.title || listing.address || 'Property';
+            const location = listing.address || `${listing.city || ''}, ${listing.state || ''}`.trim();
+            const url = listing.permalink || listing.url || '#';
+
+            return `
+                <div class="hph-map-card">
+                    <div class="hph-map-card-image">
+                        <img src="${photoUrl}" alt="${title}" loading="lazy">
+                        <div class="hph-map-card-price">${price}</div>
+                    </div>
+                    <div class="hph-map-card-content">
+                        <h4 class="hph-map-card-title">
+                            <a href="${url}">${title}</a>
+                        </h4>
+                        <p class="hph-map-card-location">${location}</p>
+                        <div class="hph-map-card-stats">
+                            ${listing.bedrooms ? `<span><i class="fas fa-bed"></i> ${listing.bedrooms}</span>` : ''}
+                            ${listing.bathrooms ? `<span><i class="fas fa-bath"></i> ${listing.bathrooms}</span>` : ''}
+                            ${listing.square_feet || listing.sqft ? `<span><i class="fas fa-ruler-combined"></i> ${listing.square_feet || listing.sqft} sq ft</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        updateResultsCount(count) {
+            const countElement = document.querySelector('[data-results-count]');
+            if (countElement) {
+                countElement.textContent = count.toLocaleString();
+            }
+        }
+
+        setupMapSearchFunctionality() {
+            const mapSearchForm = document.querySelector('.hph-map-search-form');
+            if (!mapSearchForm) return;
+
+
+            mapSearchForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.handleMapSearch();
+            });
+
+            // Real-time search as user types
+            const searchInput = mapSearchForm.querySelector('.hph-map-search-input');
+            if (searchInput) {
+                let searchTimeout;
+                searchInput.addEventListener('input', (e) => {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        this.handleMapSearch();
+                    }, 500);
+                });
+            }
+
+            // Filter changes
+            const filterSelects = mapSearchForm.querySelectorAll('.hph-map-filter-select');
+            filterSelects.forEach(select => {
+                select.addEventListener('change', () => {
+                    this.handleMapSearch();
+                });
+            });
+        }
+
+        handleMapSearch() {
+            const form = document.querySelector('.hph-map-search-form');
+            if (!form) return;
+
+
+            const formData = new FormData(form);
+            const searchParams = new URLSearchParams(formData);
+
+            // Show loading state
+            const sidebar = document.querySelector('.hph-map-sidebar .hph-sidebar-content');
+            if (sidebar) {
+                sidebar.innerHTML = `
+                    <div class="hph-map-loading-sidebar">
+                        <div class="hph-loading-spinner"></div>
+                        <p>Searching properties...</p>
+                    </div>
+                `;
+            }
+
+            // Make AJAX request to get filtered listings
+            fetch(`${window.hphAjax.ajaxurl}?action=hph_filter_listings&${searchParams}`, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.data) {
+
+                    // Update listings data
+                    this.listings = data.data.listings;
+
+                    // Re-render map markers
+                    this.clearMapMarkers();
+                    this.addMapMarkers();
+
+                    // Update sidebar
+                    this.renderSidebarCards(this.listings);
+                    this.updateResultsCount(this.listings.length);
+                } else {
+                    this.showSearchError();
+                }
+            })
+            .catch(error => {
+                this.showSearchError();
+            });
+        }
+
+        showSearchError() {
+            const sidebar = document.querySelector('.hph-map-sidebar .hph-sidebar-content');
+            if (sidebar) {
+                sidebar.innerHTML = `
+                    <div class="hph-text-center hph-py-xl">
+                        <div class="hph-mb-md">
+                            <i class="fas fa-exclamation-triangle hph-text-red-300" style="font-size: 2rem;"></i>
+                        </div>
+                        <h3 class="hph-text-lg hph-font-semibold hph-mb-sm">Search Error</h3>
+                        <p class="hph-text-gray-600">Please try again.</p>
+                    </div>
+                `;
+            }
+        }
+
+        initMapSidebar() {
+
+            // Immediately show all listings as map cards when entering map view
+            if (this.listings && this.listings.length > 0) {
+                this.renderSidebarCards(this.listings);
+                this.updateResultsCount(this.listings.length);
+            } else {
+                // Show empty state if no listings
+                const sidebar = document.querySelector('.hph-map-sidebar .hph-sidebar-content');
+                if (sidebar) {
+                    sidebar.innerHTML = `
+                        <div class="hph-text-center hph-py-xl">
+                            <div class="hph-mb-md">
+                                <i class="fas fa-home hph-text-gray-300" style="font-size: 3rem;"></i>
+                            </div>
+                            <h3 class="hph-text-lg hph-font-semibold hph-mb-sm">No Properties Found</h3>
+                            <p class="hph-text-gray-600">Try adjusting your search criteria.</p>
+                        </div>
+                    `;
+                }
+            }
+        }
+
         addMapMarkers() {
-            // Use document fragment for efficient DOM manipulation
-            const fragment = document.createDocumentFragment();
-            
-            this.listings.forEach((listing, index) => {
+            if (!this.hphMap || !this.listings || this.listings.length === 0) {
+                return;
+            }
+
+
+            // Clear existing markers first
+            this.clearMapMarkers();
+
+            // Prepare listings data in the correct format for HPH Map clustering
+            const formattedListings = this.listings.map(listing => ({
+                id: listing.id,
+                title: listing.title || listing.address || 'Property',
+                longitude: parseFloat(listing.lng),
+                latitude: parseFloat(listing.lat),
+                price: listing.price || 0,
+                street_address: listing.street_address || listing.address || '',
+                city: listing.city || '',
+                state: listing.state || '',
+                zip_code: listing.zip_code || '',
+                status: listing.status || 'active',
+                featured_image: listing.featured_image || '',
+                bedrooms: listing.bedrooms || 0,
+                bathrooms: listing.bathrooms || 0,
+                square_feet: listing.square_feet || 0,
+                permalink: listing.permalink || '#'
+            })).filter(listing => {
+                // Only include listings with valid coordinates
+                return !isNaN(listing.longitude) && !isNaN(listing.latitude);
+            });
+
+
+            if (formattedListings.length === 0) {
+                return;
+            }
+
+            // Use HPH Map clustering functionality
+            try {
+                this.hphMap.addListingMarkers(formattedListings, {
+                    enableClustering: true,
+                    clusterRadius: 50,
+                    clusterMaxZoom: 14,
+                    showPopup: true,
+                    fitBounds: formattedListings.length > 1
+                });
+
+
+                // Listen for listing clicks to scroll to corresponding card
+                this.mapbox.on('listing-click', (e) => {
+                    const listingId = e.listing.id;
+                    if (listingId) {
+                        this.scrollToMapCard(listingId);
+                    }
+                });
+
+            } catch (error) {
+                // Fallback to individual markers
+                this.addIndividualMarkers(formattedListings);
+            }
+        }
+
+        addIndividualMarkers(listings) {
+            // Fallback method for individual markers without clustering
+            listings.forEach((listing, index) => {
+                if (!listing.latitude || !listing.longitude) {
+                    return;
+                }
+
                 // Create marker element
                 const markerElement = document.createElement('div');
                 markerElement.className = 'hph-map-marker';
@@ -427,71 +993,23 @@
                     </div>
                 `;
 
-                // Create marker with optimized settings
+                // Create marker
                 const marker = new mapboxgl.Marker({
                     element: markerElement,
                     anchor: 'bottom'
                 })
-                    .setLngLat([listing.lng, listing.lat])
+                    .setLngLat([listing.longitude, listing.latitude])
                     .addTo(this.mapbox);
 
-                // Create popup with enhanced content
+                // Create popup
                 const popup = new mapboxgl.Popup({ 
                     offset: 25,
                     closeButton: true,
                     closeOnClick: true,
-                    maxWidth: '320px'
+                    maxWidth: '320px',
+                    className: 'hph-listing-popup'
                 })
-                    .setHTML(`
-                        <div class="hph-listing-card hph-listing-card--map">
-                            <!-- Image Section using framework classes -->
-                            <div class="hph-card-map__image">
-                                ${listing.image ? `
-                                    <img src="${listing.image}" 
-                                         alt="${listing.address}" 
-                                         loading="lazy">
-                                ` : `
-                                    <div class="hph-card__image-placeholder">
-                                        <i class="fas fa-home"></i>
-                                    </div>
-                                `}
-                                
-                                ${listing.status ? `
-                                    <div class="hph-card__status hph-card__status--${listing.status.toLowerCase()}">
-                                        ${listing.status}
-                                    </div>
-                                ` : ''}
-                                
-                                <button class="hph-card__favorite" data-listing-id="${listing.id}">
-                                    <i class="fas fa-heart"></i>
-                                </button>
-                            </div>
-                            
-                            <!-- Content Section using framework classes -->
-                            <div class="hph-card-map__content">
-                                <!-- Price -->
-                                <div class="hph-card-map__price">$${Number(listing.price).toLocaleString()}</div>
-                                
-                                <!-- Address -->
-                                <div class="hph-card-map__address">
-                                    ${listing.address}
-                                </div>
-                                
-                                <!-- Features -->
-                                <div class="hph-card-map__details">
-                                    ${listing.bedrooms ? `<span>${listing.bedrooms} beds</span>` : ''}
-                                    ${listing.bathrooms ? `<span>${listing.bathrooms} baths</span>` : ''}
-                                    ${listing.square_feet ? `<span>${Number(listing.square_feet).toLocaleString()} sq ft</span>` : ''}
-                                </div>
-                                
-                                <!-- Action Link -->
-                                <a href="${listing.permalink || '#'}" class="hph-card-map__link">
-                                    View Details
-                                    <i class="fas fa-arrow-right"></i>
-                                </a>
-                            </div>
-                        </div>
-                    `);
+                    .setHTML(this.createPopupHTML(listing));
 
                 marker.setPopup(popup);
 
@@ -502,7 +1020,7 @@
                     element: markerElement
                 });
 
-                // Add click handler to scroll to card with throttling
+                // Add click handler to scroll to card
                 let clickTimeout;
                 markerElement.addEventListener('click', () => {
                     if (clickTimeout) return;
@@ -512,6 +1030,91 @@
                     }, 100);
                 });
             });
+
+            // Fit bounds if multiple listings
+            if (listings.length > 1) {
+                this.fitMapToMarkers();
+            }
+        }
+
+        createPopupHTML(listing) {
+            return `
+                <div class="hph-card hph-card--elevated hph-bg-white hph-overflow-hidden hph-max-w-80" data-popup-version="1.0.4">
+                    ${listing.featured_image && !listing.featured_image.includes('placeholder') ? `
+                        <div class="hph-relative hph-h-48 hph-overflow-hidden">
+                            <img src="${listing.featured_image}" 
+                                 alt="${listing.title || 'Property'}" 
+                                 class="hph-w-full hph-h-full hph-object-cover hph-transition-transform hph-duration-300 hover:hph-scale-105"
+                                 loading="lazy"
+                                 onerror="this.parentElement.style.display='none'">
+                            
+                            ${listing.status ? `
+                                <div class="hph-absolute hph-top-3 hph-left-3">
+                                    <span class="hph-inline-flex hph-items-center hph-px-2 hph-py-1 hph-rounded-md hph-text-xs hph-font-semibold hph-shadow-sm
+                                        ${listing.status.toLowerCase() === 'active' ? 'hph-bg-green-500 hph-text-white' : 
+                                          listing.status.toLowerCase() === 'pending' ? 'hph-bg-yellow-500 hph-text-white' : 
+                                          listing.status.toLowerCase() === 'sold' ? 'hph-bg-red-500 hph-text-white' : 
+                                          'hph-bg-blue-500 hph-text-white'}">
+                                        ${listing.status}
+                                    </span>
+                                </div>
+                            ` : ''}
+                            
+                            <button class="hph-absolute hph-top-3 hph-right-3 hph-w-9 hph-h-9 hph-bg-white hph-rounded-full hph-flex hph-items-center hph-justify-center hph-text-gray-500 hover:hph-text-red-500 hph-transition-colors hph-shadow-sm" 
+                                    data-listing-id="${listing.id || ''}" 
+                                    onclick="event.stopPropagation();">
+                                <i class="fas fa-heart hph-text-sm"></i>
+                            </button>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="hph-p-4">
+                        <!-- Price -->
+                        ${listing.price ? `
+                            <div class="hph-text-primary hph-font-bold hph-text-xl hph-mb-2">
+                                $${Number(listing.price).toLocaleString()}
+                            </div>
+                        ` : ''}
+                        
+                        <!-- Street Address -->
+                        <h3 class="hph-text-gray-900 hph-font-semibold hph-text-base hph-mb-1 hph-line-clamp-1">
+                            ${listing.street_address || listing.title || 'Property Address'}
+                        </h3>
+                        
+                        <!-- Property Details -->
+                        ${listing.bedrooms || listing.bathrooms || listing.square_feet ? `
+                            <div class="hph-flex hph-items-center hph-gap-4 hph-text-sm hph-text-gray-600 hph-mb-4">
+                                ${listing.bedrooms ? `
+                                    <div class="hph-flex hph-items-center hph-gap-1">
+                                        <i class="fas fa-bed hph-text-gray-500"></i>
+                                        <span>${listing.bedrooms} bed${listing.bedrooms != 1 ? 's' : ''}</span>
+                                    </div>
+                                ` : ''}
+                                ${listing.bathrooms ? `
+                                    <div class="hph-flex hph-items-center hph-gap-1">
+                                        <i class="fas fa-bath hph-text-gray-500"></i>
+                                        <span>${listing.bathrooms} bath${listing.bathrooms != 1 ? 's' : ''}</span>
+                                    </div>
+                                ` : ''}
+                                ${listing.square_feet ? `
+                                    <div class="hph-flex hph-items-center hph-gap-1">
+                                        <i class="fas fa-ruler-combined hph-text-gray-500"></i>
+                                        <span>${Number(listing.square_feet).toLocaleString()} sq ft</span>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        ` : `<div class="hph-mb-4"></div>`}
+                        
+                        <!-- Action Button -->
+                        <a href="${listing.permalink || '#'}" 
+                           class="hph-btn hph-btn-primary hph-w-full hph-text-center hph-py-3 hph-font-semibold hph-transition-all hph-duration-200 hover:hph-shadow-lg"
+                           onclick="event.stopPropagation();">
+                            View Details
+                            <i class="fas fa-arrow-right hph-ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            `;
         }
 
         fitMapToMarkers() {
@@ -541,6 +1144,40 @@
             });
         }
 
+        /**
+         * Highlight a specific sidebar listing card
+         */
+        highlightSidebarCard(listingId) {
+            if (!listingId) return;
+            
+            const card = document.querySelector(`[data-listing-id="${listingId}"].listing-card-enhanced, [data-listing-id="${listingId}"].hph-listing-card`);
+            if (card) {
+                card.classList.add('hph-highlighted');
+                
+                // Add subtle animation
+                card.style.transform = 'scale(1.02)';
+                card.style.transition = 'all 0.2s ease';
+                card.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
+                card.style.zIndex = '10';
+            }
+        }
+
+        /**
+         * Remove highlight from all sidebar cards
+         */
+        unhighlightAllSidebarCards() {
+            const cards = document.querySelectorAll('[data-listing-id].listing-card-enhanced.hph-highlighted, [data-listing-id].hph-listing-card.hph-highlighted');
+            cards.forEach(card => {
+                card.classList.remove('hph-highlighted');
+                
+                // Reset styles
+                card.style.transform = '';
+                card.style.transition = '';
+                card.style.boxShadow = '';
+                card.style.zIndex = '';
+            });
+        }
+
         scrollToMapCard(listingId) {
             const card = document.querySelector(`[data-listing-id="${listingId}"]`);
             if (card) {
@@ -565,7 +1202,44 @@
             return num.toString();
         }
 
-        showMapError() {
+        clearMapMarkers() {
+            // Clear markers using HPH Map component if available
+            if (this.hphMap && typeof this.hphMap.clearMapMarkers === 'function') {
+                this.hphMap.clearMapMarkers();
+            }
+
+            // Also clear any individual markers array as fallback
+            if (this.mapMarkers && this.mapMarkers.length > 0) {
+                this.mapMarkers.forEach(markerData => {
+                    if (markerData.marker && markerData.marker.remove) {
+                        markerData.marker.remove();
+                    }
+                });
+                this.mapMarkers = [];
+            }
+        }
+
+        showMapConfigurationMessage() {
+            const mapContainer = document.getElementById('mapbox-listings-map');
+            if (mapContainer) {
+                mapContainer.innerHTML = `
+                    <div class="hph-map-error">
+                        <div class="hph-error-content">
+                            <i class="fas fa-map-marked-alt" style="color: #0ea5e9;"></i>
+                            <h3>Map Configuration Required</h3>
+                            <p>To enable map view, please configure your Mapbox access token in the Happy Place plugin settings.</p>
+                            <div style="margin-top: 1.5rem;">
+                                <small style="color: #666; font-style: italic;">
+                                    Administrators can configure this in the WordPress admin panel under Happy Place settings.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        showMapError(message = 'Unable to load the map view. Please try the grid or list view instead.') {
             const mapContainer = document.getElementById('mapbox-listings-map');
             if (mapContainer) {
                 mapContainer.innerHTML = `
@@ -573,7 +1247,7 @@
                         <div class="hph-error-content">
                             <i class="fas fa-exclamation-triangle"></i>
                             <h3>Map Unavailable</h3>
-                            <p>Unable to load the map view. Please try the grid or list view instead.</p>
+                            <p>${message}</p>
                         </div>
                     </div>
                 `;
@@ -581,20 +1255,28 @@
         }
 
         async handleAjaxSearch(form) {
-            console.log('AJAX Search triggered');
-            
+
+            // Check if hph_ajax is available
+            if (typeof hph_ajax === 'undefined') {
+                return;
+            }
+
             // Show loading state
             const submitBtn = form.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerHTML;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
             submitBtn.disabled = true;
-            
+
             // Get form data
             const formData = new FormData(form);
             const formDataObj = Object.fromEntries(formData.entries());
-            
-            // Add nonce for security
+
+            // Debug: Show what we're sending
+
+            // Add AJAX action and nonce for security
+            formData.append('action', 'hph_filter_listings');
             formData.append('nonce', hph_ajax.nonce);
+
             
             try {
                 const response = await fetch(hph_ajax.ajax_url, {
@@ -603,32 +1285,38 @@
                 });
                 
                 const data = await response.json();
-                console.log('=== AJAX Response Received ===');
-                console.log('Full response data:', data);
-                console.log('data.data.map_data:', data.data ? data.data.map_data : 'no data.data');
-                console.log('data.data.zip_code:', data.data ? data.data.zip_code : 'no data.data');
-                console.log('this.currentView:', this.currentView);
                 
                 if (data.success) {
-                    // Update results count
-                    const countElement = document.querySelector('.hph-results-count');
-                    if (countElement && data.data.count_text) {
-                        countElement.innerHTML = data.data.count_text;
+                    // Update results count using new data attributes
+                    const resultsCounts = document.querySelectorAll('[data-results-count]');
+                    if (resultsCounts.length && data.data.total !== undefined) {
+                        resultsCounts.forEach(element => {
+                            element.textContent = data.data.total.toLocaleString();
+                        });
                     }
-                    
+
+                    // Update results text in hero
+                    const resultsText = document.querySelector('[data-results-text]');
+                    if (resultsText && data.data.results_text) {
+                        resultsText.innerHTML = data.data.results_text;
+                    }
+
                     // Update active filter badges
                     this.updateActiveFilters(formDataObj);
-                    
-                    // Update listings container
-                    const gridContainer = document.querySelector('.hph-listings-grid .hph-grid');
-                    const listContainer = document.querySelector('.hph-listings-list .hph-list-container');
-                    
-                    if (gridContainer && data.data.grid_html) {
-                        gridContainer.innerHTML = data.data.grid_html;
+
+                    // Update listings containers with the new HTML
+                    const gridContainer = document.querySelector('[data-listings-container="grid"]');
+                    const listContainer = document.querySelector('[data-listings-container="list"]');
+
+                    // Use the unified HTML from the new AJAX handler
+                    const newHTML = data.data.html || data.data.grid_html;
+
+                    if (gridContainer && newHTML) {
+                        gridContainer.innerHTML = newHTML;
                     }
-                    
-                    if (listContainer && data.data.list_html) {
-                        listContainer.innerHTML = data.data.list_html;
+
+                    if (listContainer && (data.data.list_html || newHTML)) {
+                        listContainer.innerHTML = data.data.list_html || newHTML;
                     }
                     
                     // Update pagination if provided
@@ -663,12 +1351,10 @@
                     window.history.pushState(null, '', url.toString());
                     
                 } else {
-                    console.error('AJAX Error:', data.data);
                     this.showSearchError();
                 }
                 
             } catch (error) {
-                console.error('Search request failed:', error);
                 this.showSearchError();
             } finally {
                 // Reset button state
@@ -698,7 +1384,6 @@
         }
 
         handleSort(sortValue) {
-            console.log('Sort changed to:', sortValue);
             
             // Trigger AJAX search with sort parameter
             const form = document.querySelector('[data-ajax-search]');
@@ -719,55 +1404,74 @@
         }
 
         updateMapListings(mapData, zipCode = null) {
-            console.log('=== updateMapListings called ===');
-            console.log('mapData:', mapData);
-            console.log('mapData length:', mapData ? mapData.length : 'null/undefined');
-            console.log('zipCode:', zipCode);
-            
-            const mapContainer = document.getElementById('mapbox-listings-map');
-            console.log('mapContainer found:', !!mapContainer);
-            
-            if (!mapContainer || !mapContainer.hphMap) {
-                console.warn('Map not found or not initialized');
-                console.log('mapContainer.hphMap:', mapContainer ? mapContainer.hphMap : 'no container');
+
+            if (!this.hphMap) {
                 return;
             }
-            
-            const map = mapContainer.hphMap;
-            console.log('Map object:', map);
-            console.log('Map methods available:', {
-                clearMarkers: typeof map.clearMarkers,
-                removeZipCodeBoundary: typeof map.removeZipCodeBoundary,
-                addListingMarkers: typeof map.addListingMarkers
+
+            // Debug map methods availability
+            console.log('HPH Map methods:', {
+                clearMapMarkers: typeof this.hphMap.clearMapMarkers,
+                removeZipCodeBoundary: typeof this.hphMap.removeZipCodeBoundary,
+                addListingMarkers: typeof this.hphMap.addListingMarkers
             });
-            
+
             // Clear existing markers
-            console.log('Clearing existing markers...');
-            map.clearMarkers();
-            map.removeZipCodeBoundary();
-            
+            if (typeof this.hphMap.clearMapMarkers === 'function') {
+                this.hphMap.clearMapMarkers();
+            }
+            if (typeof this.hphMap.removeZipCodeBoundary === 'function') {
+                this.hphMap.removeZipCodeBoundary();
+            }
+
             // Add new listings
             if (mapData && mapData.length > 0) {
-                console.log('Adding', mapData.length, 'new markers...');
+
+                // Format the data properly for HPH Map
+                const formattedMapData = mapData.map(listing => ({
+                    id: listing.id,
+                    title: listing.title || 'Property',
+                    longitude: parseFloat(listing.longitude),
+                    latitude: parseFloat(listing.latitude),
+                    price: listing.price || 0,
+                    street_address: listing.street_address || '',
+                    city: listing.city || '',
+                    state: listing.state || '',
+                    zip_code: listing.zip_code || '',
+                    status: listing.status || 'active',
+                    featured_image: listing.featured_image || '',
+                    bedrooms: listing.bedrooms || 0,
+                    bathrooms: listing.bathrooms || 0,
+                    square_feet: listing.square_feet || 0,
+                    permalink: listing.permalink || '#'
+                })).filter(listing => {
+                    return !isNaN(listing.longitude) && !isNaN(listing.latitude);
+                });
+
                 const markerOptions = {
-                    fitBounds: mapData.length > 1
+                    enableClustering: true,
+                    clusterRadius: 50,
+                    clusterMaxZoom: 14,
+                    showPopup: true,
+                    fitBounds: formattedMapData.length > 1
                 };
-                
+
                 // Add zip code boundary if filtering by zip code
-                if (zipCode) {
+                if (zipCode && typeof this.hphMap.addZipCodeBoundary === 'function') {
                     markerOptions.showZipBoundary = true;
                     markerOptions.zipCode = zipCode;
-                    console.log('Adding zip code boundary for:', zipCode);
                 }
-                
-                console.log('Calling addListingMarkers with options:', markerOptions);
-                map.addListingMarkers(mapData, markerOptions);
-                
-                // Update sidebar listings
-                this.updateMapSidebar(mapData);
-                console.log('Map update completed');
+
+                try {
+                    this.hphMap.addListingMarkers(formattedMapData, markerOptions);
+
+                    // Update sidebar listings
+                    this.updateMapSidebar(mapData);
+                } catch (error) {
+                }
             } else {
-                console.log('No map data to add');
+                // Update sidebar to show empty state
+                this.updateMapSidebar([]);
             }
         }
         
@@ -894,116 +1598,18 @@
     // Initialize when DOM is ready - prevent multiple instances and HPH Map conflicts
     document.addEventListener('DOMContentLoaded', () => {
         if (document.querySelector('.hph-listing-archive') && !window.hphArchiveEnhanced) {
-            console.log('Initializing Enhanced Archive Listing');
             
             // Prevent HPH Map component from auto-initializing our container
             const mapContainer = document.getElementById('mapbox-listings-map');
             if (mapContainer) {
                 // Remove data-hph-map attribute to prevent conflicts
                 mapContainer.removeAttribute('data-hph-map');
-                console.log('Archive Enhanced: Prevented HPH Map auto-initialization conflict');
             }
             
             window.hphArchiveEnhanced = new ArchiveListingEnhanced();
         }
     });
 
-    // Add map marker styles
-    const mapStyles = `
-        <style>
-        .hph-map-marker {
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .hph-map-marker:hover {
-            z-index: 1000;
-        }
-        
-        .hph-marker-pin {
-            background: var(--hph-primary, #0073aa);
-            color: white;
-            padding: 0.5rem 0.75rem;
-            border-radius: 1.5rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            position: relative;
-            min-width: 60px;
-            text-align: center;
-        }
-        
-        .hph-marker-pin::after {
-            content: '';
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 6px solid transparent;
-            border-right: 6px solid transparent;
-            border-top: 6px solid var(--hph-primary, #0073aa);
-        }
-        
-        .hph-map-marker.highlighted .hph-marker-pin {
-            background: var(--hph-accent, #00a0d2);
-            transform: scale(1.1);
-        }
-        
-        .hph-map-marker.highlighted .hph-marker-pin::after {
-            border-top-color: var(--hph-accent, #00a0d2);
-        }
-        
-        .hph-map-popup {
-            text-align: center;
-        }
-        
-        .hph-popup-price {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--hph-primary, #0073aa);
-            margin-bottom: 0.25rem;
-        }
-        
-        .hph-popup-address {
-            font-size: 0.875rem;
-            color: var(--hph-gray-700, #374151);
-        }
-        
-        .hph-map-card.highlighted {
-            border-color: var(--hph-accent, #00a0d2);
-            box-shadow: 0 4px 12px rgba(0, 160, 210, 0.2);
-        }
-        
-        .hph-map-error {
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--hph-gray-50, #f9fafb);
-        }
-        
-        .hph-error-content {
-            text-align: center;
-            color: var(--hph-gray-600, #6b7280);
-        }
-        
-        .hph-error-content i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: var(--hph-warning, #f59e0b);
-        }
-        
-        .hph-error-content h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--hph-gray-900, #111827);
-        }
-        </style>
-    `;
-    
-    document.head.insertAdjacentHTML('beforeend', mapStyles);
+    // Map marker styles now loaded from archive-map-fixes.css
 
 })();

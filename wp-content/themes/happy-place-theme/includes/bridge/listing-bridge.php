@@ -973,7 +973,46 @@ function hpt_get_listing_amenities($listing_id) {
 /**
  * Get listing featured image
  */
+/**
+ * Get listing featured image with ACF primary_image priority
+ * 
+ * Priority order:
+ * 1. ACF primary_image field (highest priority)
+ * 2. First image from ACF photo_gallery field
+ * 3. WordPress featured image (backward compatibility) 
+ * 4. ACF featured_image field (legacy fallback)
+ * 5. Placeholder image
+ * 
+ * @param int $listing_id Listing ID
+ * @param string $size Image size
+ * @return array Image data with id, url, and alt
+ */
 function hpt_get_listing_featured_image($listing_id, $size = 'large') {
+    // First priority: ACF primary_image field
+    $primary_image = get_field('primary_image', $listing_id);
+    
+    if ($primary_image) {
+        return array(
+            'id' => is_array($primary_image) ? $primary_image['ID'] : $primary_image,
+            'url' => is_array($primary_image) ? $primary_image['sizes'][$size] ?? $primary_image['url'] : wp_get_attachment_image_url($primary_image, $size),
+            'alt' => is_array($primary_image) ? $primary_image['alt'] : get_post_meta($primary_image, '_wp_attachment_image_alt', true),
+        );
+    }
+    
+    // Second priority: Try first image from photo gallery
+    $gallery = get_field('photo_gallery', $listing_id);
+    if (!empty($gallery) && is_array($gallery)) {
+        $first_image = $gallery[0];
+        if ($first_image) {
+            return array(
+                'id' => is_array($first_image) ? $first_image['ID'] : $first_image,
+                'url' => is_array($first_image) ? $first_image['sizes'][$size] ?? $first_image['url'] : wp_get_attachment_image_url($first_image, $size),
+                'alt' => is_array($first_image) ? $first_image['alt'] : get_post_meta($first_image, '_wp_attachment_image_alt', true),
+            );
+        }
+    }
+    
+    // Third priority: WordPress featured image (for backward compatibility)
     if (has_post_thumbnail($listing_id)) {
         return array(
             'id' => get_post_thumbnail_id($listing_id),
@@ -982,7 +1021,7 @@ function hpt_get_listing_featured_image($listing_id, $size = 'large') {
         );
     }
     
-    // Try ACF featured image field
+    // Fourth priority: ACF featured_image field (legacy fallback)
     $featured = get_field('featured_image', $listing_id);
     
     if ($featured) {
@@ -993,12 +1032,8 @@ function hpt_get_listing_featured_image($listing_id, $size = 'large') {
         );
     }
     
-    // Return placeholder
-    return array(
-        'id' => 0,
-        'url' => get_template_directory_uri() . '/assets/images/listing-placeholder.jpg',
-        'alt' => __('Property image', 'happy-place-theme'),
-    );
+    // Return fallback using centralized system
+    return hph_get_typed_fallback_image('listing', $size);
 }
 
 /**
@@ -1923,41 +1958,228 @@ function hpt_get_listing_agent_id($listing_id) {
     return $agent_id ? intval($agent_id) : null;
 }
 
+// Note: hpt_get_agent_data() function moved to user-bridge.php to avoid duplication
+
 /**
- * Get comprehensive agent data
- * 
- * @param int $agent_id User ID
- * @return array Agent data
+ * Get days on market for a listing
+ *
+ * @param int $listing_id Listing ID
+ * @return int Days on market
  */
-function hpt_get_agent_data($agent_id) {
-    if (!$agent_id) {
-        return array();
+function hpt_get_listing_days_on_market($listing_id) {
+    if (function_exists('hpt_get_days_on_market')) {
+        return hpt_get_days_on_market($listing_id);
     }
-    
-    $user = get_userdata($agent_id);
-    if (!$user) {
-        return array();
+
+    // Fallback calculation if changes bridge not loaded
+    $listing_date = get_field('listing_date', $listing_id);
+    if ($listing_date) {
+        $listing_timestamp = strtotime($listing_date);
+    } else {
+        $post = get_post($listing_id);
+        $listing_timestamp = strtotime($post->post_date);
     }
-    
+
+    $current_time = current_time('timestamp');
+    return floor(($current_time - $listing_timestamp) / DAY_IN_SECONDS);
+}
+
+/**
+ * Get listing last updated timestamp (enhanced tracking)
+ *
+ * @param int $listing_id Listing ID
+ * @return int Timestamp of last update
+ */
+function hpt_get_listing_last_updated_timestamp($listing_id) {
+    if (function_exists('hpt_get_listing_last_updated')) {
+        return hpt_get_listing_last_updated($listing_id);
+    }
+
+    // Fallback to WordPress modified time
+    $post = get_post($listing_id);
+    return strtotime($post->post_modified);
+}
+
+/**
+ * Get formatted listing last updated
+ *
+ * @param int $listing_id Listing ID
+ * @param string $format Date format (default: relative time)
+ * @return string Formatted last updated
+ */
+function hpt_get_listing_last_updated_formatted($listing_id, $format = 'relative') {
+    $timestamp = hpt_get_listing_last_updated_timestamp($listing_id);
+
+    // Ensure we have a valid timestamp
+    if (empty($timestamp) || !is_numeric($timestamp)) {
+        return 'Unknown';
+    }
+
+    if ($format === 'relative') {
+        return human_time_diff($timestamp, current_time('timestamp')) . ' ago';
+    }
+
+    return date($format, $timestamp);
+}
+
+/**
+ * Get listing marketing statistics
+ *
+ * @param int $listing_id Listing ID
+ * @return array Marketing stats
+ */
+function hpt_get_listing_marketing_stats($listing_id) {
     return array(
-        'agent_id' => $agent_id,
-        'agent_name' => $user->display_name ?: $user->user_nicename,
-        'agent_email' => $user->user_email,
-        'agent_phone' => get_user_meta($agent_id, 'phone', true) ?: get_user_meta($agent_id, 'agent_phone', true),
-        'agent_mobile' => get_user_meta($agent_id, 'mobile', true) ?: get_user_meta($agent_id, 'agent_mobile', true),
-        'agent_photo' => get_avatar_url($agent_id, array('size' => 200)),
-        'agent_bio' => get_user_meta($agent_id, 'description', true) ?: get_user_meta($agent_id, 'agent_bio', true),
-        'agent_license' => get_user_meta($agent_id, 'license_number', true) ?: get_user_meta($agent_id, 'agent_license', true),
-        'agent_title' => get_user_meta($agent_id, 'agent_title', true) ?: 'Real Estate Agent',
-        'agent_specialties' => get_user_meta($agent_id, 'specialties', true) ?: array(),
-        'agent_languages' => get_user_meta($agent_id, 'languages', true) ?: array('English'),
-        'agent_rating' => floatval(get_user_meta($agent_id, 'rating', true) ?: 0),
-        'agent_reviews_count' => intval(get_user_meta($agent_id, 'reviews_count', true) ?: 0),
-        'agent_listings_count' => intval(get_user_meta($agent_id, 'listings_count', true) ?: 0),
-        'agent_sold_count' => intval(get_user_meta($agent_id, 'sold_count', true) ?: 0),
-        'agent_years_experience' => intval(get_user_meta($agent_id, 'years_experience', true) ?: 0),
-        'agency_name' => get_user_meta($agent_id, 'agency_name', true) ?: '',
-        'agency_logo' => get_user_meta($agent_id, 'agency_logo', true) ?: '',
-        'agency_phone' => get_user_meta($agent_id, 'agency_phone', true) ?: ''
+        'days_on_market' => hpt_get_listing_days_on_market($listing_id),
+        'last_updated' => hpt_get_listing_last_updated_formatted($listing_id),
+        'last_updated_timestamp' => hpt_get_listing_last_updated_timestamp($listing_id),
+        'views' => hpt_get_listing_views($listing_id),
+        'saves' => hpt_get_listing_saves_count($listing_id),
+        'is_new' => function_exists('hpt_is_new_listing') ? hpt_is_new_listing($listing_id) : false
     );
+}
+
+/**
+ * Get multiple listing statuses (multiselect taxonomy support)
+ *
+ * @param int $listing_id Listing ID
+ * @return array Array of status slugs
+ */
+function hpt_get_listing_statuses($listing_id) {
+    // Try taxonomy first (multiselect)
+    $status_terms = wp_get_object_terms($listing_id, 'property_status');
+    if (!empty($status_terms) && !is_wp_error($status_terms)) {
+        return wp_list_pluck($status_terms, 'slug');
+    }
+
+    // Fallback to ACF field (convert to array)
+    $acf_status = get_field('listing_status', $listing_id);
+    return $acf_status ? [$acf_status] : ['active'];
+}
+
+/**
+ * Get primary listing status (backwards compatibility) - ENHANCED for multiselect
+ *
+ * @param int $listing_id Listing ID
+ * @return string Primary status slug
+ */
+function hpt_get_listing_status_enhanced($listing_id) {
+    if (function_exists('hpt_get_listing_statuses')) {
+        $statuses = hpt_get_listing_statuses($listing_id);
+        return $statuses[0] ?? 'active'; // Return primary status
+    }
+
+    // Check if this is being called from the original function
+    if (function_exists('hpt_get_listing_status')) {
+        return hpt_get_listing_status($listing_id);
+    }
+
+    // Fallback to ACF field
+    return get_field('listing_status', $listing_id) ?: 'active';
+}
+
+/**
+ * Check if listing has specific status
+ *
+ * @param int $listing_id Listing ID
+ * @param string $status Status to check for
+ * @return bool Whether listing has this status
+ */
+function hpt_listing_has_status($listing_id, $status) {
+    $statuses = hpt_get_listing_statuses($listing_id);
+    return in_array($status, $statuses);
+}
+
+/**
+ * Set listing statuses (multiselect taxonomy)
+ *
+ * @param int $listing_id Listing ID
+ * @param array|string $statuses Array of status slugs or single status
+ * @return bool Success
+ */
+function hpt_set_listing_statuses($listing_id, $statuses) {
+    if (!is_array($statuses)) {
+        $statuses = [$statuses];
+    }
+
+    // Set taxonomy terms
+    $result = wp_set_object_terms($listing_id, $statuses, 'property_status');
+
+    if (!is_wp_error($result)) {
+        // Also update ACF field for backwards compatibility (use primary status)
+        $primary_status = $statuses[0] ?? 'active';
+        update_field('listing_status', $primary_status, $listing_id);
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * Get formatted status display for multiselect
+ *
+ * @param int $listing_id Listing ID
+ * @param string $separator Separator between statuses
+ * @return string Formatted status string
+ */
+function hpt_get_listing_status_display($listing_id, $separator = ' + ') {
+    $statuses = hpt_get_listing_statuses($listing_id);
+
+    $formatted_statuses = array_map(function($status) {
+        return ucwords(str_replace('-', ' ', $status));
+    }, $statuses);
+
+    return implode($separator, $formatted_statuses);
+}
+
+/**
+ * Get status color/variant for display
+ *
+ * @param string $status Status slug
+ * @return string CSS variant/color class
+ */
+function hpt_get_status_variant($status) {
+    $status_variants = [
+        'active' => 'success',
+        'pending' => 'warning',
+        'under-contract' => 'warning',
+        'sold' => 'error',
+        'withdrawn' => 'default',
+        'expired' => 'default',
+        'coming-soon' => 'info',
+        'draft' => 'default',
+        'contingent' => 'warning',
+        'back-on-market' => 'success'
+    ];
+
+    return $status_variants[$status] ?? 'default';
+}
+
+/**
+ * Check for valid status combinations
+ *
+ * @param array $statuses Array of status slugs
+ * @return bool Whether combination is valid
+ */
+function hpt_validate_status_combination($statuses) {
+    if (!is_array($statuses)) {
+        return true; // Single status is always valid
+    }
+
+    // Define incompatible combinations
+    $incompatible = [
+        ['sold', 'active'],
+        ['sold', 'pending'],
+        ['withdrawn', 'active'],
+        ['expired', 'active'],
+        ['draft', 'active']
+    ];
+
+    foreach ($incompatible as $combo) {
+        if (count(array_intersect($combo, $statuses)) === count($combo)) {
+            return false; // Invalid combination found
+        }
+    }
+
+    return true;
 }

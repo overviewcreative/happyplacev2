@@ -58,7 +58,6 @@
             // Ensure video plays on mobile devices
             this.video.addEventListener('loadedmetadata', () => {
                 this.video.play().catch(e => {
-                    console.log('Video autoplay prevented:', e);
                 });
             });
 

@@ -10,7 +10,10 @@
 /* ================================================
    BACKWARD COMPATIBLE FORM STYLES (Existing)
    ================================================ */
-.hph-form {
+/* Contact form specific styling - scoped to avoid base form conflicts */
+.hph-form--contact,
+.hph-contact-form .hph-form,
+.hph-modal .hph-form {
     width: 100%;
     max-width: 500px;
     margin: 0 auto;

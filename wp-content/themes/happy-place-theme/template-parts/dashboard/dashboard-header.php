@@ -178,7 +178,7 @@ $nav_items = [
                 <i class="fas fa-plus hph-mr-2"></i>
                 Add Listing
             </button>
-            <button class="hph-btn hph-btn-outline hph-btn-sm hph-w-full">
+            <button class="hph-btn hph-btn-outline-primary hph-btn-sm hph-w-full">
                 <i class="fas fa-user-plus hph-mr-2"></i>
                 Add Lead
             </button>

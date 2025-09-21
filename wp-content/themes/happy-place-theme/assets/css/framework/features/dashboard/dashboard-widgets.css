@@ -435,11 +435,6 @@
     box-shadow: 0 0 0 3px rgba(81, 186, 224, 0.1);
 }
 
-textarea.form-control {
-    resize: vertical;
-    min-height: 100px;
-}
-
 /* Pagination */
   .hph-pagination-wrapper {
     display: flex;
@@ -1798,86 +1793,8 @@ textarea.form-control {
 /* ================================================
    BUTTON ENHANCEMENTS
    ================================================ */
-  .hph-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    border: 1px solid transparent;
-    border-radius: var(--hph-radius-md);
-    font-size: 0.875rem;
-    font-weight: 500;
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-  .hph-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-  .hph-btn-primary {
-    background: var(--hph-primary);
-    color: var(--hph-white);
-    border-color: var(--hph-primary);
-}
-
-  .hph-btn-primary:hover:not(:disabled) {
-    background: var(--hph-primary-dark);
-    border-color: var(--hph-primary-dark);
-}
-
-  .hph-btn-secondary {
-    background: var(--hph-gray-200);
-    color: var(--hph-gray-700);
-    border-color: var(--hph-gray-300);
-}
-
-  .hph-btn-secondary:hover:not(:disabled) {
-    background: var(--hph-gray-300);
-}
-
-  .hph-btn-outline {
-    background: transparent;
-    color: var(--hph-primary);
-    border-color: var(--hph-primary);
-}
-
-  .hph-btn-outline:hover:not(:disabled) {
-    background: var(--hph-primary);
-    color: var(--hph-white);
-}
-
-  .hph-btn-loading {
-    display: none;
-}
-
-  .hph-btn:disabled .btn-text {
-    display: none;
-}
-
-  .hph-btn:disabled .btn-loading {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-  .hph-btn-loading-spinner {
-    width: 1rem;
-    height: 1rem;
-    border: 2px solid transparent;
-    border-top: 2px solid currentColor;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
+/* Button definitions moved to components/atoms/button.css - single source of truth */
+/* Use .hph-btn and its BEM variants defined in the atomic button system */
 
 /* ================================================
    MOBILE RESPONSIVE ENHANCEMENTS
@@ -2639,48 +2556,6 @@ textarea.form-control {
     font-size: 0.875rem;
     color: var(--hph-gray-600);
     margin: 0;
-}
-
-  .hph-checkbox-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-  .hph-checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    cursor: pointer;
-    font-size: 0.875rem;
-    color: var(--hph-gray-700);
-}
-
-  .hph-checkbox-label input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    border: 2px solid var(--hph-gray-300);
-    border-radius: var(--hph-radius-sm);
-    background: var(--hph-white);
-    cursor: pointer;
-    position: relative;
-    appearance: none;
-}
-
-  .hph-checkbox-label input[type="checkbox"]:checked {
-    background: var(--hph-primary);
-    border-color: var(--hph-primary);
-}
-
-  .hph-checkbox-label input[type="checkbox"]:checked::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 10px;
-    height: 10px;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="white"><path d="M13.78 4.22a1 1 0 010 1.415l-5.5 5.5a1 1 0 01-1.414 0l-2.5-2.5a1 1 0 111.414-1.414L7.5 8.94l4.78-4.72a1 1 0 011.414 0z"/></svg>') no-repeat center center;
 }
 
 /* Open House Details */

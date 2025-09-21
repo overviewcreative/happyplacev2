@@ -96,7 +96,10 @@ class HPH_Shortcodes implements HPH_Service {
             echo '<div class="hph-listings-grid hph-columns-' . esc_attr($atts['columns']) . '">';
             while ($listings->have_posts()) {
                 $listings->the_post();
-                get_template_part('template-parts/listing', 'card');
+                hph_component('universal-card', [
+                    'post_id' => get_the_ID(),
+                    'layout' => 'vertical'
+                ]);
             }
             echo '</div>';
         }
@@ -146,9 +149,10 @@ class HPH_Shortcodes implements HPH_Service {
         }
         
         ob_start();
-        set_query_var('agent', $agent);
-        set_query_var('style', $atts['style']);
-        get_template_part('template-parts/agent', 'card');
+        hph_component('universal-card', [
+            'post_id' => $agent->ID,
+            'layout' => 'vertical'
+        ]);
         return ob_get_clean();
     }
     

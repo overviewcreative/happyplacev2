@@ -1,0 +1,548 @@
+/* === 06-utilities/hph-listing-states.css === */
+/* ================================================
+   LISTING STATE COMPONENTS
+   Property listing status and interaction states
+   ================================================ */
+
+/* ================================================
+   PROPERTY STATUS STATES
+   ================================================ */
+
+/* Available/Active Listing */
+.listing-status-available,
+.property-status-available {
+  background: var(--hph-status-available);
+  color: var(--hph-white);
+}
+
+.listing-card.status-available {
+  border-left: 4px solid var(--hph-status-available);
+}
+
+.listing-card.status-available .listing-price {
+  color: var(--hph-status-available);
+}
+
+/* Pending Sale */
+.listing-status-pending,
+.property-status-pending {
+  background: var(--hph-status-pending);
+  color: var(--hph-white);
+}
+
+.listing-card.status-pending {
+  border-left: 4px solid var(--hph-status-pending);
+  position: relative;
+}
+
+.listing-card.status-pending::after {
+  content: 'PENDING';
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--hph-status-pending);
+  color: var(--hph-white);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--hph-radius-md);
+  font-size: var(--hph-text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+/* Sold Property */
+.listing-status-sold,
+.property-status-sold {
+  background: var(--hph-status-sold);
+  color: var(--hph-white);
+}
+
+.listing-card.status-sold {
+  border-left: 4px solid var(--hph-status-sold);
+  position: relative;
+  opacity: 0.8;
+}
+
+.listing-card.status-sold::after {
+  content: 'SOLD';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-15deg);
+  background: var(--hph-status-sold);
+  color: var(--hph-white);
+  padding: 0.5rem 2rem;
+  border-radius: var(--hph-radius-md);
+  font-size: var(--hph-text-lg);
+  font-weight: 700;
+  text-transform: uppercase;
+  z-index: 2;
+  box-shadow: var(--hph-shadow-lg);
+  letter-spacing: 0.1em;
+}
+
+.listing-card.status-sold .listing-image {
+  filter: grayscale(50%);
+}
+
+/* Coming Soon */
+.listing-status-coming-soon,
+.property-status-coming-soon {
+  background: var(--hph-status-coming-soon);
+  color: var(--hph-white);
+}
+
+.listing-card.status-coming-soon {
+  border-left: 4px solid var(--hph-status-coming-soon);
+  position: relative;
+}
+
+.listing-card.status-coming-soon::after {
+  content: 'COMING SOON';
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: var(--hph-status-coming-soon);
+  color: var(--hph-white);
+  padding: 0.5rem 1rem;
+  border-radius: var(--hph-radius-md);
+  font-size: var(--hph-text-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  z-index: 2;
+  animation: pulse-coming-soon 2s infinite;
+}
+
+@keyframes pulse-coming-soon {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+/* Off Market */
+.listing-status-off-market,
+.property-status-off-market {
+  background: var(--hph-status-off-market);
+  color: var(--hph-white);
+}
+
+.listing-card.status-off-market {
+  border-left: 4px solid var(--hph-status-off-market);
+  opacity: 0.6;
+}
+
+.listing-card.status-off-market .listing-image {
+  filter: grayscale(100%);
+}
+
+/* Contingent */
+.listing-status-contingent,
+.property-status-contingent {
+  background: var(--hph-status-contingent);
+  color: var(--hph-white);
+}
+
+.listing-card.status-contingent {
+  border-left: 4px solid var(--hph-status-contingent);
+}
+
+/* New Listing */
+.listing-status-new,
+.property-status-new {
+  background: var(--hph-status-new);
+  color: var(--hph-white);
+}
+
+.listing-card.status-new::before {
+  content: 'NEW';
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--hph-status-new);
+  color: var(--hph-white);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--hph-radius-full);
+  font-size: var(--hph-text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  z-index: 2;
+  animation: bounce-new 1s ease-in-out infinite;
+}
+
+@keyframes bounce-new {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+/* Price Reduced */
+.listing-card.status-reduced::before {
+  content: 'PRICE REDUCED';
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--hph-status-reduced);
+  color: var(--hph-white);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--hph-radius-full);
+  font-size: var(--hph-text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  z-index: 2;
+  animation: flash-reduced 1.5s ease-in-out infinite;
+}
+
+@keyframes flash-reduced {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* ================================================
+   PRIORITY/MARKETING STATES
+   ================================================ */
+
+/* Hot Property */
+.listing-card.priority-hot {
+  position: relative;
+  box-shadow: 0 0 0 2px var(--hph-hot), var(--hph-shadow-lg);
+}
+
+.listing-card.priority-hot::before {
+  content: '🔥 HOT';
+  position: absolute;
+  top: -0.5rem;
+  left: 1rem;
+  background: var(--hph-hot);
+  color: var(--hph-white);
+  padding: 0.375rem 0.75rem;
+  border-radius: var(--hph-radius-full);
+  font-size: var(--hph-text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  z-index: 3;
+  animation: shake-hot 2s ease-in-out infinite;
+}
+
+@keyframes shake-hot {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+/* Featured Property */
+.listing-card.priority-featured {
+  position: relative;
+  border: 2px solid var(--hph-featured);
+  background: linear-gradient(135deg, 
+    var(--hph-white) 0%, 
+    rgba(251, 191, 36, 0.05) 100%);
+}
+
+.listing-card.priority-featured::before {
+  content: '⭐ FEATURED';
+  position: absolute;
+  top: -0.5rem;
+  left: 1rem;
+  background: var(--hph-featured);
+  color: var(--hph-gray-900);
+  padding: 0.375rem 0.75rem;
+  border-radius: var(--hph-radius-full);
+  font-size: var(--hph-text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  z-index: 3;
+  box-shadow: var(--hph-shadow-md);
+}
+
+/* Premium Property */
+.listing-card.priority-premium {
+  position: relative;
+  border: 2px solid var(--hph-premium);
+  background: linear-gradient(135deg, 
+    var(--hph-white) 0%, 
+    rgba(167, 139, 250, 0.05) 100%);
+}
+
+.listing-card.priority-premium::before {
+  content: '💎 PREMIUM';
+  position: absolute;
+  top: -0.5rem;
+  left: 1rem;
+  background: linear-gradient(135deg, var(--hph-premium) 0%, #8b5cf6 100%);
+  color: var(--hph-white);
+  padding: 0.375rem 0.75rem;
+  border-radius: var(--hph-radius-full);
+  font-size: var(--hph-text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  z-index: 3;
+  box-shadow: var(--hph-shadow-md);
+}
+
+/* Exclusive Property */
+.listing-card.priority-exclusive {
+  position: relative;
+  border: 2px solid var(--hph-exclusive);
+  background: linear-gradient(135deg, 
+    var(--hph-white) 0%, 
+    rgba(31, 41, 55, 0.05) 100%);
+}
+
+.listing-card.priority-exclusive::before {
+  content: '🏆 EXCLUSIVE';
+  position: absolute;
+  top: -0.5rem;
+  left: 1rem;
+  background: var(--hph-exclusive);
+  color: var(--hph-white);
+  padding: 0.375rem 0.75rem;
+  border-radius: var(--hph-radius-full);
+  font-size: var(--hph-text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  z-index: 3;
+  box-shadow: var(--hph-shadow-md);
+}
+
+/* ================================================
+   INTERACTION STATES
+   ================================================ */
+
+/* Saved/Favorited */
+.listing-card.is-saved,
+.listing-item.is-saved {
+  position: relative;
+}
+
+.listing-card.is-saved::after,
+.listing-item.is-saved::after {
+  content: '❤️';
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(220, 38, 38, 0.9);
+  color: var(--hph-white);
+  border-radius: var(--hph-radius-full);
+  font-size: 0.875rem;
+  z-index: 2;
+  animation: pulse-saved 2s ease-in-out infinite;
+}
+
+@keyframes pulse-saved {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* Recently Viewed */
+.listing-card.recently-viewed {
+  position: relative;
+}
+
+.listing-card.recently-viewed::before {
+  content: 'RECENTLY VIEWED';
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  background: rgba(0, 0, 0, 0.7);
+  color: var(--hph-white);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--hph-radius-full);
+  font-size: var(--hph-text-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  z-index: 2;
+  backdrop-filter: blur(4px);
+}
+
+/* Comparison Selected */
+.listing-card.comparison-selected {
+  position: relative;
+  border: 2px solid var(--hph-primary);
+  box-shadow: 0 0 0 1px var(--hph-primary-200);
+}
+
+.listing-card.comparison-selected::after {
+  content: '✓ COMPARE';
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  background: var(--hph-primary);
+  color: var(--hph-white);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--hph-radius-full);
+  font-size: var(--hph-text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+/* ================================================
+   AGENT STATUS STATES
+   ================================================ */
+
+/* Online Agent */
+.agent-status-online {
+  position: relative;
+}
+
+.agent-status-online::after {
+  content: '';
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  background: var(--hph-agent-online);
+  border: 2px solid var(--hph-white);
+  border-radius: var(--hph-radius-full);
+  box-shadow: var(--hph-shadow-sm);
+  animation: pulse-online 2s ease-in-out infinite;
+}
+
+@keyframes pulse-online {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.1); }
+}
+
+/* Busy Agent */
+.agent-status-busy::after {
+  background: var(--hph-agent-busy);
+  animation: none;
+}
+
+/* Offline Agent */
+.agent-status-offline::after {
+  background: var(--hph-agent-offline);
+  animation: none;
+}
+
+/* Verified Agent */
+.agent-verified {
+  position: relative;
+}
+
+.agent-verified::before {
+  content: '✓';
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--hph-agent-verified);
+  color: var(--hph-white);
+  border-radius: var(--hph-radius-full);
+  font-size: var(--hph-text-xs);
+  font-weight: bold;
+  z-index: 2;
+}
+
+/* ================================================
+   LOADING STATES
+   ================================================ */
+
+/* Property Loading */
+.listing-card.is-loading,
+.property-item.is-loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.listing-card.is-loading .listing-image,
+.listing-card.is-loading .listing-title,
+.listing-card.is-loading .listing-price {
+  background: linear-gradient(
+    90deg,
+    var(--hph-gray-200) 25%,
+    var(--hph-gray-100) 50%,
+    var(--hph-gray-200) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  color: transparent;
+}
+
+.listing-card.is-loading .listing-image {
+  height: 200px;
+  border-radius: var(--hph-radius-md);
+}
+
+.listing-card.is-loading .listing-title {
+  height: 1.5rem;
+  border-radius: var(--hph-radius-sm);
+  margin-bottom: 0.5rem;
+}
+
+.listing-card.is-loading .listing-price {
+  height: 1.25rem;
+  width: 60%;
+  border-radius: var(--hph-radius-sm);
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ================================================
+   ERROR STATES
+   ================================================ */
+
+/* Property Error */
+.listing-card.has-error {
+  border: 2px solid var(--hph-danger);
+  background: rgba(220, 38, 38, 0.05);
+  position: relative;
+}
+
+.listing-card.has-error::before {
+  content: '⚠️ ERROR';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--hph-danger);
+  color: var(--hph-white);
+  padding: 0.5rem 1rem;
+  border-radius: var(--hph-radius-md);
+  font-size: var(--hph-text-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+/* ================================================
+   RESPONSIVE STATE ADJUSTMENTS
+   ================================================ */
+@media (max-width: 768px) {
+  .listing-card::before,
+  .listing-card::after {
+    font-size: var(--hph-text-xs);
+    padding: 0.25rem 0.5rem;
+  }
+  
+  .listing-card.status-sold::after {
+    font-size: var(--hph-text-base);
+    padding: 0.375rem 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .listing-card.priority-hot::before,
+  .listing-card.priority-featured::before,
+  .listing-card.priority-premium::before,
+  .listing-card.priority-exclusive::before {
+    top: 0.5rem;
+    left: 0.5rem;
+    font-size: 0.625rem;
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+/* File Location: /wp-content/themes/happy-place/assets/css/framework/states/listing-states.css */
+

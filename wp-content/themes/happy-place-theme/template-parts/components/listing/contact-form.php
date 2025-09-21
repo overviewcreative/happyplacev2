@@ -251,7 +251,7 @@ $default_message = $default_messages[$args['form_type']] ?? $default_messages['i
                 <!-- Submit Button -->
                 <div class="hph-form-actions">
                     
-                    <button type="submit" class="hph-btn hph-btn--primary hph-btn--lg hph-w-full">
+                    <button type="submit" class="hph-btn hph-btn-primary hph-btn-lg hph-w-full">
                         <span class="hph-btn-text">
                             <?php 
                             if ($args['form_type'] === 'showing') {

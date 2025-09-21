@@ -189,7 +189,7 @@ if (!$similar_listings->have_posts()) {
                 
                 <!-- Card Footer -->
                 <div class="hph-card__footer hph-px-lg hph-py-md hph-bg-gray-50 hph-border-t hph-border-gray-200">
-                    <a href="<?php the_permalink(); ?>" class="hph-btn hph-btn--primary hph-btn--sm hph-btn--full">
+                    <a href="<?php the_permalink(); ?>" class="hph-btn hph-btn-primary hph-btn-sm w-full">
                         View Details
                     </a>
                 </div>
@@ -203,7 +203,7 @@ if (!$similar_listings->have_posts()) {
         <!-- View All Link -->
         <div class="hph-text-center hph-mt-xl">
             <a href="<?php echo esc_url(home_url('/listings')); ?>" 
-               class="hph-btn hph-btn--secondary hph-btn--lg hph-inline-flex hph-items-center hph-gap-sm">
+               class="hph-btn hph-btn-secondary hph-btn-lg hph-inline-flex hph-items-center hph-gap-sm">
                 <i class="fas fa-search"></i>
                 <span>Browse All Properties</span>
             </a>
