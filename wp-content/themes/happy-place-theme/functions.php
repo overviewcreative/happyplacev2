@@ -148,8 +148,10 @@ require_once HPH_THEME_DIR . '/includes/helpers/webp-optimization.php';
 require_once HPH_THEME_DIR . '/includes/ajax/local-places-ajax.php';
 require_once HPH_THEME_DIR . '/includes/ajax/cities-ajax.php';
 
-// Include blog post type
-require_once HPH_THEME_DIR . '/includes/post-types/blog-post-type.php';
+// Include bridge functions for plugin delegation
+require_once HPH_THEME_DIR . '/includes/bridge/email-bridge.php';
+require_once HPH_THEME_DIR . '/includes/bridge/cpt-bridge.php';
+require_once HPH_THEME_DIR . '/includes/bridge/query-bridge.php';
 
 // Include hero helpers
 require_once HPH_THEME_DIR . '/includes/helpers/archive-hero-helpers.php';
@@ -212,8 +214,8 @@ HPH_Theme::init();
 // Lead handling is now managed by the Happy Place plugin's UnifiedLeadService
 // Bridge functions available via lead-bridge.php provide access to plugin service
 
-// Include email configuration for production
-require_once HPH_THEME_DIR . '/includes/email-config.php';
+// Email configuration now handled by plugin EmailService
+// Bridge functions provide access to email functionality
 
 /**
  * Initialize dashboard AJAX handlers

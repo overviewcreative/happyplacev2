@@ -242,7 +242,6 @@ class HPH_Theme {
      */
     private function load_integrations() {
         $integrations = array(
-            'class-google-maps.php',
             'dashboard-bridge-functions.php', // Bridge functions for plugin integration
         );
         
@@ -292,7 +291,6 @@ class HPH_Theme {
             'class-hph-menus.php',
             
             // Query and routing
-            'class-hph-query-manager.php',
             'class-hph-router.php',
             
             // Customization
