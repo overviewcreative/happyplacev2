@@ -1,0 +1,274 @@
+/**
+ * LISTINGS ARCHIVE CSS BUNDLE
+ * Components used by archive-listing.php and related listing display
+ * Target: <150KB for archive listing functionality
+ */
+
+/* ================================================
+   IMPORTS - Must be at top for CSS compliance
+   ================================================ */
+@import url('../../assets/css/framework/components/organisms/universal-loop.css');
+
+/* ================================================
+   ARCHIVE LAYOUT COMPONENTS
+   ================================================ */
+.hph-listing-archive {
+  width: 100%;
+  min-height: 70vh;
+}
+
+.hph-clean-layout {
+  background: var(--hph-white);
+}
+
+.hph-archive-hero-section {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.hph-archive-listing-hero {
+  position: relative;
+  padding: 4rem 0;
+  color: var(--hph-white);
+  text-align: center;
+}
+
+.hph-archive-hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.hph-archive-hero-container {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.hph-archive-hero-content h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.hph-archive-hero-content p {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+/* ================================================
+   ARCHIVE CONTROLS
+   ================================================ */
+.hph-archive-controls-section {
+  background: var(--hph-gray-50);
+  border-bottom: 1px solid var(--hph-gray-200);
+  padding: 1rem 0;
+}
+
+.hph-archive-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.hph-archive-controls-left,
+.hph-archive-controls-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* ================================================
+   VIEW CONTROLS
+   ================================================ */
+.hph-view-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hph-view-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--hph-white);
+  border: 1px solid var(--hph-gray-300);
+  border-radius: 0.375rem;
+  color: var(--hph-gray-600);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hph-view-btn:hover,
+.hph-view-btn.active {
+  background: var(--hph-primary);
+  color: var(--hph-white);
+  border-color: var(--hph-primary);
+}
+
+.hph-view-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* ================================================
+   LISTINGS GRID LAYOUT
+   ================================================ */
+.hph-listings-grid {
+  padding: 2rem 0;
+}
+
+.hph-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.hph-grid-cols-1 { grid-template-columns: repeat(1, 1fr); }
+.hph-grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.hph-grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.hph-grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* ================================================
+   LISTINGS LIST LAYOUT
+   ================================================ */
+.hph-listings-list {
+  padding: 2rem 0;
+  display: none;
+}
+
+.hph-listings-list.active {
+  display: block;
+}
+
+.hph-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ================================================
+   UNIVERSAL CARD SYSTEM (Grid & List) - IMPORT MOVED TO TOP
+   ================================================ */
+
+/* ================================================
+   SEARCH COMPONENTS
+   ================================================ */
+.hph-hero-search {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 0.5rem;
+  padding: 2rem;
+  margin-top: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.hph-hero-search-form {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: end;
+}
+
+.hph-search-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 150px;
+  flex: 1;
+}
+
+.hph-search-field label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--hph-gray-700);
+}
+
+.hph-search-field input,
+.hph-search-field select {
+  padding: 0.75rem;
+  border: 1px solid var(--hph-gray-300);
+  border-radius: 0.375rem;
+  background: var(--hph-white);
+  font-size: 1rem;
+}
+
+/* ================================================
+   PAGINATION & CONTROLS
+   ================================================ */
+.hph-results-info {
+  padding: 1rem 0;
+  text-align: center;
+  color: var(--hph-gray-600);
+  font-size: 0.875rem;
+}
+
+.hph-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2rem 0;
+}
+
+.hph-pagination a,
+.hph-pagination span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--hph-gray-300);
+  border-radius: 0.375rem;
+  text-decoration: none;
+  color: var(--hph-gray-600);
+  transition: all 0.2s ease;
+}
+
+.hph-pagination a:hover,
+.hph-pagination .current {
+  background: var(--hph-primary);
+  color: var(--hph-white);
+  border-color: var(--hph-primary);
+}
+
+/* ================================================
+   RESPONSIVE ADJUSTMENTS
+   ================================================ */
+@media (max-width: 1024px) {
+  .xl\:hph-grid-cols-4 { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .lg\:hph-grid-cols-3 { grid-template-columns: repeat(2, 1fr); }
+
+  .hph-archive-hero-content h1 {
+    font-size: 2rem;
+  }
+
+  .hph-hero-search-form {
+    flex-direction: column;
+  }
+
+  .hph-archive-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 480px) {
+  .sm\:hph-grid-cols-2 { grid-template-columns: repeat(1, 1fr); }
+
+  .hph-view-controls {
+    justify-content: center;
+    width: 100%;
+  }
+}

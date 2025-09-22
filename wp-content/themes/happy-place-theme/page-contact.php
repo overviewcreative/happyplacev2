@@ -132,45 +132,21 @@ get_header(); ?>
         'headline' => 'Send Us a Message',
         'subheadline' => 'Ready to start your real estate journey?',
         'content' => 'Whether you\'re buying your first home, selling a property, or just have questions about the Delaware real estate market, our team of 50+ agents is here to provide expert guidance with no pressure.',
-        'form_content' => '
-        <form class="hph-form hph-contact-form" action="' . admin_url('admin-ajax.php') . '" method="post">
-            ' . wp_nonce_field('hph_contact_form', 'contact_nonce', true, false) . '
-            <input type="hidden" name="action" value="hph_contact_form">
-
-            <div class="hph-form-row">
-                <div class="hph-form-group hph-form-col--half">
-                    <label for="contact-name" class="hph-form-label">Full Name <span class="hph-required">*</span></label>
-                    <input type="text" id="contact-name" name="name" class="hph-form-input" required placeholder="John Smith">
-                </div>
-                <div class="hph-form-group hph-form-col--half">
-                    <label for="contact-email" class="hph-form-label">Email Address <span class="hph-required">*</span></label>
-                    <input type="email" id="contact-email" name="email" class="hph-form-input" required placeholder="john@example.com">
-                </div>
-            </div>
-
-            <div class="hph-form-row">
-                <div class="hph-form-group hph-form-col--half">
-                    <label for="contact-phone" class="hph-form-label">Phone Number</label>
-                    <input type="tel" id="contact-phone" name="phone" class="hph-form-input" placeholder="(555) 123-4567">
-                </div>
-                <div class="hph-form-group hph-form-col--half">
-                    <label for="contact-subject" class="hph-form-label">Subject</label>
-                    <input type="text" id="contact-subject" name="subject" class="hph-form-input" placeholder="How can we help?">
-                </div>
-            </div>
-
-            <div class="hph-form-group">
-                <label for="contact-message" class="hph-form-label">Message <span class="hph-required">*</span></label>
-                <textarea id="contact-message" name="message" class="hph-form-textarea" rows="4" required placeholder="Tell us more about what you need help with..."></textarea>
-            </div>
-
-            <div class="hph-form-group">
-                <button type="submit" class="hph-btn hph-btn-primary hph-btn-lg hph-w-full">
-                    <i class="fas fa-paper-plane hph-mr-2"></i>
-                    Send Message
-                </button>
-            </div>
-        </form>',
+'form_content' => (function() {
+            ob_start();
+            get_template_part('template-parts/forms/general-contact', null, [
+                'variant' => 'default',
+                'modal_context' => false,
+                'title' => '',
+                'description' => '',
+                'submit_text' => 'Send Message',
+                'show_office_info' => false,
+                'department_routing' => true,
+                'layout' => 'vertical',
+                'size' => 'normal'
+            ]);
+            return ob_get_clean();
+        })(),
         'features' => [
             [
                 'icon' => 'fas fa-comments',

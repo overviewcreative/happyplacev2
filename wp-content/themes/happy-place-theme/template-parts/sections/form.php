@@ -477,18 +477,18 @@ if (!empty($form_template) && isset($template_routing[$form_template])) {
     $routing = $template_routing[$form_template];
     $route_type = $routing['route'];
     $nonce_action = $routing['nonce'];
-    $nonce_field = 'contact_nonce'; // Use consistent field name
+    $nonce_field = 'nonce'; // Use standard delegation field name
 } else {
     // Fallback route type mapping
     $route_type_map = [
         'contact' => 'lead_capture',
-        'inquiry' => 'property_inquiry', 
+        'inquiry' => 'property_inquiry',
         'schedule' => 'booking_request',
         'valuation' => 'valuation_request',
         'newsletter' => 'email_only'
     ];
     $route_type = $route_type_map[$form_type] ?? 'lead_capture';
-    $nonce_action = 'hph_lead_nonce';
+    $nonce_action = 'hph_route_form_nonce'; // Use standard delegation nonce
     $nonce_field = 'nonce';
 }
 

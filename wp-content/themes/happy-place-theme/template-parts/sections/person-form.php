@@ -266,8 +266,10 @@ $person = $args['person_data'];
                           method="<?php echo esc_attr($args['form_method']); ?>">
                         
                         <?php if ($args['form_ajax']) : ?>
-                            <input type="hidden" name="action" value="handle_contact_form">
-                            <?php wp_nonce_field('contact_form_nonce', 'contact_nonce'); ?>
+                            <input type="hidden" name="action" value="hph_route_form">
+                            <input type="hidden" name="route_type" value="lead_capture">
+                            <input type="hidden" name="form_type" value="person_contact">
+                            <?php wp_nonce_field('hph_route_form_nonce', 'nonce'); ?>
                         <?php endif; ?>
                         
                         <div class="row">

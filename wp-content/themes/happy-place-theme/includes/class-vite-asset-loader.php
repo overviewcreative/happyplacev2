@@ -59,24 +59,22 @@ class HPH_Vite_Asset_Loader {
     private static function get_asset_url($entry_name, $type = 'file') {
         $manifest = self::get_manifest();
 
-        // Look for the entry in manifest
-        // For CSS files, look for src/css/{name}.css entries
-        // For JS files, prioritize legacy versions for browser compatibility
+        // For our new optimized bundles, look directly in manifest by input name
         foreach ($manifest as $key => $asset) {
-            // Match CSS files
+            // Match CSS files (new bundle names)
             if ($type === 'css' && $key === "src/css/{$entry_name}.css" && isset($asset['file'])) {
                 return get_template_directory_uri() . '/dist/' . $asset['file'];
             }
-            // Match JS files - use legacy for compatibility, modern has ES6 import issues
-            if ($type === 'file' && $key === "src/js/{$entry_name}-legacy.js" && isset($asset['file'])) {
-                return get_template_directory_uri() . '/dist/' . $asset['file'] . '?v=' . time();
+            // Match JS files (new bundle names)
+            if ($type === 'file' && $key === "src/js/{$entry_name}.js" && isset($asset['file'])) {
+                return get_template_directory_uri() . '/dist/' . $asset['file'];
             }
         }
 
-        // Fallback to modern version if legacy not found
+        // Legacy fallback for compatibility
         foreach ($manifest as $key => $asset) {
-            if ($type === 'file' && $key === "src/js/{$entry_name}.js" && isset($asset['file'])) {
-                return get_template_directory_uri() . '/dist/' . $asset['file'];
+            if ($type === 'file' && $key === "src/js/{$entry_name}-legacy.js" && isset($asset['file'])) {
+                return get_template_directory_uri() . '/dist/' . $asset['file'] . '?v=' . time();
             }
         }
 
@@ -85,195 +83,140 @@ class HPH_Vite_Asset_Loader {
 
     /**
      * Enqueue Vite assets with optimal loading strategies
-     * UPDATED: Uses unified bundle system to eliminate redundancies
+     * UPDATED: Uses optimized modular bundle system
      */
     public static function enqueue_vite_assets() {
         // DEBUG: Log that this function is being called
         error_log('HPH Asset Loader: enqueue_vite_assets() called');
 
-        // Critical CSS is already inlined via functions.php
-
-        // 0. LOAD LEGACY POLYFILLS FIRST (Required for SystemJS)
-        self::enqueue_legacy_polyfills();
-
-        // 1. UNIFIED CORE ASSETS (Load synchronously - contains consolidated patterns)
-        // Eliminates 55 DOM ready patterns, 99 AJAX implementations, 6 validation systems
+        // 1. CORE CSS (essential foundation) - Load immediately
         self::enqueue_bundle('core', [
             'strategy' => 'blocking',
             'priority' => 1,
-            'unified' => true
+            'type' => 'css'
         ]);
 
-        // 2. SITEWIDE ASSETS (Load with defer - needed soon)
+        // 2. CRITICAL CSS (header/footer essentials) - Load immediately after core
+        self::enqueue_bundle('critical-optimized', [
+            'strategy' => 'blocking',
+            'priority' => 2,
+            'type' => 'css'
+        ]);
+
+        // 2. CORE JAVASCRIPT (essential functionality)
+        self::enqueue_bundle('core', [
+            'strategy' => 'defer',
+            'priority' => 2,
+            'type' => 'js'
+        ]);
+
+        // 3. SITEWIDE JAVASCRIPT (navigation, forms, etc.)
         error_log('HPH Asset Loader: About to enqueue sitewide bundle');
         self::enqueue_bundle('sitewide', [
             'strategy' => 'defer',
-            'priority' => 5
+            'priority' => 5,
+            'type' => 'js'
         ]);
 
-        // 3. FEATURE-SPECIFIC UNIFIED BUNDLES (Load asynchronously)
+        // 4. PAGE-SPECIFIC OPTIMIZED BUNDLES
         self::enqueue_conditional_assets();
     }
 
     /**
-     * Enqueue Vite legacy polyfills (required for SystemJS)
+     * Enqueue Vite legacy polyfills (no longer needed with modern-only build)
      */
     private static function enqueue_legacy_polyfills() {
-        $manifest = self::get_manifest();
-
-        error_log('HPH Asset Loader: Attempting to load legacy polyfills');
-
-        // Load legacy polyfills for SystemJS support
-        if (isset($manifest['vite/legacy-polyfills-legacy']['file'])) {
-            $polyfills_url = get_template_directory_uri() . '/dist/' . $manifest['vite/legacy-polyfills-legacy']['file'];
-
-            error_log("HPH Asset Loader: Enqueuing polyfills with URL: {$polyfills_url}");
-
-            wp_enqueue_script(
-                'hph-legacy-polyfills',
-                $polyfills_url,
-                [], // No dependencies
-                null,
-                false // Load in head, before other scripts
-            );
-
-            error_log('HPH Asset Loader: Polyfills enqueued successfully');
-        } else {
-            error_log('HPH Asset Loader: ERROR - Legacy polyfills not found in manifest');
-            error_log('HPH Asset Loader: Available manifest keys: ' . implode(', ', array_keys($manifest)));
-        }
+        // REMOVED: Legacy polyfills no longer needed with optimized modern-only build
+        error_log('HPH Asset Loader: Skipping legacy polyfills (modern-only build)');
     }
 
     /**
-     * Enqueue bundle dependencies from manifest imports
+     * Enqueue bundle dependencies from manifest imports (simplified for modern bundles)
      */
     private static function enqueue_bundle_dependencies($bundle_name) {
-        $manifest = self::get_manifest();
-
-        // Find the bundle entry in manifest
-        $bundle_key = "src/js/{$bundle_name}-legacy.js";
-        if (!isset($manifest[$bundle_key])) {
-            $bundle_key = "src/js/{$bundle_name}.js";
-        }
-
-        error_log("HPH Asset Loader: Looking for dependencies for bundle key: {$bundle_key}");
-
-        if (isset($manifest[$bundle_key]['imports'])) {
-            error_log("HPH Asset Loader: Found " . count($manifest[$bundle_key]['imports']) . " imports for {$bundle_name}");
-            foreach ($manifest[$bundle_key]['imports'] as $import_key) {
-                if (isset($manifest[$import_key]['file'])) {
-                    $import_url = get_template_directory_uri() . '/dist/' . $manifest[$import_key]['file'];
-                    $handle = 'hph-' . sanitize_title($import_key);
-
-                    error_log("HPH Asset Loader: Enqueuing dependency {$handle} with URL: {$import_url}");
-
-                    wp_enqueue_script(
-                        $handle,
-                        $import_url,
-                        ['hph-legacy-polyfills'], // Depend on polyfills
-                        null,
-                        true
-                    );
-                } else {
-                    error_log("HPH Asset Loader: WARNING - Import {$import_key} not found in manifest");
-                }
-            }
-        } else {
-            error_log("HPH Asset Loader: No imports found for bundle {$bundle_name} (key: {$bundle_key})");
-        }
+        // SIMPLIFIED: Modern bundles handle their own dependencies via Vite's ES modules
+        error_log("HPH Asset Loader: Skipping manual dependency loading for {$bundle_name} (handled by ES modules)");
     }
 
     /**
      * Enqueue conditional assets based on page type
-     * UPDATED: Uses unified bundles to eliminate redundancies
+     * UPDATED: Uses optimized modular bundles
      */
     private static function enqueue_conditional_assets() {
-        // Listing archive pages - UNIFIED ARCHIVE BUNDLE
-        // Eliminates 7 filter, 5 pagination, 4 view switching implementations
-        if (is_post_type_archive('listing')) {
-            self::enqueue_bundle('archive', [
+        // Homepage - HOMEPAGE BUNDLE (hero, stats, content sections)
+        if (is_front_page()) {
+            self::enqueue_bundle('homepage', [
                 'strategy' => 'async',
-                'priority' => 10,
-                'unified' => true
+                'priority' => 6,
+                'type' => 'css'
             ]);
         }
 
-        // Single listing pages - UNIFIED LISTINGS BUNDLE
-        // Eliminates 12 gallery, 8 map, 5 form implementations
+        // Listing archive pages - LISTINGS ARCHIVE BUNDLE
+        if (is_post_type_archive('listing')) {
+            self::enqueue_bundle('listings-archive', [
+                'strategy' => 'async',
+                'priority' => 7,
+                'type' => 'css'
+            ]);
+            self::enqueue_bundle('archive', [
+                'strategy' => 'async',
+                'priority' => 10,
+                'type' => 'js'
+            ]);
+        }
+
+        // Single listing pages - SINGLE PROPERTY BUNDLE
         if (is_singular('listing')) {
+            self::enqueue_bundle('single-property', [
+                'strategy' => 'async',
+                'priority' => 7,
+                'type' => 'css'
+            ]);
             self::enqueue_bundle('listings', [
                 'strategy' => 'async',
                 'priority' => 10,
-                'unified' => true
+                'type' => 'js'
             ]);
         }
 
-        // Other archive pages (cities, agents, events, places) - UNIFIED ARCHIVE BUNDLE
-        if (is_archive() && !is_post_type_archive('listing')) {
+        // Other archive pages (cities, agents, events, places) - Use listings archive for filters
+        if (is_archive() && !is_post_type_archive('listing') && !is_front_page()) {
+            self::enqueue_bundle('listings-archive', [
+                'strategy' => 'async',
+                'priority' => 7,
+                'type' => 'css'
+            ]);
             self::enqueue_bundle('archive', [
                 'strategy' => 'async',
                 'priority' => 10,
-                'unified' => true
+                'type' => 'js'
             ]);
         }
 
-        // Agent pages - Uses archive bundle for filtering + agent-specific features
+        // Agent pages - Add agent-specific features
         if (is_post_type_archive('agent') || is_singular('agent')) {
-            self::enqueue_bundle('archive', [
-                'strategy' => 'async',
-                'priority' => 9,
-                'unified' => true
-            ]);
             self::enqueue_bundle('agents', [
                 'strategy' => 'async',
-                'priority' => 10
+                'priority' => 11,
+                'type' => 'js'
             ]);
         }
 
-        // Dashboard pages - UNIFIED DASHBOARD BUNDLE
-        // Eliminates 8 CRUD, 6 table, 4 modal implementations
+        // Dashboard pages - DASHBOARD BUNDLE
         if (is_page_template('page-dashboard.php') || is_page('dashboard') ||
             is_page('user-dashboard') || is_page('agent-dashboard')) {
             self::enqueue_bundle('dashboard', [
                 'strategy' => 'defer',
                 'priority' => 8,
-                'unified' => true
-            ]);
-        }
-
-        // Login pages
-        if (is_page_template('page-login.php') || is_page('login')) {
-            self::enqueue_bundle('login', [
-                'strategy' => 'defer',
-                'priority' => 8
-            ]);
-        }
-
-        // City and local place pages - Use archive bundle for filtering
-        if (is_post_type_archive('city') || is_singular('city') ||
-            is_post_type_archive('local_place') || is_singular('local_place') ||
-            is_post_type_archive('local_event') || is_singular('local_event')) {
-            self::enqueue_bundle('archive', [
-                'strategy' => 'async',
-                'priority' => 10,
-                'unified' => true
-            ]);
-        }
-
-        // Property-related pages that need listing functionality
-        if (is_page('advanced-search') || is_page('add-listing') ||
-            has_shortcode(get_post_field('post_content'), 'hp_listing_search')) {
-            self::enqueue_bundle('listings', [
-                'strategy' => 'async',
-                'priority' => 10,
-                'unified' => true
+                'type' => 'js'
             ]);
         }
     }
 
     /**
      * Enqueue a Vite bundle with optimal loading strategy
-     * UPDATED: Enhanced for unified bundle system
+     * UPDATED: Enhanced for optimized modular bundles
      */
     private static function enqueue_bundle($bundle_name, $options = []) {
         error_log("HPH Asset Loader: Attempting to enqueue bundle: {$bundle_name}");
@@ -286,156 +229,120 @@ class HPH_Vite_Asset_Loader {
         $defaults = [
             'strategy' => 'defer',
             'priority' => 10,
-            'unified' => false
+            'type' => 'both'
         ];
         $options = wp_parse_args($options, $defaults);
 
-        // Load bundle dependencies first
-        self::enqueue_bundle_dependencies($bundle_name);
-
-        // CSS
-        $css_url = self::get_asset_url($bundle_name, 'css');
-        if ($css_url) {
-            wp_enqueue_style(
-                "hph-{$bundle_name}-css",
-                $css_url,
-                [],
-                null
-            );
-        }
-
-        // JavaScript
-        $js_url = self::get_asset_url($bundle_name, 'file');
-        error_log("HPH Asset Loader: JS URL for {$bundle_name}: " . ($js_url ?: 'FALSE'));
-
-        // Extra debugging for sitewide specifically
-        if ($bundle_name === 'sitewide') {
-            $manifest = self::get_manifest();
-            error_log("HPH Asset Loader: Sitewide debugging - looking for legacy first");
-            if (isset($manifest['src/js/sitewide-legacy.js'])) {
-                error_log("HPH Asset Loader: Found sitewide-legacy entry: " . $manifest['src/js/sitewide-legacy.js']['file']);
+        // CSS - Only load if type is 'css' or 'both'
+        if ($options['type'] === 'css' || $options['type'] === 'both') {
+            $css_url = self::get_asset_url($bundle_name, 'css');
+            if ($css_url) {
+                error_log("HPH Asset Loader: Enqueuing CSS for {$bundle_name}: {$css_url}");
+                wp_enqueue_style(
+                    "hph-{$bundle_name}-css",
+                    $css_url,
+                    [],
+                    null
+                );
             } else {
-                error_log("HPH Asset Loader: sitewide-legacy NOT FOUND");
-            }
-            if (isset($manifest['src/js/sitewide.js'])) {
-                error_log("HPH Asset Loader: Found sitewide modern entry: " . $manifest['src/js/sitewide.js']['file']);
-            } else {
-                error_log("HPH Asset Loader: sitewide modern NOT FOUND");
+                error_log("HPH Asset Loader: No CSS found for bundle: {$bundle_name}");
             }
         }
 
-        if ($js_url) {
-            $script_args = ['jquery'];
+        // JavaScript - Only load if type is 'js' or 'both'
+        if ($options['type'] === 'js' || $options['type'] === 'both') {
+            $js_url = self::get_asset_url($bundle_name, 'file');
+            error_log("HPH Asset Loader: JS URL for {$bundle_name}: " . ($js_url ?: 'FALSE'));
 
-            // Unified bundles depend on core unified system
-            if ($options['unified'] && $bundle_name !== 'core') {
-                $script_args[] = 'hph-core-js';
-            }
+            if ($js_url) {
+                $script_args = ['jquery'];
 
-            // Ensure polyfills load first
-            $script_args[] = 'hph-legacy-polyfills';
-
-            error_log("HPH Asset Loader: Enqueuing script hph-{$bundle_name}-js with URL: {$js_url}");
-
-            wp_enqueue_script(
-                "hph-{$bundle_name}-js",
-                $js_url,
-                $script_args,
-                null,
-                true // Load in footer
-            );
-
-            error_log("HPH Asset Loader: Script hph-{$bundle_name}-js enqueued successfully");
-
-            // Add loading strategy and unified bundle data
-            add_filter('script_loader_tag', function($tag, $handle) use ($bundle_name, $options) {
-                if ($handle === "hph-{$bundle_name}-js") {
-                    $strategy = $options['strategy'];
-
-                    // Add unified bundle data attribute for debugging
-                    if ($options['unified']) {
-                        $tag = str_replace('<script ', '<script data-unified-bundle="' . esc_attr($bundle_name) . '" ', $tag);
-                    }
-
-                    if ($strategy === 'defer') {
-                        return str_replace(' src', ' defer src', $tag);
-                    } elseif ($strategy === 'async') {
-                        return str_replace(' src', ' async src', $tag);
-                    } elseif ($strategy === 'module') {
-                        return str_replace(' src', ' type="module" src', $tag);
-                    }
+                // Core JavaScript dependencies for other bundles
+                if ($bundle_name !== 'core') {
+                    $script_args[] = 'hph-core';
                 }
-                return $tag;
-            }, 10, 2);
 
-            // Add localized data for unified bundles and sitewide bundle (needs AJAX for modals)
-            if ($options['unified'] || $bundle_name === 'sitewide') {
-                self::localize_unified_bundle($bundle_name);
+                error_log("HPH Asset Loader: Enqueuing script hph-{$bundle_name} with URL: {$js_url}");
+
+                wp_enqueue_script(
+                    "hph-{$bundle_name}",
+                    $js_url,
+                    $script_args,
+                    null,
+                    true // Load in footer
+                );
+
+                error_log("HPH Asset Loader: Script hph-{$bundle_name} enqueued successfully");
+
+                // Add loading strategy
+                add_filter('script_loader_tag', function($tag, $handle) use ($bundle_name, $options) {
+                    if ($handle === "hph-{$bundle_name}") {
+                        $strategy = $options['strategy'];
+
+                        if ($strategy === 'defer') {
+                            return str_replace(' src', ' defer src', $tag);
+                        } elseif ($strategy === 'async') {
+                            return str_replace(' src', ' async src', $tag);
+                        } elseif ($strategy === 'module') {
+                            return str_replace(' src', ' type="module" src', $tag);
+                        }
+                    }
+                    return $tag;
+                }, 10, 2);
+
+                // Add localized data for JS bundles that need AJAX
+                if (in_array($bundle_name, ['sitewide', 'archive', 'listings', 'dashboard'])) {
+                    self::localize_bundle($bundle_name);
+                }
+            } else {
+                error_log("HPH Asset Loader: FAILED to get JS URL for bundle: {$bundle_name}");
             }
-        } else {
-            error_log("HPH Asset Loader: FAILED to get JS URL for bundle: {$bundle_name}");
         }
 
         self::$loaded_bundles[] = $bundle_name;
     }
 
     /**
-     * Add localized data for unified bundles
+     * Add localized data for bundles that need AJAX
      */
-    private static function localize_unified_bundle($bundle_name) {
+    private static function localize_bundle($bundle_name) {
         $localize_data = [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('hph_' . $bundle_name . '_nonce'),
+            'nonce' => wp_create_nonce('hph_ajax_nonce'),
             'debug' => defined('WP_DEBUG') && WP_DEBUG,
-            'bundleVersion' => '3.0.0-unified',
-            'eliminatedRedundancies' => true
+            'bundleVersion' => '3.0.0-optimized'
         ];
 
         // Bundle-specific data
         switch ($bundle_name) {
-            case 'core':
-                $localize_data['eliminatedPatterns'] = [
-                    'domReady' => 55,
-                    'ajax' => 99,
-                    'validation' => 6
-                ];
-                break;
             case 'sitewide':
                 // Sitewide bundle needs AJAX for contact form modals
                 $localize_data['ajax_url'] = admin_url('admin-ajax.php');
-                $localize_data['nonce'] = wp_create_nonce('hph_ajax_nonce');
 
                 // Also add the hph_ajax variable for backward compatibility
-                wp_localize_script("hph-{$bundle_name}-js", 'hph_ajax', [
+                wp_localize_script("hph-{$bundle_name}", 'hph_ajax', [
                     'ajax_url' => admin_url('admin-ajax.php'),
                     'url' => admin_url('admin-ajax.php'),
                     'nonce' => wp_create_nonce('hph_ajax_nonce')
                 ]);
                 break;
             case 'listings':
-                $localize_data['eliminatedPatterns'] = [
-                    'galleries' => 12,
-                    'maps' => 8,
-                    'forms' => 5
-                ];
+                // Listing pages need AJAX for property interactions
+                $localize_data['listing_id'] = is_singular('listing') ? get_the_ID() : 0;
+                $localize_data['mapbox_key'] = get_theme_mod('mapbox_api_key', '');
                 break;
             case 'dashboard':
-                $localize_data['eliminatedPatterns'] = [
-                    'crud' => 8,
-                    'tables' => 6,
-                    'modals' => 4
-                ];
+                // Dashboard needs AJAX for CRUD operations
+                $localize_data['user_id'] = get_current_user_id();
+                $localize_data['can_edit'] = current_user_can('edit_posts');
                 break;
             case 'archive':
-                $localize_data['eliminatedPatterns'] = [
-                    'filters' => 7,
-                    'pagination' => 5,
-                    'views' => 4
-                ];
+                // Archive pages need AJAX for filtering and search
+                $localize_data['post_type'] = get_post_type();
                 break;
         }
 
-        wp_localize_script("hph-{$bundle_name}-js", 'hph' . ucfirst($bundle_name) . 'Data', $localize_data);
+        wp_localize_script("hph-{$bundle_name}", 'hphData', $localize_data);
     }
 
     /**
@@ -455,11 +362,11 @@ class HPH_Vite_Asset_Loader {
      * Add preload tags for critical resources
      */
     public static function add_preload_tags() {
-        // Preload core CSS (after critical CSS)
-        $core_css = self::get_asset_url('core', 'css');
-        if ($core_css) {
-            echo '<link rel="preload" href="' . esc_url($core_css) . '" as="style" onload="this.onload=null;this.rel=\'stylesheet\'">' . "\n";
-            echo '<noscript><link rel="stylesheet" href="' . esc_url($core_css) . '"></noscript>' . "\n";
+        // Preload critical CSS (most important)
+        $critical_css = self::get_asset_url('critical-optimized', 'css');
+        if ($critical_css) {
+            echo '<link rel="preload" href="' . esc_url($critical_css) . '" as="style" onload="this.onload=null;this.rel=\'stylesheet\'">' . "\n";
+            echo '<noscript><link rel="stylesheet" href="' . esc_url($critical_css) . '"></noscript>' . "\n";
         }
 
         // Preload core JS with high priority
@@ -481,15 +388,15 @@ class HPH_Vite_Asset_Loader {
     public static function add_script_attributes($tag, $handle, $src) {
         // Add defer to non-critical scripts
         $defer_scripts = [
-            'hph-sitewide-js',
-            'hph-dashboard-js'
+            'hph-sitewide',
+            'hph-dashboard'
         ];
 
         // Add async to page-specific scripts
         $async_scripts = [
-            'hph-listings-js',
-            'hph-archive-js',
-            'hph-agents-js'
+            'hph-listings',
+            'hph-archive',
+            'hph-agents'
         ];
 
         if (in_array($handle, $defer_scripts)) {

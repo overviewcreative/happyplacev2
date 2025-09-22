@@ -4,6 +4,9 @@
  * Replaces @import chains for better performance
  */
 
+/* Google Fonts Loading */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
 /* 1. Core Foundation */
 @import url('../../assets/css/framework/core/tokens.css');
 @import url('../../assets/css/framework/core/variables.css');
@@ -27,13 +30,16 @@
 @import url('../../assets/css/framework/components/atoms/form-input.css');
 @import url('../../assets/css/framework/components/atoms/form-controls.css');
 
-/* 3.5. Core UI Molecules */
+/* 3.5. Core UI Molecules - Essential components used sitewide */
 @import url('../../assets/css/framework/components/molecules/button-core.css');
 @import url('../../assets/css/framework/components/molecules/header-actions.css');
+@import url('../../assets/css/framework/components/molecules/card.css');
+@import url('../../assets/css/framework/components/molecules/modal.css');
 
 /* 4. Core Layout */
 @import url('../../assets/css/framework/layout/containers.css');
 @import url('../../assets/css/framework/layout/grid.css');
+@import url('../../assets/css/framework/layout/flexbox.css');
 @import url('../../assets/css/framework/layout/header.css');
 @import url('../../assets/css/framework/layout/footer.css');
 /* OPTIMIZATION: features-cards.css moved to homepage bundle - not core functionality */
@@ -44,6 +50,7 @@
 @import url('../../assets/css/framework/utilities/spacing.css');
 @import url('../../assets/css/framework/utilities/typography.css');
 @import url('../../assets/css/framework/utilities/effects.css');
+@import url('../../assets/css/framework/utilities/animations.css');
 @import url('../../assets/css/framework/utilities/responsive.css');
 
 /* Features moved to appropriate page-specific bundles:

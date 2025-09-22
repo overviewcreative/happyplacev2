@@ -144,42 +144,99 @@
         // === EVENT BINDING ===
         
         bindEvents: function() {
-            // Form submission handling
+            console.log('HPH Forms: Binding events for selectors:', this.config.selectors.forms);
+
+            // AGGRESSIVE FORM PREVENTION - Use native addEventListener with capture to prevent ANY form submission
+            const preventAllFormSubmissions = (e) => {
+                const form = e.target;
+                if (form.tagName === 'FORM' && (
+                    form.action.includes('admin-ajax.php') ||
+                    form.querySelector('input[name="action"][value="hph_route_form"]') ||
+                    form.classList.contains('hph-form') ||
+                    form.closest('.hph-modal')
+                )) {
+                    console.log('🚨 PREVENTING FORM SUBMISSION:', form);
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+
+                    // Manually trigger our handler
+                    this.handleFormSubmission(e);
+                    return false;
+                }
+            };
+
+            // Remove existing listener if any
+            if (this._nativeSubmitListener) {
+                document.removeEventListener('submit', this._nativeSubmitListener, true);
+            }
+
+            // Add native listener with capture phase
+            this._nativeSubmitListener = preventAllFormSubmissions.bind(this);
+            document.addEventListener('submit', this._nativeSubmitListener, true);
+
+            // Form submission handling - jQuery fallback
             $(document).off('submit.hph-forms').on('submit.hph-forms', this.config.selectors.forms, this.handleFormSubmission.bind(this));
-            
+
+            // CRITICAL: Add additional form submission prevention for modal forms specifically
+            $(document).off('submit.hph-modal-forms').on('submit.hph-modal-forms', '.hph-modal form', this.handleFormSubmission.bind(this));
+
             // Real-time validation
             $(document).off('blur.hph-forms').on('blur.hph-forms', this.config.selectors.requiredFields, this.validateField.bind(this));
             $(document).off('input.hph-forms').on('input.hph-forms', this.config.selectors.emailFields, this.debounce(this.validateField.bind(this), 300));
             $(document).off('input.hph-forms').on('input.hph-forms', this.config.selectors.phoneFields, this.debounce(this.validateField.bind(this), 300));
             $(document).off('input.hph-forms').on('input.hph-forms', this.config.selectors.urlFields, this.debounce(this.validateField.bind(this), 300));
             $(document).off('input.hph-forms').on('input.hph-forms', this.config.selectors.numberFields, this.debounce(this.validateField.bind(this), 300));
-            
+
             // Form validation on submit
             $(document).off('submit.hph-validate').on('submit.hph-validate', this.config.selectors.validateForms, this.validateForm.bind(this));
-            
+
             // Clear validation on focus
             $(document).off('focus.hph-forms').on('focus.hph-forms', 'input, select, textarea', this.clearFieldValidation.bind(this));
-            
+
             // Custom events
             $(document).off('hph:forms:validate').on('hph:forms:validate', this.validateForm.bind(this));
             $(document).off('hph:forms:reset').on('hph:forms:reset', this.resetForm.bind(this));
+
+            // Extra safety: Bind to any form with action="admin-ajax.php"
+            $(document).off('submit.hph-ajax-forms').on('submit.hph-ajax-forms', 'form[action*="admin-ajax.php"]', this.handleFormSubmission.bind(this));
         },
         
         // === FORM SUBMISSION HANDLING ===
         
         handleFormSubmission: function(e) {
-            e.preventDefault();
-            e.stopImmediatePropagation(); // Prevent other handlers from firing
-            
-            const $form = $(e.currentTarget);
-            
+            // CRITICAL: Prevent default form submission immediately
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            if (e.stopImmediatePropagation) {
+                e.stopImmediatePropagation();
+            }
+
+            const $form = $(e.currentTarget || e.target);
+
             // Prevent duplicate submissions
             if ($form.data('hph-submitting')) {
+                console.log('HPH Forms: Preventing duplicate submission');
                 return false;
             }
-            
+
+            console.log('HPH Forms: Processing form submission', {
+                form: $form[0],
+                action: $form.attr('action'),
+                method: $form.attr('method'),
+                routeType: $form.data('route-type')
+            });
+
+            // Remove any action attribute to prevent fallback submission
+            const originalAction = $form.attr('action');
+            $form.removeAttr('action');
+
             const formData = this.getFormData($form);
-            
+
             if (this.config.debug) {
                 console.log('Form submission debug:', {
                     form: $form[0],
@@ -187,22 +244,26 @@
                     routeType: $form.data('route-type')
                 });
             }
-            
+
             // Validate form before submission
             if (!this.validateForm.call(this, e)) {
+                // Restore action attribute if validation fails
+                if (originalAction) {
+                    $form.attr('action', originalAction);
+                }
                 return false;
             }
-            
+
             // Mark form as submitting to prevent duplicates
             $form.data('hph-submitting', true);
-            
+
             // Determine submission method
             const routeType = $form.data('route-type') || 'contact';
             const submitMethod = this.getSubmissionMethod($form, routeType);
-            
+
             // Handle submission
-            this.submitForm($form, formData, submitMethod);
-            
+            this.submitForm($form, formData, submitMethod, originalAction);
+
             return false;
         },
         
@@ -244,15 +305,21 @@
             return routeMap[routeType] || 'hph_route_form';
         },
         
-        submitForm: function($form, formData, action) {
+        submitForm: function($form, formData, action, originalAction) {
             const self = this;
-            
+
             // Add AJAX action
             formData.append('action', action);
-            
+
+            console.log('HPH Forms: Submitting via AJAX', {
+                url: this.config.ajaxUrl,
+                action: action,
+                formId: $form.attr('id') || 'unnamed'
+            });
+
             // Show loading state
             this.setFormLoading($form, true);
-            
+
             // Submit form
             $.ajax({
                 url: this.config.ajaxUrl,
@@ -261,15 +328,22 @@
                 processData: false,
                 contentType: false,
                 success: function(response) {
+                    console.log('HPH Forms: AJAX success', response);
                     self.handleFormSuccess($form, response);
                 },
                 error: function(xhr, status, error) {
-                    self.handleFormError($form, error);
+                    console.error('HPH Forms: AJAX error', { xhr, status, error });
+                    self.handleFormError($form, `Submission failed: ${error}`);
                 },
                 complete: function() {
                     // Reset submitting flag and loading state
                     $form.removeData('hph-submitting');
                     self.setFormLoading($form, false);
+
+                    // Restore original action attribute
+                    if (originalAction) {
+                        $form.attr('action', originalAction);
+                    }
                 }
             });
         },
@@ -279,14 +353,23 @@
         handleFormSuccess: function($form, response) {
             // Reset submitting flag
             $form.removeData('hph-submitting');
-            
+
             if (response.success) {
-                this.showFormMessage($form, response.data.message || 'Form submitted successfully!', 'success');
-                this.resetForm({ target: $form[0] });
-                
+                // Check if this is a modal form
+                const $modal = $form.closest('.hph-modal');
+
+                if ($modal.length) {
+                    // This is a modal form - handle success differently
+                    this.handleModalFormSuccess($form, $modal, response);
+                } else {
+                    // Regular form - use existing logic
+                    this.showFormMessage($form, response.data.message || 'Form submitted successfully!', 'success');
+                    this.resetForm({ target: $form[0] });
+                }
+
                 // Trigger custom success event
                 $form.trigger('hph:forms:success', [response]);
-                
+
                 // Handle redirects
                 if (response.data.redirect) {
                     setTimeout(() => {
@@ -296,6 +379,43 @@
             } else {
                 this.handleFormError($form, response.data?.message || 'Form submission failed');
             }
+        },
+
+        handleModalFormSuccess: function($form, $modal, response) {
+            // Hide the form container
+            const $formContainer = $modal.find('.hph-modal-form-container');
+            const $successContainer = $modal.find('.hph-modal-success');
+
+            if ($formContainer.length && $successContainer.length) {
+                // Hide form and show success message
+                $formContainer.fadeOut(300, function() {
+                    // Update success message if provided
+                    const message = response.data?.message || 'Thank you! We\'ll contact you soon.';
+                    const $successText = $successContainer.find('p');
+                    if ($successText.length) {
+                        $successText.text(message);
+                    }
+
+                    // Show success container
+                    $successContainer.fadeIn(300);
+                });
+
+                // Auto-close modal after delay if specified
+                const shouldAutoClose = $modal.data('close-on-success') !== 'false';
+                if (shouldAutoClose) {
+                    setTimeout(() => {
+                        if (window.closeHphFormModal) {
+                            window.closeHphFormModal($modal.attr('id'));
+                        }
+                    }, 3000);
+                }
+            } else {
+                // Fallback to regular message
+                this.showFormMessage($form, response.data?.message || 'Thank you! We\'ll contact you soon.', 'success');
+            }
+
+            // Reset form for next use
+            this.resetForm({ target: $form[0] });
         },
         
         handleFormError: function($form, errorMessage) {

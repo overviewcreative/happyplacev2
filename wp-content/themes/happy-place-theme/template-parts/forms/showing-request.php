@@ -242,11 +242,14 @@ $route_type = $args['calendly_enabled'] ? 'showing_with_booking' : 'showing_requ
                 data-route-type="showing-request"
                 data-property-id="<?php echo esc_attr($args['listing_id']); ?>"
                 data-agent-id="<?php echo esc_attr($agent_data['agent_id'] ?? $args['agent_id']); ?>"
+                method="post"
+                action="<?php echo admin_url('admin-ajax.php'); ?>"
             >
-                <?php wp_nonce_field('hph_contact_form_' . $args['listing_id'], 'nonce'); ?>
-                <input type="hidden" name="listing_nonce" value="<?php echo wp_create_nonce('hph_contact_form_' . $args['listing_id']); ?>">
+                <?php wp_nonce_field('hph_route_form_nonce', 'nonce'); ?>
 
                 <!-- Hidden Fields -->
+                <input type="hidden" name="action" value="hph_route_form">
+                <input type="hidden" name="route_type" value="showing_request">
                 <input type="hidden" name="form_type" value="tour">
                 <input type="hidden" name="listing_id" value="<?php echo esc_attr($args['listing_id']); ?>">
                 <input type="hidden" name="agent_id" value="<?php echo esc_attr($agent_data['agent_id'] ?? $args['agent_id']); ?>">

@@ -1,279 +1,92 @@
 {
+  "_framework-core-hfrr7oRn.min.js": {
+    "file": "js/chunks/framework-core-hfrr7oRn.min.js",
+    "name": "framework-core"
+  },
   "_navigation-BQUjlpkf.min.js": {
     "file": "js/chunks/navigation-BQUjlpkf.min.js",
     "name": "navigation"
   },
-  "_navigation-legacy-DeZ5xxQO.min.js": {
-    "file": "js/chunks/navigation-legacy-DeZ5xxQO.min.js",
-    "name": "navigation"
-  },
-  "_unified-archive-Cy72yypt.min.js": {
-    "file": "js/chunks/unified-archive-Cy72yypt.min.js",
-    "name": "unified-archive"
-  },
-  "_unified-archive-legacy-BujbrpqF.min.js": {
-    "file": "js/chunks/unified-archive-legacy-BujbrpqF.min.js",
-    "name": "unified-archive"
-  },
-  "_unified-core-dWaien_H.min.js": {
-    "file": "js/chunks/unified-core-dWaien_H.min.js",
-    "name": "unified-core"
-  },
-  "_unified-core-legacy-BWBraR1R.min.js": {
-    "file": "js/chunks/unified-core-legacy-BWBraR1R.min.js",
-    "name": "unified-core"
-  },
-  "_unified-dashboard-C-oa8RGW.min.js": {
-    "file": "js/chunks/unified-dashboard-C-oa8RGW.min.js",
-    "name": "unified-dashboard"
-  },
-  "_unified-dashboard-legacy-BaS6xwwb.min.js": {
-    "file": "js/chunks/unified-dashboard-legacy-BaS6xwwb.min.js",
-    "name": "unified-dashboard"
-  },
-  "_unified-listings-legacy-DZ9rO86D.min.js": {
-    "file": "js/chunks/unified-listings-legacy-DZ9rO86D.min.js",
-    "name": "unified-listings"
-  },
-  "_unified-listings-ndqwq7v8.min.js": {
-    "file": "js/chunks/unified-listings-ndqwq7v8.min.js",
-    "name": "unified-listings"
-  },
-  "_universal-loop-Dtt4_HFB.min.js": {
-    "file": "js/chunks/universal-loop-Dtt4_HFB.min.js",
+  "_universal-loop-BzEa3M2D.min.js": {
+    "file": "js/chunks/universal-loop-BzEa3M2D.min.js",
     "name": "universal-loop"
   },
-  "_universal-loop-legacy-BB4QGSeb.min.js": {
-    "file": "js/chunks/universal-loop-legacy-BB4QGSeb.min.js",
-    "name": "universal-loop"
-  },
-  "_utilities-RJnFDEZQ.min.js": {
-    "file": "js/chunks/utilities-RJnFDEZQ.min.js",
+  "_utilities-C6OspHQF.min.js": {
+    "file": "js/chunks/utilities-C6OspHQF.min.js",
     "name": "utilities"
-  },
-  "_utilities-legacy-BwZfhCa1.min.js": {
-    "file": "js/chunks/utilities-legacy-BwZfhCa1.min.js",
-    "name": "utilities"
-  },
-  "src/css/agents-legacy.css": {
-    "file": "js/agents-legacy-DuEfSoyc.min.js",
-    "name": "agents",
-    "src": "src/css/agents-legacy.css",
-    "isEntry": true
-  },
-  "src/css/agents.css": {
-    "file": "css/agents-v1EKh5ZE.min.css",
-    "src": "src/css/agents.css",
-    "isEntry": true
-  },
-  "src/css/archive-legacy.css": {
-    "file": "js/archive-legacy-DRPqgiAA.min.js",
-    "name": "archive",
-    "src": "src/css/archive-legacy.css",
-    "isEntry": true
-  },
-  "src/css/archive.css": {
-    "file": "css/archive-C_7l8e4z.min.css",
-    "src": "src/css/archive.css",
-    "isEntry": true
-  },
-  "src/css/core-legacy.css": {
-    "file": "js/core-legacy-Ct_Cifo6.min.js",
-    "name": "core",
-    "src": "src/css/core-legacy.css",
-    "isEntry": true
   },
   "src/css/core.css": {
-    "file": "css/core-vUH-vZhR.min.css",
+    "file": "css/core-DetBpzGF.min.css",
     "src": "src/css/core.css",
     "isEntry": true
   },
-  "src/css/critical-legacy.css": {
-    "file": "js/critical-legacy-Cy6UQYPL.min.js",
-    "name": "critical",
-    "src": "src/css/critical-legacy.css",
+  "src/css/critical-optimized.css": {
+    "file": "css/critical-optimized-zxh9HV_b.min.css",
+    "src": "src/css/critical-optimized.css",
     "isEntry": true
   },
-  "src/css/critical.css": {
-    "file": "css/critical-B8yQnbrD.min.css",
-    "src": "src/css/critical.css",
+  "src/css/homepage.css": {
+    "file": "css/homepage-7vTeaU0c.min.css",
+    "src": "src/css/homepage.css",
     "isEntry": true
   },
-  "src/css/dashboard-legacy.css": {
-    "file": "js/dashboard-legacy-C7CRbJLq.min.js",
-    "name": "dashboard",
-    "src": "src/css/dashboard-legacy.css",
+  "src/css/listings-archive.css": {
+    "file": "css/listings-archive-CXYFrH_u.min.css",
+    "src": "src/css/listings-archive.css",
     "isEntry": true
   },
-  "src/css/dashboard.css": {
-    "file": "css/dashboard-CAA8Of3M.min.css",
-    "src": "src/css/dashboard.css",
-    "isEntry": true
-  },
-  "src/css/listings-legacy.css": {
-    "file": "js/listings-legacy-DJ_Lz0mo.min.js",
-    "name": "listings",
-    "src": "src/css/listings-legacy.css",
-    "isEntry": true
-  },
-  "src/css/listings.css": {
-    "file": "css/listings-Ch70_sKA.min.css",
-    "src": "src/css/listings.css",
-    "isEntry": true
-  },
-  "src/css/login-legacy.css": {
-    "file": "js/login-legacy-C_yG7iMN.min.js",
-    "name": "login",
-    "src": "src/css/login-legacy.css",
-    "isEntry": true
-  },
-  "src/css/login.css": {
-    "file": "css/login-D7P58U0o.min.css",
-    "src": "src/css/login.css",
-    "isEntry": true
-  },
-  "src/css/single-agent-legacy.css": {
-    "file": "js/single-agent-legacy-C0k7Jb7Y.min.js",
-    "name": "single-agent",
-    "src": "src/css/single-agent-legacy.css",
-    "isEntry": true
-  },
-  "src/css/single-agent.css": {
-    "file": "css/single-agent-DZZQXtU6.min.css",
-    "src": "src/css/single-agent.css",
-    "isEntry": true
-  },
-  "src/css/sitewide-legacy.css": {
-    "file": "js/sitewide-legacy-CemEjvYI.min.js",
-    "name": "sitewide",
-    "src": "src/css/sitewide-legacy.css",
-    "isEntry": true
-  },
-  "src/css/sitewide.css": {
-    "file": "css/sitewide-CTH0RoQr.min.css",
-    "src": "src/css/sitewide.css",
-    "isEntry": true
-  },
-  "src/js/agents-legacy.js": {
-    "file": "js/agents-js-legacy-BXZGC9PX.min.js",
-    "name": "agents-js",
-    "src": "src/js/agents-legacy.js",
+  "src/css/single-property.css": {
+    "file": "css/single-property-CtxIMFIO.min.css",
+    "src": "src/css/single-property.css",
     "isEntry": true
   },
   "src/js/agents.js": {
-    "file": "js/agents-js-BLAXz7Mu.min.js",
+    "file": "js/agents-js-Cx318ZAI.min.js",
     "name": "agents-js",
     "src": "src/js/agents.js",
     "isEntry": true
   },
-  "src/js/archive-legacy.js": {
-    "file": "js/archive-js-legacy-DuV-ndSL.min.js",
-    "name": "archive-js",
-    "src": "src/js/archive-legacy.js",
-    "isEntry": true,
-    "imports": [
-      "_unified-archive-legacy-BujbrpqF.min.js",
-      "_universal-loop-legacy-BB4QGSeb.min.js"
-    ]
-  },
   "src/js/archive.js": {
-    "file": "js/archive-js-DjLWQjVC.min.js",
+    "file": "js/archive-js-CYoamC8A.min.js",
     "name": "archive-js",
     "src": "src/js/archive.js",
     "isEntry": true,
     "imports": [
-      "_unified-archive-Cy72yypt.min.js",
-      "_universal-loop-Dtt4_HFB.min.js"
-    ]
-  },
-  "src/js/core-legacy.js": {
-    "file": "js/core-js-legacy-Cm7lvenE.min.js",
-    "name": "core-js",
-    "src": "src/js/core-legacy.js",
-    "isEntry": true,
-    "imports": [
-      "_unified-core-legacy-BWBraR1R.min.js",
-      "_utilities-legacy-BwZfhCa1.min.js",
-      "_navigation-legacy-DeZ5xxQO.min.js"
+      "_universal-loop-BzEa3M2D.min.js"
     ]
   },
   "src/js/core.js": {
-    "file": "js/core-js-JiMuBhVG.min.js",
+    "file": "js/core-js-DfyrD_1l.min.js",
     "name": "core-js",
     "src": "src/js/core.js",
     "isEntry": true,
     "imports": [
-      "_unified-core-dWaien_H.min.js",
-      "_utilities-RJnFDEZQ.min.js",
+      "_framework-core-hfrr7oRn.min.js",
+      "_utilities-C6OspHQF.min.js",
       "_navigation-BQUjlpkf.min.js"
     ]
   },
-  "src/js/dashboard-legacy.js": {
-    "file": "js/dashboard-js-legacy-DndIh5w8.min.js",
-    "name": "dashboard-js",
-    "src": "src/js/dashboard-legacy.js",
-    "isEntry": true,
-    "imports": [
-      "_unified-dashboard-legacy-BaS6xwwb.min.js"
-    ]
-  },
   "src/js/dashboard.js": {
-    "file": "js/dashboard-js-CJo6oOrH.min.js",
+    "file": "js/dashboard-js-DsijJaZh.min.js",
     "name": "dashboard-js",
     "src": "src/js/dashboard.js",
-    "isEntry": true,
-    "imports": [
-      "_unified-dashboard-C-oa8RGW.min.js"
-    ]
-  },
-  "src/js/listings-legacy.js": {
-    "file": "js/listings-js-legacy-DEF8XJcY.min.js",
-    "name": "listings-js",
-    "src": "src/js/listings-legacy.js",
-    "isEntry": true,
-    "imports": [
-      "_unified-listings-legacy-DZ9rO86D.min.js"
-    ]
+    "isEntry": true
   },
   "src/js/listings.js": {
-    "file": "js/listings-js-0RzxrvIT.min.js",
+    "file": "js/listings-js-GsMlWlw8.min.js",
     "name": "listings-js",
     "src": "src/js/listings.js",
-    "isEntry": true,
-    "imports": [
-      "_unified-listings-ndqwq7v8.min.js"
-    ]
-  },
-  "src/js/sitewide-legacy.js": {
-    "file": "js/sitewide-js-legacy-DtMvi6KQ.min.js",
-    "name": "sitewide-js",
-    "src": "src/js/sitewide-legacy.js",
-    "isEntry": true,
-    "imports": [
-      "_navigation-legacy-DeZ5xxQO.min.js",
-      "_universal-loop-legacy-BB4QGSeb.min.js"
-    ]
+    "isEntry": true
   },
   "src/js/sitewide.js": {
-    "file": "js/sitewide-js-DOzCeXkr.min.js",
+    "file": "js/sitewide-js-CVDLWUF5.min.js",
     "name": "sitewide-js",
     "src": "src/js/sitewide.js",
     "isEntry": true,
     "imports": [
       "_navigation-BQUjlpkf.min.js",
-      "_universal-loop-Dtt4_HFB.min.js"
+      "_framework-core-hfrr7oRn.min.js",
+      "_universal-loop-BzEa3M2D.min.js"
     ]
-  },
-  "vite/legacy-polyfills": {
-    "file": "js/polyfills-De1cdzZu.min.js",
-    "name": "polyfills",
-    "src": "vite/legacy-polyfills",
-    "isEntry": true
-  },
-  "vite/legacy-polyfills-legacy": {
-    "file": "js/polyfills-legacy-DM_TfKcN.min.js",
-    "name": "polyfills",
-    "src": "vite/legacy-polyfills-legacy",
-    "isEntry": true
   }
 }

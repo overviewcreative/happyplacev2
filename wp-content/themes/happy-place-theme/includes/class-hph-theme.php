@@ -147,14 +147,16 @@ class HPH_Theme {
         // Load template router for archive views
         require_once HPH_INC_DIR . '/template-router.php';
         
-        // Load organized AJAX handlers (New organized system)
-        // NOTE: contact-forms.php disabled - using plugin FormRouter instead
+        // Load organized AJAX handlers (Delegation Pattern - Phase 4 Complete)
+        // NOTE: All handlers now delegate to plugin services for business logic
         require_once HPH_INC_DIR . '/ajax/user-interactions.php';
         require_once HPH_INC_DIR . '/ajax/search-ajax.php';
-        require_once HPH_INC_DIR . '/ajax/archive-ajax.php';
         require_once HPH_INC_DIR . '/ajax/archive-unified-ajax.php';
         require_once HPH_INC_DIR . '/ajax/dashboard-ajax.php';
-        require_once HPH_INC_DIR . '/ajax/listings-dashboard-ajax.php';
+
+        // REMOVED: archive-ajax.php (replaced by archive-unified-ajax.php)
+        // REMOVED: listings-dashboard-ajax.php (duplicate of dashboard-ajax.php)
+        // REMOVED: contact-forms.php (using plugin FormRouter instead)
         
         // Load admin AJAX handlers only for admin users
         if (is_admin() || wp_doing_ajax()) {
@@ -205,10 +207,10 @@ class HPH_Theme {
                 require_once HPH_INC_DIR . '/debug/file-audit.php';
             }
         }
-        
-        // Load contact form handler
-        require_once HPH_INC_DIR . '/handlers/contact-form-handler.php';
-        
+
+        // Contact form handler already loaded above at line 178
+        // require_once HPH_INC_DIR . '/handlers/contact-form-handler.php'; // REMOVED: Duplicate loading
+
         // Load template registration - file removed in cleanup
         // require_once HPH_INC_DIR . '/templates/template-registration.php';
         

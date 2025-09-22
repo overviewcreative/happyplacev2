@@ -1,0 +1,102 @@
+/**
+ * HOMEPAGE CSS BUNDLE
+ * Components used by front-page.php only
+ * Target: <100KB for homepage-specific content
+ */
+
+/* ================================================
+   IMPORTS - Must be at top for CSS compliance
+   ================================================ */
+@import url('../../assets/css/framework/features/marketing/hero-sections.css');
+@import url('../../assets/css/framework/components/organisms/section.css');
+@import url('../../assets/css/framework/components/organisms/universal-loop.css');
+@import url('../../assets/css/framework/features/marketing/cta-sections.css');
+@import url('../../assets/css/framework/features/marketing/feature-showcase.css');
+
+/* ================================================
+   HERO SECTIONS (Used by front-page.php) - IMPORT MOVED TO TOP
+   ================================================ */
+
+/* ================================================
+   CONTENT SECTIONS (Used by front-page.php - 2x content sections) - IMPORT MOVED TO TOP
+   ================================================ */
+
+/* ================================================
+   STATS SECTIONS (Used by front-page.php)
+   ================================================ */
+/* Stats section with counter animations */
+.hph-stats {
+  position: relative;
+  padding: 4rem 0;
+  background: var(--hph-gray-50);
+}
+
+.hph-stats--minimal {
+  background: transparent;
+}
+
+.hph-stats--primary {
+  background: var(--hph-primary);
+  color: var(--hph-white);
+}
+
+.hph-stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  text-align: center;
+}
+
+.hph-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hph-stat-number {
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--hph-primary);
+}
+
+.hph-stats--primary .hph-stat-number {
+  color: var(--hph-white);
+}
+
+.hph-stat-label {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--hph-gray-600);
+}
+
+.hph-stats--primary .hph-stat-label {
+  color: var(--hph-gray-200);
+}
+
+/* ================================================
+   UNIVERSAL LOOP (Used by front-page.php for new listings) - IMPORT MOVED TO TOP
+   ================================================ */
+
+/* ================================================
+   CTA SECTIONS (Used by front-page.php) - IMPORT MOVED TO TOP
+   ================================================ */
+
+/* ================================================
+   FEATURE SHOWCASE (Used by front-page.php) - IMPORT MOVED TO TOP
+   ================================================ */
+
+/* ================================================
+   RESPONSIVE ADJUSTMENTS
+   ================================================ */
+@media (max-width: 768px) {
+  .hph-stats-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .hph-stat-number {
+    font-size: 2.5rem;
+  }
+}

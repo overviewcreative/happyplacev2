@@ -196,13 +196,11 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
 
                 <!-- Header Actions -->
                 <div class="hph-header-actions hph-site-header-enhanced__actions">
-                    <!-- Search Toggle - COMMENTED OUT FOR NOW -->
-                    <?php /*
+                    <!-- Search Toggle -->
                     <button class="hph-header-actions__btn hph-header-actions__btn--search hph-site-header-enhanced__search-toggle"
                             data-search-toggle aria-label="Toggle search">
                         <i class="fas fa-search hph-header-actions__icon"></i>
                     </button>
-                    */ ?>
 
                     <!-- Mobile Menu Toggle -->
                     <button class="hph-header-actions__btn hph-header-actions__btn--menu hph-site-header-enhanced__mobile-toggle"
@@ -224,8 +222,7 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                 <form class="hph-site-header-enhanced__search-form hph-search-form" action="<?php echo esc_url(home_url('/listings/')); ?>" method="GET">
                     <input type="hidden" name="post_type" value="listing">
 
-                    <!-- Search Input - COMMENTED OUT FOR NOW -->
-                    <?php /*
+                    <!-- Search Input -->
                     <div class="hph-search-input-container">
                         <div class="hph-search-input-wrapper hph-search-input-wrapper--header has-close">
                             <input type="text"
@@ -246,7 +243,6 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
                             'max_suggestions' => 8
                         ]); ?>
                     </div>
-                    */ ?>
 
                     <!-- Property Type removed - handled by filter chips -->
 
@@ -506,6 +502,69 @@ if (!wp_script_is('font-awesome', 'enqueued')) {
 
     <!-- Mobile Menu Overlay -->
     <div class="hph-site-header-enhanced__mobile-overlay" data-mobile-overlay></div>
+
+    <!-- Header Search Toggle JavaScript -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchToggle = document.querySelector('[data-search-toggle]');
+        const searchBar = document.querySelector('[data-search-bar]');
+        const searchInput = document.querySelector('#header-search-input');
+        const clearButton = document.querySelector('.hph-header-actions__btn--clear');
+
+        if (searchToggle && searchBar) {
+            // Toggle search dropdown
+            searchToggle.addEventListener('click', function() {
+                const isActive = searchBar.classList.contains('active');
+
+                if (isActive) {
+                    // Close search dropdown
+                    searchBar.classList.remove('active');
+                    searchToggle.classList.remove('is-active');
+                    searchToggle.setAttribute('aria-expanded', 'false');
+                } else {
+                    // Open search dropdown
+                    searchBar.classList.add('active');
+                    searchToggle.classList.add('is-active');
+                    searchToggle.setAttribute('aria-expanded', 'true');
+
+                    // Focus search input when opened
+                    if (searchInput) {
+                        setTimeout(() => searchInput.focus(), 100);
+                    }
+                }
+            });
+
+            // Clear search input
+            if (clearButton && searchInput) {
+                clearButton.addEventListener('click', function() {
+                    searchInput.value = '';
+                    searchInput.focus();
+                });
+            }
+
+            // Close search dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!searchToggle.contains(e.target) && !searchBar.contains(e.target)) {
+                    if (searchBar.classList.contains('active')) {
+                        searchBar.classList.remove('active');
+                        searchToggle.classList.remove('is-active');
+                        searchToggle.setAttribute('aria-expanded', 'false');
+                    }
+                }
+            });
+
+            // Close search dropdown on Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && searchBar.classList.contains('active')) {
+                    searchBar.classList.remove('active');
+                    searchToggle.classList.remove('is-active');
+                    searchToggle.setAttribute('aria-expanded', 'false');
+                    searchToggle.focus();
+                }
+            });
+        }
+    });
+    </script>
 
     <!-- Main Content Area -->
     <div id="main" class="hph-main-content" role="main">

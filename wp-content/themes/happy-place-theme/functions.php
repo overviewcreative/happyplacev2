@@ -143,9 +143,8 @@ require_once HPH_THEME_DIR . '/includes/helpers/lazy-loading-helpers.php';
 // Load WebP optimization system
 require_once HPH_THEME_DIR . '/includes/helpers/webp-optimization.php';
 
-// Load dashboard AJAX handlers
-require_once HPH_THEME_DIR . '/includes/ajax/listings-dashboard-ajax.php';
-require_once HPH_THEME_DIR . '/includes/ajax/dashboard-ajax.php';
+// Load remaining theme AJAX handlers (delegation pattern)
+// NOTE: dashboard-ajax.php now loaded via class-hph-theme.php
 require_once HPH_THEME_DIR . '/includes/ajax/local-places-ajax.php';
 require_once HPH_THEME_DIR . '/includes/ajax/cities-ajax.php';
 
@@ -155,6 +154,50 @@ require_once HPH_THEME_DIR . '/includes/post-types/blog-post-type.php';
 // Include hero helpers
 require_once HPH_THEME_DIR . '/includes/helpers/archive-hero-helpers.php';
 
+
+/**
+ * Prevent Raw JSON Display from Direct admin-ajax.php Access
+ * This prevents users from seeing raw JSON when forms submit directly
+ */
+add_action('init', function() {
+    // Only apply this protection for admin-ajax.php requests
+    if (!defined('DOING_AJAX') || !DOING_AJAX) {
+        return;
+    }
+
+    // Check if this is a direct browser access (not an AJAX request)
+    $is_direct_access = !empty($_SERVER['HTTP_ACCEPT']) &&
+                       strpos($_SERVER['HTTP_ACCEPT'], 'text/html') !== false &&
+                       empty($_SERVER['HTTP_X_REQUESTED_WITH']);
+
+    // If it's a direct access to admin-ajax.php, redirect to home page
+    if ($is_direct_access && !wp_doing_ajax()) {
+        wp_redirect(home_url('/?ajax_error=direct_access'));
+        exit;
+    }
+}, 1);
+
+/**
+ * Add AJAX Response Header Protection
+ * Ensures AJAX responses have proper headers to prevent browser display
+ */
+add_action('wp_ajax_hph_route_form', function() {
+    // This will be handled by the plugin, but ensure proper headers
+    if (!headers_sent()) {
+        header('Content-Type: application/json');
+        header('X-Content-Type-Options: nosniff');
+        header('X-Frame-Options: DENY');
+    }
+}, 1);
+
+add_action('wp_ajax_nopriv_hph_route_form', function() {
+    // This will be handled by the plugin, but ensure proper headers
+    if (!headers_sent()) {
+        header('Content-Type: application/json');
+        header('X-Content-Type-Options: nosniff');
+        header('X-Frame-Options: DENY');
+    }
+}, 1);
 
 // Bootstrap the theme
 HPH_Theme::init();
@@ -175,7 +218,8 @@ require_once HPH_THEME_DIR . '/includes/email-config.php';
 /**
  * Initialize dashboard AJAX handlers
  */
-new HPH_Listings_Dashboard_Ajax();
+// Dashboard AJAX handlers are now initialized automatically via class-hph-theme.php
+// in the delegation pattern (dashboard-ajax.php)
 
 /**
  * Slug Redirect System
